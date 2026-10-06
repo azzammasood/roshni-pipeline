@@ -72,3 +72,37 @@ def snapshot(
             f.write("## Snapshot\n" + text + "\n")
     if not report.ok:
         raise typer.Exit(1)
+
+
+@app.command()
+def parse(
+    sources: Path = typer.Option(None, help="Folder of source files (default: data-sources/)."),
+    out: Path = typer.Option(None, help="Output folder (default: data/parsed)."),
+    snapshots: Path = typer.Option(
+        None, help="Optional snapshot store (data-snapshots checkout) for extra press releases."
+    ),
+) -> None:
+    """Parse every source into typed Parquet tables plus quarantine files."""
+    from roshni.parsers.run import run_all
+    from roshni.paths import DATA_DIR, DATA_SOURCES_DIR
+
+    out = out or DATA_DIR / "parsed"
+    for s in run_all(sources or DATA_SOURCES_DIR, out, snapshots):
+        typer.echo(f"{s.table:30} rows={s.rows:6} quarantined={s.quarantined}")
+    typer.echo(f"written to {out}")
+
+
+@app.command()
+def validate(
+    parsed: Path = typer.Option(None, help="Parsed Parquet folder (default: data/parsed)."),
+) -> None:
+    """Run the Great Expectations suites on the parsed Parquet layer."""
+    from roshni.paths import DATA_DIR
+    from roshni.quality.suites import validate_dir
+
+    results = validate_dir(parsed or DATA_DIR / "parsed")
+    for r in results:
+        status = "PASS" if r.success else "FAIL"
+        typer.echo(f"{status} {r.table:30} expectations={r.evaluated} {' '.join(r.failed)}")
+    if not results or not all(r.success for r in results):
+        raise typer.Exit(1)
