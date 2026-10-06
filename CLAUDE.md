@@ -66,5 +66,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Owner is on a limited plan: don't dump whole PDFs or tables; use head/counts; one phase per session.
 
 ## Phase status
-- Phase 0 (repo, tooling, CI, docs): built 2026-10-06; gate pending owner review.
+- Phase 0 (repo, tooling, CI, docs): done 2026-10-06 (CI green, Docker image builds).
 - Next: Phase 1, snapshot job (`config/sources.yml`, polite fetcher, `raw_snapshots`, daily cron, orphan branch `data-snapshots`).
