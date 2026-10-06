@@ -1,0 +1,76 @@
+# Production scheduler: daily snapshot of source files onto the orphan branch `data-snapshots`.
+# Changed files and the raw_snapshots.csv log live there, never on main.
+name: snapshot
+
+on:
+  schedule:
+    - cron: "30 0 * * *" # 00:30 UTC = 05:30 Asia/Karachi. Edit here to change the schedule.
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Optional space-separated source ids (default: all)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv python install
+      - run: uv sync --frozen --no-dev
+
+      - name: Check out data-snapshots into ./store
+        run: |
+          if git ls-remote --exit-code --heads origin data-snapshots >/dev/null; then
+            git fetch --depth=1 origin data-snapshots:data-snapshots
+            git worktree add store data-snapshots
+          else
+            git worktree add --orphan -b data-snapshots store
+            printf '%s\n' \
+              "# data-snapshots" "" \
+              "Raw source snapshots written by the \`snapshot\` workflow on main." \
+              "\`raw_snapshots.csv\` logs every check; \`files/\` holds each distinct version." \
+              "Third-party documents, kept for change detection and reproducibility." \
+              > store/README.md
+          fi
+
+      - name: Snapshot
+        id: snap
+        env:
+          ONLY: ${{ inputs.only }}
+        run: |
+          args=()
+          for s in $ONLY; do args+=(--only "$s"); done
+          set +e
+          uv run roshni snapshot --store store "${args[@]}"
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push snapshots
+        if: always()
+        working-directory: store
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898283+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "snapshot: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin data-snapshots
+
+      - name: Fail if the snapshot reported errors
+        if: steps.snap.outputs.status != '0'
+        run: exit 1
