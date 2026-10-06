@@ -1,8 +1,8 @@
 # Policy events: used only as annotations and benchmarks, never as data about outages.
 events:
   - id: pm_max_2h_directive
-    date: 2026-09-11          # TODO(phase 1): verify against the article
-    date_verified: false
+    date: 2026-09-11          # verified 2026-10-06: Dawn datePublished 2026-09-11T23:07+05:00
+    date_verified: true
     summary: "Prime Minister ordered load shedding capped at a maximum of 2 hours."
     max_hours: 2
     source_url: https://www.dawn.com/news/2029158

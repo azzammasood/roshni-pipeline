@@ -73,5 +73,12 @@ The two big PBS PDFs (`table_31_punjab_districts.pdf`, 789 pages; `table_32_punj
 ## 5. Feeder-to-locality name matching (IESCO excl. AJK, 980 feeders)
 110 exact (11%); 199 fuzzy 85+ (20%). By circle (fuzzy 85+): Chakwal 53%, Attock 34%, Jhelum 32%, Rawalpindi 11%, Islamabad 8%. The 150 sector-style feeders (F-11/3, H8 Grid, ...) match almost nothing. Some fuzzy hits are wrong (Mangtal→Mangal, Jhanda→Jhandial), so every non-exact match needs review.
 
-## 6. Access check
+## 6. Live discovery (2026-10-06, Phase 1)
+- robots.txt: `iesco.com.pk` empty Disallow; `ke.com.pk` disallows only `/wp-admin/`; `www.dawn.com` disallows print/archive/search/some author pages (`/news/...` allowed).
+- IESCO load-shedding page: a table of circle label, date label ("Sep-2026"), link. 6 rows; all files under `.../January2026/`, Last-Modified 14 Jan 2026, no ETag. Fetched bytes = local copies (SHA-256 equal).
+- IESCO press-release page, "Power Shutdown" tab (`#power-desktop`): 65 rows from 16 Jul 2026 to 6 Oct 2026, roughly daily, each with "English" and "Urdu" links. Titles vary ("Temporary Power Shutdown Schedule ... Development Projects on 6th October 2026", "Due to System Maintenance, IESCO has Issued a Schedule for Power Shut Down on ..."). A release for 6 Oct exists beyond the local files.
+- K-Electric `/load-shed-schedule/`: links `2026/07/Feeders-List.pdf`, `2026/07/Non-Payers-List.pdf` (excluded), `2026/08/LSMnew-PDF-Aug-5th.pdf` (the schedule). Schedule: 153,736 bytes, Last-Modified 5 Aug 2026, ETag present; equal to the local copy, so **not republished** after the 11 Sept directive as of 2026-10-06. The page is slow without compression; with gzip it is ~50 KB.
+- Dawn 2029158: "PM Shehbaz orders no more than two hours of loadshedding across country", datePublished 2026-09-11T23:07+05:00. Policy date confirmed.
+
+## 7. Access check
 2026-10-06: a GitHub Actions runner got HTTP 200 for the IESCO load-shedding page, the Islamabad XLSX, the K-Electric load-shed page and `Feeders-List.pdf`. Re-check only if fetches fail.

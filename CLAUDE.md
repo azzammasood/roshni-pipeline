@@ -34,6 +34,7 @@ uv run ruff check . ; uv run ruff format .
 uv run pre-commit run --all-files
 uv run roshni --help
 uv run python scripts/inventory.py   # data-sources sizes + SHA-256
+uv run roshni snapshot [--store DIR] [--only SOURCE]   # polite fetch; default store data/snapshots
 docker compose build ; docker compose run --rm app <cmd>   # canonical pdftotext
 ```
 
@@ -42,6 +43,8 @@ docker compose build ; docker compose run --rm app <cmd>   # canonical pdftotext
 src/roshni/{sources,fetch,parsers,resolve,live,fairness,narrate,export}/
 src/roshni/cli.py      typer CLI; orchestrators only call these commands
 src/roshni/paths.py    REPO_ROOT, DATA_DIR, DATA_SOURCES_DIR (env ROSHNI_ROOT)
+src/roshni/fetch/      http.py (PoliteClient), discover.py, store.py, snapshot.py
+branch data-snapshots  raw_snapshots.csv + files/ (written only by .github/workflows/snapshot.yml)
 config/                sources.yml, policy.yml
 dbt/                   models/staging, models/marts, seeds (Phase 3)
 tests/                 cross-cutting tests, fixtures/
@@ -67,4 +70,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 
 ## Phase status
 - Phase 0 (repo, tooling, CI, docs): done 2026-10-06 (CI green, Docker image builds).
-- Next: Phase 1, snapshot job (`config/sources.yml`, polite fetcher, `raw_snapshots`, daily cron, orphan branch `data-snapshots`).
+- Phase 1 (snapshot job): built 2026-10-06; gate = two manual runs of the `snapshot` workflow.
+- Next: Phase 2, parsers (read snapshots or `data-sources/`; Parquet + quarantine; golden tests; GE suites).

@@ -29,6 +29,9 @@ Public data has no real-time outages. Roshni therefore builds:
 ## Architecture
 Fetch (polite, snapshot on change) → parse (typed rows plus quarantine, Great Expectations) → DuckDB + dbt (tests on models) → entity resolution (human-reviewed seeds) → live / fairness marts → static JSON export.
 
+### Snapshots
+`roshni snapshot` discovers source files from the publishers' listing pages, fetches them politely (robots.txt, ≤1 req/s, conditional requests) and stores each distinct version on the orphan branch `data-snapshots`, with a `raw_snapshots.csv` log of every check.
+
 ### Scheduler roles
 - **GitHub Actions is the production scheduler**: daily snapshot and refresh on the free tier.
 - **Airflow (local Docker) is the orchestration showcase**: DAGs only call the same `roshni` CLI tasks, with no business logic in DAGs.
