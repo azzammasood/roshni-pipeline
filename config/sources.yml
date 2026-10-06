@@ -1,20 +1,39 @@
-# Source registry. Phase 1 fills in discovery and fetch details.
-# Only these sources are allowed (see docs/data-audit.md). Never add lesco.gov.pk, pitc.com.pk or CCMS.
+# Source registry. Only these sources are allowed (see docs/data-audit.md).
+# Never add lesco.gov.pk, pitc.com.pk or CCMS: the fetcher refuses those hosts regardless.
 user_agent: "roshni-pipeline/0.1 (+https://github.com/azzammasood/roshni-pipeline)"
 min_request_interval_seconds: 1.0
+timeout_seconds: 90
 
 sources:
   iesco_schedule_xlsx:
+    discovery: iesco_xlsx_table
     listing_url: https://iesco.com.pk/load-shedding
-    kind: xlsx
-    circles: [islamabad, rawalpindi, attock, jhelum, chakwal, ajk]
+    # Listing-page circle label -> circle id. An unknown label fails discovery loudly.
+    circles:
+      "Islamabad": islamabad
+      "Rawalpindi City & Cantt": rawalpindi
+      "Attock": attock
+      "Jhelum": jhelum
+      "Chakwal": chakwal
+      "AJK": ajk
+
   iesco_press_release:
+    discovery: iesco_press_release_tab
     listing_url: https://iesco.com.pk/press-release
-    kind: pdf
-    language: english  # Urdu text layer is scrambled; ignored
+    tab_id: power-desktop   # "Power Shutdown" tab
+    language: English       # Urdu text layer is scrambled; never fetched
+    refetch: false          # releases are fetched once per URL
+
   kelectric_feeder_list:
+    discovery: fixed_url
     url: https://ke.com.pk/wp-content/uploads/2026/07/Feeders-List.pdf
-    kind: pdf
-  kelectric_schedule:
     listing_url: https://ke.com.pk/load-shed-schedule/
-    kind: pdf  # URL discovered in Phase 1
+    # Warn if the listing page links a feeder list at a different URL (possible republish).
+    listing_link_pattern: "(?i)feeders?[-_ ]?list"
+
+  kelectric_schedule:
+    discovery: listing_pdf_pattern
+    listing_url: https://ke.com.pk/load-shed-schedule/
+    # All K-Electric links read "Download"; the schedule is identified by file name.
+    link_pattern: "(?i)(lsm|load[-_ ]?shed|schedule)"
+    exclude_pattern: "(?i)(feeders?[-_ ]?list|non[-_ ]?payers)"
