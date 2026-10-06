@@ -70,5 +70,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 
 ## Phase status
 - Phase 0 (repo, tooling, CI, docs): done 2026-10-06 (CI green, Docker image builds).
-- Phase 1 (snapshot job): built 2026-10-06; gate = two manual runs of the `snapshot` workflow.
+- Phase 1 (snapshot job): done 2026-10-06 (run 1: new=73; run 2: unchanged=8 known=65). Snapshots on branch `data-snapshots`.
 - Next: Phase 2, parsers (read snapshots or `data-sources/`; Parquet + quarantine; golden tests; GE suites).
