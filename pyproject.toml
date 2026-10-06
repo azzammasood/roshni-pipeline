@@ -1,0 +1,45 @@
+[project]
+name = "roshni"
+version = "0.1.0"
+description = "Where and when Pakistan's load-shedding is scheduled, and whether it falls unequally."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "pydantic>=2.8",
+    "typer>=0.12",
+]
+
+[project.scripts]
+roshni = "roshni.cli:app"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=3.7",
+    "pytest>=8.2",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/roshni"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "PTH"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/roshni/cli.py" = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "src"]
+addopts = "-ra --strict-markers"
+markers = [
+    "needs_data_sources: requires the git-ignored data-sources/ folder; skipped when absent (e.g. CI)",
+]
