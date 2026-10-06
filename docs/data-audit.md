@@ -82,3 +82,23 @@ The two big PBS PDFs (`table_31_punjab_districts.pdf`, 789 pages; `table_32_punj
 
 ## 7. Access check
 2026-10-06: a GitHub Actions runner got HTTP 200 for the IESCO load-shedding page, the Islamabad XLSX, the K-Electric load-shed page and `Feeders-List.pdf`. Re-check only if fetches fail.
+
+## 8. Parser results vs this audit (Phase 2, 2026-10-06)
+Golden tests: `tests/test_golden.py` (need `data-sources/`; skipped in CI). Poppler 25.03.0 (Docker image).
+
+**Matches exactly:** IESCO counts (1,105 / 1,103 / 980), anomalies, cohort patterns (12 at 2 h, 2 at 12 h), `089201`; press releases No. 02 (29 + 45) and No. 03 (15) incl. circles, times, names; K-Electric list (623, 133/163/327, 2 without ATC, 30 IBCs), schedule (618; 125 × 6 h, 493 × 12 h), join (616 exact, the 6 missing + truncated NAVY, ARMY HOUSE), Medium-12 h exceptions, all four per-IBC oracles, Uthal = Hub Chowki (9); PBS urban Islamabad 90 and Punjab 5,534 rows joined completely on the key, 12 charges / 75 circles, 39 IESCO urban bodies; Karachi 28 sub-divisions and the Orangi / Gulshan-e-Iqbal / Mauripur oracles; rural literacy 17–99.9 %, degree share max 39.8 %, 6.8 M people.
+
+**Explained differences:**
+- *"One code appears in two circles"* is the `NOT ALLOTED` placeholder (Islamabad and Rawalpindi), not a real code.
+- *53 grids*: the schedule has 54; `DEFENCE` holds only `ARMY HOUSE`, which is not in the list → 53 among listed feeders.
+- *Medium = 6 h for 125*: 124 on exact names + the truncated NAVY feeder (Medium, 6 h) once resolved.
+- *Glued rows* (`...2205IQBAL CENTER`): not produced by poppler 25.03; the parser still splits them if they appear.
+- *Rural localities 2,581 vs 2,578* (Chakwal 420 vs 419, Rawalpindi 1,072 vs 1,070): the parser also keeps mauzas printed without a hadbast number (e.g. KALIYAL/KOTLA, LOTERI (REHMAN ABAD)); they look genuine. Hence ≥20 housing units = 2,360 vs 2,357. **Owner to confirm.**
+- *Rural `-` cells*: stored as 0 (census convention). The audit treated `-` as missing, which is why its minimums were electricity 1 %, pacca 2 %, degree 0.2 % and "24 localities under 70 % electricity" (27 with `-` = 0; 3 localities print `-` for electricity).
+- *IESCO 10-hour level*: the share off per hour is exactly ~25 % or ~50 % in every circle (11 cohort patterns) while every other level is flat (±1 pt). 10 does not divide 24, so a cohort rotation cannot be uniform: **design, not a data error**.
+
+**Additional facts:**
+- Press releases come in two formats: development notices ("Temporary Power Shutdown Schedule…") and maintenance notices ("POWER SUSPENSION SCHEDULES FOR …", `On 14th September 2026`, `Circle,`, `from 7 am to 11 am`). All 65 snapshotted releases parse: 1,853 feeder-windows; 166 fragments quarantined (transmission-asset descriptions such as "132KV circuit Breaker … controlling … ckt", and "surrounding areas will remain closed"). Short GSO asset names (e.g. "132kv AWC HMC Taxila") are kept and flagged `transmission_asset`. One release (25 Sep) names the circle after the list ("… feeders and adjoining areas in Islamabad Circle."): flagged `circle_after_list`.
+- Circle labels in releases include `Rawalpindi Cantt` and `Rawalpindi City` separately (the XLSX has one Rawalpindi circle), plus `GSO`.
+- PBS Sindh PDFs: names wrap and numbers sometimes sit on their own line. Rows are accepted only when name and a full set of numbers share a line; 73 (T33) / 112 (T34) lines quarantined. **Sindh is complete at district (30) and sub-division/taluka (130) level**, which is what the IBC crosswalk uses; below that, charges/circles under a quarantined body name are flagged `parent_body_unresolved` and do not join 33↔34. Table 34 (Sindh PDF) prints household size rounded to integers.
+- Household size reaches ~98 in tiny rural/urban units with 1–2 housing units (published values, likely institutional).

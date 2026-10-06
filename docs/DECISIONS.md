@@ -2,6 +2,19 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-06 (Phase 2)
+- **PDF text only from poppler.** Git for Windows ships xpdf `pdftotext` 4.00, whose layout differs; `parsers/pdftext.py` rejects non-poppler binaries and falls back to `docker run roshni:dev pdftotext`. Text is cached by SHA-256 in `data/cache/pdftext/`.
+- **Outputs:** `data/parsed/<table>.parquet` + `data/parsed/quarantine/<table>.parquet` (source_file, source_sha256, location, raw, reason). Tables: iesco_feeder, iesco_schedule_slot, iesco_press_release_window, kelectric_feeder_list, kelectric_schedule, kelectric_schedule_cycle, pbs_urban_population, pbs_urban_housing, pbs_rural_population, pbs_rural_housing.
+- **Known anomalies are flagged in a `flags` column, not quarantined** (quarantine = could not parse). Phase 3 decides which flags exclude rows from marts.
+- **IESCO XLSX** stored long: one row per feeder, one row per feeder × level × one-hour slot.
+- **Press releases:** a new date resets circle and time (no carry-over across days). Non-feeder phrases are quarantined; short `NNkV` asset names kept with `transmission_asset`. Times stored as local HH:MM and UTC.
+- **K-Electric truncated NAVY name is not fixed in the parser**; the join fix belongs in entity resolution / dbt with a recorded rule.
+- **PBS hierarchical keys** (`area_key`) built from document order; tables join on the key. `-` → 0; `#######` → null + `overflow_cells`.
+- **Sindh urban PDFs: never guess wrapped rows**; reliable at district and sub-division level only.
+- **`fetched_at` is null for hand-downloaded files** unless the same SHA-256 exists in the snapshot log.
+- **Great Expectations 1.x chosen over Soda** (installs cleanly on 3.12, maintained, pandas validation of Parquet). Suites are code (`quality/suites.py`), ephemeral context, single-table checks only; golden counts live in pytest, cross-table rules in dbt.
+- **Unit tests use synthetic layout text** (monkeypatched `pdf_text`) and generated XLSX; no third-party documents are committed.
+
 ## 2026-10-06 (Phase 1)
 - **Snapshot store = orphan branch `data-snapshots`**: `raw_snapshots.csv` (one row per check: source, item_key, label, url, fetched_at, http_status, etag, last_modified, sha256, bytes, path, changed, note) plus `files/<source>/<item_key>/<UTC stamp>_<sha12><ext>`. CSV, so DuckDB reads it directly in Phase 3. Locally the default store is `data/snapshots/`.
 - **Change detection:** conditional GET (`If-None-Match` / `If-Modified-Since` from the last good record) → 304 = unchanged; on 200 the SHA-256 decides. A new URL for the same item (e.g. a K-Electric republish) is noted in `note`.

@@ -35,6 +35,8 @@ uv run pre-commit run --all-files
 uv run roshni --help
 uv run python scripts/inventory.py   # data-sources sizes + SHA-256
 uv run roshni snapshot [--store DIR] [--only SOURCE]   # polite fetch; default store data/snapshots
+uv run roshni parse [--snapshots data/snapshots-branch]  # -> data/parsed/*.parquet + quarantine/
+uv run roshni validate                                   # Great Expectations on data/parsed
 docker compose build ; docker compose run --rm app <cmd>   # canonical pdftotext
 ```
 
@@ -44,6 +46,8 @@ src/roshni/{sources,fetch,parsers,resolve,live,fairness,narrate,export}/
 src/roshni/cli.py      typer CLI; orchestrators only call these commands
 src/roshni/paths.py    REPO_ROOT, DATA_DIR, DATA_SOURCES_DIR (env ROSHNI_ROOT)
 src/roshni/fetch/      http.py (PoliteClient), discover.py, store.py, snapshot.py
+src/roshni/parsers/    pdftext.py (poppler only), one module per source, run.py
+src/roshni/quality/    suites.py (GE suites per parsed table)
 branch data-snapshots  raw_snapshots.csv + files/ (written only by .github/workflows/snapshot.yml)
 config/                sources.yml, policy.yml
 dbt/                   models/staging, models/marts, seeds (Phase 3)
@@ -57,7 +61,7 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Python 3.12, uv, ruff (line 100), pytest. pathlib only; no hardcoded separators.
 - Tests next to code (`test_*.py`); mark full-file tests `@pytest.mark.needs_data_sources`.
 - Parsers return pydantic models → Parquet + quarantine file. Every source-derived table keeps `source_file`, `source_sha256`, `fetched_at`.
-- PDF text: `pdftotext -layout` (poppler in Docker) is canonical.
+- PDF text: `pdftotext -layout` (poppler in Docker) is canonical. Local Git-for-Windows pdftotext is xpdf: never use it.
 - Data quality: Great Expectations on parsed Parquet; dbt tests on models; don't duplicate.
 - dbt SQL stays portable (must also run on Databricks): avoid DuckDB-only syntax.
 - Every schedule row carries `effective_from`; every live output carries source, effective date, `last_updated`.
@@ -71,4 +75,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 ## Phase status
 - Phase 0 (repo, tooling, CI, docs): done 2026-10-06 (CI green, Docker image builds).
 - Phase 1 (snapshot job): done 2026-10-06 (run 1: new=73; run 2: unchanged=8 known=65). Snapshots on branch `data-snapshots`.
-- Next: Phase 2, parsers (read snapshots or `data-sources/`; Parquet + quarantine; golden tests; GE suites).
+- Phase 2 (parsers): built 2026-10-06; 20 golden tests pass; 10 GE suites pass; mismatches in docs/data-audit.md §8 await owner review.
+- Next: Phase 3, warehouse (DuckDB + dbt on data/parsed).
