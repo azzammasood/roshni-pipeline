@@ -1,0 +1,20 @@
+# Source registry. Phase 1 fills in discovery and fetch details.
+# Only these sources are allowed (see docs/data-audit.md). Never add lesco.gov.pk, pitc.com.pk or CCMS.
+user_agent: "roshni-pipeline/0.1 (+https://github.com/azzammasood/roshni-pipeline)"
+min_request_interval_seconds: 1.0
+
+sources:
+  iesco_schedule_xlsx:
+    listing_url: https://iesco.com.pk/load-shedding
+    kind: xlsx
+    circles: [islamabad, rawalpindi, attock, jhelum, chakwal, ajk]
+  iesco_press_release:
+    listing_url: https://iesco.com.pk/press-release
+    kind: pdf
+    language: english  # Urdu text layer is scrambled; ignored
+  kelectric_feeder_list:
+    url: https://ke.com.pk/wp-content/uploads/2026/07/Feeders-List.pdf
+    kind: pdf
+  kelectric_schedule:
+    listing_url: https://ke.com.pk/load-shed-schedule/
+    kind: pdf  # URL discovered in Phase 1
