@@ -1,0 +1,10 @@
+.git
+.venv
+data
+data-sources
+*.duckdb
+**/__pycache__
+.ruff_cache
+.pytest_cache
+.env
+roshni-claude-code-prompt.md

@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    image: roshni:dev
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      # Source files are mounted read-only; generated data is written to ./data.
+      - ./data-sources:/app/data-sources:ro
+      - ./data:/app/data
+      - ./config:/app/config:ro
+    environment:
+      ROSHNI_ROOT: /app
