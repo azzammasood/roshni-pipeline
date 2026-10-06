@@ -1,0 +1,35 @@
+# Hand-downloaded source files and generated data: never tracked
+data-sources/
+data/
+
+# Local brief (kept out of git)
+roshni-claude-code-prompt.md
+
+# Secrets
+.env
+
+# Python / tooling
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Warehouse / dbt
+*.duckdb
+*.duckdb.wal
+*.parquet
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+
+# Third-party documents and images
+*.pdf
+*.xlsx
+*.png
+*.jpg
