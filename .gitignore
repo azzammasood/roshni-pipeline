@@ -33,3 +33,4 @@ dbt/dbt_packages/
 *.xlsx
 *.png
 *.jpg
+dbt/.user.yml

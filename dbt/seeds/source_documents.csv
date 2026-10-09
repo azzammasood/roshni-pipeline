@@ -1,0 +1,9 @@
+source,source_file,source_sha256,effective_from,effective_basis,published_label
+iesco_schedule_xlsx,iesco-islamabad-sep26.xlsx,f03361962a600fe2b50ecb774d423b6e9135e550044a2cc2f68efe73bc36a13b,2026-01-14,HTTP Last-Modified (file states no date),Sep-2026
+iesco_schedule_xlsx,iesco-rawalpindi-sep26.xlsx,1f053d92b28f68e08e952eb068811d4af07b3d1cf9ee3d5613f1c9f9ae2af9c5,2026-01-14,HTTP Last-Modified (file states no date),Sep-2026
+iesco_schedule_xlsx,iesco-attock-sep26.xlsx,06abfb8bd325e6f4a826bb92ce24989d44363a93b2962662c5e2223488c553a4,2026-01-14,HTTP Last-Modified (file states no date),Sep-2026
+iesco_schedule_xlsx,iesco-jhelum-sep26.xlsx,0e4619a73324c7b545b6d3a38d1bf641249c121a9ba1a6b6b53938bd3f9887bb,2026-01-14,HTTP Last-Modified (file states no date),Sep-2026
+iesco_schedule_xlsx,iesco-chakwal-sep26.xlsx,bdec3947102255082fd363d3914274d6407b6c2ade240d2993f4205df792b321,2026-01-14,HTTP Last-Modified (file states no date),Sep-2026
+iesco_schedule_xlsx,iesco-ajk-sep26.xlsx,82bb6206dc3d4c57faa43da9efc28849e1cb59615029e5f1591858258fd54cbe,2026-01-14,HTTP Last-Modified (file states no date),Sep-2026
+kelectric_feeder_list,kelectric-feeder-list.pdf,a23cf501a14dbb2df618994d340aa4988bb797c5754517095cd234a35fe6e3b2,2026-07-06,HTTP Last-Modified (file states no date),
+kelectric_schedule,kelectric-load-shed-schedule.pdf,0dc6ea8cbbe9fb7e213d3d26bc262d80700644191943e97409294925b4068248,2026-08-05,Applies from 5 Aug 2026 (file name and HTTP Last-Modified); tentative per K-Electric disclaimer; may predate the 2026-09-11 directive,LSMnew-PDF-Aug-5th

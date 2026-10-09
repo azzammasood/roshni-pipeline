@@ -1,0 +1,189 @@
+version: 2
+models:
+- name: dim_feeder
+  description: 'One row per feeder for IESCO (key: circle + 6-digit code) and K-Electric (key: normalised
+    name). K-Electric keeps both taxonomies: IBC area (from the list) and grid (from the schedule). Quarantined
+    IESCO rows are in quarantine_feeder. No coordinates exist in any source; geography is area-level.
+
+    '
+  columns:
+  - name: feeder_id
+    data_tests:
+    - unique
+    - not_null
+  - name: source
+    data_tests:
+    - not_null
+    - accepted_values:
+        arguments:
+          values:
+          - iesco
+          - kelectric
+  - name: feeder_name
+    data_tests:
+    - not_null
+  - name: category
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - Medium
+          - High
+          - Very High
+  - name: schedule_match_confidence
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 1
+- name: fct_schedule_window
+  description: 'Recurring daily windows from published schedules, never measured outages. Times are local
+    Asia/Karachi minutes of day; K-Electric cycles may wrap midnight. IESCO rows are a scenario playbook
+    (one set per interruption level). Every row carries effective_from from source_documents.
+
+    '
+  columns:
+  - name: window_id
+    data_tests:
+    - unique
+    - not_null
+  - name: feeder_id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_feeder')
+          field: feeder_id
+  - name: schedule_kind
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - daily_cycle
+          - scenario_level
+  - name: start_minute_local
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 1439
+  - name: end_minute_local
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 1440
+  - name: duration_minutes
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 1
+          max_value: 720
+  - name: effective_from
+    description: Effective date of the source document; null means an unreviewed new file.
+    data_tests:
+    - not_null
+- name: fct_planned_shutdown
+  description: 'Dated planned-shutdown windows from IESCO English press releases (announcements, not measurements).
+    Start and end stored in UTC and as printed local time.
+
+    '
+  columns:
+  - name: shutdown_id
+    data_tests:
+    - unique
+    - not_null
+  - name: outage_date
+    data_tests:
+    - not_null
+  - name: start_utc
+    data_tests:
+    - not_null
+  - name: end_utc
+    data_tests:
+    - not_null
+- name: dim_area_indicators
+  description: 'PBS Census 2023 indicators per urban or rural area: literacy, degree-and-above share,
+    pacca housing share, electricity access share, household size. Shares are descriptive; gas is excluded
+    as a wealth proxy. Rows with ambiguous keys are in quarantine_area.
+
+    '
+  columns:
+  - name: area_id
+    data_tests:
+    - unique
+    - not_null
+  - name: area_type
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - urban
+          - rural
+  - name: literacy_pct
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 100
+  - name: pacca_share_pct
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 100
+  - name: electricity_share_pct
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 100
+- name: mart_ke_feeder_hours
+  description: 'K-Electric listed feeders with scheduled hours per day (6 or 12) next to category, ATC
+    loss, IBC and grid. Basis for the descriptive fairness analysis; shares are among listed feeders.
+
+    '
+  columns:
+  - name: feeder_id
+    data_tests:
+    - unique
+    - not_null
+  - name: scheduled_hours_per_day
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - 6
+          - 12
+          quote: false
+  - name: cycles
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - 4
+          quote: false
+- name: quarantine_feeder
+  description: IESCO feeder rows held out of dim_feeder, each with a reason (anomalies flagged, not fixed).
+  columns:
+  - name: reason
+    data_tests:
+    - not_null
+    - accepted_values:
+        arguments:
+          values:
+          - non_numeric_code
+          - other_disco_feeder_sharing_code
+          - duplicate_code_in_circle
+- name: quarantine_schedule_window
+  description: IESCO scenario slots held out of fct_schedule_window, each with a reason.
+  columns:
+  - name: reason
+    data_tests:
+    - not_null
+- name: quarantine_area
+  description: Census area rows held out of dim_area_indicators because their key is ambiguous.
+  columns:
+  - name: reason
+    data_tests:
+    - not_null

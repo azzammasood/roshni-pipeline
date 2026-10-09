@@ -1,0 +1,89 @@
+version: 2
+models:
+- name: stg_iesco_feeder
+  description: IESCO feeders as parsed (one row per workbook row), codes normalised to 6 digits.
+  columns:
+  - name: circle
+    data_tests:
+    - not_null
+  - name: sheet_row
+    data_tests:
+    - not_null
+- name: stg_iesco_schedule_slot
+  description: IESCO scenario slots, one row per feeder x level x one-hour slot.
+  columns:
+  - name: level_hours
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - 2
+          - 4
+          - 6
+          - 8
+          - 10
+          - 12
+          quote: false
+- name: stg_iesco_press_release_window
+  description: IESCO press-release shutdown windows as parsed (names as printed).
+  columns:
+  - name: outage_date
+    data_tests:
+    - not_null
+- name: stg_ke_feeder_list
+  description: K-Electric listed feeders (category, ATC loss, IBC area).
+  columns:
+  - name: feeder_name_norm
+    data_tests:
+    - unique
+    - not_null
+  - name: category
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - Medium
+          - High
+          - Very High
+- name: stg_ke_schedule
+  description: K-Electric schedule rows, one per feeder, with total daily scheduled minutes.
+  columns:
+  - name: feeder_name_norm
+    data_tests:
+    - unique
+    - not_null
+  - name: total_minutes
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - 360
+          - 720
+          quote: false
+- name: stg_ke_schedule_cycle
+  description: K-Electric schedule cycles with start and end as local minutes of day.
+  columns:
+  - name: start_minute_local
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 1439
+  - name: end_minute_local
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 1440
+- name: stg_pbs_urban
+  description: 'PBS urban tables 33 and 34 joined on (province, hierarchical key) where the key is unique
+    on both sides; ambiguous keys keep population only and are flagged.
+
+    '
+- name: stg_pbs_rural
+  description: PBS rural tables 31 and 32 joined on the hierarchical key.
+  columns:
+  - name: area_key
+    data_tests:
+    - unique
+    - not_null

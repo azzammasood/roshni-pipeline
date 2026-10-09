@@ -1,0 +1,26 @@
+name: roshni
+version: "0.1.0"
+config-version: 2
+profile: roshni
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+# Portability: models must also build on Databricks (Phase 3b). Use ANSI-ish SQL only:
+# no DuckDB-only functions, no read_parquet in models (sources carry the file location).
+models:
+  roshni:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+
+seeds:
+  roshni:
+    +quote_columns: false

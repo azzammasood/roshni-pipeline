@@ -1,0 +1,23 @@
+version: 2
+models:
+- name: int_ke_feeder_join
+  description: 'Accepted matches between K-Electric listed feeders and schedule rows, with method (exact
+    or truncated_name) and confidence. Each listed and each schedule name appears at most once.
+
+    '
+  columns:
+  - name: list_name_norm
+    data_tests:
+    - unique
+    - not_null
+  - name: schedule_name_norm
+    data_tests:
+    - unique
+    - not_null
+  - name: match_method
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - exact
+          - truncated_name

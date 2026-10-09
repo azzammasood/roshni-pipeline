@@ -106,3 +106,30 @@ def validate(
         typer.echo(f"{status} {r.table:30} expectations={r.evaluated} {' '.join(r.failed)}")
     if not results or not all(r.success for r in results):
         raise typer.Exit(1)
+
+
+@app.command()
+def build(
+    parsed: Path = typer.Option(None, help="Parsed Parquet folder (default: data/parsed)."),
+    db: Path = typer.Option(None, help="DuckDB file (default: data/roshni.duckdb)."),
+    command: str = typer.Option("build", help="dbt command: build, run, test, parse, seed."),
+    select: str = typer.Option(None, help="dbt --select expression."),
+) -> None:
+    """Build the DuckDB warehouse with dbt (seeds, models, tests)."""
+    import os
+
+    from dbt.cli.main import dbtRunner
+
+    from roshni.paths import DATA_DIR, REPO_ROOT
+
+    project = REPO_ROOT / "dbt"
+    os.environ["ROSHNI_PARSED_DIR"] = (parsed or DATA_DIR / "parsed").resolve().as_posix()
+    db_path = (db or DATA_DIR / "roshni.duckdb").resolve()
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    os.environ["ROSHNI_DUCKDB_PATH"] = db_path.as_posix()
+    args = [command, "--project-dir", str(project), "--profiles-dir", str(project)]
+    if select:
+        args += ["--select", select]
+    result = dbtRunner().invoke(args)
+    if not result.success:
+        raise typer.Exit(1)

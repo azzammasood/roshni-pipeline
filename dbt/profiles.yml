@@ -1,0 +1,8 @@
+# Profile for local DuckDB. `roshni build` sets both env vars to absolute paths.
+roshni:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('ROSHNI_DUCKDB_PATH', '../data/roshni.duckdb') }}"
+      threads: 4

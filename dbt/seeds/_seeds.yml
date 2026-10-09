@@ -1,0 +1,19 @@
+version: 2
+seeds:
+- name: source_documents
+  description: 'One row per known source document version (by SHA-256) with its effective date and the
+    basis for that date. A new file version without a row here fails the effective_from tests, which is
+    the signal to review a republished schedule.
+
+    '
+  config:
+    column_types:
+      effective_from: date
+  columns:
+  - name: source_sha256
+    data_tests:
+    - unique
+    - not_null
+  - name: effective_from
+    data_tests:
+    - not_null

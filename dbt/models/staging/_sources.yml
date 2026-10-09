@@ -1,0 +1,31 @@
+version: 2
+
+sources:
+  - name: parsed
+    description: >
+      Typed Parquet tables written by `roshni parse` (validated by Great Expectations). On DuckDB
+      each table is read from its file via external_location; on Databricks they are uploaded
+      tables with the same names, so model SQL never references files.
+    config:
+      external_location: "{{ env_var('ROSHNI_PARSED_DIR', '../data/parsed') }}/{name}.parquet"
+    tables:
+      - name: iesco_feeder
+        description: One row per feeder row in the six IESCO circle workbooks.
+      - name: iesco_schedule_slot
+        description: One row per IESCO feeder x scenario level x one-hour slot.
+      - name: iesco_press_release_window
+        description: One row per feeder named in an IESCO planned-shutdown press release.
+      - name: kelectric_feeder_list
+        description: K-Electric list of feeders under load shed (category, loss, IBC).
+      - name: kelectric_schedule
+        description: K-Electric schedule, one row per feeder (grid, total daily minutes).
+      - name: kelectric_schedule_cycle
+        description: K-Electric schedule, one row per feeder x cycle (four per feeder).
+      - name: pbs_urban_population
+        description: PBS Census 2023 table 33, urban localities, population.
+      - name: pbs_urban_housing
+        description: PBS Census 2023 table 34, urban localities, housing.
+      - name: pbs_rural_population
+        description: PBS Census 2023 table 31, rural localities, population.
+      - name: pbs_rural_housing
+        description: PBS Census 2023 table 32, rural localities, housing.
