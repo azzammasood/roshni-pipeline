@@ -1,7 +1,8 @@
 """Shared parser types: provenance, quarantine, Parquet output."""
 
+import typing
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 import pyarrow as pa
@@ -51,14 +52,28 @@ class ParseResult[T: BaseModel]:
         self.quarantine.extend(other.quarantine)
 
 
+_ARROW = {
+    str: pa.string(),
+    int: pa.int64(),
+    float: pa.float64(),
+    bool: pa.bool_(),
+    datetime: pa.timestamp("us", tz="UTC"),
+    date: pa.date32(),
+}
+
+
+def arrow_schema(model_cls: type[BaseModel]) -> pa.Schema:
+    """Arrow schema from model annotations, so all-null columns keep their declared type."""
+    fields = []
+    for name, info in model_cls.model_fields.items():
+        args = [a for a in typing.get_args(info.annotation) if a is not type(None)]
+        base = args[0] if args else info.annotation
+        fields.append(pa.field(name, _ARROW[base]))
+    return pa.schema(fields)
+
+
 def _to_table(models: list[BaseModel], model_cls: type[BaseModel]) -> pa.Table:
-    if models:
-        return pa.Table.from_pylist([m.model_dump() for m in models])
-    return pa.Table.from_pylist([], schema=_empty_schema(model_cls))
-
-
-def _empty_schema(model_cls: type[BaseModel]) -> pa.Schema:
-    return pa.schema([(name, pa.string()) for name in model_cls.model_fields])
+    return pa.Table.from_pylist([m.model_dump() for m in models], schema=arrow_schema(model_cls))
 
 
 def write_result(result: ParseResult, row_cls: type[BaseModel], out_dir: Path) -> dict[str, Path]:
