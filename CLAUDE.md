@@ -75,5 +75,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 ## Phase status
 - Phase 0 (repo, tooling, CI, docs): done 2026-10-06 (CI green, Docker image builds).
 - Phase 1 (snapshot job): done 2026-10-06 (run 1: new=73; run 2: unchanged=8 known=65). Snapshots on branch `data-snapshots`.
-- Phase 2 (parsers): built 2026-10-06; 20 golden tests pass; 10 GE suites pass; mismatches in docs/data-audit.md §8 await owner review.
+- Phase 2 (parsers): done 2026-10-09; 20 golden tests, 10 GE suites pass; audit mismatches explained and approved (data-audit.md §8).
 - Next: Phase 3, warehouse (DuckDB + dbt on data/parsed).

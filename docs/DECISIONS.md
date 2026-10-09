@@ -2,6 +2,10 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-09 (Phase 2 review)
+- **Rural localities: keep the 3 mauzas printed without a hadbast number** (2,581 localities in the five IESCO districts, 2,360 with ≥20 housing units; audit said 2,578 / 2,357). Owner approved.
+- **Rural `-` cells stay 0** (census convention), not missing. Indicator minimums are therefore 0 and 27 localities fall under 70 % electricity (audit: 24 with `-` as missing). Owner approved.
+
 ## 2026-10-06 (Phase 2)
 - **PDF text only from poppler.** Git for Windows ships xpdf `pdftotext` 4.00, whose layout differs; `parsers/pdftext.py` rejects non-poppler binaries and falls back to `docker run roshni:dev pdftotext`. Text is cached by SHA-256 in `data/cache/pdftext/`.
 - **Outputs:** `data/parsed/<table>.parquet` + `data/parsed/quarantine/<table>.parquet` (source_file, source_sha256, location, raw, reason). Tables: iesco_feeder, iesco_schedule_slot, iesco_press_release_window, kelectric_feeder_list, kelectric_schedule, kelectric_schedule_cycle, pbs_urban_population, pbs_urban_housing, pbs_rural_population, pbs_rural_housing.

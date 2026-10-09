@@ -93,8 +93,8 @@ Golden tests: `tests/test_golden.py` (need `data-sources/`; skipped in CI). Popp
 - *53 grids*: the schedule has 54; `DEFENCE` holds only `ARMY HOUSE`, which is not in the list → 53 among listed feeders.
 - *Medium = 6 h for 125*: 124 on exact names + the truncated NAVY feeder (Medium, 6 h) once resolved.
 - *Glued rows* (`...2205IQBAL CENTER`): not produced by poppler 25.03; the parser still splits them if they appear.
-- *Rural localities 2,581 vs 2,578* (Chakwal 420 vs 419, Rawalpindi 1,072 vs 1,070): the parser also keeps mauzas printed without a hadbast number (e.g. KALIYAL/KOTLA, LOTERI (REHMAN ABAD)); they look genuine. Hence ≥20 housing units = 2,360 vs 2,357. **Owner to confirm.**
-- *Rural `-` cells*: stored as 0 (census convention). The audit treated `-` as missing, which is why its minimums were electricity 1 %, pacca 2 %, degree 0.2 % and "24 localities under 70 % electricity" (27 with `-` = 0; 3 localities print `-` for electricity).
+- *Rural localities 2,581 vs 2,578* (Chakwal 420 vs 419, Rawalpindi 1,072 vs 1,070): the parser also keeps mauzas printed without a hadbast number (e.g. KALIYAL/KOTLA, LOTERI (REHMAN ABAD)); they look genuine. Hence ≥20 housing units = 2,360 vs 2,357. **Owner approved 2026-10-09: keep them.**
+- *Rural `-` cells*: stored as 0 (census convention). The audit treated `-` as missing, which is why its minimums were electricity 1 %, pacca 2 %, degree 0.2 % and "24 localities under 70 % electricity" (27 with `-` = 0; 3 localities print `-` for electricity). **Owner approved 2026-10-09: keep `-` = 0.**
 - *IESCO 10-hour level*: the share off per hour is exactly ~25 % or ~50 % in every circle (11 cohort patterns) while every other level is flat (±1 pt). 10 does not divide 24, so a cohort rotation cannot be uniform: **design, not a data error**.
 
 **Additional facts:**
