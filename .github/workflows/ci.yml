@@ -22,3 +22,5 @@ jobs:
       - run: uv run ruff format --check .
       # data-sources/ is not in git: tests marked needs_data_sources skip here.
       - run: uv run pytest
+      # No parsed data in CI: parse the dbt project to catch SQL/YAML errors without building.
+      - run: uv run roshni build --command parse
