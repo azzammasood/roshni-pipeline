@@ -2,6 +2,17 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-09 (Phase 3)
+- **dbt-duckdb 1.11 / dbt-core 1.12**, project in `dbt/`, profile in `dbt/profiles.yml` (paths from env, set by `roshni build`). Sources point at `data/parsed/*.parquet` via `external_location`, so model SQL never references files (portable to Databricks, where sources are uploaded tables).
+- **Portable SQL only:** `||`, `like`, window functions, `cast(... as string|integer|double)`; no DuckDB-only functions in models.
+- **Layers:** staging views → `int_ke_feeder_join` → tables `dim_feeder`, `fct_schedule_window`, `fct_planned_shutdown`, `dim_area_indicators`, `mart_ke_feeder_hours`, plus `quarantine_feeder`, `quarantine_schedule_window`, `quarantine_area`.
+- **IESCO quarantine rules:** non-numeric code; a `(FESCO)` feeder that reuses an IESCO code; any other duplicate circle + code (both rows). Slots of a feeder-level whose count ≠ N are quarantined (Kohala L10).
+- **K-Electric truncated-name rule:** a schedule name ≥ 20 chars that is a unique prefix of a unique unmatched listed name → `truncated_name`, confidence 0.95 (only the NAVY feeder). All other K-Electric joins are exact (1.0).
+- **`effective_from` from seed `source_documents.csv` keyed by SHA-256.** A new file version has no seed row → `fct_schedule_window.effective_from` not_null test fails → owner reviews before it flows. IESCO: HTTP Last-Modified 2026-01-14 (file states no date); K-Electric schedule: 2026-08-05.
+- **Recurring vs dated:** recurring schedules in `fct_schedule_window` (local minutes of day; K-E wraps flagged); dated press-release windows in `fct_planned_shutdown` (UTC + printed local time). Press-release feeder matching is Phase 4.
+- **Census:** urban 33↔34 and rural 31↔32 joined on (province,) hierarchical key; housing joined only where the key is unique; shares computed only for positive denominators; gas excluded.
+- **CI runs `dbt parse`** (no data there); `tests/test_warehouse.py` builds into a temp DuckDB locally.
+
 ## 2026-10-09 (Phase 2 review)
 - **Rural localities: keep the 3 mauzas printed without a hadbast number** (2,581 localities in the five IESCO districts, 2,360 with ≥20 housing units; audit said 2,578 / 2,357). Owner approved.
 - **Rural `-` cells stay 0** (census convention), not missing. Indicator minimums are therefore 0 and 27 localities fall under 70 % electricity (audit: 24 with `-` as missing). Owner approved.

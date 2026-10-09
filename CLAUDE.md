@@ -37,6 +37,7 @@ uv run python scripts/inventory.py   # data-sources sizes + SHA-256
 uv run roshni snapshot [--store DIR] [--only SOURCE]   # polite fetch; default store data/snapshots
 uv run roshni parse [--snapshots data/snapshots-branch]  # -> data/parsed/*.parquet + quarantine/
 uv run roshni validate                                   # Great Expectations on data/parsed
+uv run roshni build [--command build|parse|test] [--select X]  # dbt -> data/roshni.duckdb
 docker compose build ; docker compose run --rm app <cmd>   # canonical pdftotext
 ```
 
@@ -50,7 +51,7 @@ src/roshni/parsers/    pdftext.py (poppler only), one module per source, run.py
 src/roshni/quality/    suites.py (GE suites per parsed table)
 branch data-snapshots  raw_snapshots.csv + files/ (written only by .github/workflows/snapshot.yml)
 config/                sources.yml, policy.yml
-dbt/                   models/staging, models/marts, seeds (Phase 3)
+dbt/                   staging views, int_ke_feeder_join, marts + quarantine_* tables, seeds/source_documents.csv
 tests/                 cross-cutting tests, fixtures/
 scripts/  docs/  .github/workflows/
 data/                  generated, git-ignored
@@ -76,4 +77,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 0 (repo, tooling, CI, docs): done 2026-10-06 (CI green, Docker image builds).
 - Phase 1 (snapshot job): done 2026-10-06 (run 1: new=73; run 2: unchanged=8 known=65). Snapshots on branch `data-snapshots`.
 - Phase 2 (parsers): done 2026-10-09; 20 golden tests, 10 GE suites pass; audit mismatches explained and approved (data-audit.md §8).
-- Next: Phase 3, warehouse (DuckDB + dbt on data/parsed).
+- Phase 3 (warehouse): built 2026-10-09; dbt build PASS=78; warehouse golden tests pass.
+- Next: Phase 3b Databricks smoke run (needs owner's Free Edition account), else Phase 4 entity resolution.
