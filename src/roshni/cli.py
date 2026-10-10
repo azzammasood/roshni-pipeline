@@ -165,3 +165,48 @@ def resolve(
         top = Counter(r["status"] for r in rows if r["rank"] in (0, 1))
         typer.echo(f"{name:28} subjects={sum(top.values()):4} {dict(top)} {stats}")
     con.close()
+
+
+@app.command("dark-now")
+def dark_now_cmd(
+    at: str = typer.Option(
+        None, help="Time, e.g. '2026-10-10 23:30' (Asia/Karachi unless an offset is given)."
+    ),
+    level: int = typer.Option(None, help="IESCO scenario: show 'if level N is active' (2-12)."),
+    limit: int = typer.Option(20, help="Rows to print (0 = all)."),
+    as_json: bool = typer.Option(False, "--json", help="Print JSON instead of a table."),
+    db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
+) -> None:
+    """Feeders SCHEDULED to be dark at a time (schedule data, not measured outages)."""
+    import json
+    from datetime import datetime
+
+    import duckdb
+
+    from roshni.live.dark_now import LABEL, dark_now
+    from roshni.paths import DATA_DIR
+
+    when = datetime.fromisoformat(at) if at else datetime.now().astimezone()
+    con = duckdb.connect(str(db or DATA_DIR / "roshni.duckdb"), read_only=True)
+    try:
+        result = dark_now(con, when, level)
+    except ValueError as e:
+        raise typer.BadParameter(str(e)) from e
+    finally:
+        con.close()
+    if as_json:
+        typer.echo(json.dumps(result.to_dict(), default=str, indent=2))
+        return
+    typer.echo(f"{LABEL}\nAt {result.at_local:%Y-%m-%d %H:%M} Asia/Karachi")
+    for kind, n in sorted(result.counts().items()):
+        typer.echo(f"  {kind:22} {n:5} feeders")
+    for note in result.notes:
+        typer.echo(f"  note: {note}")
+    shown = result.rows if limit == 0 else result.rows[:limit]
+    for r in shown:
+        typer.echo(
+            f"  {r.kind:20} {r.source:9} {(r.area or '')[:22]:22} {r.feeder_name[:34]:34} "
+            f"{r.window_local:11} eff {r.effective_from}"
+        )
+    if len(shown) < len(result.rows):
+        typer.echo(f"  ... {len(result.rows) - len(shown)} more (use --limit 0 or --json)")
