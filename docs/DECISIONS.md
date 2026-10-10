@@ -2,6 +2,12 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-10 (Phase 5)
+- **`roshni.live.dark_now`** answers "who is scheduled dark at time T" from the warehouse: K-Electric daily cycles, IESCO scenario slots **only when a level is passed** (`--level N`, the files never say which level is active), and planned shutdowns from press releases. Every row says it is schedule data, with source, effective_from and last_updated (source fetch time, else the warehouse build time from `mart_build_info`).
+- **Window semantics:** [start, end) in local Asia/Karachi minutes; end ≤ start wraps midnight (22:35~02:05 is dark at 22:35 and 02:04, not 02:05); IESCO 23--24 ends at 1440. Naive input times are Asia/Karachi; planned shutdowns compare in UTC.
+- **Schedules are not applied before their `effective_from`**; the output notes it.
+- **`mart_feeder_dark_hours`**: dark minutes per feeder × local hour (wrapped windows split in two; portable `greatest/least` overlap, `hours_of_day` seed as numbers table). Basis for the static export (Phase 7): the site can compute "dark now" client-side from hourly profiles plus dated shutdowns.
+
 ## 2026-10-10 (Phase 4 review)
 - **Owner delegated the match review to Claude** (no human review). Every decision in `dbt/seeds/review_*.csv` carries a note `claude-review 2026-10-10: <reason>`; the owner can overturn any row by editing `decision`.
 - **Rules used:** accept spelling variants with the same consonant skeleton (vowels, H and doubled letters ignored); accept explicit typos/abbreviations (PSR = Peshawar, COL = "Karnel", roman numerals = digits, CLY = colony) and parentheticals that name the place ("F-10 (Kala Base)", "MAIN BAZAR (SOHAWA)" → SOHAWA MC); accept "<town> CITY n" → the town's urban body. Reject when a subject already has an exact match, when names differ in substance (MURREE BREWERY ≠ Murree town, JHANDALA ≠ JHANDA, MANGTAL-type cases), or when same-named candidates cannot be told apart. No geography from memory.
