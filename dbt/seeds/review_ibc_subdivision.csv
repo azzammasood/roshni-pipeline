@@ -1,36 +1,36 @@
 subject_id,subject_name,subject_group,candidate_id,candidate_name,rank,score,method,status,decision,note
-IBC - Bahadurabad,Bahadurabad,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Baldia,Baldia,kelectric_ibc,pbs_urban:sindh:KEAMARI DISTRICT|BALDIA SUB-DIVISION|||,BALDIA SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Bin Qasim,Bin Qasim,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Clifton,Clifton,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Defence,Defence,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - F.B. Area,F.B. Area,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Gadap,Gadap,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Garden,Garden,kelectric_ibc,pbs_urban:sindh:KARACHI SOUTH DISTRICT|GARDEN SUB-DIVISION|||,GARDEN SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Gulshan,Gulshan,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Johar - I,Johar - I,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Johar - II,Johar - II,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - KIMZ,KIMZ,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Korangi,Korangi,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|KORANGI SUB-DIVISION|||,KORANGI SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Korangi,Korangi,kelectric_ibc,pbs_urban:sindh:KARACHI WEST DISTRICT|ORANGI SUB-DIVISION|||,ORANGI SUB-DIVISION,2,92.3,fuzzy,suggested,,
-IBC - Landhi,Landhi,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|LANDHI SUB-DIVISION|||,LANDHI SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Layari - I,Layari - I,kelectric_ibc,pbs_urban:sindh:KARACHI SOUTH DISTRICT|LYARI SUB-DIVISION|||,LYARI SUB-DIVISION,1,90.9,fuzzy,suggested,,
-IBC - Layari - II,Layari - II,kelectric_ibc,pbs_urban:sindh:KARACHI SOUTH DISTRICT|LYARI SUB-DIVISION|||,LYARI SUB-DIVISION,1,90.9,fuzzy,suggested,,
-IBC - Liaqatabad,Liaqatabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|LIAQUATABAD SUB-DIVISION|||,LIAQUATABAD SUB-DIVISION,1,95.2,fuzzy,suggested,,
-IBC - Malir,Malir,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Nazimabad,Nazimabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NAZIMABAD SUB-DIVISION|||,NAZIMABAD SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Nazimabad,Nazimabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NORTH NAZIMABAD SUB-DIVISION|||,NORTH NAZIMABAD SUB-DIVISION,2,75.0,fuzzy,suggested,,
-IBC - New Karachi,New Karachi,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NEW KARACHI SUB-DIVISION|||,NEW KARACHI SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - North Karachi,North Karachi,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NEW KARACHI SUB-DIVISION|||,NEW KARACHI SUB-DIVISION,1,75.0,fuzzy,suggested,,
-IBC - North Nazimabad,North Nazimabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NORTH NAZIMABAD SUB-DIVISION|||,NORTH NAZIMABAD SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - North Nazimabad,North Nazimabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NAZIMABAD SUB-DIVISION|||,NAZIMABAD SUB-DIVISION,2,75.0,fuzzy,suggested,,
-IBC - Orangi - I,Orangi - I,kelectric_ibc,pbs_urban:sindh:KARACHI WEST DISTRICT|ORANGI SUB-DIVISION|||,ORANGI SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Orangi - I,Orangi - I,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|KORANGI SUB-DIVISION|||,KORANGI SUB-DIVISION,2,92.3,fuzzy,suggested,,
-IBC - Orangi - II,Orangi - II,kelectric_ibc,pbs_urban:sindh:KARACHI WEST DISTRICT|ORANGI SUB-DIVISION|||,ORANGI SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Orangi - II,Orangi - II,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|KORANGI SUB-DIVISION|||,KORANGI SUB-DIVISION,2,92.3,fuzzy,suggested,,
-IBC - SITE,SITE,kelectric_ibc,pbs_urban:sindh:KEAMARI DISTRICT|SITE SUB-DIVISION|||,SITE SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Saddar,Saddar,kelectric_ibc,pbs_urban:sindh:KARACHI SOUTH DISTRICT|SADDAR SUB-DIVISION|||,SADDAR SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Shah Faisal,Shah Faisal,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|SHAH FAISAL SUB-DIVISION|||,SHAH FAISAL SUB-DIVISION,1,100.0,exact,suggested,,
-IBC - Surjani,Surjani,kelectric_ibc,,,0,0,,no_candidate,,
-IBC - Tipu Sultan,Tipu Sultan,kelectric_ibc,,,0,0,,no_candidate,,
+IBC - Bahadurabad,Bahadurabad,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Baldia,Baldia,kelectric_ibc,pbs_urban:sindh:KEAMARI DISTRICT|BALDIA SUB-DIVISION|||,BALDIA SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Bin Qasim,Bin Qasim,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Clifton,Clifton,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Defence,Defence,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - F.B. Area,F.B. Area,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Gadap,Gadap,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Garden,Garden,kelectric_ibc,pbs_urban:sindh:KARACHI SOUTH DISTRICT|GARDEN SUB-DIVISION|||,GARDEN SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Gulshan,Gulshan,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Johar - I,Johar - I,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Johar - II,Johar - II,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - KIMZ,KIMZ,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Korangi,Korangi,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|KORANGI SUB-DIVISION|||,KORANGI SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Korangi,Korangi,kelectric_ibc,pbs_urban:sindh:KARACHI WEST DISTRICT|ORANGI SUB-DIVISION|||,ORANGI SUB-DIVISION,2,92.3,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+IBC - Landhi,Landhi,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|LANDHI SUB-DIVISION|||,LANDHI SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Layari - I,Layari - I,kelectric_ibc,pbs_urban:sindh:KARACHI SOUTH DISTRICT|LYARI SUB-DIVISION|||,LYARI SUB-DIVISION,1,90.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Layari - II,Layari - II,kelectric_ibc,pbs_urban:sindh:KARACHI SOUTH DISTRICT|LYARI SUB-DIVISION|||,LYARI SUB-DIVISION,1,90.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Liaqatabad,Liaqatabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|LIAQUATABAD SUB-DIVISION|||,LIAQUATABAD SUB-DIVISION,1,95.2,fuzzy,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Malir,Malir,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Nazimabad,Nazimabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NAZIMABAD SUB-DIVISION|||,NAZIMABAD SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Nazimabad,Nazimabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NORTH NAZIMABAD SUB-DIVISION|||,NORTH NAZIMABAD SUB-DIVISION,2,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+IBC - New Karachi,New Karachi,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NEW KARACHI SUB-DIVISION|||,NEW KARACHI SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - North Karachi,North Karachi,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NEW KARACHI SUB-DIVISION|||,NEW KARACHI SUB-DIVISION,1,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+IBC - North Nazimabad,North Nazimabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NORTH NAZIMABAD SUB-DIVISION|||,NORTH NAZIMABAD SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - North Nazimabad,North Nazimabad,kelectric_ibc,pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NAZIMABAD SUB-DIVISION|||,NAZIMABAD SUB-DIVISION,2,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+IBC - Orangi - I,Orangi - I,kelectric_ibc,pbs_urban:sindh:KARACHI WEST DISTRICT|ORANGI SUB-DIVISION|||,ORANGI SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Orangi - I,Orangi - I,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|KORANGI SUB-DIVISION|||,KORANGI SUB-DIVISION,2,92.3,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+IBC - Orangi - II,Orangi - II,kelectric_ibc,pbs_urban:sindh:KARACHI WEST DISTRICT|ORANGI SUB-DIVISION|||,ORANGI SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Orangi - II,Orangi - II,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|KORANGI SUB-DIVISION|||,KORANGI SUB-DIVISION,2,92.3,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+IBC - SITE,SITE,kelectric_ibc,pbs_urban:sindh:KEAMARI DISTRICT|SITE SUB-DIVISION|||,SITE SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Saddar,Saddar,kelectric_ibc,pbs_urban:sindh:KARACHI SOUTH DISTRICT|SADDAR SUB-DIVISION|||,SADDAR SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Shah Faisal,Shah Faisal,kelectric_ibc,pbs_urban:sindh:KORANGI DISTRICT|SHAH FAISAL SUB-DIVISION|||,SHAH FAISAL SUB-DIVISION,1,100.0,exact,suggested,accepted,claude-review 2026-10-10: same name; IBC and sub-division extents not verified
+IBC - Surjani,Surjani,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+IBC - Tipu Sultan,Tipu Sultan,kelectric_ibc,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 IBC - Uthal,Uthal,kelectric_ibc,,,0,0,,out_of_scope,,"Hub/Uthal, Balochistan: not covered by Sindh tables"
