@@ -22,7 +22,9 @@ def wh(tmp_path_factory):
     result = CliRunner().invoke(app, ["build", "--parsed", str(PARSED), "--db", str(db)])
     assert result.exit_code == 0, result.output
     con = duckdb.connect(str(db))  # same config as dbt's in-process connection
-    yield lambda sql: con.sql(sql).fetchall()
+    query = lambda sql: con.sql(sql).fetchall()  # noqa: E731
+    query.con = con
+    yield query
     con.close()
 
 
@@ -96,3 +98,19 @@ def test_press_release_03_matching(wh) -> None:
     assert {n for n, st in rows.items() if st == "unmatched"} == {
         "Qadeer Road", "KRL", "Filtration Plant", "CDA Pump",
     }  # fmt: skip
+
+
+def test_dark_now_on_real_schedules(wh) -> None:
+    from datetime import datetime
+
+    from roshni.live.dark_now import dark_now
+
+    # Release No. 03 windows (07:00/08:00 to 12:00/14:00 on Oct 5) are all active at 09:00.
+    r = dark_now(wh.con, datetime(2026, 10, 5, 9, 0))
+    assert r.counts()["planned_shutdown"] == 15
+    # Level 12 darkens half the day for every IESCO feeder: two cohorts, about half at any hour.
+    r = dark_now(wh.con, datetime(2026, 10, 5, 23, 30), iesco_level=12)
+    assert r.counts()["scenario_level_12"] == 545
+    # K-Electric cycles wrapping midnight are dark just after midnight.
+    r = dark_now(wh.con, datetime(2026, 10, 6, 0, 30))
+    assert any(x.window_local.startswith("23:05") for x in r.rows if x.kind == "daily_cycle")
