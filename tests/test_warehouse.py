@@ -76,3 +76,28 @@ def test_area_indicators(wh) -> None:
     assert wh(
         "select count(*) from dim_area_indicators where area_type = 'urban' and area_level = 'circle'"
     ) == [(75 + 4268 + 3690,)]
+
+
+def test_press_release_03_matching(wh) -> None:
+    # Audit 7.2: of the 15 Oct 5 names, 8 match confidently, 3 plausibly, 4 not at all.
+    rows = dict(
+        wh(
+            "select s.feeder_name_as_printed, s.feeder_match_state from fct_planned_shutdown_feeder s "
+            "where s.release_no = '03' and s.outage_date = date '2026-10-05'"
+        )
+    )
+    matched = {n for n, st in rows.items() if st == "matched"}
+    assert matched == {
+        "Islamabad Club-1", "Islamabad Club-2", "Mehfooz Shaheed / Shahzad Town", "Orchard Scheme",
+        "Pindorian", "Scheme-2", "Askari-XI",
+    }  # fmt: skip
+    # Millatabad (confident) and the 3 plausible ones wait for owner review; Qadeer Road has a
+    # wrong low-score suggestion (HAIDER ROAD) to reject.
+    assert {n for n, st in rows.items() if st == "pending_review"} == {
+        "Millatabad", "Dhoke Chaudhrian", "Coblane", "Peshawar Road", "Qadeer Road",
+    }  # fmt: skip
+    assert {n for n, st in rows.items() if st == "unmatched"} == {
+        "KRL",
+        "Filtration Plant",
+        "CDA Pump",
+    }
