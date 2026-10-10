@@ -187,3 +187,81 @@ models:
   - name: reason
     data_tests:
     - not_null
+- name: feeder_locality_match
+  description: IESCO feeder to census locality matches that count (auto_exact or owner-accepted), with
+    method and confidence. Name-based only; no coordinates exist.
+  columns:
+  - name: feeder_id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_feeder')
+          field: feeder_id
+  - name: area_id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_area_indicators')
+          field: area_id
+  - name: match_confidence
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 1
+- name: fct_planned_shutdown_feeder
+  description: fct_planned_shutdown plus the matched IESCO feeder (if any), match status and confidence,
+    and why unmatched rows are unmatched.
+  columns:
+  - name: shutdown_id
+    data_tests:
+    - unique
+    - not_null
+  - name: feeder_id
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_feeder')
+          field: feeder_id
+  - name: feeder_match_state
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - matched
+          - pending_review
+          - unmatched
+          - out_of_scope
+- name: ke_ibc_subdivision
+  description: Owner-accepted K-Electric IBC to Karachi sub-division crosswalk; IBCs outside Sindh census
+    coverage are listed as out_of_scope.
+  columns:
+  - name: ibc
+    data_tests:
+    - not_null
+  - name: subdivision_area_id
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_area_indicators')
+          field: area_id
+- name: dim_area
+  description: 'All areas: census areas, K-Electric IBC areas and IESCO circles. geometry_wkt stays null
+    until an approved boundary source exists.'
+  columns:
+  - name: area_id
+    data_tests:
+    - unique
+    - not_null
+  - name: source
+    data_tests:
+    - not_null
+- name: rpt_match_rates
+  description: 'Match rates per resolution task and group: matched, pending review, unmatched, out of
+    scope, and matched share in scope.'
+  columns:
+  - name: task
+    data_tests:
+    - not_null

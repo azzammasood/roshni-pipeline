@@ -17,3 +17,80 @@ seeds:
   - name: effective_from
     data_tests:
     - not_null
+- name: review_feeder_locality
+  description: Owner review of IESCO feeder -> census locality candidates (roshni resolve). Fill decision
+    with accepted or rejected; only auto_exact (identical name, unique in district) counts without review.
+  config:
+    column_types: &id001
+      subject_id: string
+      subject_name: string
+      subject_group: string
+      candidate_id: string
+      candidate_name: string
+      rank: integer
+      score: double
+      method: string
+      status: string
+      decision: string
+      note: string
+  columns:
+  - name: status
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - auto_exact
+          - suggested
+          - no_candidate
+          - out_of_scope
+  - name: decision
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - accepted
+          - rejected
+- name: review_press_feeder
+  description: Owner review of press-release feeder names -> IESCO feeders (same rules). subject_id is
+    circle:name as printed.
+  config:
+    column_types: *id001
+  columns:
+  - name: status
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - auto_exact
+          - suggested
+          - no_candidate
+          - out_of_scope
+  - name: decision
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - accepted
+          - rejected
+- name: review_ibc_subdivision
+  description: DRAFT K-Electric IBC -> Karachi sub-division crosswalk by name only; nothing counts until
+    accepted. Add rows for IBCs without candidates (decision accepted).
+  config:
+    column_types: *id001
+  columns:
+  - name: status
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - auto_exact
+          - suggested
+          - no_candidate
+          - out_of_scope
+  - name: decision
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - accepted
+          - rejected

@@ -1,0 +1,763 @@
+subject_id,subject_name,subject_group,candidate_id,candidate_name,rank,score,method,status,decision,note
+Attock:08:00 AM to 12:00 PM,08:00 AM to 12:00 PM,Attock,,,0,0,,no_candidate,,
+Attock:6 am to 12 Noon,6 am to 12 Noon,Attock,,,0,0,,no_candidate,,
+Attock:AWT-1,AWT-1,Attock,iesco:attock:081009,AWT 4,1,80.0,fuzzy,suggested,,
+Attock:AWT-4,AWT-4,Attock,iesco:attock:081009,AWT 4,1,100.0,exact,auto_exact,,
+Attock:Attock Cantt,Attock Cantt,Attock,iesco:attock:018901,ATTOCK CANTT,1,100.0,exact,auto_exact,,
+Attock:Attock Rural,Attock Rural,Attock,iesco:attock:075101,ATTOCK RURAL,1,100.0,exact,auto_exact,,
+Attock:Attock cantt,Attock cantt,Attock,iesco:attock:018901,ATTOCK CANTT,1,100.0,exact,auto_exact,,
+Attock:Bagh Nelab,Bagh Nelab,Attock,iesco:attock:075114,BAGH NILAB,1,90.0,fuzzy,suggested,,
+Attock:Bahlot,Bahlot,Attock,iesco:attock:083303,BEHLOTE,1,76.9,fuzzy,suggested,,
+Attock:Bahtar More,Bahtar More,Attock,iesco:attock:112020,BAHTAR MOR,1,95.2,fuzzy,suggested,,
+Attock:CABINAT,CABINAT,Attock,iesco:attock:121813,CABINET DIVISION,1,85.7,fuzzy,suggested,,
+Attock:Cabinat,Cabinat,Attock,iesco:attock:121813,CABINET DIVISION,1,85.7,fuzzy,suggested,,
+Attock:Cabinet Division,Cabinet Division,Attock,iesco:attock:121813,CABINET DIVISION,1,100.0,exact,auto_exact,,
+Attock:Col Sher Khan,Col Sher Khan,Attock,iesco:attock:014621,COL SHER KHAN,1,100.0,exact,auto_exact,,
+Attock:Col. Sher Khan,Col. Sher Khan,Attock,iesco:attock:014621,COL SHER KHAN,1,100.0,exact,auto_exact,,
+Attock:Dar ul Islam Colony,Dar ul Islam Colony,Attock,iesco:attock:018909,DARUL ISLAM,1,73.3,fuzzy,suggested,,
+Attock:Dhoke Fateh,Dhoke Fateh,Attock,iesco:attock:018911,DHOK FATE KHAN,1,80.0,fuzzy,suggested,,
+Attock:Fawara Chowk,Fawara Chowk,Attock,iesco:attock:075103,FAWARA CHOWK,1,100.0,exact,auto_exact,,
+Attock:GBHP Colony-1,GBHP Colony-1,Attock,iesco:attock:018910,PM COLONY,1,72.7,fuzzy,suggested,,
+Attock:GBHP Colony-2,GBHP Colony-2,Attock,iesco:attock:018910,PM COLONY,1,72.7,fuzzy,suggested,,
+Attock:GBHP Power Channel,GBHP Power Channel,Attock,,,0,0,,no_candidate,,
+Attock:GBHP power Channel,GBHP power Channel,Attock,,,0,0,,no_candidate,,
+Attock:Gharhi Afghan,Gharhi Afghan,Attock,iesco:attock:014626,GHARI AFGHAN,1,96.0,fuzzy,suggested,,
+Attock:Gulsha e Sehat,Gulsha e Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,96.6,fuzzy,suggested,,
+Attock:Gulshan e Sehat,Gulshan e Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,100.0,exact,auto_exact,,
+Attock:Gulshan-e- Sehat,Gulshan-e- Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,100.0,exact,auto_exact,,
+Attock:Gulshan-e-Sehat,Gulshan-e-Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,100.0,exact,auto_exact,,
+Attock:Hussain Abad,Hussain Abad,Attock,iesco:attock:014627,HUSSAIN ABAD,1,100.0,exact,auto_exact,,
+Attock:Hussain Abad,Hussain Abad,Attock,iesco:attock:014617,HASSAN ABDAL,2,75.0,fuzzy,suggested,,
+Attock:Hussain Abad,Hussain Abad,Attock,iesco:attock:103905,HAFIZ ABAD,3,72.7,fuzzy,suggested,,
+Attock:Hussainabad,Hussainabad,Attock,iesco:attock:014627,HUSSAIN ABAD,1,95.7,fuzzy,suggested,,
+Attock:Hussainabad,Hussainabad,Attock,iesco:attock:075102,AMINABAD,2,73.7,fuzzy,suggested,,
+Attock:Hussainabad,Hussainabad,Attock,iesco:attock:014619,KHANABAD,3,73.7,fuzzy,suggested,,
+Attock:Industrial,Industrial,Attock,,,0,0,,no_candidate,,
+Attock:Industrial Estate Bahtar,Industrial Estate Bahtar,Attock,,,0,0,,no_candidate,,
+Attock:Industrial State Bahtar,Industrial State Bahtar,Attock,,,0,0,,no_candidate,,
+Attock:Industrial State Bathar,Industrial State Bathar,Attock,,,0,0,,no_candidate,,
+Attock:Industrial State Bather,Industrial State Bather,Attock,,,0,0,,no_candidate,,
+Attock:KV Kashif Gul,KV Kashif Gul,Attock,,,0,0,,no_candidate,,
+Attock:Karnel Sher Khan,Karnel Sher Khan,Attock,iesco:attock:014621,COL SHER KHAN,1,75.9,fuzzy,suggested,,
+Attock:Kashif Gull,Kashif Gull,Attock,,,0,0,,no_candidate,,
+Attock:Katchery,Katchery,Attock,iesco:attock:018902,KETCHRY,1,80.0,fuzzy,suggested,,
+Attock:Khan Abad,Khan Abad,Attock,iesco:attock:014619,KHANABAD,1,94.1,fuzzy,suggested,,
+Attock:Khan Abad,Khan Abad,Attock,iesco:attock:014627,HUSSAIN ABAD,2,76.2,fuzzy,suggested,,
+Attock:Khan Abad,Khan Abad,Attock,iesco:attock:103905,HAFIZ ABAD,3,73.7,fuzzy,suggested,,
+Attock:Kohistan Enclave,Kohistan Enclave,Attock,iesco:attock:112011,KOHISTAN ENCLAVE,1,100.0,exact,auto_exact,,
+Attock:Lala Zar,Lala Zar,Attock,iesco:attock:014622,LALA RUKH,1,70.6,fuzzy,suggested,,
+Attock:Lalazar,Lalazar,Attock,,,0,0,,no_candidate,,
+Attock:MPCHS B-17,MPCHS B-17,Attock,iesco:attock:081012,MPCHS (B-17),1,100.0,exact,auto_exact,,
+Attock:Mix Industry,Mix Industry,Attock,,,0,0,,no_candidate,,
+Attock:Model Town,Model Town,Attock,iesco:attock:112001,MODEL TOWN,1,100.0,exact,auto_exact,,
+Attock:Multi Garden B-17,Multi Garden B-17,Attock,,,0,0,,no_candidate,,
+Attock:Multy Garden B-17,Multy Garden B-17,Attock,,,0,0,,no_candidate,,
+Attock:Munir Abad,Munir Abad,Attock,iesco:attock:014628,MUNIRABAD,1,94.7,fuzzy,suggested,,
+Attock:Munirabad,Munirabad,Attock,iesco:attock:014628,MUNIRABAD,1,100.0,exact,auto_exact,,
+Attock:Munirabad,Munirabad,Attock,iesco:attock:075102,AMINABAD,2,70.6,fuzzy,suggested,,
+Attock:P. Small Industrial,P. Small Industrial,Attock,,,0,0,,no_candidate,,
+Attock:POF,POF,Attock,,,0,0,,no_candidate,,
+Attock:Paswal,Paswal,Attock,iesco:attock:081002,PASWAL,1,100.0,exact,auto_exact,,
+Attock:Pind Parian,Pind Parian,Attock,iesco:attock:121801,PIND PARRIAN,1,95.7,fuzzy,suggested,,
+Attock:Punjab Small Industries,Punjab Small Industries,Attock,,,0,0,,no_candidate,,
+Attock:Qazi Abad,Qazi Abad,Attock,iesco:attock:012001,QAZI ABAD,1,100.0,exact,auto_exact,,
+Attock:Qazi Abad,Qazi Abad,Attock,iesco:attock:103905,HAFIZ ABAD,2,73.7,fuzzy,suggested,,
+Attock:Qazi Abad,Qazi Abad,Attock,iesco:attock:075102,AMINABAD,3,70.6,fuzzy,suggested,,
+Attock:Rashid Minhas,Rashid Minhas,Attock,iesco:attock:014620,RASHID MINHAS,1,100.0,exact,auto_exact,,
+Attock:Sangjani,Sangjani,Attock,iesco:attock:081003,SANGJANI,1,100.0,exact,auto_exact,,
+Attock:Sarai Kharboza,Sarai Kharboza,Attock,iesco:attock:121802,SARAI KHRABOZA,1,92.9,fuzzy,suggested,,
+Attock:Saray Kharboza,Saray Kharboza,Attock,iesco:attock:121802,SARAI KHRABOZA,1,85.7,fuzzy,suggested,,
+Attock:Saray Kharbuza,Saray Kharbuza,Attock,iesco:attock:121802,SARAI KHRABOZA,1,78.6,fuzzy,suggested,,
+Attock:Shafi Chohan,Shafi Chohan,Attock,iesco:attock:012023,SHAFI CHOHAN,1,100.0,exact,auto_exact,,
+Attock:Shafi Chohan,Shafi Chohan,Attock,iesco:attock:089901,SHADI KHAN,2,72.7,fuzzy,suggested,,
+Attock:Shah Allah Ditta,Shah Allah Ditta,Attock,iesco:attock:081011,SHAH ALLAH DITA,1,96.8,fuzzy,suggested,,
+Attock:Teen Mela,Teen Mela,Attock,iesco:attock:075113,TEEN MILA,1,88.9,fuzzy,suggested,,
+Attock:Valley,Valley,Attock,iesco:attock:081001,VALLEY,1,100.0,exact,auto_exact,,
+Attock:Vally,Vally,Attock,iesco:attock:081001,VALLEY,1,90.9,fuzzy,suggested,,
+Attock:Wah General Hospital,Wah General Hospital,Attock,,,0,0,,no_candidate,,
+Chakwal:Abdullah Pur,Abdullah Pur,Chakwal,iesco:chakwal:058206,ABDULLAH PUR,1,100.0,exact,auto_exact,,
+Chakwal:Al- Qaim Mills,Al- Qaim Mills,Chakwal,,,0,0,,no_candidate,,
+Chakwal:Bhoun,Bhoun,Chakwal,iesco:chakwal:002202,BHOUN,1,100.0,exact,auto_exact,,
+Chakwal:CWO,CWO,Chakwal,,,0,0,,no_candidate,,
+Chakwal:D/Jalip,D/Jalip,Chakwal,iesco:chakwal:058205,DHRYALA JALIP,1,70.0,fuzzy,suggested,,
+Chakwal:Dharabi,Dharabi,Chakwal,iesco:chakwal:102402,DHARABI,1,100.0,exact,auto_exact,,
+Chakwal:Dharyala Jalip,Dharyala Jalip,Chakwal,iesco:chakwal:058205,DHRYALA JALIP,1,96.3,fuzzy,suggested,,
+Chakwal:Dhok Pathan,Dhok Pathan,Chakwal,iesco:chakwal:102404,DHOKE PATHAN,1,95.7,fuzzy,suggested,,
+Chakwal:Dhoke Pathan,Dhoke Pathan,Chakwal,iesco:chakwal:102404,DHOKE PATHAN,1,100.0,exact,auto_exact,,
+Chakwal:Dhoke Pathan,Dhoke Pathan,Chakwal,iesco:chakwal:025910,DHOKE GHAZAN,2,75.0,fuzzy,suggested,,
+Chakwal:Duffer,Duffer,Chakwal,iesco:chakwal:029001,DUFFER,1,100.0,exact,auto_exact,,
+Chakwal:Jalal Pur,Jalal Pur,Chakwal,iesco:chakwal:058203,JALAL PUR,1,100.0,exact,auto_exact,,
+Chakwal:Jamal Wal,Jamal Wal,Chakwal,iesco:chakwal:002219,JAMALWAL,1,94.1,fuzzy,suggested,,
+Chakwal:Jamal Wal,Jamal Wal,Chakwal,iesco:chakwal:102408,MALIK WAL,2,77.8,fuzzy,suggested,,
+Chakwal:Jhand Khan Zada,Jhand Khan Zada,Chakwal,iesco:chakwal:132902,JAND KHANZADA,1,92.9,fuzzy,suggested,,
+Chakwal:K S Mine,K S Mine,Chakwal,iesco:chakwal:029002,KS MINE,1,93.3,fuzzy,suggested,,
+Chakwal:KSM Unit- 3,KSM Unit- 3,Chakwal,,,0,0,,no_candidate,,
+Chakwal:KSM Unit-3,KSM Unit-3,Chakwal,,,0,0,,no_candidate,,
+Chakwal:Karyala,Karyala,Chakwal,iesco:chakwal:002216,KARYALA,1,100.0,exact,auto_exact,,
+Chakwal:Karyala,Karyala,Chakwal,iesco:chakwal:064307,KARSAL,2,76.9,fuzzy,suggested,,
+Chakwal:Khanpur,Khanpur,Chakwal,iesco:chakwal:079107,KHANPUR,1,100.0,exact,auto_exact,,
+Chakwal:Khanpur,Khanpur,Chakwal,iesco:chakwal:130802,KHAIR PUR,2,75.0,fuzzy,suggested,,
+Chakwal:Khanpur,Khanpur,Chakwal,iesco:chakwal:002222,BHARPUR,3,71.4,fuzzy,suggested,,
+Chakwal:Kot Saring,Kot Saring,Chakwal,iesco:chakwal:102409,KOT SARANG,1,90.0,fuzzy,suggested,,
+Chakwal:Mengan,Mengan,Chakwal,iesco:chakwal:002211,MANGAN,1,83.3,fuzzy,suggested,,
+Chakwal:Mureed,Mureed,Chakwal,iesco:chakwal:002201,MUREED,1,100.0,exact,auto_exact,,
+Chakwal:PD Khan,PD Khan,Chakwal,iesco:chakwal:029005,P D KHAN,1,93.3,fuzzy,suggested,,
+Chakwal:PD Khan,PD Khan,Chakwal,iesco:chakwal:102412,TM KHAN,2,71.4,fuzzy,suggested,,
+Chakwal:Saghar Pur,Saghar Pur,Chakwal,iesco:chakwal:058202,SAGHER PUR,1,90.0,fuzzy,suggested,,
+Chakwal:Saghar Pur,Saghar Pur,Chakwal,iesco:chakwal:130802,KHAIR PUR,2,73.7,fuzzy,suggested,,
+Chakwal:Saghar Pur,Saghar Pur,Chakwal,iesco:chakwal:002222,BHARPUR,3,70.6,fuzzy,suggested,,
+Chakwal:Sagharpur,Sagharpur,Chakwal,iesco:chakwal:058202,SAGHER PUR,1,84.2,fuzzy,suggested,,
+Chakwal:Sagharpur,Sagharpur,Chakwal,iesco:chakwal:002222,BHARPUR,2,75.0,fuzzy,suggested,,
+Chakwal:Shah Pur Syedan,Shah Pur Syedan,Chakwal,iesco:chakwal:132903,SHAH PUR SYDAN,1,96.6,fuzzy,suggested,,
+Chakwal:Talagang City,Talagang City,Chakwal,iesco:chakwal:102403,TALAGANG CITY,1,100.0,exact,auto_exact,,
+Chakwal:Tehi,Tehi,Chakwal,iesco:chakwal:102414,TEHI,1,100.0,exact,auto_exact,,
+GSO:06:30 am to 02:00 pm,06:30 am to 02:00 pm,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:250MVA,250MVA,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:AFIC,AFIC,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:AMC,AMC,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:AQ Khan,AQ Khan,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:AWT,AWT,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:Adyala,Adyala,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Adyala Jail,Adyala Jail,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Ahsan Abad,Ahsan Abad,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Air University,Air University,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Al-Qadir,Al-Qadir,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Al-Qaim,Al-Qaim,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Al-Rizwan,Al-Rizwan,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Alam Abad,Alam Abad,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Ali Market,Ali Market,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Ameen Town,Ameen Town,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Army Flats,Army Flats,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:Askari-14,Askari-14,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Askari-XI,Askari-XI,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Askari-Xi,Askari-Xi,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Auto,Auto,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:BB Shaheed,BB Shaheed,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Baba Shaheed,Baba Shaheed,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Bahria,Bahria,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Balkasa,Balkasa,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Balkasar,Balkasar,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Banni,Banni,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Behkri,Behkri,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Behlot,Behlot,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Bela road,Bela road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Bhun,Bhun,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Blue Area,Blue Area,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Bun Bola,Bun Bola,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:C-2,C-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:C. Factory,C. Factory,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:CBR,CBR,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:CDL Colony,CDL Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:CMH-1,CMH-1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:CMH-2,CMH-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:CMH_2,CMH_2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:CWO,CWO,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Canning Road,Canning Road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Canning road,Canning road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Cap. Nasir,Cap. Nasir,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Capital Steel,Capital Steel,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Centaurus Hotel,Centaurus Hotel,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Chairing Cross,Chairing Cross,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Chakri,Chakri,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Chapper,Chapper,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Charing Cross,Charing Cross,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:China Embassy,China Embassy,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Civic Center,Civic Center,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Col. Akram,Col. Akram,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Comsteck,Comsteck,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Convention Center,Convention Center,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Defence Road,Defence Road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Dhok Noor,Dhok Noor,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Dhoke Chaudhrian,Dhoke Chaudhrian,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Dhoke Hasoo,Dhoke Hasoo,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Dhoke Najoo,Dhoke Najoo,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Dhoke Suleman,Dhoke Suleman,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Dina-3,Dina-3,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Dina-4,Dina-4,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Diplomat-2,Diplomat-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Doberan,Doberan,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Down Town,Down Town,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Dullah,Dullah,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Dullaha,Dullaha,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:EOBI,EOBI,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:EVC-II,EVC-II,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Eid Gah,Eid Gah,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Exchange,Exchange,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:F- 8/1,F- 8/1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:F-6/2,F-6/2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:F-8 markaz,F-8 markaz,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Faisal Floor,Faisal Floor,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Faisal Hill-1,Faisal Hill-1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Faisal Hill-2,Faisal Hill-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Fauji Colony,Fauji Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Fazal Ghee,Fazal Ghee,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Fazal Shaheed,Fazal Shaheed,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Fazal Steel,Fazal Steel,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Furnace,Furnace,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:G- 10/1,G- 10/1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:G-10 markaz,G-10 markaz,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:G-10/2,G-10/2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:G-10/4,G-10/4,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:G-9/1,G-9/1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Ghazi Kohila,Ghazi Kohila,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Gulshanabad,Gulshanabad,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:H-11/4,H-11/4,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:HBL/MCB,HBL/MCB,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Haider Road,Haider Road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Haider road,Haider road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Hasil,Hasil,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Hassal,Hassal,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Holy Family,Holy Family,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Hospital Road,Hospital Road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Hospital road,Hospital road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Humayun-1,Humayun-1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:I-10 sector,I-10 sector,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:I-10/1,I-10/1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:I-10/2,I-10/2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:I-11/3,I-11/3,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:ICT,ICT,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Industrial-1,Industrial-1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Industrial-2,Industrial-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Industrial-3,Industrial-3,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Inter School,Inter School,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Islamic University,Islamic University,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Itehad Steel,Itehad Steel,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Jalala,Jalala,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Jamal Wal,Jamal Wal,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:K. Block,K. Block,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:KH.S.Syed,KH.S.Syed,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:KRL Hospital,KRL Hospital,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:KSM Unit-3,KSM Unit-3,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Kala Khan,Kala Khan,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Kallar City,Kallar City,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Kalyal,Kalyal,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Kambeli Sadiq,Kambeli Sadiq,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Karakarum Height,Karakarum Height,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Karsal,Karsal,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Karyala,Karyala,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Kasral,Kasral,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Katarian,Katarian,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Khasala,Khasala,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Kidney,Kidney,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Kiyani Road,Kiyani Road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:Kohsar Colony,Kohsar Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Kot Chaudhrian,Kot Chaudhrian,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (3 windows)
+GSO:Line Park,Line Park,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:M. Hussain,M. Hussain,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:M. Steel Mill,M. Steel Mill,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:MG Steel Mill,MG Steel Mill,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:MH-1,MH-1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:MH-2,MH-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:MH-3,MH-3,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:MMK/Road,MMK/Road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Mal Awan,Mal Awan,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Mall Road,Mall Road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:Mangan,Mangan,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Mangla Cantt,Mangla Cantt,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Meezan Bank,Meezan Bank,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Metro,Metro,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Millat Chowk,Millat Chowk,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Millatabad,Millatabad,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (5 windows)
+GSO:Modern Flour Mills,Modern Flour Mills,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Muhammadi,Muhammadi,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Mumtaz,Mumtaz,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Mushtaq Hussain,Mushtaq Hussain,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:N. Karachi,N. Karachi,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:NDC-1,NDC-1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:NDC-2,NDC-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:NIASR,NIASR,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:NLC,NLC,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:NUTECH University,NUTECH University,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Nawababad,Nawababad,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Neela,Neela,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Nela,Nela,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Nescom,Nescom,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New,New,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New Aziz,New Aziz,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New Choa,New Choa,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New F-9 Park,New F-9 Park,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New G-10/1,New G-10/1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New G-10/2,New G-10/2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New G-10/3,New G-10/3,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New G-8/2,New G-8/2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New G-9,New G-9,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:New G-9/1,New G-9/1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New G-9/2,New G-9/2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New G-9/3,New G-9/3,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New G-9/4,New G-9/4,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New GHQ,New GHQ,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:New PTN,New PTN,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New Race Course,New Race Course,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:New United,New United,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Noor Floor,Noor Floor,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Nust,Nust,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:OGDC,OGDC,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Old USA,Old USA,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:P.T.N,P.T.N,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:PAF,PAF,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:PGHS,PGHS,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:PHA,PHA,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:PHA-1,PHA-1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:PM Sectret,PM Sectret,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:PM Staff Colony,PM Staff Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:PMC,PMC,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:PTCL,PTCL,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:PTV-2,PTV-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Pak Land,Pak Land,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Parliament Lodge,Parliament Lodge,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Pims Hospital,Pims Hospital,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Pipli,Pipli,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (3 windows)
+GSO:Police Line,Police Line,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Potohar,Potohar,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Q.U.I,Q.U.I,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Qasim Market,Qasim Market,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Qasim market,Qasim market,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:RA Bazar,RA Bazar,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:RTO,RTO,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Railway Colony,Railway Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Raja Sultan,Raja Sultan,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Range Road,Range Road,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Ratta,Ratta,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Rawal,Rawal,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Residential,Residential,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Rose Lane,Rose Lane,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Royal Enclave,Royal Enclave,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:SES,SES,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:SH Steel,SH Steel,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:SS Hospital,SS Hospital,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Safe City-1,Safe City-1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Safe City-2,Safe City-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Saghar Pur,Saghar Pur,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Samar Zar,Samar Zar,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Sareena,Sareena,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Sareena Hotel,Sareena Hotel,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Sarkal,Sarkal,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
+GSO:Saudia Embassy,Saudia Embassy,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Shahpur,Shahpur,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Shaigan,Shaigan,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Sprint Mall,Sprint Mall,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:Subhan Shaheed,Subhan Shaheed,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Sukh Chain,Sukh Chain,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Supreme Court,Supreme Court,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Tench Bhatta,Tench Bhatta,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:U-Phone,U-Phone,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:USA-A,USA-A,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:USA-B,USA-B,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:USA-C,USA-C,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:United Steel,United Steel,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:WTC,WTC,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Wahdat Colony,Wahdat Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Warid,Warid,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Zarkoon Heights,Zarkoon Heights,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Zeeshan Colony,Zeeshan Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:from,from,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
+GSO:from 06-30am to 10-30 am,from 06-30am to 10-30 am,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+Islamabad:Ali Pur,Ali Pur,Islamabad,iesco:islamabad:014701,ALI PUR,1,100.0,exact,auto_exact,,
+Islamabad:Ali Pur,Ali Pur,Islamabad,iesco:islamabad:122510,SAID PUR,2,80.0,fuzzy,suggested,,
+Islamabad:Ayub Market,Ayub Market,Islamabad,iesco:islamabad:022318,AYUB MARKET,1,100.0,exact,auto_exact,,
+Islamabad:Ayub Market,Ayub Market,Islamabad,iesco:islamabad:075513,ABASSI MARKET,2,75.0,fuzzy,suggested,,
+Islamabad:Bari Imam,Bari Imam,Islamabad,iesco:islamabad:089212,BARI IMAM,1,100.0,exact,auto_exact,,
+Islamabad:Bari Imam,Bari Imam,Islamabad,iesco:islamabad:105502,BARMA,2,71.4,fuzzy,suggested,,
+Islamabad:Burma,Burma,Islamabad,iesco:islamabad:105502,BARMA,1,80.0,fuzzy,suggested,,
+Islamabad:CDA Pump,CDA Pump,Islamabad,,,0,0,,no_candidate,,
+Islamabad:CM Pak Zong,CM Pak Zong,Islamabad,iesco:islamabad:105509,CM PAK,1,70.6,fuzzy,suggested,,
+Islamabad:Chatta Bakhtawar,Chatta Bakhtawar,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Chattha,Chattha,Islamabad,iesco:islamabad:105507,CHATTA,1,92.3,fuzzy,suggested,,
+Islamabad:FBR,FBR,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Faisal Masjid,Faisal Masjid,Islamabad,iesco:islamabad:022310,FAISAL MASJID,1,100.0,exact,auto_exact,,
+Islamabad:Faisal Masjid,Faisal Masjid,Islamabad,iesco:islamabad:022342,ZIA MASJID,2,78.3,fuzzy,suggested,,
+Islamabad:Fazaia,Fazaia,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Filtration Plant,Filtration Plant,Islamabad,,,0,0,,no_candidate,,
+Islamabad:G- 9/2,G- 9/2,Islamabad,iesco:islamabad:122305,G-9/2,1,100.0,exact,auto_exact,,
+Islamabad:G- 9/2,G- 9/2,Islamabad,iesco:islamabad:122301,G-8/2,2,80.0,fuzzy,suggested,,
+Islamabad:G- 9/2,G- 9/2,Islamabad,iesco:islamabad:122304,G-9/1,3,80.0,fuzzy,suggested,,
+Islamabad:G-8,G-8,Islamabad,iesco:islamabad:022326,G8,1,80.0,fuzzy,suggested,,
+Islamabad:G-8,G-8,Islamabad,iesco:islamabad:022330,G-8/1,2,75.0,fuzzy,suggested,,
+Islamabad:G-8,G-8,Islamabad,iesco:islamabad:122301,G-8/2,3,75.0,fuzzy,suggested,,
+Islamabad:G-8 Markaz,G-8 Markaz,Islamabad,iesco:islamabad:022338,G8 MARKAZ,1,94.7,fuzzy,suggested,,
+Islamabad:G-8 Markaz,G-8 Markaz,Islamabad,iesco:islamabad:122315,G-10 MARKAZ,2,85.7,fuzzy,suggested,,
+Islamabad:G-8 Markaz,G-8 Markaz,Islamabad,iesco:islamabad:122316,F8 MARKAZ,3,84.2,fuzzy,suggested,,
+Islamabad:G-8 markaz,G-8 markaz,Islamabad,iesco:islamabad:022338,G8 MARKAZ,1,94.7,fuzzy,suggested,,
+Islamabad:G-8 markaz,G-8 markaz,Islamabad,iesco:islamabad:122315,G-10 MARKAZ,2,85.7,fuzzy,suggested,,
+Islamabad:G-8 markaz,G-8 markaz,Islamabad,iesco:islamabad:122316,F8 MARKAZ,3,84.2,fuzzy,suggested,,
+Islamabad:G-8/1,G-8/1,Islamabad,iesco:islamabad:022330,G-8/1,1,100.0,exact,auto_exact,,
+Islamabad:G-8/1,G-8/1,Islamabad,iesco:islamabad:122317,F-8/1,2,80.0,fuzzy,suggested,,
+Islamabad:G-8/1,G-8/1,Islamabad,iesco:islamabad:122301,G-8/2,3,80.0,fuzzy,suggested,,
+Islamabad:G-9/2,G-9/2,Islamabad,iesco:islamabad:122305,G-9/2,1,100.0,exact,auto_exact,,
+Islamabad:G-9/2,G-9/2,Islamabad,iesco:islamabad:122301,G-8/2,2,80.0,fuzzy,suggested,,
+Islamabad:G-9/2,G-9/2,Islamabad,iesco:islamabad:122304,G-9/1,3,80.0,fuzzy,suggested,,
+Islamabad:G-9/4,G-9/4,Islamabad,iesco:islamabad:122312,G-9/4,1,100.0,exact,auto_exact,,
+Islamabad:G-9/4,G-9/4,Islamabad,iesco:islamabad:122304,G-9/1,2,80.0,fuzzy,suggested,,
+Islamabad:G-9/4,G-9/4,Islamabad,iesco:islamabad:122305,G-9/2,3,80.0,fuzzy,suggested,,
+Islamabad:Gharial,Gharial,Islamabad,iesco:islamabad:013711,GHARIAL,1,100.0,exact,auto_exact,,
+Islamabad:Ghauri Garden,Ghauri Garden,Islamabad,iesco:islamabad:105513,GHORI GRADEN,1,80.0,fuzzy,suggested,,
+Islamabad:Ghori Garden,Ghori Garden,Islamabad,iesco:islamabad:105513,GHORI GRADEN,1,91.7,fuzzy,suggested,,
+Islamabad:HC-I,HC-I,Islamabad,,,0,0,,no_candidate,,
+Islamabad:HC-II,HC-II,Islamabad,iesco:islamabad:069225,PHA II,1,72.7,fuzzy,suggested,,
+Islamabad:High Way,High Way,Islamabad,iesco:islamabad:022315,HIGHWAY,1,93.3,fuzzy,suggested,,
+Islamabad:Highway,Highway,Islamabad,iesco:islamabad:022315,HIGHWAY,1,100.0,exact,auto_exact,,
+Islamabad:ISI,ISI,Islamabad,,,0,0,,no_candidate,,
+Islamabad:IT Park,IT Park,Islamabad,iesco:islamabad:122302,F9 PARK,1,71.4,fuzzy,suggested,,
+Islamabad:IT-Park,IT-Park,Islamabad,iesco:islamabad:122302,F9 PARK,1,71.4,fuzzy,suggested,,
+Islamabad:Iqbal Town,Iqbal Town,Islamabad,iesco:islamabad:022314,IQBAL TOWN,1,100.0,exact,auto_exact,,
+Islamabad:Iqbat Town,Iqbat Town,Islamabad,iesco:islamabad:022314,IQBAL TOWN,1,80.0,fuzzy,suggested,,
+Islamabad:Islamabad Club-1,Islamabad Club-1,Islamabad,iesco:islamabad:017417,ISLAMABAD CLUB 1,1,100.0,exact,auto_exact,,
+Islamabad:Islamabad Club-1,Islamabad Club-1,Islamabad,iesco:islamabad:017428,ISLAMABAD CLUB 2,2,93.8,fuzzy,suggested,,
+Islamabad:Islamabad Club-2,Islamabad Club-2,Islamabad,iesco:islamabad:017428,ISLAMABAD CLUB 2,1,100.0,exact,auto_exact,,
+Islamabad:Islamabad Club-2,Islamabad Club-2,Islamabad,iesco:islamabad:017417,ISLAMABAD CLUB 1,2,93.8,fuzzy,suggested,,
+Islamabad:Islamabad Club-I,Islamabad Club-I,Islamabad,iesco:islamabad:017417,ISLAMABAD CLUB 1,1,93.8,fuzzy,suggested,,
+Islamabad:Islamabad Club-I,Islamabad Club-I,Islamabad,iesco:islamabad:017428,ISLAMABAD CLUB 2,2,93.8,fuzzy,suggested,,
+Islamabad:Isolation Hospital,Isolation Hospital,Islamabad,iesco:islamabad:105520,ISOLATION HOSPITAL,1,100.0,exact,auto_exact,,
+Islamabad:Khadhraper,Khadhraper,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Khadhrapur,Khadhrapur,Islamabad,iesco:islamabad:089218,SHAHPUR,1,70.6,fuzzy,suggested,,
+Islamabad:Khadraper,Khadraper,Islamabad,iesco:islamabad:105523,KHADRE PARR,1,70.0,fuzzy,suggested,,
+Islamabad:Khana Dak,Khana Dak,Islamabad,iesco:islamabad:105501,KHANA DAK,1,100.0,exact,auto_exact,,
+Islamabad:Khana Dak,Khana Dak,Islamabad,iesco:islamabad:105510,KHANA EAST,2,73.7,fuzzy,suggested,,
+Islamabad:Khana East,Khana East,Islamabad,iesco:islamabad:105510,KHANA EAST,1,100.0,exact,auto_exact,,
+Islamabad:Khana East,Khana East,Islamabad,iesco:islamabad:105501,KHANA DAK,2,73.7,fuzzy,suggested,,
+Islamabad:Khanna Dak,Khanna Dak,Islamabad,iesco:islamabad:105501,KHANA DAK,1,94.7,fuzzy,suggested,,
+Islamabad:Khanna Dak,Khanna Dak,Islamabad,iesco:islamabad:105510,KHANA EAST,2,70.0,fuzzy,suggested,,
+Islamabad:Khanna East,Khanna East,Islamabad,iesco:islamabad:105510,KHANA EAST,1,95.2,fuzzy,suggested,,
+Islamabad:Khanna East,Khanna East,Islamabad,iesco:islamabad:105501,KHANA DAK,2,70.0,fuzzy,suggested,,
+Islamabad:King Hammad,King Hammad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Kund Rajgan,Kund Rajgan,Islamabad,iesco:islamabad:105522,KUND RAJGAN,1,100.0,exact,auto_exact,,
+Islamabad:Kurri,Kurri,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Lehtrar,Lehtrar,Islamabad,iesco:islamabad:105517,LEHTRAR ROAD,1,73.7,fuzzy,suggested,,
+Islamabad:Lehtrar Road,Lehtrar Road,Islamabad,iesco:islamabad:105517,LEHTRAR ROAD,1,100.0,exact,auto_exact,,
+Islamabad:Mahfooz Shaheed / Shahzad Town,Mahfooz Shaheed / Shahzad Town,Islamabad,iesco:islamabad:017424,MEHFOOZ SHAHEED ( SHAHZAD TOWN),1,95.7,fuzzy,suggested,,
+Islamabad:Mahfooz Shaheed / Shehzad Town,Mahfooz Shaheed / Shehzad Town,Islamabad,iesco:islamabad:017424,MEHFOOZ SHAHEED ( SHAHZAD TOWN),1,91.3,fuzzy,suggested,,
+Islamabad:Mahfooz Shaheed/Shahzad Town,Mahfooz Shaheed/Shahzad Town,Islamabad,iesco:islamabad:017424,MEHFOOZ SHAHEED ( SHAHZAD TOWN),1,95.7,fuzzy,suggested,,
+Islamabad:Marvi,Marvi,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Mehfooz Shaheed / Shahzad Town,Mehfooz Shaheed / Shahzad Town,Islamabad,iesco:islamabad:017424,MEHFOOZ SHAHEED ( SHAHZAD TOWN),1,100.0,exact,auto_exact,,
+Islamabad:Mohra Noor,Mohra Noor,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Navy-1,Navy-1,Islamabad,iesco:islamabad:090009,NAVY 1,1,100.0,exact,auto_exact,,
+Islamabad:Navy-1,Navy-1,Islamabad,iesco:islamabad:090010,NAVY 2,2,83.3,fuzzy,suggested,,
+Islamabad:Numble,Numble,Islamabad,iesco:islamabad:079405,NUMBAL,1,83.3,fuzzy,suggested,,
+Islamabad:Orchard Scheme,Orchard Scheme,Islamabad,iesco:islamabad:017439,ORCHARD SCHEME,1,100.0,exact,auto_exact,,
+Islamabad:PHA-1,PHA-1,Islamabad,iesco:islamabad:086408,PHA,1,75.0,fuzzy,suggested,,
+Islamabad:PHA-1,PHA-1,Islamabad,iesco:islamabad:069225,PHA II,2,72.7,fuzzy,suggested,,
+Islamabad:PTCL,PTCL,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Park Enclave-1,Park Enclave-1,Islamabad,iesco:islamabad:105518,PARK ENCLAVE,1,92.3,fuzzy,suggested,,
+Islamabad:Park Enclave-1,Park Enclave-1,Islamabad,iesco:islamabad:105506,BAHRIA ENCLAVE,2,71.4,fuzzy,suggested,,
+Islamabad:Pindorian,Pindorian,Islamabad,iesco:islamabad:017434,PINDORIAN,1,100.0,exact,auto_exact,,
+Islamabad:Pindorian,Pindorian,Islamabad,iesco:islamabad:013707,PINDI POINT,2,70.0,fuzzy,suggested,,
+Islamabad:Pindorian Scheme-2,Pindorian Scheme-2,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Pir Sohawa,Pir Sohawa,Islamabad,iesco:islamabad:122503,PIR SOHAWA,1,100.0,exact,auto_exact,,
+Islamabad:Punjab House,Punjab House,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Rehara,Rehara,Islamabad,iesco:islamabad:105511,REHARA,1,100.0,exact,auto_exact,,
+Islamabad:Rehman Enclave,Rehman Enclave,Islamabad,iesco:islamabad:075006,ROYAL ENCLAVE,1,74.1,fuzzy,suggested,,
+Islamabad:Rehman Enclave,Rehman Enclave,Islamabad,iesco:islamabad:105506,BAHRIA ENCLAVE,2,71.4,fuzzy,suggested,,
+Islamabad:Saidpur,Saidpur,Islamabad,iesco:islamabad:122510,SAID PUR,1,93.3,fuzzy,suggested,,
+Islamabad:Saidpur,Saidpur,Islamabad,iesco:islamabad:014701,ALI PUR,2,71.4,fuzzy,suggested,,
+Islamabad:Saidpur,Saidpur,Islamabad,iesco:islamabad:089218,SHAHPUR,3,71.4,fuzzy,suggested,,
+Islamabad:Scheme-1,Scheme-1,Islamabad,iesco:islamabad:017430,SCHEME-2,1,87.5,fuzzy,suggested,,
+Islamabad:Scheme-1,Scheme-1,Islamabad,iesco:islamabad:105525,SCHEME-I,2,87.5,fuzzy,suggested,,
+Islamabad:Scheme-2,Scheme-2,Islamabad,iesco:islamabad:017430,SCHEME-2,1,100.0,exact,auto_exact,,
+Islamabad:Scheme-2,Scheme-2,Islamabad,iesco:islamabad:105525,SCHEME-I,2,87.5,fuzzy,suggested,,
+Islamabad:Scheme-II,Scheme-II,Islamabad,iesco:islamabad:105525,SCHEME-I,1,94.1,fuzzy,suggested,,
+Islamabad:Scheme-II,Scheme-II,Islamabad,iesco:islamabad:017430,SCHEME-2,2,82.4,fuzzy,suggested,,
+Islamabad:Service Road,Service Road,Islamabad,iesco:islamabad:022333,SERVICE ROAD EAST,1,82.8,fuzzy,suggested,,
+Islamabad:Service road,Service road,Islamabad,iesco:islamabad:022333,SERVICE ROAD EAST,1,82.8,fuzzy,suggested,,
+Islamabad:Shahzad Town,Shahzad Town,Islamabad,iesco:islamabad:089213,SHAHDRA,1,71.4,fuzzy,suggested,,
+Islamabad:Shareef Abad,Shareef Abad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,81.8,fuzzy,suggested,,
+Islamabad:Shareefabad,Shareefabad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,85.7,fuzzy,suggested,,
+Islamabad:Shazad Town,Shazad Town,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Sohan,Sohan,Islamabad,iesco:islamabad:061134,SOHAN,1,100.0,exact,auto_exact,,
+Islamabad:Sowan Garden-I,Sowan Garden-I,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Sowan Garden-II,Sowan Garden-II,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Sudhran,Sudhran,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Suparco,Suparco,Islamabad,,,0,0,,no_candidate,,
+Islamabad:T&T,T&T,Islamabad,iesco:islamabad:022319,T & T,1,100.0,exact,auto_exact,,
+Islamabad:Taramari,Taramari,Islamabad,iesco:islamabad:105503,TRAMARI,1,93.3,fuzzy,suggested,,
+Islamabad:Taramri,Taramri,Islamabad,iesco:islamabad:105503,TRAMARI,1,85.7,fuzzy,suggested,,
+Islamabad:Tramari,Tramari,Islamabad,iesco:islamabad:105503,TRAMARI,1,100.0,exact,auto_exact,,
+Islamabad:Tramri,Tramri,Islamabad,iesco:islamabad:105503,TRAMARI,1,92.3,fuzzy,suggested,,
+Islamabad:Tramri,Tramri,Islamabad,iesco:islamabad:122501,TRAIT,2,72.7,fuzzy,suggested,,
+Islamabad:UC-2,UC-2,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Waheed Abad,Waheed Abad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,90.9,fuzzy,suggested,,
+Islamabad:Waheed abad,Waheed abad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,90.9,fuzzy,suggested,,
+Islamabad:Waheedabad,Waheedabad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,95.2,fuzzy,suggested,,
+Islamabad:Waris Valley,Waris Valley,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Zia Masjid,Zia Masjid,Islamabad,iesco:islamabad:022342,ZIA MASJID,1,100.0,exact,auto_exact,,
+Islamabad:Zia Masjid,Zia Masjid,Islamabad,iesco:islamabad:022310,FAISAL MASJID,2,78.3,fuzzy,suggested,,
+Jhelum:08:00 AM to 12:00 PM,08:00 AM to 12:00 PM,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Abbas Pura,Abbas Pura,Jhelum,iesco:jhelum:007727,ABBAS PURA,1,100.0,exact,auto_exact,,
+Jhelum:Abdullah Pur,Abdullah Pur,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Ajmal Shaheed,Ajmal Shaheed,Jhelum,iesco:jhelum:007718,AJMAL SHAHEED,1,100.0,exact,auto_exact,,
+Jhelum:Ajmal Shaheed,Ajmal Shaheed,Jhelum,iesco:jhelum:098101,BABA SHAHEED,2,80.0,fuzzy,suggested,,
+Jhelum:Ajmal Shaheed,Ajmal Shaheed,Jhelum,iesco:jhelum:007719,AKRAM SHAHEED,3,76.9,fuzzy,suggested,,
+Jhelum:Bilal Town,Bilal Town,Jhelum,iesco:jhelum:007730,BILAL TOWN,1,100.0,exact,auto_exact,,
+Jhelum:Bolani,Bolani,Jhelum,iesco:jhelum:047006,BOLANI,1,100.0,exact,auto_exact,,
+Jhelum:Borian,Borian,Jhelum,iesco:jhelum:007726,BORIAN,1,100.0,exact,auto_exact,,
+Jhelum:C.W.O,C.W.O,Jhelum,,,0,0,,no_candidate,,
+Jhelum:CWO,CWO,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Chamala,Chamala,Jhelum,iesco:jhelum:046810,CHAMALA,1,100.0,exact,auto_exact,,
+Jhelum:Chamala,Chamala,Jhelum,iesco:jhelum:126303,CHUTALA,2,71.4,fuzzy,suggested,,
+Jhelum:Chamala,Chamala,Jhelum,iesco:jhelum:007713,GARMALA,3,71.4,fuzzy,suggested,,
+Jhelum:Chappar Sharif,Chappar Sharif,Jhelum,iesco:jhelum:098107,CHAPPER SHARIF,1,92.9,fuzzy,suggested,,
+Jhelum:Chapper Sharif,Chapper Sharif,Jhelum,iesco:jhelum:098107,CHAPPER SHARIF,1,100.0,exact,auto_exact,,
+Jhelum:Chapran,Chapran,Jhelum,iesco:jhelum:047011,CHAPRAN,1,100.0,exact,auto_exact,,
+Jhelum:Chapran,Chapran,Jhelum,iesco:jhelum:063005,CHAKIAN,2,71.4,fuzzy,suggested,,
+Jhelum:Chip Board,Chip Board,Jhelum,iesco:jhelum:007702,CHIP BOARD,1,100.0,exact,auto_exact,,
+Jhelum:City Housing,City Housing,Jhelum,iesco:jhelum:007728,CITY HOUSING,1,100.0,exact,auto_exact,,
+Jhelum:F- 10 (Kala Base),F- 10 (Kala Base),Jhelum,iesco:jhelum:007710,KALA BASE,1,78.3,fuzzy,suggested,,
+Jhelum:F- 7 (Kutchery),F- 7 (Kutchery),Jhelum,,,0,0,,no_candidate,,
+Jhelum:F-0 ( Chak Daulat),F-0 ( Chak Daulat),Jhelum,iesco:jhelum:007709,CHAK DULAT,1,80.0,fuzzy,suggested,,
+Jhelum:F-10 ( Kala Base),F-10 ( Kala Base),Jhelum,iesco:jhelum:007710,KALA BASE,1,78.3,fuzzy,suggested,,
+Jhelum:F-10 (Kala Base),F-10 (Kala Base),Jhelum,iesco:jhelum:007710,KALA BASE,1,78.3,fuzzy,suggested,,
+Jhelum:F-10 (Kala Base) Feeders Chakwal Circle,F-10 (Kala Base) Feeders Chakwal Circle,Jhelum,,,0,0,,no_candidate,,
+Jhelum:F-2 ( Chip Board),F-2 ( Chip Board),Jhelum,iesco:jhelum:007702,CHIP BOARD,1,83.3,fuzzy,suggested,,
+Jhelum:F-2 (Chip Board),F-2 (Chip Board),Jhelum,iesco:jhelum:007702,CHIP BOARD,1,83.3,fuzzy,suggested,,
+Jhelum:F-7 (Kutchery),F-7 (Kutchery),Jhelum,,,0,0,,no_candidate,,
+Jhelum:F-9 ( Chak Daulat),F-9 ( Chak Daulat),Jhelum,iesco:jhelum:007709,CHAK DULAT,1,80.0,fuzzy,suggested,,
+Jhelum:F-9 (Chak Daulat),F-9 (Chak Daulat),Jhelum,iesco:jhelum:007709,CHAK DULAT,1,80.0,fuzzy,suggested,,
+Jhelum:Fateh Pur,Fateh Pur,Jhelum,iesco:jhelum:047009,FATH PUR,1,94.1,fuzzy,suggested,,
+Jhelum:GSO Cricle:,GSO Cricle:,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Grand City,Grand City,Jhelum,iesco:jhelum:047013,GRAND CITY,1,100.0,exact,auto_exact,,
+Jhelum:Gujar Khan,Gujar Khan,Jhelum,iesco:jhelum:004901,GUJAR KHAN,1,100.0,exact,auto_exact,,
+Jhelum:Gujjar Khan City,Gujjar Khan City,Jhelum,iesco:jhelum:004901,GUJAR KHAN,1,76.9,fuzzy,suggested,,
+Jhelum:Hamid Jhangi,Hamid Jhangi,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Hayat Sir Road,Hayat Sir Road,Jhelum,iesco:jhelum:004908,MANKIALA (HAYAT SIR ROAD),1,75.7,fuzzy,suggested,,
+Jhelum:Hayat Sir road,Hayat Sir road,Jhelum,iesco:jhelum:004908,MANKIALA (HAYAT SIR ROAD),1,75.7,fuzzy,suggested,,
+Jhelum:Industrial,Industrial,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Jada,Jada,Jhelum,iesco:jhelum:007705,JADA,1,100.0,exact,auto_exact,,
+Jhelum:Jakkar,Jakkar,Jhelum,iesco:jhelum:007714,JHAKAR,1,83.3,fuzzy,suggested,,
+Jhelum:Jalal Pur,Jalal Pur,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Kangar,Kangar,Jhelum,iesco:jhelum:004923,KANGAR,1,100.0,exact,auto_exact,,
+Jhelum:Karim Pura,Karim Pura,Jhelum,iesco:jhelum:007729,KAREEM PURA,1,85.7,fuzzy,suggested,,
+Jhelum:Karim Pura,Karim Pura,Jhelum,iesco:jhelum:004910,ISLAM PURA,2,70.0,fuzzy,suggested,,
+Jhelum:Karyala,Karyala,Jhelum,iesco:jhelum:046801,BAKRALA,1,71.4,fuzzy,suggested,,
+Jhelum:Karyala,Karyala,Jhelum,iesco:jhelum:007713,GARMALA,2,71.4,fuzzy,suggested,,
+Jhelum:Katchary,Katchary,Jhelum,iesco:jhelum:007707,KACHERY,1,80.0,fuzzy,suggested,,
+Jhelum:Katchary Jhelum,Katchary Jhelum,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Katchery Sohawa,Katchery Sohawa,Jhelum,iesco:jhelum:125001,KATCHERY SOHAWA,1,100.0,exact,auto_exact,,
+Jhelum:Khai Kulia,Khai Kulia,Jhelum,iesco:jhelum:126301,KHAI KULIA,1,100.0,exact,auto_exact,,
+Jhelum:Khai Kulia,Khai Kulia,Jhelum,iesco:jhelum:004909,KOT DHMAIK ( KULIA),2,76.9,fuzzy,suggested,,
+Jhelum:Kontorilla,Kontorilla,Jhelum,iesco:jhelum:004917,KOUNTRILA,1,84.2,fuzzy,suggested,,
+Jhelum:LTC,LTC,Jhelum,,,0,0,,no_candidate,,
+Jhelum:LangarPur,LangarPur,Jhelum,iesco:jhelum:007725,LANGAR PUR,1,94.7,fuzzy,suggested,,
+Jhelum:Langarpur,Langarpur,Jhelum,iesco:jhelum:007725,LANGAR PUR,1,94.7,fuzzy,suggested,,
+Jhelum:Mandi Bhalwal,Mandi Bhalwal,Jhelum,iesco:jhelum:047010,MANDI BHALWAL,1,100.0,exact,auto_exact,,
+Jhelum:Mandra,Mandra,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Matwa,Matwa,Jhelum,iesco:jhelum:004906,MATWA,1,100.0,exact,auto_exact,,
+Jhelum:Metro City,Metro City,Jhelum,iesco:jhelum:047012,NEW METRO CITY,1,83.3,fuzzy,suggested,,
+Jhelum:Military College,Military College,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Nathwala,Nathwala,Jhelum,iesco:jhelum:007716,NATHWALA,1,100.0,exact,auto_exact,,
+Jhelum:New Cantt Jhelum,New Cantt Jhelum,Jhelum,,,0,0,,no_candidate,,
+Jhelum:New Cantt Jhelum Saeela,New Cantt Jhelum Saeela,Jhelum,,,0,0,,no_candidate,,
+Jhelum:New Mandra,New Mandra,Jhelum,,,0,0,,no_candidate,,
+Jhelum:New cantt. Jhelum,New cantt. Jhelum,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Nougran,Nougran,Jhelum,iesco:jhelum:126306,NAUGRAN,1,85.7,fuzzy,suggested,,
+Jhelum:Pakhwal,Pakhwal,Jhelum,iesco:jhelum:007720,PAKHWAL,1,100.0,exact,auto_exact,,
+Jhelum:Qazian,Qazian,Jhelum,,,0,0,,no_candidate,,
+Jhelum:Saeela,Saeela,Jhelum,iesco:jhelum:126305,SAEELA,1,100.0,exact,auto_exact,,
+Jhelum:Safdar Shaheed,Safdar Shaheed,Jhelum,iesco:jhelum:007722,SAFDAR SHAHEED,1,100.0,exact,auto_exact,,
+Jhelum:Safdar Shaheed,Safdar Shaheed,Jhelum,iesco:jhelum:098101,BABA SHAHEED,2,76.9,fuzzy,suggested,,
+Jhelum:Safdar Shaheed,Safdar Shaheed,Jhelum,iesco:jhelum:007718,AJMAL SHAHEED,3,74.1,fuzzy,suggested,,
+Jhelum:Sagharpur,Sagharpur,Jhelum,iesco:jhelum:007725,LANGAR PUR,1,73.7,fuzzy,suggested,,
+Jhelum:Sanghoi,Sanghoi,Jhelum,iesco:jhelum:007712,SANGOI,1,92.3,fuzzy,suggested,,
+Jhelum:Sanghoi,Sanghoi,Jhelum,iesco:jhelum:126302,NEW SANGHOI,2,77.8,fuzzy,suggested,,
+Jhelum:Scheme-1,Scheme-1,Jhelum,iesco:jhelum:004922,SCHEME 1,1,100.0,exact,auto_exact,,
+Jhelum:Scheme-I,Scheme-I,Jhelum,iesco:jhelum:004922,SCHEME 1,1,87.5,fuzzy,suggested,,
+Jhelum:Shamasabad,Shamasabad,Jhelum,iesco:jhelum:047005,SHAMS ABAD,1,90.0,fuzzy,suggested,,
+Jhelum:Ward No 08,Ward No 08,Jhelum,iesco:jhelum:004911,WARD-NO-8,1,92.3,fuzzy,suggested,,
+Jhelum:Ward No. 8,Ward No. 8,Jhelum,iesco:jhelum:004911,WARD-NO-8,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:08:00 AM to 12:00 PM,08:00 AM to 12:00 PM,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:AOWHS,AOWHS,Rawalpindi Cantt,iesco:rawalpindi:087402,AWHS,1,88.9,fuzzy,suggested,,
+Rawalpindi Cantt:AOWHS,AOWHS,Rawalpindi Cantt,iesco:rawalpindi:061131,AFOHS,2,80.0,fuzzy,suggested,,
+Rawalpindi Cantt:Adiala,Adiala,Rawalpindi Cantt,iesco:rawalpindi:109106,ADYALA,1,83.3,fuzzy,suggested,,
+Rawalpindi Cantt:Adyala,Adyala,Rawalpindi Cantt,iesco:rawalpindi:109106,ADYALA,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Adyala Jail,Adyala Jail,Rawalpindi Cantt,iesco:rawalpindi:109106,ADYALA,1,70.6,fuzzy,suggested,,
+Rawalpindi Cantt:Askari-14,Askari-14,Rawalpindi Cantt,iesco:rawalpindi:109112,ASKRI 14,1,94.1,fuzzy,suggested,,
+Rawalpindi Cantt:Askari-14,Askari-14,Rawalpindi Cantt,iesco:rawalpindi:017919,ASKARI 7,2,82.4,fuzzy,suggested,,
+Rawalpindi Cantt:Askari-14,Askari-14,Rawalpindi Cantt,iesco:rawalpindi:043325,ASKARI XI,3,77.8,fuzzy,suggested,,
+Rawalpindi Cantt:Basali,Basali,Rawalpindi Cantt,iesco:rawalpindi:017728,BASALI,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Basali,Basali,Rawalpindi Cantt,iesco:rawalpindi:007406,BHANGALI,2,71.4,fuzzy,suggested,,
+Rawalpindi Cantt:Bhal,Bhal,Rawalpindi Cantt,iesco:rawalpindi:064507,BHALL,1,88.9,fuzzy,suggested,,
+Rawalpindi Cantt:Bhall,Bhall,Rawalpindi Cantt,iesco:rawalpindi:064507,BHALL,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:CWO,CWO,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Car Chowk,Car Chowk,Rawalpindi Cantt,iesco:rawalpindi:087414,CAR CHOWK,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Car Chowk,Car Chowk,Rawalpindi Cantt,iesco:rawalpindi:017934,FOWARA CHOWK,2,76.2,fuzzy,suggested,,
+Rawalpindi Cantt:Car Chowk,Car Chowk,Rawalpindi Cantt,iesco:rawalpindi:095830,HAIDERI CHOWK,3,72.7,fuzzy,suggested,,
+Rawalpindi Cantt:Chaklala,Chaklala,Rawalpindi Cantt,iesco:rawalpindi:002503,CHAKLALA,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Chaklala,Chaklala,Rawalpindi Cantt,iesco:rawalpindi:008604,CHAKRA,2,71.4,fuzzy,suggested,,
+Rawalpindi Cantt:Chakri,Chakri,Rawalpindi Cantt,iesco:rawalpindi:096801,CHAKRI,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Chakri,Chakri,Rawalpindi Cantt,iesco:rawalpindi:008604,CHAKRA,2,83.3,fuzzy,suggested,,
+Rawalpindi Cantt:Chowk Pindori,Chowk Pindori,Rawalpindi Cantt,iesco:rawalpindi:017720,CHOWK PINDORI,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:DK. Farman Ali,DK. Farman Ali,Rawalpindi Cantt,iesco:rawalpindi:017922,DHOK FARMAN ALI,1,92.9,fuzzy,suggested,,
+Rawalpindi Cantt:Defence Road,Defence Road,Rawalpindi Cantt,iesco:rawalpindi:109113,DEFENCE ROAD,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Dhok Noor,Dhok Noor,Rawalpindi Cantt,iesco:rawalpindi:109104,DHOK NOOR,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Dhoke Farman Ali,Dhoke Farman Ali,Rawalpindi Cantt,iesco:rawalpindi:017922,DHOK FARMAN ALI,1,96.8,fuzzy,suggested,,
+Rawalpindi Cantt:Dk Noor,Dk Noor,Rawalpindi Cantt,iesco:rawalpindi:109104,DHOK NOOR,1,87.5,fuzzy,suggested,,
+Rawalpindi Cantt:Dk. Farman Ali,Dk. Farman Ali,Rawalpindi Cantt,iesco:rawalpindi:017922,DHOK FARMAN ALI,1,92.9,fuzzy,suggested,,
+Rawalpindi Cantt:Dk. Noor,Dk. Noor,Rawalpindi Cantt,iesco:rawalpindi:109104,DHOK NOOR,1,87.5,fuzzy,suggested,,
+Rawalpindi Cantt:Fatima Jinnah,Fatima Jinnah,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Ghazan Khan,Ghazan Khan,Rawalpindi Cantt,iesco:rawalpindi:009009,GHAZAN KHAN,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Gracy Line,Gracy Line,Rawalpindi Cantt,iesco:rawalpindi:002533,GRACY LINE,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Gulshan Abad,Gulshan Abad,Rawalpindi Cantt,iesco:rawalpindi:109102,GULSHANABAD,1,95.7,fuzzy,suggested,,
+Rawalpindi Cantt:Gulshan Abad,Gulshan Abad,Rawalpindi Cantt,iesco:rawalpindi:001024,GULISHAN SAEED,2,76.9,fuzzy,suggested,,
+Rawalpindi Cantt:Gulshanabad,Gulshanabad,Rawalpindi Cantt,iesco:rawalpindi:109102,GULSHANABAD,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Gulshanabad,Gulshanabad,Rawalpindi Cantt,iesco:rawalpindi:001024,GULISHAN SAEED,2,72.0,fuzzy,suggested,,
+Rawalpindi Cantt:Gulshanabad,Gulshanabad,Rawalpindi Cantt,iesco:rawalpindi:043308,GULSHANABAD (P.WIDHAI),3,71.0,fuzzy,suggested,,
+Rawalpindi Cantt:Hamid Jhangi,Hamid Jhangi,Rawalpindi Cantt,iesco:rawalpindi:004915,HAMID JHANGI,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Hamyoun-I,Hamyoun-I,Rawalpindi Cantt,iesco:rawalpindi:109111,HAMMAYUN 1,1,73.7,fuzzy,suggested,,
+Rawalpindi Cantt:Humayun-1,Humayun-1,Rawalpindi Cantt,iesco:rawalpindi:109111,HAMMAYUN 1,1,84.2,fuzzy,suggested,,
+Rawalpindi Cantt:Jahangir Road,Jahangir Road,Rawalpindi Cantt,iesco:rawalpindi:002505,JHANGIR ROAD,1,96.0,fuzzy,suggested,,
+Rawalpindi Cantt:Jahangir Road,Jahangir Road,Rawalpindi Cantt,iesco:rawalpindi:110901,JAPAN ROAD,2,78.3,fuzzy,suggested,,
+Rawalpindi Cantt:Jahangir Road,Jahangir Road,Rawalpindi Cantt,iesco:rawalpindi:107616,HAIDER ROAD,3,75.0,fuzzy,suggested,,
+Rawalpindi Cantt:Jahangir road,Jahangir road,Rawalpindi Cantt,iesco:rawalpindi:002505,JHANGIR ROAD,1,96.0,fuzzy,suggested,,
+Rawalpindi Cantt:Jahangir road,Jahangir road,Rawalpindi Cantt,iesco:rawalpindi:110901,JAPAN ROAD,2,78.3,fuzzy,suggested,,
+Rawalpindi Cantt:Jahangir road,Jahangir road,Rawalpindi Cantt,iesco:rawalpindi:107616,HAIDER ROAD,3,75.0,fuzzy,suggested,,
+Rawalpindi Cantt:Jail Park-1,Jail Park-1,Rawalpindi Cantt,iesco:rawalpindi:087407,JAIL PARK 1,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Jail Park-1,Jail Park-1,Rawalpindi Cantt,iesco:rawalpindi:002516,JAIL PARK,2,90.0,fuzzy,suggested,,
+Rawalpindi Cantt:Japan Road,Japan Road,Rawalpindi Cantt,iesco:rawalpindi:110901,JAPAN ROAD,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Japan Road,Japan Road,Rawalpindi Cantt,iesco:rawalpindi:002505,JHANGIR ROAD,2,72.7,fuzzy,suggested,,
+Rawalpindi Cantt:Japan Road,Japan Road,Rawalpindi Cantt,iesco:rawalpindi:017905,JINHA ROAD,3,70.0,fuzzy,suggested,,
+Rawalpindi Cantt:Jarar Camp,Jarar Camp,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Jarrar Camp,Jarrar Camp,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Jatha Hathial,Jatha Hathial,Rawalpindi Cantt,iesco:rawalpindi:064503,JHTHA HATHYAL,1,84.6,fuzzy,suggested,,
+Rawalpindi Cantt:Jhandala,Jhandala,Rawalpindi Cantt,iesco:rawalpindi:017921,JHANDA,1,85.7,fuzzy,suggested,,
+Rawalpindi Cantt:Jhandala,Jhandala,Rawalpindi Cantt,iesco:rawalpindi:109106,ADYALA,2,71.4,fuzzy,suggested,,
+Rawalpindi Cantt:Jhata Hatyal,Jhata Hatyal,Rawalpindi Cantt,iesco:rawalpindi:064503,JHTHA HATHYAL,1,88.0,fuzzy,suggested,,
+Rawalpindi Cantt:Kallar Syedan,Kallar Syedan,Rawalpindi Cantt,iesco:rawalpindi:017707,KALAR SAYEDAN,1,92.3,fuzzy,suggested,,
+Rawalpindi Cantt:Kalyal,Kalyal,Rawalpindi Cantt,iesco:rawalpindi:109101,KALYAL,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Kambeli Sadiq,Kambeli Sadiq,Rawalpindi Cantt,iesco:rawalpindi:098102,COMBLI SADIQ,1,80.0,fuzzy,suggested,,
+Rawalpindi Cantt:Khasala,Khasala,Rawalpindi Cantt,iesco:rawalpindi:109108,KHASALA,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Khasala,Khasala,Rawalpindi Cantt,iesco:rawalpindi:120404,KOHALA,2,76.9,fuzzy,suggested,,
+Rawalpindi Cantt:Khasala,Khasala,Rawalpindi Cantt,iesco:rawalpindi:009004,KHAWAJA,3,71.4,fuzzy,suggested,,
+Rawalpindi Cantt:Kohala,Kohala,Rawalpindi Cantt,iesco:rawalpindi:120404,KOHALA,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Kohala,Kohala,Rawalpindi Cantt,iesco:rawalpindi:109108,KHASALA,2,76.9,fuzzy,suggested,,
+Rawalpindi Cantt:LTC,LTC,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Mehboob Shaheed,Mehboob Shaheed,Rawalpindi Cantt,iesco:rawalpindi:087418,MEHBOOB SHAHEED (SOWAN),1,83.3,fuzzy,suggested,,
+Rawalpindi Cantt:Mehboob Shaheed,Mehboob Shaheed,Rawalpindi Cantt,iesco:rawalpindi:017731,MANSOOR SHAHEED,2,73.3,fuzzy,suggested,,
+Rawalpindi Cantt:Moorat,Moorat,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:New Mandra,New Mandra,Rawalpindi Cantt,iesco:rawalpindi:004918,NEW MANDRA,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:New Mandra,New Mandra,Rawalpindi Cantt,iesco:rawalpindi:004904,MANDRA,2,75.0,fuzzy,suggested,,
+Rawalpindi Cantt:New Rawat,New Rawat,Rawalpindi Cantt,iesco:rawalpindi:017701,NEW RAWAT,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Old Mandra,Old Mandra,Rawalpindi Cantt,iesco:rawalpindi:004904,MANDRA,1,75.0,fuzzy,suggested,,
+Rawalpindi Cantt:Old Mandra,Old Mandra,Rawalpindi Cantt,iesco:rawalpindi:004918,NEW MANDRA,2,70.0,fuzzy,suggested,,
+Rawalpindi Cantt:Old Rawat,Old Rawat,Rawalpindi Cantt,iesco:rawalpindi:017716,OLD RAWAT,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:PAF,PAF,Rawalpindi Cantt,iesco:rawalpindi:002509,PAF,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:PGHS,PGHS,Rawalpindi Cantt,iesco:rawalpindi:109109,PGHS,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Park View,Park View,Rawalpindi Cantt,iesco:rawalpindi:087410,PARK VIEW,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Pindi Board,Pindi Board,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:RIC,RIC,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Rahimabad,Rahimabad,Rawalpindi Cantt,iesco:rawalpindi:008619,RAJABAD,1,75.0,fuzzy,suggested,,
+Rawalpindi Cantt:Rahimabad,Rahimabad,Rawalpindi Cantt,iesco:rawalpindi:043336,ALAMABAD,2,70.6,fuzzy,suggested,,
+Rawalpindi Cantt:Rahimabad,Rahimabad,Rawalpindi Cantt,iesco:rawalpindi:001020,AZIZABAD,3,70.6,fuzzy,suggested,,
+Rawalpindi Cantt:Rehmatabad-1,Rehmatabad-1,Rawalpindi Cantt,iesco:rawalpindi:002519,REHMATABAD 1,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Rehmatabad-1,Rehmatabad-1,Rawalpindi Cantt,iesco:rawalpindi:002530,REHMATABAD 2,2,91.7,fuzzy,suggested,,
+Rawalpindi Cantt:Rose Lane,Rose Lane,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Sagri,Sagri,Rawalpindi Cantt,iesco:rawalpindi:017713,SAGHRI,1,90.9,fuzzy,suggested,,
+Rawalpindi Cantt:Samar Zar,Samar Zar,Rawalpindi Cantt,iesco:rawalpindi:109114,SAMARZAR,1,94.1,fuzzy,suggested,,
+Rawalpindi Cantt:Samar Zar,Samar Zar,Rawalpindi Cantt,iesco:rawalpindi:001005,LALA ZAR,2,70.6,fuzzy,suggested,,
+Rawalpindi Cantt:Shahpur,Shahpur,Rawalpindi Cantt,iesco:rawalpindi:109103,SHAPUR,1,92.3,fuzzy,suggested,,
+Rawalpindi Cantt:Shaigan,Shaigan,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Shehgan,Shehgan,Rawalpindi Cantt,iesco:rawalpindi:096802,CHEHAN,1,76.9,fuzzy,suggested,,
+Rawalpindi Cantt:Sowan Garden-I,Sowan Garden-I,Rawalpindi Cantt,iesco:rawalpindi:110902,SOWAN GARDEN 1,1,92.9,fuzzy,suggested,,
+Rawalpindi Cantt:Sowan Garden-I,Sowan Garden-I,Rawalpindi Cantt,iesco:rawalpindi:110903,SOWAN GARDEN 2,2,92.9,fuzzy,suggested,,
+Rawalpindi Cantt:Sowan Garden-I,Sowan Garden-I,Rawalpindi Cantt,iesco:rawalpindi:090007,SOWAN GARDEN 1 (NPF),3,81.2,fuzzy,suggested,,
+Rawalpindi Cantt:Sowan Garden-II,Sowan Garden-II,Rawalpindi Cantt,iesco:rawalpindi:110902,SOWAN GARDEN 1,1,89.7,fuzzy,suggested,,
+Rawalpindi Cantt:Sowan Garden-II,Sowan Garden-II,Rawalpindi Cantt,iesco:rawalpindi:110903,SOWAN GARDEN 2,2,89.7,fuzzy,suggested,,
+Rawalpindi Cantt:Sowan Garden-II,Sowan Garden-II,Rawalpindi Cantt,iesco:rawalpindi:090007,SOWAN GARDEN 1 (NPF),3,78.8,fuzzy,suggested,,
+Rawalpindi Cantt:Suparco,Suparco,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Suparcpo,Suparcpo,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Takbeer-1,Takbeer-1,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Takbeer-I,Takbeer-I,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:Tipu Road,Tipu Road,Rawalpindi Cantt,iesco:rawalpindi:017916,TIPU ROAD,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Tipu Road,Tipu Road,Rawalpindi Cantt,iesco:rawalpindi:001026,TULSA ROAD,2,73.7,fuzzy,suggested,,
+Rawalpindi Cantt:Tipu Road,Tipu Road,Rawalpindi Cantt,iesco:rawalpindi:095801,SAID PUR ROAD,3,72.7,fuzzy,suggested,,
+Rawalpindi City:08:00 AM to 12:00 PM,08:00 AM to 12:00 PM,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:AFOSH,AFOSH,Rawalpindi City,iesco:rawalpindi:061131,AFOHS,1,80.0,fuzzy,suggested,,
+Rawalpindi City:APHS,APHS,Rawalpindi City,iesco:rawalpindi:087402,AWHS,1,75.0,fuzzy,suggested,,
+Rawalpindi City:APHS,APHS,Rawalpindi City,iesco:rawalpindi:109109,PGHS,2,75.0,fuzzy,suggested,,
+Rawalpindi City:APHS,APHS,Rawalpindi City,iesco:rawalpindi:002526,A.P.H.S,3,72.7,fuzzy,suggested,,
+Rawalpindi City:Al Noor Colony,Al Noor Colony,Rawalpindi City,iesco:rawalpindi:105515,AL NOOR COLONY 2,1,93.3,fuzzy,suggested,,
+Rawalpindi City:Al- Noor Colony,Al- Noor Colony,Rawalpindi City,iesco:rawalpindi:105515,AL NOOR COLONY 2,1,93.3,fuzzy,suggested,,
+Rawalpindi City:Al-Noor Colony,Al-Noor Colony,Rawalpindi City,iesco:rawalpindi:105515,AL NOOR COLONY 2,1,93.3,fuzzy,suggested,,
+Rawalpindi City:Ameer Hamza,Ameer Hamza,Rawalpindi City,iesco:rawalpindi:104616,AMEER HAMZA CLY,1,84.6,fuzzy,suggested,,
+Rawalpindi City:Askari-XI,Askari-XI,Rawalpindi City,iesco:rawalpindi:043325,ASKARI XI,1,100.0,exact,auto_exact,,
+Rawalpindi City:Askari-XI,Askari-XI,Rawalpindi City,iesco:rawalpindi:017919,ASKARI 7,2,82.4,fuzzy,suggested,,
+Rawalpindi City:Askari-XI,Askari-XI,Rawalpindi City,iesco:rawalpindi:109112,ASKRI 14,3,70.6,fuzzy,suggested,,
+Rawalpindi City:Askari-Xi,Askari-Xi,Rawalpindi City,iesco:rawalpindi:043325,ASKARI XI,1,100.0,exact,auto_exact,,
+Rawalpindi City:Askari-Xi,Askari-Xi,Rawalpindi City,iesco:rawalpindi:017919,ASKARI 7,2,82.4,fuzzy,suggested,,
+Rawalpindi City:Askari-Xi,Askari-Xi,Rawalpindi City,iesco:rawalpindi:109112,ASKRI 14,3,70.6,fuzzy,suggested,,
+Rawalpindi City:Azharabad,Azharabad,Rawalpindi City,iesco:rawalpindi:008620,AZHARABAD,1,100.0,exact,auto_exact,,
+Rawalpindi City:Azharabad,Azharabad,Rawalpindi City,iesco:rawalpindi:043332,AHSANABAD,2,77.8,fuzzy,suggested,,
+Rawalpindi City:Azharabad,Azharabad,Rawalpindi City,iesco:rawalpindi:043336,ALAMABAD,3,70.6,fuzzy,suggested,,
+Rawalpindi City:BBH,BBH,Rawalpindi City,iesco:rawalpindi:043327,BBSH,1,85.7,fuzzy,suggested,,
+Rawalpindi City:Benazir Bhutto Hospital,Benazir Bhutto Hospital,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:CWO,CWO,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:Chairing Cross,Chairing Cross,Rawalpindi City,iesco:rawalpindi:008602,CHAIRING CROSS,1,100.0,exact,auto_exact,,
+Rawalpindi City:Chakra,Chakra,Rawalpindi City,iesco:rawalpindi:008604,CHAKRA,1,100.0,exact,auto_exact,,
+Rawalpindi City:Chakra,Chakra,Rawalpindi City,iesco:rawalpindi:096801,CHAKRI,2,83.3,fuzzy,suggested,,
+Rawalpindi City:Chakra,Chakra,Rawalpindi City,iesco:rawalpindi:002503,CHAKLALA,3,71.4,fuzzy,suggested,,
+Rawalpindi City:Cheering Cross,Cheering Cross,Rawalpindi City,iesco:rawalpindi:008602,CHAIRING CROSS,1,85.7,fuzzy,suggested,,
+Rawalpindi City:City,City,Rawalpindi City,iesco:rawalpindi:017902,CITY,1,100.0,exact,auto_exact,,
+Rawalpindi City:Cob Lane,Cob Lane,Rawalpindi City,iesco:rawalpindi:043329,COBE LINE,1,82.4,fuzzy,suggested,,
+Rawalpindi City:Coblane,Coblane,Rawalpindi City,iesco:rawalpindi:043329,COBE LINE,1,75.0,fuzzy,suggested,,
+Rawalpindi City:DHQ,DHQ,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:Dhoke Chaudhrian,Dhoke Chaudhrian,Rawalpindi City,iesco:rawalpindi:008621,DHOKE CHODRIAN,1,86.7,fuzzy,suggested,,
+Rawalpindi City:Dhoke Chaudrian,Dhoke Chaudrian,Rawalpindi City,iesco:rawalpindi:008621,DHOKE CHODRIAN,1,89.7,fuzzy,suggested,,
+Rawalpindi City:Dhoke Hukam Dad,Dhoke Hukam Dad,Rawalpindi City,iesco:rawalpindi:002527,DHOKE HUKAMDAD,1,96.6,fuzzy,suggested,,
+Rawalpindi City:Dk. Chaudrian,Dk. Chaudrian,Rawalpindi City,iesco:rawalpindi:008621,DHOKE CHODRIAN,1,76.9,fuzzy,suggested,,
+Rawalpindi City:Dk. Hukam Dad,Dk. Hukam Dad,Rawalpindi City,iesco:rawalpindi:002527,DHOKE HUKAMDAD,1,84.6,fuzzy,suggested,,
+Rawalpindi City:Dk. Sulaiman,Dk. Sulaiman,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:Dk. Suleman,Dk. Suleman,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:EME Complex,EME Complex,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:Faizia,Faizia,Rawalpindi City,iesco:rawalpindi:061112,FAZIA,1,90.9,fuzzy,suggested,,
+Rawalpindi City:Faizia,Faizia,Rawalpindi City,iesco:rawalpindi:095813,FAIZABAD,2,71.4,fuzzy,suggested,,
+Rawalpindi City:Faizia,Faizia,Rawalpindi City,iesco:rawalpindi:104902,FIZAIA 1,3,71.4,fuzzy,suggested,,
+Rawalpindi City:Fawara Chowk,Fawara Chowk,Rawalpindi City,iesco:rawalpindi:017934,FOWARA CHOWK,1,91.7,fuzzy,suggested,,
+Rawalpindi City:Fawara Chowk,Fawara Chowk,Rawalpindi City,iesco:rawalpindi:087414,CAR CHOWK,2,76.2,fuzzy,suggested,,
+Rawalpindi City:Fazaia,Fazaia,Rawalpindi City,iesco:rawalpindi:061112,FAZIA,1,90.9,fuzzy,suggested,,
+Rawalpindi City:Fazaia,Fazaia,Rawalpindi City,iesco:rawalpindi:095813,FAIZABAD,2,71.4,fuzzy,suggested,,
+Rawalpindi City:Fazaia,Fazaia,Rawalpindi City,iesco:rawalpindi:104902,FIZAIA 1,3,71.4,fuzzy,suggested,,
+Rawalpindi City:Ghauri Garden,Ghauri Garden,Rawalpindi City,iesco:rawalpindi:090011,RIVER GARDEN,1,72.0,fuzzy,suggested,,
+Rawalpindi City:Golra,Golra,Rawalpindi City,iesco:rawalpindi:008605,GOLRA,1,100.0,exact,auto_exact,,
+Rawalpindi City:HPT,HPT,Rawalpindi City,iesco:rawalpindi:017709,HPT-3,1,75.0,fuzzy,suggested,,
+Rawalpindi City:I-14/3,I-14/3,Rawalpindi City,iesco:rawalpindi:104602,I-14/3,1,100.0,exact,auto_exact,,
+Rawalpindi City:I-14/3,I-14/3,Rawalpindi City,iesco:rawalpindi:104610,I-14/4,2,83.3,fuzzy,suggested,,
+Rawalpindi City:I-14/3,I-14/3,Rawalpindi City,iesco:rawalpindi:104605,I-16/3,3,83.3,fuzzy,suggested,,
+Rawalpindi City:Iqbal Road-II,Iqbal Road-II,Rawalpindi City,iesco:rawalpindi:017931,IQBAL ROAD 2,1,88.0,fuzzy,suggested,,
+Rawalpindi City:Iqbal Road-II,Iqbal Road-II,Rawalpindi City,iesco:rawalpindi:043306,IQBAL ROAD,2,87.0,fuzzy,suggested,,
+Rawalpindi City:Jhangi,Jhangi,Rawalpindi City,iesco:rawalpindi:008608,JHANGI,1,100.0,exact,auto_exact,,
+Rawalpindi City:Jhangi,Jhangi,Rawalpindi City,iesco:rawalpindi:007406,BHANGALI,2,71.4,fuzzy,suggested,,
+Rawalpindi City:KRL,KRL,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:Lakhu Road,Lakhu Road,Rawalpindi City,iesco:rawalpindi:104615,LAKHU ROAD,1,100.0,exact,auto_exact,,
+Rawalpindi City:Lakhu Road,Lakhu Road,Rawalpindi City,iesco:rawalpindi:061123,KURI ROAD,2,73.7,fuzzy,suggested,,
+Rawalpindi City:Lakhu Road,Lakhu Road,Rawalpindi City,iesco:rawalpindi:001026,TULSA ROAD,3,70.0,fuzzy,suggested,,
+Rawalpindi City:Liaquat Bagh,Liaquat Bagh,Rawalpindi City,iesco:rawalpindi:017926,LIAQAT BAGH,1,95.7,fuzzy,suggested,,
+Rawalpindi City:Millatabad,Millatabad,Rawalpindi City,iesco:rawalpindi:008616,MILATABAD,1,94.7,fuzzy,suggested,,
+Rawalpindi City:NRC,NRC,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:Officer Colony,Officer Colony,Rawalpindi City,iesco:rawalpindi:104614,OFFICER COLONY,1,100.0,exact,auto_exact,,
+Rawalpindi City:Officer Colony,Officer Colony,Rawalpindi City,iesco:rawalpindi:095808,AFFANDI COLONY,2,71.4,fuzzy,suggested,,
+Rawalpindi City:P&T Wani,P&T Wani,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:Peshawar Road,Peshawar Road,Rawalpindi City,iesco:rawalpindi:008612,PSR ROAD,1,76.2,fuzzy,suggested,,
+Rawalpindi City:Peshawar road,Peshawar road,Rawalpindi City,iesco:rawalpindi:008612,PSR ROAD,1,76.2,fuzzy,suggested,,
+Rawalpindi City:Qadeer Road,Qadeer Road,Rawalpindi City,iesco:rawalpindi:107616,HAIDER ROAD,1,81.8,fuzzy,suggested,,
+Rawalpindi City:Qadeer road,Qadeer road,Rawalpindi City,iesco:rawalpindi:107616,HAIDER ROAD,1,81.8,fuzzy,suggested,,
+Rawalpindi City:Quaid-e- Azam Hospital,Quaid-e- Azam Hospital,Rawalpindi City,iesco:rawalpindi:008624,QUAID AZAM HOSPITAL,1,95.0,fuzzy,suggested,,
+Rawalpindi City:Quaid-e-Azam Hospital,Quaid-e-Azam Hospital,Rawalpindi City,iesco:rawalpindi:008624,QUAID AZAM HOSPITAL,1,95.0,fuzzy,suggested,,
+Rawalpindi City:Range Road,Range Road,Rawalpindi City,iesco:rawalpindi:008627,RANGE ROAD,1,100.0,exact,auto_exact,,
+Rawalpindi City:Range Road,Range Road,Rawalpindi City,iesco:rawalpindi:107621,CANNING ROAD,2,72.7,fuzzy,suggested,,
+Rawalpindi City:Range Road,Range Road,Rawalpindi City,iesco:rawalpindi:002505,JHANGIR ROAD,3,72.7,fuzzy,suggested,,
+Rawalpindi City:Sarafa Bazaar,Sarafa Bazaar,Rawalpindi City,iesco:rawalpindi:017920,SARAFA BAZAR,1,96.0,fuzzy,suggested,,
+Rawalpindi City:Sarafa Bazaar,Sarafa Bazaar,Rawalpindi City,iesco:rawalpindi:107601,RA BAZAR,2,76.2,fuzzy,suggested,,
+Rawalpindi City:Sector- IV,Sector- IV,Rawalpindi City,iesco:rawalpindi:126011,SECTOR -D,1,82.4,fuzzy,suggested,,
+Rawalpindi City:Sector- IV,Sector- IV,Rawalpindi City,iesco:rawalpindi:002536,SECTOR 4,2,82.4,fuzzy,suggested,,
+Rawalpindi City:Sector- IV,Sector- IV,Rawalpindi City,iesco:rawalpindi:126001,SECTOR A,3,82.4,fuzzy,suggested,,
+Rawalpindi City:Sector-IV,Sector-IV,Rawalpindi City,iesco:rawalpindi:126011,SECTOR -D,1,82.4,fuzzy,suggested,,
+Rawalpindi City:Sector-IV,Sector-IV,Rawalpindi City,iesco:rawalpindi:002536,SECTOR 4,2,82.4,fuzzy,suggested,,
+Rawalpindi City:Sector-IV,Sector-IV,Rawalpindi City,iesco:rawalpindi:126001,SECTOR A,3,82.4,fuzzy,suggested,,
+Rawalpindi City:Seham,Seham,Rawalpindi City,iesco:rawalpindi:008618,SEHAM,1,100.0,exact,auto_exact,,
+Rawalpindi City:Shamas Colony,Shamas Colony,Rawalpindi City,iesco:rawalpindi:008626,SHAMAS COLONY,1,100.0,exact,auto_exact,,
+Rawalpindi City:Shamas Colony,Shamas Colony,Rawalpindi City,iesco:rawalpindi:061122,KHURAM COLONY,2,76.9,fuzzy,suggested,,
+Rawalpindi City:Shamas Colony,Shamas Colony,Rawalpindi City,iesco:rawalpindi:107612,ZESHAN COLONY,3,76.9,fuzzy,suggested,,
+Rawalpindi City:Shammas Colony,Shammas Colony,Rawalpindi City,iesco:rawalpindi:008626,SHAMAS COLONY,1,96.3,fuzzy,suggested,,
+Rawalpindi City:Shammas Colony,Shammas Colony,Rawalpindi City,iesco:rawalpindi:061122,KHURAM COLONY,2,74.1,fuzzy,suggested,,
+Rawalpindi City:Shammas Colony,Shammas Colony,Rawalpindi City,iesco:rawalpindi:107612,ZESHAN COLONY,3,74.1,fuzzy,suggested,,
+Rawalpindi City:Tehmasamabad,Tehmasamabad,Rawalpindi City,iesco:rawalpindi:002518,TEHMASMABAD,1,95.7,fuzzy,suggested,,
+Rawalpindi City:Tehmasamabad,Tehmasamabad,Rawalpindi City,iesco:rawalpindi:043336,ALAMABAD,2,70.0,fuzzy,suggested,,
+Rawalpindi City:Zarkoon Heights,Zarkoon Heights,Rawalpindi City,iesco:rawalpindi:008628,ZARKOON HEIGHT,1,96.6,fuzzy,suggested,,
+Rawalpindi City:rom 7 am to 11 am,rom 7 am to 11 am,Rawalpindi City,,,0,0,,no_candidate,,
