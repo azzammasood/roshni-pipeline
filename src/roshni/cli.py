@@ -114,8 +114,9 @@ def build(
     db: Path = typer.Option(None, help="DuckDB file (default: data/roshni.duckdb)."),
     command: str = typer.Option("build", help="dbt command: build, run, test, parse, seed."),
     select: str = typer.Option(None, help="dbt --select expression."),
+    target: str = typer.Option("dev", help="dbt target: dev (DuckDB) or databricks."),
 ) -> None:
-    """Build the DuckDB warehouse with dbt (seeds, models, tests)."""
+    """Build the warehouse with dbt (seeds, models, tests) on DuckDB or Databricks."""
     import os
 
     from dbt.cli.main import dbtRunner
@@ -128,6 +129,7 @@ def build(
     db_path.parent.mkdir(parents=True, exist_ok=True)
     os.environ["ROSHNI_DUCKDB_PATH"] = db_path.as_posix()
     args = [command, "--project-dir", str(project), "--profiles-dir", str(project)]
+    args += ["--target", target]
     if select:
         args += ["--select", select]
     result = dbtRunner().invoke(args)

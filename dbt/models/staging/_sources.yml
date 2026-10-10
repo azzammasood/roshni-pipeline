@@ -6,8 +6,10 @@ sources:
       Typed Parquet tables written by `roshni parse` (validated by Great Expectations). On DuckDB
       each table is read from its file via external_location; on Databricks they are uploaded
       tables with the same names, so model SQL never references files.
+    # Databricks: tables uploaded by scripts/databricks_load.py into <catalog>.roshni_raw.
+    schema: "{{ 'roshni_raw' if target.type == 'databricks' else 'main' }}"
     config:
-      external_location: "{{ env_var('ROSHNI_PARSED_DIR', '../data/parsed') }}/{name}.parquet"
+      external_location: "{{ env_var('ROSHNI_PARSED_DIR', '../data/parsed') ~ '/{name}.parquet' if target.type == 'duckdb' else none }}"
     tables:
       - name: iesco_feeder
         description: One row per feeder row in the six IESCO circle workbooks.
