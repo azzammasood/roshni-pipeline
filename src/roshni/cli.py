@@ -135,3 +135,33 @@ def build(
     result = dbtRunner().invoke(args)
     if not result.success:
         raise typer.Exit(1)
+
+
+@app.command()
+def resolve(
+    db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
+) -> None:
+    """Generate match candidates into review seeds (dbt/seeds/review_*.csv), keeping decisions.
+
+    Run after `roshni build`; then fill `decision` (accepted/rejected) and run `roshni build`.
+    """
+    from collections import Counter
+
+    import duckdb
+
+    from roshni.paths import DATA_DIR, REPO_ROOT
+    from roshni.resolve import matchers
+    from roshni.resolve.review import merge_write
+
+    con = duckdb.connect(str(db or DATA_DIR / "roshni.duckdb"), read_only=True)
+    jobs = {
+        "review_feeder_locality.csv": matchers.feeder_locality,
+        "review_press_feeder.csv": matchers.press_feeders,
+        "review_ibc_subdivision.csv": matchers.ibc_subdivision,
+    }
+    for name, fn in jobs.items():
+        rows = fn(con)
+        stats = merge_write(REPO_ROOT / "dbt" / "seeds" / name, rows, matchers.REVIEW_COLUMNS)
+        top = Counter(r["status"] for r in rows if r["rank"] in (0, 1))
+        typer.echo(f"{name:28} subjects={sum(top.values()):4} {dict(top)} {stats}")
+    con.close()
