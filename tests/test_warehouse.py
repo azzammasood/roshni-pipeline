@@ -86,18 +86,13 @@ def test_press_release_03_matching(wh) -> None:
             "where s.release_no = '03' and s.outage_date = date '2026-10-05'"
         )
     )
-    matched = {n for n, st in rows.items() if st == "matched"}
-    assert matched == {
+    # After the delegated review (2026-10-10): the confident and plausible names are matched;
+    # Qadeer Road's wrong suggestion (HAIDER ROAD) was rejected.
+    assert {n for n, st in rows.items() if st == "matched"} == {
         "Islamabad Club-1", "Islamabad Club-2", "Mehfooz Shaheed / Shahzad Town", "Orchard Scheme",
-        "Pindorian", "Scheme-2", "Askari-XI",
-    }  # fmt: skip
-    # Millatabad (confident) and the 3 plausible ones wait for owner review; Qadeer Road has a
-    # wrong low-score suggestion (HAIDER ROAD) to reject.
-    assert {n for n, st in rows.items() if st == "pending_review"} == {
-        "Millatabad", "Dhoke Chaudhrian", "Coblane", "Peshawar Road", "Qadeer Road",
+        "Pindorian", "Scheme-2", "Askari-XI", "Millatabad", "Dhoke Chaudhrian", "Coblane",
+        "Peshawar Road",
     }  # fmt: skip
     assert {n for n, st in rows.items() if st == "unmatched"} == {
-        "KRL",
-        "Filtration Plant",
-        "CDA Pump",
-    }
+        "Qadeer Road", "KRL", "Filtration Plant", "CDA Pump",
+    }  # fmt: skip

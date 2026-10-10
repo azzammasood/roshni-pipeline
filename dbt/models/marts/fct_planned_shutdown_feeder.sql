@@ -7,15 +7,19 @@ select
     m.match_confidence,
     case
         when m.candidate_id is not null then 'matched'
-        when r.status = 'out_of_scope' then 'out_of_scope'
-        when r.status = 'suggested' then 'pending_review'
+        when r.out_of_scope = 1 then 'out_of_scope'
+        when r.undecided > 0 then 'pending_review'
         else 'unmatched'
     end as feeder_match_state
 from {{ ref('fct_planned_shutdown') }} as s
 left join ({{ accepted_matches('review_press_feeder') }}) as m
     on m.subject_group = s.circle_as_printed and m.subject_name = s.feeder_name_as_printed
 left join (
-    select subject_group, subject_name, max(status) as status
+    select
+        subject_group,
+        subject_name,
+        max(case when status = 'out_of_scope' then 1 else 0 end) as out_of_scope,
+        sum(case when status = 'suggested' and decision is null then 1 else 0 end) as undecided
     from {{ ref('review_press_feeder') }}
     group by subject_group, subject_name
 ) as r
