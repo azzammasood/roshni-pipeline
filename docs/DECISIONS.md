@@ -2,6 +2,12 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-10 (Phase 4 review)
+- **Owner delegated the match review to Claude** (no human review). Every decision in `dbt/seeds/review_*.csv` carries a note `claude-review 2026-10-10: <reason>`; the owner can overturn any row by editing `decision`.
+- **Rules used:** accept spelling variants with the same consonant skeleton (vowels, H and doubled letters ignored); accept explicit typos/abbreviations (PSR = Peshawar, COL = "Karnel", roman numerals = digits, CLY = colony) and parentheticals that name the place ("F-10 (Kala Base)", "MAIN BAZAR (SOHAWA)" → SOHAWA MC); accept "<town> CITY n" → the town's urban body. Reject when a subject already has an exact match, when names differ in substance (MURREE BREWERY ≠ Murree town, JHANDALA ≠ JHANDA, MANGTAL-type cases), or when same-named candidates cannot be told apart. No geography from memory.
+- The skeleton rule was audited row by row; 6 accepts were overturned (roman II collapsing to I: Scheme-II, Iqbal Road-II; extra syllable: JALALA/JALALIA, SOHAN/SOHANA, BANNI/BANN, BHANGALI/BHANGAL).
+- **IBC crosswalk:** 15 IBCs accepted where the sub-division has the same name (extents not verified); 14 left unmapped (no same-named sub-division, e.g. Clifton, Defence, Gulshan, Johar, Malir, North Karachi); Uthal out of scope.
+
 ## 2026-10-10 (Phase 4)
 - **Review loop in seeds:** `roshni resolve` (after `roshni build`) writes `dbt/seeds/review_{feeder_locality,press_feeder,ibc_subdivision}.csv`; the owner fills `decision` (accepted/rejected); reruns keep decisions (and owner-added rows); `roshni build` turns them into `feeder_locality_match`, `fct_planned_shutdown_feeder`, `ke_ibc_subdivision`. Seeds hold only public names, so they are committed.
 - **Only `auto_exact` counts without review:** identical normalised name, the only exact candidate, and unique within its group (district or circle). The owner can still reject it.

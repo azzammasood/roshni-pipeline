@@ -12,7 +12,7 @@ Long facts: `docs/data-audit.md` (oracles, file inventory). Decisions: `docs/DEC
 - Fairness stats are descriptive: no causal language, always show n. K-Electric shares are **among listed feeders only**.
 - Never invent data. Unparseable rows → quarantine with a reason. Known anomalies are flagged, never silently fixed.
 - Display Asia/Karachi (UTC+5, no DST); store UTC.
-- Approximate matches always carry a stored, displayed confidence. Only exact matches auto-accept.
+- Approximate matches always carry a stored, displayed confidence. Only exact matches auto-accept; the owner delegated the review of the rest to Claude (rules in DECISIONS.md 2026-10-10, reason in each seed row's note).
 - IESCO XLSX = scenario playbook, never inequity analysis. IESCO feeder **code** (6-digit zero-padded) is the join key.
 - No gas-connection wealth proxy; no district-level income claims.
 - Do not label any feeder or file as "the author's own".
@@ -82,5 +82,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 2 (parsers): done 2026-10-09; 20 golden tests, 10 GE suites pass; audit mismatches explained and approved (data-audit.md §8).
 - Phase 3 (warehouse): built 2026-10-09; dbt build PASS=78; warehouse golden tests pass.
 - Phase 3b (Databricks smoke run): done 2026-10-10; PASS=78 on Databricks Free Edition, no dialect fixes.
-- Phase 4 (entity resolution): built 2026-10-10; dbt PASS=108; review seeds await owner decisions (docs/review-guide.md); boundary report in docs/boundary-research.md.
+- Phase 4 (entity resolution): done 2026-10-10; dbt PASS=108; review delegated to Claude (rules in DECISIONS.md, notes per row); boundary report in docs/boundary-research.md (no map in v1).
 - Next: Phase 5, live layer ("dark now", `roshni dark-now --at`).

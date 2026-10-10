@@ -121,3 +121,11 @@ Fuzzy ≥ 85 (auto + suggested) = 202, close to the audit's 199; shares by circl
 **IBC → sub-division draft:** 16 IBCs have a name-similar sub-division (e.g. Orangi - I/II → ORANGI, Layari - I/II → LYARI, Liaqatabad → LIAQUATABAD), 13 have none (Bahadurabad, Bin Qasim, Clifton, Defence, F.B. Area, Gadap, Gulshan, Johar - I/II, KIMZ, Malir, Surjani, Tipu Sultan), Uthal is out of scope. Nothing counts until the owner accepts it.
 
 **Boundaries:** see `docs/boundary-research.md`; none adopted.
+
+**After the delegated review (Claude, 2026-10-10):**
+| Task / group | In scope | Matched | Share |
+|---|---:|---:|---:|
+| Feeder → locality: Attock / Chakwal / Islamabad / Jhelum / Rawalpindi | 164 / 101 / 271 / 90 / 350 | 47 / 44 / 11 / 17 / 28 | 28.7 / 43.6 / 4.1 / 18.9 / 8.0 % |
+| Press names → feeder: Attock / Chakwal / Islamabad / Jhelum / Rwp Cantt / Rwp City | 66 / 27 / 91 / 71 / 70 / 60 | 42 / 23 / 60 / 49 / 51 / 40 | 63.6 / 85.2 / 65.9 / 69.0 / 72.9 / 66.7 % |
+| IBC → sub-division | 29 | 15 | 51.7 % |
+Planned-shutdown windows: 1,006 matched to a feeder, 512 unmatched, 335 out of scope (GSO). Release No. 03: 11 of 15 matched (audit: 8 confident + 3 plausible); Qadeer Road, KRL, Filtration Plant, CDA Pump unmatched (audit: no match).

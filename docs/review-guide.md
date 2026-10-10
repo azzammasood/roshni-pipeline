@@ -1,5 +1,8 @@
 # Reviewing matches (owner)
 
+> 2026-10-10: the owner delegated this review to Claude. All rows already carry a decision and a
+> `claude-review` note with the reason. Use this guide only to overturn a decision.
+
 Three files in `dbt/seeds/` hold match candidates. Open them in Excel or any CSV editor.
 
 | File | What is matched |
