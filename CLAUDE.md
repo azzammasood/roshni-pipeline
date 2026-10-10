@@ -38,6 +38,7 @@ uv run roshni snapshot [--store DIR] [--only SOURCE]   # polite fetch; default s
 uv run roshni parse [--snapshots data/snapshots-branch]  # -> data/parsed/*.parquet + quarantine/
 uv run roshni validate                                   # Great Expectations on data/parsed
 uv run roshni build [--command build|parse|test] [--select X]  # dbt -> data/roshni.duckdb
+uv run roshni resolve                                           # candidates -> dbt/seeds/review_*.csv (keeps decisions)
 uv run --group databricks python scripts/databricks_load.py     # upload parsed tables (env creds)
 uv run --group databricks roshni build --target databricks      # same models on Databricks
 docker compose build ; docker compose run --rm app <cmd>   # canonical pdftotext
@@ -81,4 +82,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 2 (parsers): done 2026-10-09; 20 golden tests, 10 GE suites pass; audit mismatches explained and approved (data-audit.md §8).
 - Phase 3 (warehouse): built 2026-10-09; dbt build PASS=78; warehouse golden tests pass.
 - Phase 3b (Databricks smoke run): done 2026-10-10; PASS=78 on Databricks Free Edition, no dialect fixes.
-- Next: Phase 4, entity resolution (feeder-to-locality, press-release names, IBC crosswalk draft, boundary research).
+- Phase 4 (entity resolution): built 2026-10-10; dbt PASS=108; review seeds await owner decisions (docs/review-guide.md); boundary report in docs/boundary-research.md.
+- Next: Phase 5, live layer ("dark now", `roshni dark-now --at`).

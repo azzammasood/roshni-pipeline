@@ -102,3 +102,22 @@ Golden tests: `tests/test_golden.py` (need `data-sources/`; skipped in CI). Popp
 - Circle labels in releases include `Rawalpindi Cantt` and `Rawalpindi City` separately (the XLSX has one Rawalpindi circle), plus `GSO`.
 - PBS Sindh PDFs: names wrap and numbers sometimes sit on their own line. Rows are accepted only when name and a full set of numbers share a line; 73 (T33) / 112 (T34) lines quarantined. **Sindh is complete at district (30) and sub-division/taluka (130) level**, which is what the IBC crosswalk uses; below that, charges/circles under a quarantined body name are flagged `parent_body_unresolved` and do not join 33↔34. Table 34 (Sindh PDF) prints household size rounded to integers.
 - Household size reaches ~98 in tiny rural/urban units with 1–2 housing units (published values, likely institutional).
+
+## 9. Entity resolution (Phase 4, 2026-10-10)
+Candidates come from `roshni resolve` into `dbt/seeds/review_*.csv`; see `docs/review-guide.md`.
+
+**Feeder → locality** (IESCO excl. AJK, 977 feeders after quarantine; candidates: rural mauzas + urban bodies of the circle's district; `token_set_ratio` ≥ 85, top 3):
+| Circle | Feeders | auto_exact | suggested (best ≥ 85) | no candidate |
+|---|---:|---:|---:|---:|
+| Attock | 164 | 30 | 28 | 106 |
+| Chakwal | 101 | 25 | 27 | 49 |
+| Islamabad | 271 | 6 | 13 | 252 |
+| Jhelum | 90 | 5 | 17 | 68 |
+| Rawalpindi | 350 | 15 | 36 | 299 |
+Fuzzy ≥ 85 (auto + suggested) = 202, close to the audit's 199; shares by circle 35 / 51 / 7 / 24 / 15 % vs audit 34 / 53 / 8 / 32 / 11 %. Identical normalised names = 86 (81 unique in district → auto_exact) vs the audit's "110 exact"; the audit's normalisation is not recorded, so the difference cannot be attributed. Sector-style Islamabad feeders still match almost nothing, as the audit found.
+
+**Press-release names → IESCO feeders** (626 printed names; GSO's 241 are out of scope, no XLSX list): 126 auto_exact, 168 suggested, 91 no candidate. Release No. 03 against audit 7.2: 7 of the 8 confident names auto-match (Millatabad → MILATABAD 94.7 awaits review), the 3 plausible ones are suggested (Dhoke Chaudhrian → DHOKE CHODRIAN 86.7, Coblane → COBE LINE 75, Peshawar Road → PSR ROAD 76.2), KRL / Filtration Plant / CDA Pump have no candidate, and Qadeer Road gets a wrong suggestion (HAIDER ROAD 81.8) to reject.
+
+**IBC → sub-division draft:** 16 IBCs have a name-similar sub-division (e.g. Orangi - I/II → ORANGI, Layari - I/II → LYARI, Liaqatabad → LIAQUATABAD), 13 have none (Bahadurabad, Bin Qasim, Clifton, Defence, F.B. Area, Gadap, Gulshan, Johar - I/II, KIMZ, Malir, Surjani, Tipu Sultan), Uthal is out of scope. Nothing counts until the owner accepts it.
+
+**Boundaries:** see `docs/boundary-research.md`; none adopted.

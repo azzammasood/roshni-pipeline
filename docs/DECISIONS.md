@@ -2,6 +2,15 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-10 (Phase 4)
+- **Review loop in seeds:** `roshni resolve` (after `roshni build`) writes `dbt/seeds/review_{feeder_locality,press_feeder,ibc_subdivision}.csv`; the owner fills `decision` (accepted/rejected); reruns keep decisions (and owner-added rows); `roshni build` turns them into `feeder_locality_match`, `fct_planned_shutdown_feeder`, `ke_ibc_subdivision`. Seeds hold only public names, so they are committed.
+- **Only `auto_exact` counts without review:** identical normalised name, the only exact candidate, and unique within its group (district or circle). The owner can still reject it.
+- **Scorers:** feeder→locality uses `token_set_ratio` ≥ 85 with numbers and roman numerals dropped ("BHARAKHAU 1" → village BHARAKHAU); feeder→feeder (press releases) uses `ratio` ≥ 70 with numbers kept ("Club-1" ≠ "Club-2"). Top 3 candidates, scores stored as confidence (score/100).
+- **Press-release circles:** Rawalpindi City and Rawalpindi Cantt both map to the Rawalpindi XLSX circle; GSO is out of scope (no XLSX feeder list). Transmission assets are excluded from matching.
+- **IBC crosswalk is a draft by name only, never auto-accepted;** Uthal out of scope (Balochistan).
+- **`dim_area`** = census areas + K-Electric IBCs + IESCO circles, `geometry_wkt` null. **No boundary source adopted** (docs/boundary-research.md): v1 has no map.
+- **`rpt_match_rates`** reports matched / pending review / unmatched / out of scope per task and group.
+
 ## 2026-10-10 (Phase 3b)
 - **Databricks smoke run passed** on a Databricks Free Edition workspace (serverless SQL warehouse, catalog `workspace`): `scripts/databricks_load.py` uploaded the 10 parsed tables to `workspace.roshni_raw` via a Unity Catalog volume (row counts identical to local), and `roshni build --target databricks` gave **PASS=78**, same as DuckDB. **No dialect fixes were needed.**
 - An older Databricks workspace on the owner's account had exhausted its budget and lost serverless eligibility; a separate Free Edition workspace was used. Free Edition is non-commercial with no SLA: Databricks stays a portability check, not a dependency.
