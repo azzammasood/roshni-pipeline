@@ -2,6 +2,11 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-10 (Phase 3b)
+- **Databricks smoke run passed** on a Databricks Free Edition workspace (serverless SQL warehouse, catalog `workspace`): `scripts/databricks_load.py` uploaded the 10 parsed tables to `workspace.roshni_raw` via a Unity Catalog volume (row counts identical to local), and `roshni build --target databricks` gave **PASS=78**, same as DuckDB. **No dialect fixes were needed.**
+- An older Databricks workspace on the owner's account had exhausted its budget and lost serverless eligibility; a separate Free Edition workspace was used. Free Edition is non-commercial with no SLA: Databricks stays a portability check, not a dependency.
+- `dbt-databricks` lives in the optional `databricks` dependency group; run with `uv run --group databricks ...`. Credentials only via `DATABRICKS_HOST`, `DATABRICKS_HTTP_PATH`, `DATABRICKS_TOKEN` env vars; nothing in the repo.
+
 ## 2026-10-09 (Phase 3)
 - **dbt-duckdb 1.11 / dbt-core 1.12**, project in `dbt/`, profile in `dbt/profiles.yml` (paths from env, set by `roshni build`). Sources point at `data/parsed/*.parquet` via `external_location`, so model SQL never references files (portable to Databricks, where sources are uploaded tables).
 - **Portable SQL only:** `||`, `like`, window functions, `cast(... as string|integer|double)`; no DuckDB-only functions in models.
