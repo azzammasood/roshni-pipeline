@@ -94,3 +94,8 @@ seeds:
           values:
           - accepted
           - rejected
+- name: hours_of_day
+  description: Hours 0-23, a portable numbers table for hourly profiles.
+  config:
+    column_types:
+      hour_of_day: integer

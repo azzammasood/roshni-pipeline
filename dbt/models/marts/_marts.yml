@@ -265,3 +265,29 @@ models:
   - name: task
     data_tests:
     - not_null
+- name: mart_build_info
+  description: Timestamp (UTC) of the warehouse build; fallback last_updated for live outputs.
+- name: mart_feeder_dark_hours
+  description: Scheduled dark minutes per feeder per local hour of day (Asia/Karachi) for K-Electric daily
+    cycles and each IESCO scenario level. Schedule data, not measured outages; basis for the static 'dark
+    now' export.
+  columns:
+  - name: feeder_id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_feeder')
+          field: feeder_id
+  - name: hour_of_day
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 23
+  - name: dark_minutes
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 1
+          max_value: 60
