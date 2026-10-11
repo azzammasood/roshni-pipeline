@@ -50,6 +50,7 @@ docker compose build ; docker compose run --rm app <cmd>   # canonical pdftotext
 npm ci ; npm run sync-data        # copy data/export/v1 -> public/data/v1 (or sync-data:fixtures)
 npm run gen:types                 # after any schemas/v1 change (check:types in CI)
 npm run lint ; npm run typecheck ; npm test ; npm run build   # static site -> web/out
+uv run python scripts/dark_now_oracle.py   # then npm test: TS dark-now == Python (full export)
 ```
 
 ## Layout
@@ -96,5 +97,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 5 (live layer): done 2026-10-10; dark-now function + CLI, mart_feeder_dark_hours; dbt PASS=116; midnight-wrap tests pass.
 - Phase 6 (analytics + narration): done 2026-10-11; dbt PASS=129; LLM report (gemini-2.5-flash via fallback, $0.0075) validated and traced to queries.
 - Phase 7 (export + orchestration): done 2026-10-11; export validates against schemas/v1; Airflow DAG ran all 6 tasks successfully.
-- Frontend F0 (scaffold): done 2026-10-11; full build 1,731 static pages, fixture build in CI. Next: F1 (exact windows in export v1.1.0 + TS dark-now). F4 deploy waits on owner decisions (plan doc).
+- Frontend F0 (scaffold): done 2026-10-11; full build 1,731 static pages, fixture build in CI. F1 (export 1.1.0 exact K-E windows, TS dark-now): done 2026-10-11, oracle 144/144 cases. Next: F2 pages. F4 deploy waits on owner decisions (plan doc).
 - Backend complete. Frontend kickoff: Decided 2026-10-11: Next.js static export on GitHub Pages (deployed by Actions after the daily export; private repo needs owner to go public or paid plan first), English first with Urdu-ready i18n/RTL, no map in v1.

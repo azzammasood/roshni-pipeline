@@ -40,11 +40,11 @@ GitHub Pages by Actions. English first, Urdu-ready (RTL-safe). No map. Decisions
 | `/about` | Method, sources (`meta.sources`), attribution, disclaimer, glossary (feeder, IBC, level, scheduled vs measured). |
 
 ## Phases
-- **F0 scaffold** (this session): `web/` app, i18n skeleton, types from schemas, data sync + fixtures,
+- **F0 scaffold** (done 2026-10-11): `web/` app, i18n skeleton, types from schemas, data sync + fixtures,
   layout with label/footer, placeholder routes, lint/typecheck/test/build in CI. Gate: `npm run build`
   produces `web/out` with all routes; CI green.
-- **F1 data fidelity + dark-now lib**: backend additive export v1.1.0 adds exact local windows
-  (`windows: [{start_min, end_min}]`) to dark profiles, because hourly minute counts cannot answer
+- **F1 data fidelity + dark-now lib** (done 2026-10-11): additive export v1.1.0 adds exact
+  K-Electric windows (`daily_windows`; IESCO slots are whole hours, so hourly is exact), because hourly minute counts cannot answer
   "is 22:40 dark?" when hour 22 has 25 scheduled minutes. Port Phase 5 window semantics ([start, end),
   midnight wrap, not before `effective_from`) to TS with tests mirroring the Python ones.
   Gate: TS results equal `roshni dark-now --json` for a set of times.

@@ -2,6 +2,13 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-11 (Frontend F1: exact windows + dark-now port)
+- **Export schema 1.1.0 (additive):** `DarkProfile.daily_windows` = exact K-Electric windows (`start_min`, `end_min`, [start, end) local minutes, end <= start wraps); 2,472 windows, at most 4 per feeder; `dark_profiles.json` 645 KB to 760 KB. A 1.0.0-shaped profile still validates (test). **IESCO gets no windows:** all 46,232 scenario slots are whole local hours, so the hourly vector is exact; the export fails if a slot is ever not hour-aligned, and fails if windows disagree with the hourly minutes.
+- **Bug fixed: export timestamps depended on the machine's time zone.** DuckDB returns timestamptz in the session zone, so a local export on a UTC+5 machine wrote `start_utc`/`end_utc` as `+05:00` (same instant, not UTC as stored). The export session is now pinned to UTC (regression test). Earlier committed exports were produced in UTC containers and are unaffected.
+- **dark-now ordering made total:** ties broke on DuckDB row order (two IESCO feeders named "I-10/1"; one feeder in two overlapping press releases). Sort key is now kind, source, area, name, feeder_id, window in both Python and TS. Content was unchanged.
+- **TS port `web/src/lib/darkNow.ts`** mirrors `roshni.live.dark_now` (same kinds, window strings, ordering, effective-date rule, IESCO only with a chosen level, planned shutdowns by UTC bounds); notes are structured (`not_yet_effective`, `iesco_level_not_chosen`, `unmatched_shutdowns`) so the UI can translate them.
+- **Gate passed:** `scripts/dark_now_oracle.py` writes `data/oracle/dark_now.json` from the Python function (the one behind `roshni dark-now --json`) for 66 instants (midnight-wrap and end-exclusive edges, the K-Electric effective date, every 6 days across the planned-shutdown period) × {no level, one level}; `darkNow.oracle.test.ts` matches all 144 cases and 54,910 rows exactly. The test skips without the oracle or the full export (CI).
+
 ## 2026-10-11 (Frontend F0 scaffold)
 - **Plan in `docs/frontend-plan.md`** (phases F0-F5, page list, UI non-negotiables, owner decisions before deploy).
 - **`web/` = Next.js 16.4 App Router, `output: "export"`, `trailingSlash`, basePath from `NEXT_PUBLIC_BASE_PATH`** (`/roshni-pipeline` on Pages, empty locally). Node 24, npm (lockfile committed). Tailwind 4 with logical utilities only; system fonts (no build-time font download).
