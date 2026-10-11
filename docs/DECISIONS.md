@@ -2,6 +2,13 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-11 (Phase 6)
+- **Equity marts (SQL, portable):** `mart_ke_ibc_equity` (per IBC: listed/scheduled feeders, 6 h/12 h counts, share at 12 h, mean hours, mean ATC loss with n, category counts, crosswalked sub-division), `mart_ke_subdivision_equity` (15 crosswalked IBCs → 13 sub-divisions with literacy, degree share, pacca share, household size), `rpt_ke_anomalies` (rules with counts), `rpt_spearman`.
+- **Spearman in SQL:** average ranks for ties (`rank() + (ties - 1) / 2`), then `corr()` on ranks; n always reported; no p-values or significance claims (n = 13 at sub-division level). Sindh household size is published rounded to integers, so its rho is coarse.
+- **Overlap-band rule counts scheduled feeders** (matches the audit's 112 Medium / 89 High); the 6 listed feeders without a schedule row are all Medium and in the band.
+- **Narration:** facts = named SQL queries (`narrate/facts.py`), each number a fact with its query id; the writer (OpenRouter LLM or a deterministic template) may only use `{fact_id}` placeholders. Drafts with any digit outside a placeholder, unknown placeholders, or causal/accusatory wording are rejected; after rendering, every number must be a fact value. Report = Markdown + JSON with a fact table and the SQL of every query.
+- **OpenRouter:** key from `OPENROUTER_API_KEY`; model chain in `config/narrator.yml` validated against the live `/models` list; prices read live from `/models`; a call is skipped if its worst case exceeds the remaining per-run cap (default $0.05); responses cached by hash in `data/cache/narrate/`; tests use a mocked API (free models only in tests). No key → template narrative, so the report always generates.
+
 ## 2026-10-10 (Phase 5)
 - **`roshni.live.dark_now`** answers "who is scheduled dark at time T" from the warehouse: K-Electric daily cycles, IESCO scenario slots **only when a level is passed** (`--level N`, the files never say which level is active), and planned shutdowns from press releases. Every row says it is schedule data, with source, effective_from and last_updated (source fetch time, else the warehouse build time from `mart_build_info`).
 - **Window semantics:** [start, end) in local Asia/Karachi minutes; end ≤ start wraps midnight (22:35~02:05 is dark at 22:35 and 02:04, not 02:05); IESCO 23--24 ends at 1440. Naive input times are Asia/Karachi; planned shutdowns compare in UTC.

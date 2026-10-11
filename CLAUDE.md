@@ -40,6 +40,7 @@ uv run roshni validate                                   # Great Expectations on
 uv run roshni build [--command build|parse|test] [--select X]  # dbt -> data/roshni.duckdb
 uv run roshni resolve                                           # candidates -> dbt/seeds/review_*.csv (keeps decisions)
 uv run roshni dark-now [--at "2026-10-10 23:30"] [--level 12] [--json]   # scheduled-dark feeders
+uv run roshni report [--engine auto|openrouter|template]   # weekly equity report -> data/reports
 uv run --group databricks python scripts/databricks_load.py     # upload parsed tables (env creds)
 uv run --group databricks roshni build --target databricks      # same models on Databricks
 docker compose build ; docker compose run --rm app <cmd>   # canonical pdftotext
@@ -85,4 +86,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 3b (Databricks smoke run): done 2026-10-10; PASS=78 on Databricks Free Edition, no dialect fixes.
 - Phase 4 (entity resolution): done 2026-10-10; dbt PASS=108; review delegated to Claude (rules in DECISIONS.md, notes per row); boundary report in docs/boundary-research.md (no map in v1).
 - Phase 5 (live layer): done 2026-10-10; dark-now function + CLI, mart_feeder_dark_hours; dbt PASS=116; midnight-wrap tests pass.
-- Next: Phase 6, analytics (SQL equity rules per IBC, Spearman at sub-division level with n) and OpenRouter narration.
+- Phase 6 (analytics + narration): built 2026-10-11; dbt PASS=129; template report traced to queries; LLM narration awaits an OPENROUTER_API_KEY run.
+- Next: Phase 7, static JSON export with JSON Schemas + local Airflow showcase.
