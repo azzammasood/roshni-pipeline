@@ -1,0 +1,11 @@
+# OpenRouter narrator (OpenAI-compatible). The LLM writes prose only; numbers come from SQL.
+# Fallback chain: the first model that exists in the live /models list, fits the spend cap and
+# passes validation is used. Unknown ids are skipped (ids change; edit freely).
+# ROSHNI_NARRATOR_MODEL (env) is tried first; ROSHNI_NARRATOR_SPEND_CAP_USD overrides the cap.
+models:
+  - anthropic/claude-haiku-4.5
+  - openai/gpt-4.1-mini
+  - google/gemini-2.5-flash
+max_tokens: 700
+temperature: 0.2
+spend_cap_usd: 0.05   # hard cap per run, priced from the live /models endpoint

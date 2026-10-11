@@ -210,3 +210,33 @@ def dark_now_cmd(
         )
     if len(shown) < len(result.rows):
         typer.echo(f"  ... {len(result.rows) - len(shown)} more (use --limit 0 or --json)")
+
+
+@app.command()
+def report(
+    engine: str = typer.Option(
+        "auto", help="auto (LLM if OPENROUTER_API_KEY set), openrouter, template."
+    ),
+    out: Path = typer.Option(None, help="Output folder (default: data/reports)."),
+    db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
+) -> None:
+    """Write the weekly equity report (Markdown + JSON) with every number traced to a query."""
+    import duckdb
+
+    from roshni.narrate.report import build_report, write_report
+    from roshni.paths import DATA_DIR
+
+    if engine not in ("auto", "openrouter", "template"):
+        raise typer.BadParameter("engine must be auto, openrouter or template")
+    con = duckdb.connect(str(db or DATA_DIR / "roshni.duckdb"), read_only=True)
+    try:
+        rep = build_report(con, engine)
+    finally:
+        con.close()
+    md, js = write_report(rep, out or DATA_DIR / "reports")
+    typer.echo(
+        f"engine={rep.engine} spent_usd={rep.data['spent_usd']} facts={len(rep.data['facts'])}"
+    )
+    for line in rep.data["narrator_log"]:
+        typer.echo(f"  {line}")
+    typer.echo(f"wrote {md}\nwrote {js}")
