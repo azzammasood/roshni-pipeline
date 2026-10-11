@@ -86,5 +86,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 3b (Databricks smoke run): done 2026-10-10; PASS=78 on Databricks Free Edition, no dialect fixes.
 - Phase 4 (entity resolution): done 2026-10-10; dbt PASS=108; review delegated to Claude (rules in DECISIONS.md, notes per row); boundary report in docs/boundary-research.md (no map in v1).
 - Phase 5 (live layer): done 2026-10-10; dark-now function + CLI, mart_feeder_dark_hours; dbt PASS=116; midnight-wrap tests pass.
-- Phase 6 (analytics + narration): built 2026-10-11; dbt PASS=129; template report traced to queries; LLM narration awaits an OPENROUTER_API_KEY run.
+- Phase 6 (analytics + narration): done 2026-10-11; dbt PASS=129; LLM report (gemini-2.5-flash via fallback, $0.0075) validated and traced to queries.
 - Next: Phase 7, static JSON export with JSON Schemas + local Airflow showcase.

@@ -25,8 +25,8 @@ API = "https://openrouter.ai/api/v1"
 CACHE_DIR = DATA_DIR / "cache" / "narrate"
 SYSTEM = """You write short, neutral prose for a public data report about PUBLISHED electricity
 load-shed SCHEDULES in Karachi (not measured outages). Rules, all mandatory:
-1. Never write any digit. Every number must be a placeholder from the facts list, written as
-   {fact_id}. Do not invent placeholders.
+1. Never write any digit. Every number must be a placeholder: the id of a fact from the list
+   inside curly braces, e.g. {coverage_listed_feeders}. Do not invent placeholders.
 2. Descriptive only: no causal language (no "because", "due to", "caused", "leads to"), no
    claims of discrimination or unfairness, no speculation about motives.
 3. Say that shares are among listed feeders only, that schedules are not measurements, and
