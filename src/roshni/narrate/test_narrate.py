@@ -10,11 +10,11 @@ from roshni.narrate.template import TEMPLATE
 from roshni.narrate.validate import PLACEHOLDER, InvalidDraft, check_draft, render
 
 FACTS = [
-    Fact("coverage_listed_feeders", "coverage.listed_feeders", 623, "feeders", "coverage"),
+    Fact("coverage_listed_feeders", "listed feeders", 623, "count", "coverage"),
     Fact("hours_split_share_12h_pct", "hours_split.share_12h_pct", 79.7, "%", "hours_split"),
     Fact("ibc_highest_name", "ibc_highest.name", "IBC - Clifton", "text", "ibc_highest"),
     Fact("rho_literacy_rho", "rho_literacy.rho", -0.39, "rho", "rho_literacy"),
-    Fact("rho_literacy_n", "rho_literacy.n", 13, "feeders", "rho_literacy"),
+    Fact("rho_literacy_n", "sub-divisions in the correlation", 13, "n", "rho_literacy"),
 ]
 GOOD = (
     "Among {coverage_listed_feeders} listed feeders, {hours_split_share_12h_pct}% are scheduled "
@@ -43,6 +43,24 @@ def test_bad_drafts_rejected(draft: str, problem: str) -> None:
     assert any(problem in p for p in problems)
     with pytest.raises(InvalidDraft):
         render(draft, FACTS)
+
+
+# The first real LLM draft (2026-10-11) passed the digit check but misused units: a percentage
+# as hours, a percentage as a count, a heading. Its patterns must now be rejected.
+@pytest.mark.parametrize(
+    "draft,problem",
+    [
+        ("# Report\nAmong {coverage_listed_feeders} feeders.", "headings"),
+        ("Feeders follow {hours_split_share_12h_pct}-hour schedules.", "not followed by '%'"),
+        ("Clifton shows {hours_split_share_12h_pct} of its feeders.", "not followed by '%'"),
+        ("There are {coverage_listed_feeders}% feeders.", "used as a percentage or hours"),
+        ("Feeders run {coverage_listed_feeders} hours.", "used as a percentage or hours"),
+        ("Based on {rho_literacy_n} feeders.", "not written as 'n = ...'"),
+        ("A value of {rho_literacy_rho} was seen.", "not introduced as rho"),
+    ],
+)
+def test_unit_misuse_rejected(draft: str, problem: str) -> None:
+    assert any(problem in p for p in check_draft(draft, FACTS))
 
 
 def test_disclaimer_wording_is_allowed() -> None:

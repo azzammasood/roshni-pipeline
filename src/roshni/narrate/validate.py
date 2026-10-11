@@ -3,7 +3,10 @@
 Rules for a draft:
 - numbers appear only as {fact_id} placeholders; any digit outside a placeholder is rejected;
 - every placeholder names a known fact;
-- no causal or accusatory wording (statistics here are descriptive only).
+- no causal or accusatory wording (statistics here are descriptive only);
+- units are respected: a percentage is followed by "%", a sample size follows "n =", a
+  correlation sits next to "rho" or "correlation", a count is never followed by "%" or "hour";
+- no headings.
 After rendering, every number in the text must be a rendered fact value.
 """
 
@@ -37,6 +40,20 @@ def check_draft(draft: str, facts: list[Fact]) -> list[str]:
         problems.append(f"causal or accusatory wording: {m.group(0)!r}")
     if not draft.strip():
         problems.append("empty draft")
+    if re.search(r"(?m)^\s*#", draft):
+        problems.append("headings are not allowed")
+    units = {f.id: f.unit for f in facts}
+    for m in PLACEHOLDER.finditer(draft):
+        unit = units.get(m.group(1))
+        before, after = draft[max(0, m.start() - 60) : m.start()], draft[m.end() : m.end() + 12]
+        if unit == "%" and not after.startswith("%"):
+            problems.append(f"percentage {{{m.group(1)}}} not followed by '%'")
+        elif unit == "n" and not re.search(r"(?:^|[^a-z])n\s*=\s*$", before):
+            problems.append(f"sample size {{{m.group(1)}}} not written as 'n = ...'")
+        elif unit == "rho" and not re.search(r"(?i)rho|correlation", before):
+            problems.append(f"correlation {{{m.group(1)}}} not introduced as rho/correlation")
+        elif unit == "count" and re.match(r"\s*(%|-?\s*hours?(?![a-z]))", after, re.I):
+            problems.append(f"count {{{m.group(1)}}} used as a percentage or hours")
     return problems
 
 

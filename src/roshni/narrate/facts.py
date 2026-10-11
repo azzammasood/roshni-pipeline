@@ -8,9 +8,9 @@ import duckdb
 @dataclass(frozen=True)
 class Fact:
     id: str
-    label: str
+    label: str  # plain-English meaning
     value: object  # number or text
-    unit: str  # "feeders", "%", "hours", "rho", "date", "text", ...
+    unit: str  # count, %, n, rho, date, text
     query_id: str
 
     def rendered(self) -> str:
@@ -66,12 +66,48 @@ QUERIES: dict[str, str] = {
         select count(*) as accepted_ibcs, count(distinct subdivision_area_id) as subdivisions
         from ke_ibc_subdivision where crosswalk_status = 'accepted'""",
 }
-UNITS = {
-    "listed_feeders": "feeders", "scheduled_feeders": "feeders", "ibcs": "IBC areas",
-    "feeders_12h": "feeders", "feeders_6h": "feeders", "share_12h_pct": "%",
-    "schedule_effective_from": "date", "name": "text", "n": "feeders", "feeders": "feeders",
-    "medium": "feeders", "high": "feeders", "rho": "rho", "accepted_ibcs": "IBC areas",
-    "subdivisions": "sub-divisions",
+# Every fact id -> (plain-English meaning shown to the writer, unit kind used by validation).
+# Unit kinds: count, %, n (sample size), rho, date, text.
+SL = "scheduled listed feeders"
+MEANINGS: dict[str, tuple[str, str]] = {
+    "coverage_listed_feeders": ("number of feeders K-Electric lists as under load shed", "count"),
+    "coverage_scheduled_feeders": ("number of those listed feeders that have a schedule row",
+                                   "count"),
+    "coverage_ibcs": ("number of K-Electric IBC areas the listed feeders belong to", "count"),
+    "hours_split_feeders_12h": (f"number of {SL} scheduled 12 hours a day", "count"),
+    "hours_split_feeders_6h": (f"number of {SL} scheduled 6 hours a day", "count"),
+    "hours_split_share_12h_pct": (f"percentage of {SL} that are scheduled 12 hours a day", "%"),
+    "effective_schedule_effective_from": ("date from which the K-Electric schedule applies",
+                                          "date"),
+    "ibc_highest_name": ("IBC area (at least 10 scheduled feeders) with the highest percentage of "
+                         "its scheduled listed feeders at 12 hours", "text"),
+    "ibc_highest_share_12h_pct": (f"percentage of that IBC area's {SL} at 12 hours", "%"),
+    "ibc_highest_n": (f"number of {SL} in that IBC area (its n)", "n"),
+    "ibc_lowest_name": ("IBC area (at least 10 scheduled feeders) with the lowest percentage of "
+                        "its scheduled listed feeders at 12 hours", "text"),
+    "ibc_lowest_share_12h_pct": (f"percentage of that IBC area's {SL} at 12 hours", "%"),
+    "ibc_lowest_n": (f"number of {SL} in that IBC area (its n)", "n"),
+    "ibc_all_12h": ("number of IBC areas where every scheduled listed feeder is at 12 hours",
+                    "count"),
+    "medium_12h": ("number of Medium loss-category feeders scheduled 12 hours a day (Medium is "
+                   "otherwise 6 hours)", "count"),
+    "overlap_medium": ("number of scheduled Medium-category feeders whose published loss lies in "
+                       "the loss range where the Medium and High categories overlap", "count"),
+    "overlap_high": ("number of scheduled High-category feeders whose published loss lies in the "
+                     "loss range where the Medium and High categories overlap", "count"),
+    "rho_loss_hours_rho": ("Spearman rank correlation across listed feeders between published "
+                           "ATC loss percentage and scheduled hours per day", "rho"),
+    "rho_loss_hours_n": ("number of feeders in that correlation (its n)", "n"),
+    "rho_literacy_rho": ("Spearman rank correlation across census sub-divisions between the "
+                         "percentage of listed feeders at 12 hours and the literacy rate", "rho"),
+    "rho_literacy_n": ("number of census sub-divisions in that correlation (its n)", "n"),
+    "rho_degree_rho": ("Spearman rank correlation across census sub-divisions between the "
+                       "percentage of listed feeders at 12 hours and the share of people with a "
+                       "degree", "rho"),
+    "rho_degree_n": ("number of census sub-divisions in that correlation (its n)", "n"),
+    "crosswalk_accepted_ibcs": ("number of IBC areas matched by name to a census sub-division",
+                                "count"),
+    "crosswalk_subdivisions": ("number of census sub-divisions those IBC areas map to", "count"),
 }  # fmt: skip
 
 
@@ -87,7 +123,10 @@ def collect(con: duckdb.DuckDBPyConnection) -> list[Fact]:
             if val is None:
                 continue
             if isinstance(val, int | float) and not isinstance(val, bool):
-                val = int(val) if float(val).is_integer() and UNITS.get(col) != "rho" else val
+                val = int(val) if float(val).is_integer() and col != "rho" else val
             fid = qid if col in ("feeders", "ibcs") and len(cols) == 1 else f"{qid}_{col}"
-            facts.append(Fact(fid, f"{qid}.{col}", val, UNITS.get(col, ""), qid))
+            if fid not in MEANINGS:
+                raise KeyError(f"fact {fid!r} has no meaning in MEANINGS")
+            meaning, unit = MEANINGS[fid]
+            facts.append(Fact(fid, meaning, val, unit, qid))
     return facts
