@@ -36,7 +36,8 @@ def write_schemas(out: Path = SCHEMA_DIR) -> list[Path]:
         schema["$id"] = f"https://github.com/azzammasood/roshni-pipeline/schemas/v1/{name}.json"
         schema["title"] = f"roshni/{name}/v1"
         p = out / f"{name}.schema.json"
-        p.write_text(json.dumps(schema, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        text = json.dumps(schema, indent=2, sort_keys=True) + "\n"
+        p.write_text(text, encoding="utf-8", newline="\n")
         paths.append(p)
     return paths
 
