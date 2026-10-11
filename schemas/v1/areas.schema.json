@@ -1,0 +1,158 @@
+{
+  "$defs": {
+    "Area": {
+      "additionalProperties": false,
+      "properties": {
+        "area_id": {
+          "title": "Area Id",
+          "type": "string"
+        },
+        "avg_household_size": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Avg Household Size"
+        },
+        "degree_share_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Degree Share Pct"
+        },
+        "district": {
+          "title": "District",
+          "type": "string"
+        },
+        "electricity_share_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Electricity Share Pct"
+        },
+        "level": {
+          "title": "Level",
+          "type": "string"
+        },
+        "literacy_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Literacy Pct"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "pacca_share_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pacca Share Pct"
+        },
+        "pop_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pop Total"
+        },
+        "province": {
+          "title": "Province",
+          "type": "string"
+        }
+      },
+      "required": [
+        "area_id",
+        "name",
+        "level",
+        "province",
+        "district",
+        "pop_total",
+        "literacy_pct",
+        "degree_share_pct",
+        "pacca_share_pct",
+        "electricity_share_pct",
+        "avg_household_size"
+      ],
+      "title": "Area",
+      "type": "object"
+    }
+  },
+  "$id": "https://github.com/azzammasood/roshni-pipeline/schemas/v1/areas.json",
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "items": {
+        "$ref": "#/$defs/Area"
+      },
+      "title": "Data",
+      "type": "array"
+    },
+    "generated_at": {
+      "description": "When this export was produced (UTC)",
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "label": {
+      "description": "Reminder that the data are schedules, not measurements",
+      "title": "Label",
+      "type": "string"
+    },
+    "last_updated": {
+      "description": "Latest source fetch or warehouse build (UTC)",
+      "format": "date-time",
+      "title": "Last Updated",
+      "type": "string"
+    },
+    "schema_id": {
+      "description": "Document type and major version, e.g. roshni/feeders/v1",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Semantic version of the document schema",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_id",
+    "schema_version",
+    "generated_at",
+    "last_updated",
+    "label",
+    "data"
+  ],
+  "title": "roshni/areas/v1",
+  "type": "object"
+}

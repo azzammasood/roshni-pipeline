@@ -240,3 +240,33 @@ def report(
     for line in rep.data["narrator_log"]:
         typer.echo(f"  {line}")
     typer.echo(f"wrote {md}\nwrote {js}")
+
+
+@app.command()
+def export(
+    out: Path = typer.Option(None, help="Output folder (default: data/export/v1)."),
+    db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
+    write_schemas: bool = typer.Option(
+        False, "--write-schemas", help="Regenerate schemas/v1/*.schema.json from the models."
+    ),
+) -> None:
+    """Write the static JSON export and validate it against the committed JSON Schemas."""
+    import duckdb
+
+    from roshni.export.build import build_export, validate_export
+    from roshni.export.build import write_schemas as write_schema_files
+    from roshni.paths import DATA_DIR
+
+    if write_schemas:
+        for p in write_schema_files():
+            typer.echo(f"schema {p}")
+    out = out or DATA_DIR / "export" / "v1"
+    reports = sorted((DATA_DIR / "reports").glob("equity-*.json"))
+    con = duckdb.connect(str(db or DATA_DIR / "roshni.duckdb"), read_only=True)
+    try:
+        counts = build_export(con, out, reports[-1] if reports else None)
+    finally:
+        con.close()
+    for name, status in validate_export(out).items():
+        size = (out / f"{name}.json").stat().st_size
+        typer.echo(f"{name:18} records={counts[name]:6} bytes={size:9,} schema={status}")
