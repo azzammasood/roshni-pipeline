@@ -2,6 +2,14 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-11 (Phase 7)
+- **Static export** `roshni export` → `data/export/v1/{meta,feeders,dark_profiles,planned_shutdowns,areas,equity}.json` (~2 MB uncompressed). Each file is an envelope: `schema_id` (roshni/<doc>/v1), `schema_version` (1.0.0), `generated_at`, `last_updated` (latest source fetch or warehouse build), the schedule-not-measurement `label`, `data`. Dark profiles are 24-hour minute vectors (K-Electric `daily`; IESCO `scenario_levels` per level), so a static site computes "dark now" client-side; planned shutdowns carry UTC bounds.
+- **JSON Schemas** in `schemas/v1/` are generated from the pydantic export models (`--write-schemas`, LF); a test fails on drift; every export is validated with `jsonschema` before it counts. Breaking changes → `v2` folder; additive → minor version bump.
+- **Areas exported:** IESCO and Karachi districts, Karachi sub-divisions/talukas, and the 149 matched localities (not the full 43k census rows).
+- **Airflow showcase:** `airflow/` (Dockerfile + compose), Airflow 3.1 standalone; roshni installed in its own venv (`/opt/roshni-venv`) so dependencies never clash; DAG `roshni_pipeline` is unscheduled and runs only CLI commands (snapshot → parse → validate → build → report → export); a static test enforces CLI-only tasks. Local run 2026-10-11: all 6 tasks succeeded (GE 10/10, dbt PASS=129, export schemas valid).
+- The Airflow image's Debian poppler is 22.12, not the canonical 25.03; parsing stays canonical because PDF text is reused from the SHA-256 cache (`data/cache/pdftext`, mounted). A fresh cache inside Airflow would need poppler 25.x.
+- **Reports are named per engine** (`equity-<week>-llm|template`); export prefers the LLM report of the latest week. (The first Airflow run overwrote the Phase 6 LLM report file; the gate result stays recorded above.)
+
 ## 2026-10-11 (Phase 6)
 - **Equity marts (SQL, portable):** `mart_ke_ibc_equity` (per IBC: listed/scheduled feeders, 6 h/12 h counts, share at 12 h, mean hours, mean ATC loss with n, category counts, crosswalked sub-division), `mart_ke_subdivision_equity` (15 crosswalked IBCs → 13 sub-divisions with literacy, degree share, pacca share, household size), `rpt_ke_anomalies` (rules with counts), `rpt_spearman`.
 - **Spearman in SQL:** average ranks for ties (`rank() + (ties - 1) / 2`), then `corr()` on ranks; n always reported; no p-values or significance claims (n = 13 at sub-division level). Sindh household size is published rounded to integers, so its rho is coarse.

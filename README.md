@@ -39,6 +39,12 @@ Fetch (polite, snapshot on change) → parse (typed rows plus quarantine, Great 
 ### Reference architecture vs deployment
 The public deployment runs on a **free static host** fed by free-tier GitHub Actions, using the same dbt models. An AWS + Terraform setup is the **reference deployment**, not the live one. The dbt models stay portable so they also run on Databricks.
 
+## Static export
+`roshni export` writes versioned JSON to `data/export/v1/` (feeders, 24-hour dark profiles, planned shutdowns, census areas, equity figures and the latest report), each with `schema_id`, `schema_version`, `last_updated` and a "schedule, not measurement" label, validated against the JSON Schemas in `schemas/v1/`. A static site can compute "dark now" in the browser from the profiles.
+
+## Orchestration showcase (Airflow)
+`docker compose -f airflow/docker-compose.yml up --build`, then trigger `roshni_pipeline` at http://localhost:8080. Every task is one `roshni` CLI command; the DAG is unscheduled because GitHub Actions is the production scheduler.
+
 ## Development
 ```bash
 uv sync

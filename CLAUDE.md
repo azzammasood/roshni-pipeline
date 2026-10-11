@@ -41,6 +41,8 @@ uv run roshni build [--command build|parse|test] [--select X]  # dbt -> data/ros
 uv run roshni resolve                                           # candidates -> dbt/seeds/review_*.csv (keeps decisions)
 uv run roshni dark-now [--at "2026-10-10 23:30"] [--level 12] [--json]   # scheduled-dark feeders
 uv run roshni report [--engine auto|openrouter|template]   # weekly equity report -> data/reports
+uv run roshni export [--write-schemas]                     # static JSON -> data/export/v1, validated
+docker compose -f airflow/docker-compose.yml up --build    # Airflow showcase on :8080 (manual DAG)
 uv run --group databricks python scripts/databricks_load.py     # upload parsed tables (env creds)
 uv run --group databricks roshni build --target databricks      # same models on Databricks
 docker compose build ; docker compose run --rm app <cmd>   # canonical pdftotext
@@ -54,6 +56,7 @@ src/roshni/paths.py    REPO_ROOT, DATA_DIR, DATA_SOURCES_DIR (env ROSHNI_ROOT)
 src/roshni/fetch/      http.py (PoliteClient), discover.py, store.py, snapshot.py
 src/roshni/parsers/    pdftext.py (poppler only), one module per source, run.py
 src/roshni/quality/    suites.py (GE suites per parsed table)
+src/roshni/export/     models.py (pydantic, source of schemas/v1), build.py; airflow/ = showcase DAG
 branch data-snapshots  raw_snapshots.csv + files/ (written only by .github/workflows/snapshot.yml)
 config/                sources.yml, policy.yml
 dbt/                   staging views, int_ke_feeder_join, marts + quarantine_* tables, seeds/source_documents.csv
@@ -87,4 +90,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 4 (entity resolution): done 2026-10-10; dbt PASS=108; review delegated to Claude (rules in DECISIONS.md, notes per row); boundary report in docs/boundary-research.md (no map in v1).
 - Phase 5 (live layer): done 2026-10-10; dark-now function + CLI, mart_feeder_dark_hours; dbt PASS=116; midnight-wrap tests pass.
 - Phase 6 (analytics + narration): done 2026-10-11; dbt PASS=129; LLM report (gemini-2.5-flash via fallback, $0.0075) validated and traced to queries.
-- Next: Phase 7, static JSON export with JSON Schemas + local Airflow showcase.
+- Phase 7 (export + orchestration): done 2026-10-11; export validates against schemas/v1; Airflow DAG ran all 6 tasks successfully.
+- Backend complete. Next (separate sessions): frontend on a free static host reading data/export/v1.
