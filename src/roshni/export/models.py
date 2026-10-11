@@ -6,7 +6,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"  # 1.1.0: DarkProfile.daily_windows (additive)
 LABEL = "Scheduled (published schedule data), not measured outages"
 
 
@@ -64,6 +64,15 @@ class Feeder(Strict):
     localities: list[LocalityMatch]
 
 
+class Window(Strict):
+    start_min: int = Field(
+        ge=0, le=1439, description="Local (Asia/Karachi) minute of day, inclusive"
+    )
+    end_min: int = Field(
+        ge=1, le=1440, description="Local minute of day, exclusive; end <= start wraps midnight"
+    )
+
+
 class DarkProfile(Strict):
     feeder_id: str
     source: Literal["iesco", "kelectric"]
@@ -71,9 +80,13 @@ class DarkProfile(Strict):
     daily: list[int] | None = Field(
         description="K-Electric: scheduled dark minutes in each local hour 0-23", default=None
     )
+    daily_windows: list[Window] | None = Field(
+        description="K-Electric: exact scheduled windows behind `daily` (since 1.1.0)", default=None
+    )
     scenario_levels: dict[str, list[int]] | None = Field(
         description="IESCO: per interruption level ('2'..'12'), dark minutes in each local hour "
-        "0-23 IF that level is active (the files never say which level applies)",
+        "0-23 IF that level is active (the files never say which level applies). IESCO slots are "
+        "whole local hours (checked at export), so each value is 0 or 60 and exact",
         default=None,
     )
 

@@ -22,6 +22,12 @@ IESCO_DISTRICTS = (
 )  # fmt: skip
 
 
+def utc_session(con: duckdb.DuckDBPyConnection) -> None:
+    """DuckDB returns timestamptz in the session time zone (the machine's by default); the export
+    stores UTC, so pin the session or `*_utc` fields come out as local offsets."""
+    con.execute("set TimeZone = 'UTC'")
+
+
 def _rows(con, sql: str, **params) -> list[dict]:
     cur = con.execute(sql, params or None)
     cols = [d[0] for d in cur.description]
@@ -61,6 +67,16 @@ def _feeders(con) -> list[m.Feeder]:
     return out
 
 
+def hourly_minutes(windows: list[m.Window]) -> list[int]:
+    """Dark minutes per local hour covered by [start, end) windows (end <= start wraps)."""
+    hours = [0] * 24
+    for w in windows:
+        end = w.end_min if w.end_min > w.start_min else w.end_min + 1440
+        for minute in range(w.start_min, end):
+            hours[minute % 1440 // 60] += 1
+    return hours
+
+
 def _dark_profiles(con) -> list[m.DarkProfile]:
     prof: dict[str, dict] = {}
     for r in _rows(con, "select * from mart_feeder_dark_hours order by feeder_id"):
@@ -70,14 +86,35 @@ def _dark_profiles(con) -> list[m.DarkProfile]:
         )
         key = "daily" if r["schedule_kind"] == "daily_cycle" else str(r["scenario_level_hours"])
         p.setdefault(key, [0] * 24)[r["hour_of_day"]] = int(r["dark_minutes"])
+
+    # Hourly minutes cannot say whether 22:40 is dark when hour 22 has 25 minutes, so K-Electric
+    # profiles also carry their exact windows. IESCO slots must be whole hours: then the hourly
+    # vector is exact and needs no windows (fail loudly if a new file breaks that).
+    misaligned = con.sql("""
+        select count(*) from fct_schedule_window
+        where schedule_kind = 'scenario_level'
+          and (start_minute_local % 60 <> 0 or end_minute_local - start_minute_local <> 60)
+    """).fetchone()[0]
+    if misaligned:
+        raise ValueError(f"{misaligned} IESCO scenario windows are not whole local hours")
+    windows: dict[str, list[m.Window]] = defaultdict(list)
+    for fid, s, e in con.sql("""
+        select feeder_id, start_minute_local, end_minute_local from fct_schedule_window
+        where schedule_kind = 'daily_cycle' order by feeder_id, start_minute_local
+    """).fetchall():
+        windows[fid].append(m.Window(start_min=s, end_min=e))
+
     out = []
     for p in prof.values():
+        if p.get("daily") and hourly_minutes(windows[p["feeder_id"]]) != p["daily"]:
+            raise ValueError(f"{p['feeder_id']}: daily windows disagree with hourly minutes")
         levels = dict(
             sorted(((k, v) for k, v in p.items() if k.isdigit()), key=lambda kv: int(kv[0]))
         )
         out.append(m.DarkProfile(
             feeder_id=p["feeder_id"], source=p["source"], effective_from=p["eff"],
-            daily=p.get("daily"), scenario_levels=levels or None,
+            daily=p.get("daily"), daily_windows=windows.get(p["feeder_id"]),
+            scenario_levels=levels or None,
         ))  # fmt: skip
     return out
 
@@ -147,6 +184,7 @@ def _meta(con, docs: list[str]) -> m.Meta:
 def build_export(
     con: duckdb.DuckDBPyConnection, out: Path, report_json: Path | None = None
 ) -> dict[str, int]:
+    utc_session(con)
     now = datetime.now(UTC).replace(microsecond=0)
     built = con.sql("select max(built_at) from mart_build_info").fetchone()[0]
     fetched = con.sql("select max(fetched_at) from dim_feeder").fetchone()[0]

@@ -19,6 +19,22 @@
           "description": "K-Electric: scheduled dark minutes in each local hour 0-23",
           "title": "Daily"
         },
+        "daily_windows": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Window"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "K-Electric: exact scheduled windows behind `daily` (since 1.1.0)",
+          "title": "Daily Windows"
+        },
         "effective_from": {
           "format": "date",
           "title": "Effective From",
@@ -44,7 +60,7 @@
             }
           ],
           "default": null,
-          "description": "IESCO: per interruption level ('2'..'12'), dark minutes in each local hour 0-23 IF that level is active (the files never say which level applies)",
+          "description": "IESCO: per interruption level ('2'..'12'), dark minutes in each local hour 0-23 IF that level is active (the files never say which level applies). IESCO slots are whole local hours (checked at export), so each value is 0 or 60 and exact",
           "title": "Scenario Levels"
         },
         "source": {
@@ -62,6 +78,31 @@
         "effective_from"
       ],
       "title": "DarkProfile",
+      "type": "object"
+    },
+    "Window": {
+      "additionalProperties": false,
+      "properties": {
+        "end_min": {
+          "description": "Local minute of day, exclusive; end <= start wraps midnight",
+          "maximum": 1440,
+          "minimum": 1,
+          "title": "End Min",
+          "type": "integer"
+        },
+        "start_min": {
+          "description": "Local (Asia/Karachi) minute of day, inclusive",
+          "maximum": 1439,
+          "minimum": 0,
+          "title": "Start Min",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start_min",
+        "end_min"
+      ],
+      "title": "Window",
       "type": "object"
     }
   },
