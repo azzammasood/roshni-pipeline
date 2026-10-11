@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+/* Colour tokens; dark mode follows the OS. Layout uses logical properties only (RTL-ready). */
+:root {
+  --bg: #fbfaf7;
+  --ink: #1c1b19;
+  --muted: #5d5a54;
+  --line: #e2ded6;
+  --surface: #ffffff;
+  --notice: #fff4d6;
+  --notice-ink: #5a4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141412;
+    --ink: #ecebe7;
+    --muted: #a6a29a;
+    --line: #34322e;
+    --surface: #1d1c1a;
+    --notice: #3a3011;
+    --notice-ink: #f3dc9a;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-surface: var(--surface);
+  --color-notice: var(--notice);
+  --color-notice-ink: var(--notice-ink);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}

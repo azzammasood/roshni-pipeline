@@ -1,0 +1,53 @@
+{
+  "site": {
+    "name": "Roshni",
+    "tagline": "Published load-shedding schedules for IESCO and K-Electric, in Pakistan time.",
+    "skip": "Skip to content"
+  },
+  "nav": {
+    "home": "Scheduled now",
+    "shutdowns": "Planned shutdowns",
+    "equity": "Karachi equity",
+    "about": "About the data"
+  },
+  "banner": {
+    "scheduled": "Scheduled (published schedule data), not measured outages."
+  },
+  "footer": {
+    "lastUpdated": "Data last updated",
+    "timezone": "All times are Pakistan Standard Time (Asia/Karachi, UTC+5).",
+    "sources": "Sources"
+  },
+  "home": {
+    "title": "Who is scheduled to be dark now?",
+    "intro": "Search a feeder, grid or area. K-Electric schedules apply daily. IESCO publishes one schedule per interruption level and never says which level is in force, so you choose the level.",
+    "counts": "{feeders} feeders with published schedules ({iesco} IESCO, {ke} K-Electric)."
+  },
+  "feeder": {
+    "source": "Source",
+    "code": "Feeder code",
+    "circle": "Circle",
+    "grid": "Grid",
+    "ibc": "IBC",
+    "effectiveFrom": "Schedule effective from",
+    "noSchedule": "No published schedule for this feeder."
+  },
+  "shutdowns": {
+    "title": "Planned shutdowns",
+    "intro": "Dated maintenance shutdowns from IESCO press releases, as printed. Feeder matches carry a confidence; unmatched names are shown as printed.",
+    "count": "{n} planned shutdown windows from {from} to {to}."
+  },
+  "equity": {
+    "title": "K-Electric schedule hours by IBC",
+    "intro": "Descriptive statistics among listed feeders only. Not causal; every figure shows its sample size."
+  },
+  "about": {
+    "title": "About the data",
+    "disclaimer": "Disclaimer",
+    "attribution": "Attribution"
+  },
+  "sources": {
+    "iesco": "IESCO",
+    "kelectric": "K-Electric"
+  }
+}

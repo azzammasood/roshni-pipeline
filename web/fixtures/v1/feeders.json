@@ -1,0 +1,112 @@
+{
+ "schema_id": "roshni/feeders/v1",
+ "schema_version": "1.0.0",
+ "generated_at": "2026-10-11T15:44:09Z",
+ "last_updated": "2026-10-11T15:43:58.563657Z",
+ "label": "Scheduled (published schedule data), not measured outages",
+ "data": [
+  {
+   "feeder_id": "iesco:attock:012001",
+   "source": "iesco",
+   "name": "QAZI ABAD",
+   "feeder_code": "012001",
+   "circle": "attock",
+   "grid": "FAQIR ABAD",
+   "ibc": null,
+   "category": null,
+   "atc_loss_pct": null,
+   "in_feeder_list": null,
+   "has_schedule": true,
+   "schedule_match_method": null,
+   "schedule_match_confidence": null,
+   "localities": [
+    {
+     "area_id": "pbs_rural:punjab:ATTOCK DISTRICT|ATTOCK TEHSIL|ATTOCK I QH|GOLRA PC|QAZI ABAD|0000133",
+     "area_name": "QAZI ABAD",
+     "match_status": "auto_exact",
+     "match_confidence": 1
+    }
+   ]
+  },
+  {
+   "feeder_id": "iesco:attock:012023",
+   "source": "iesco",
+   "name": "SHAFI CHOHAN",
+   "feeder_code": "012023",
+   "circle": "attock",
+   "grid": "FAQIR ABAD",
+   "ibc": null,
+   "category": null,
+   "atc_loss_pct": null,
+   "in_feeder_list": null,
+   "has_schedule": true,
+   "schedule_match_method": null,
+   "schedule_match_confidence": null,
+   "localities": []
+  },
+  {
+   "feeder_id": "iesco:attock:014619",
+   "source": "iesco",
+   "name": "KHANABAD",
+   "feeder_code": "014619",
+   "circle": "attock",
+   "grid": "NEW WAH",
+   "ibc": null,
+   "category": null,
+   "atc_loss_pct": null,
+   "in_feeder_list": null,
+   "has_schedule": true,
+   "schedule_match_method": null,
+   "schedule_match_confidence": null,
+   "localities": []
+  },
+  {
+   "feeder_id": "ke:33E",
+   "source": "kelectric",
+   "name": "33/E",
+   "feeder_code": null,
+   "circle": null,
+   "grid": "KORANGI TOWN",
+   "ibc": "IBC - Korangi",
+   "category": "Medium",
+   "atc_loss_pct": 27.5,
+   "in_feeder_list": true,
+   "has_schedule": true,
+   "schedule_match_method": "exact",
+   "schedule_match_confidence": 1,
+   "localities": []
+  },
+  {
+   "feeder_id": "ke:36BRMU",
+   "source": "kelectric",
+   "name": "36 B RMU +",
+   "feeder_code": null,
+   "circle": null,
+   "grid": "KORANGI EAST",
+   "ibc": "IBC - Landhi",
+   "category": "High",
+   "atc_loss_pct": 46.2,
+   "in_feeder_list": true,
+   "has_schedule": true,
+   "schedule_match_method": "exact",
+   "schedule_match_confidence": 1,
+   "localities": []
+  },
+  {
+   "feeder_id": "ke:3ARMU",
+   "source": "kelectric",
+   "name": "3A RMU",
+   "feeder_code": null,
+   "circle": null,
+   "grid": "LANDHI",
+   "ibc": "IBC - Landhi",
+   "category": "Medium",
+   "atc_loss_pct": 34,
+   "in_feeder_list": true,
+   "has_schedule": true,
+   "schedule_match_method": "exact",
+   "schedule_match_confidence": 1,
+   "localities": []
+  }
+ ]
+}

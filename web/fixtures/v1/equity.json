@@ -1,0 +1,763 @@
+{
+ "schema_id": "roshni/equity/v1",
+ "schema_version": "1.0.0",
+ "generated_at": "2026-10-11T15:44:09Z",
+ "last_updated": "2026-10-11T15:43:58.563657Z",
+ "label": "Scheduled (published schedule data), not measured outages",
+ "data": {
+  "scope_note": "K-Electric shares are among listed feeders only (exempt feeders are not published); statistics are descriptive and exploratory, not causal.",
+  "ibc": [
+   {
+    "ibc": "IBC - Bahadurabad",
+    "listed_feeders": 19,
+    "scheduled_feeders": 19,
+    "feeders_12h": 16,
+    "feeders_6h": 3,
+    "share_12h_pct": 84.2,
+    "mean_scheduled_hours": 11.05,
+    "feeders_with_loss": 19,
+    "mean_atc_loss_pct": 56,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Baldia",
+    "listed_feeders": 38,
+    "scheduled_feeders": 38,
+    "feeders_12h": 36,
+    "feeders_6h": 2,
+    "share_12h_pct": 94.7,
+    "mean_scheduled_hours": 11.68,
+    "feeders_with_loss": 38,
+    "mean_atc_loss_pct": 52.8,
+    "census_subdivision": "BALDIA SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Bin Qasim",
+    "listed_feeders": 34,
+    "scheduled_feeders": 34,
+    "feeders_12h": 32,
+    "feeders_6h": 2,
+    "share_12h_pct": 94.1,
+    "mean_scheduled_hours": 11.65,
+    "feeders_with_loss": 34,
+    "mean_atc_loss_pct": 59,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Clifton",
+    "listed_feeders": 11,
+    "scheduled_feeders": 11,
+    "feeders_12h": 11,
+    "feeders_6h": 0,
+    "share_12h_pct": 100,
+    "mean_scheduled_hours": 12,
+    "feeders_with_loss": 11,
+    "mean_atc_loss_pct": 57.7,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Defence",
+    "listed_feeders": 3,
+    "scheduled_feeders": 3,
+    "feeders_12h": 2,
+    "feeders_6h": 1,
+    "share_12h_pct": 66.7,
+    "mean_scheduled_hours": 10,
+    "feeders_with_loss": 3,
+    "mean_atc_loss_pct": 37.1,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - F.B. Area",
+    "listed_feeders": 4,
+    "scheduled_feeders": 4,
+    "feeders_12h": 0,
+    "feeders_6h": 4,
+    "share_12h_pct": 0,
+    "mean_scheduled_hours": 6,
+    "feeders_with_loss": 4,
+    "mean_atc_loss_pct": 28.9,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Gadap",
+    "listed_feeders": 28,
+    "scheduled_feeders": 28,
+    "feeders_12h": 24,
+    "feeders_6h": 4,
+    "share_12h_pct": 85.7,
+    "mean_scheduled_hours": 11.14,
+    "feeders_with_loss": 27,
+    "mean_atc_loss_pct": 61.6,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Garden",
+    "listed_feeders": 17,
+    "scheduled_feeders": 17,
+    "feeders_12h": 12,
+    "feeders_6h": 5,
+    "share_12h_pct": 70.6,
+    "mean_scheduled_hours": 10.24,
+    "feeders_with_loss": 17,
+    "mean_atc_loss_pct": 45.7,
+    "census_subdivision": "GARDEN SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Gulshan",
+    "listed_feeders": 5,
+    "scheduled_feeders": 5,
+    "feeders_12h": 4,
+    "feeders_6h": 1,
+    "share_12h_pct": 80,
+    "mean_scheduled_hours": 10.8,
+    "feeders_with_loss": 5,
+    "mean_atc_loss_pct": 51.7,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Johar - I",
+    "listed_feeders": 15,
+    "scheduled_feeders": 15,
+    "feeders_12h": 7,
+    "feeders_6h": 8,
+    "share_12h_pct": 46.7,
+    "mean_scheduled_hours": 8.8,
+    "feeders_with_loss": 15,
+    "mean_atc_loss_pct": 41.9,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Johar - II",
+    "listed_feeders": 17,
+    "scheduled_feeders": 14,
+    "feeders_12h": 13,
+    "feeders_6h": 1,
+    "share_12h_pct": 92.9,
+    "mean_scheduled_hours": 11.57,
+    "feeders_with_loss": 17,
+    "mean_atc_loss_pct": 53.9,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - KIMZ",
+    "listed_feeders": 16,
+    "scheduled_feeders": 16,
+    "feeders_12h": 11,
+    "feeders_6h": 5,
+    "share_12h_pct": 68.8,
+    "mean_scheduled_hours": 10.13,
+    "feeders_with_loss": 16,
+    "mean_atc_loss_pct": 49.7,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Korangi",
+    "listed_feeders": 39,
+    "scheduled_feeders": 39,
+    "feeders_12h": 24,
+    "feeders_6h": 15,
+    "share_12h_pct": 61.5,
+    "mean_scheduled_hours": 9.69,
+    "feeders_with_loss": 39,
+    "mean_atc_loss_pct": 39.8,
+    "census_subdivision": "KORANGI SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Landhi",
+    "listed_feeders": 32,
+    "scheduled_feeders": 32,
+    "feeders_12h": 26,
+    "feeders_6h": 6,
+    "share_12h_pct": 81.3,
+    "mean_scheduled_hours": 10.88,
+    "feeders_with_loss": 32,
+    "mean_atc_loss_pct": 47.3,
+    "census_subdivision": "LANDHI SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Layari - I",
+    "listed_feeders": 22,
+    "scheduled_feeders": 22,
+    "feeders_12h": 17,
+    "feeders_6h": 5,
+    "share_12h_pct": 77.3,
+    "mean_scheduled_hours": 10.64,
+    "feeders_with_loss": 21,
+    "mean_atc_loss_pct": 51.8,
+    "census_subdivision": "LYARI SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Layari - II",
+    "listed_feeders": 38,
+    "scheduled_feeders": 38,
+    "feeders_12h": 36,
+    "feeders_6h": 2,
+    "share_12h_pct": 94.7,
+    "mean_scheduled_hours": 11.68,
+    "feeders_with_loss": 38,
+    "mean_atc_loss_pct": 67.1,
+    "census_subdivision": "LYARI SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Liaqatabad",
+    "listed_feeders": 28,
+    "scheduled_feeders": 28,
+    "feeders_12h": 20,
+    "feeders_6h": 8,
+    "share_12h_pct": 71.4,
+    "mean_scheduled_hours": 10.29,
+    "feeders_with_loss": 28,
+    "mean_atc_loss_pct": 48.1,
+    "census_subdivision": "LIAQUATABAD SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Malir",
+    "listed_feeders": 39,
+    "scheduled_feeders": 39,
+    "feeders_12h": 33,
+    "feeders_6h": 6,
+    "share_12h_pct": 84.6,
+    "mean_scheduled_hours": 11.08,
+    "feeders_with_loss": 39,
+    "mean_atc_loss_pct": 52.8,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Nazimabad",
+    "listed_feeders": 17,
+    "scheduled_feeders": 17,
+    "feeders_12h": 14,
+    "feeders_6h": 3,
+    "share_12h_pct": 82.4,
+    "mean_scheduled_hours": 10.94,
+    "feeders_with_loss": 17,
+    "mean_atc_loss_pct": 57.9,
+    "census_subdivision": "NAZIMABAD SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - New Karachi",
+    "listed_feeders": 27,
+    "scheduled_feeders": 27,
+    "feeders_12h": 17,
+    "feeders_6h": 10,
+    "share_12h_pct": 63,
+    "mean_scheduled_hours": 9.78,
+    "feeders_with_loss": 27,
+    "mean_atc_loss_pct": 48.7,
+    "census_subdivision": "NEW KARACHI SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - North Karachi",
+    "listed_feeders": 18,
+    "scheduled_feeders": 17,
+    "feeders_12h": 16,
+    "feeders_6h": 1,
+    "share_12h_pct": 94.1,
+    "mean_scheduled_hours": 11.65,
+    "feeders_with_loss": 18,
+    "mean_atc_loss_pct": 64.3,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - North Nazimabad",
+    "listed_feeders": 13,
+    "scheduled_feeders": 12,
+    "feeders_12h": 11,
+    "feeders_6h": 1,
+    "share_12h_pct": 91.7,
+    "mean_scheduled_hours": 11.5,
+    "feeders_with_loss": 13,
+    "mean_atc_loss_pct": 61,
+    "census_subdivision": "NORTH NAZIMABAD SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Orangi - I",
+    "listed_feeders": 41,
+    "scheduled_feeders": 41,
+    "feeders_12h": 40,
+    "feeders_6h": 1,
+    "share_12h_pct": 97.6,
+    "mean_scheduled_hours": 11.85,
+    "feeders_with_loss": 41,
+    "mean_atc_loss_pct": 66.2,
+    "census_subdivision": "ORANGI SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Orangi - II",
+    "listed_feeders": 17,
+    "scheduled_feeders": 17,
+    "feeders_12h": 10,
+    "feeders_6h": 7,
+    "share_12h_pct": 58.8,
+    "mean_scheduled_hours": 9.53,
+    "feeders_with_loss": 17,
+    "mean_atc_loss_pct": 41,
+    "census_subdivision": "ORANGI SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - SITE",
+    "listed_feeders": 11,
+    "scheduled_feeders": 11,
+    "feeders_12h": 7,
+    "feeders_6h": 4,
+    "share_12h_pct": 63.6,
+    "mean_scheduled_hours": 9.82,
+    "feeders_with_loss": 11,
+    "mean_atc_loss_pct": 50.9,
+    "census_subdivision": "SITE SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Saddar",
+    "listed_feeders": 11,
+    "scheduled_feeders": 10,
+    "feeders_12h": 8,
+    "feeders_6h": 2,
+    "share_12h_pct": 80,
+    "mean_scheduled_hours": 10.8,
+    "feeders_with_loss": 11,
+    "mean_atc_loss_pct": 44.6,
+    "census_subdivision": "SADDAR SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Shah Faisal",
+    "listed_feeders": 19,
+    "scheduled_feeders": 19,
+    "feeders_12h": 10,
+    "feeders_6h": 9,
+    "share_12h_pct": 52.6,
+    "mean_scheduled_hours": 9.16,
+    "feeders_with_loss": 19,
+    "mean_atc_loss_pct": 40,
+    "census_subdivision": "SHAH FAISAL SUB-DIVISION"
+   },
+   {
+    "ibc": "IBC - Surjani",
+    "listed_feeders": 22,
+    "scheduled_feeders": 22,
+    "feeders_12h": 18,
+    "feeders_6h": 4,
+    "share_12h_pct": 81.8,
+    "mean_scheduled_hours": 10.91,
+    "feeders_with_loss": 22,
+    "mean_atc_loss_pct": 61.3,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Tipu Sultan",
+    "listed_feeders": 13,
+    "scheduled_feeders": 13,
+    "feeders_12h": 8,
+    "feeders_6h": 5,
+    "share_12h_pct": 61.5,
+    "mean_scheduled_hours": 9.69,
+    "feeders_with_loss": 13,
+    "mean_atc_loss_pct": 44.5,
+    "census_subdivision": null
+   },
+   {
+    "ibc": "IBC - Uthal",
+    "listed_feeders": 9,
+    "scheduled_feeders": 9,
+    "feeders_12h": 9,
+    "feeders_6h": 0,
+    "share_12h_pct": 100,
+    "mean_scheduled_hours": 12,
+    "feeders_with_loss": 9,
+    "mean_atc_loss_pct": 76.9,
+    "census_subdivision": null
+   }
+  ],
+  "subdivisions": [
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KEAMARI DISTRICT|BALDIA SUB-DIVISION|||",
+    "subdivision_name": "BALDIA SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 38,
+    "share_12h_pct": 94.7,
+    "mean_scheduled_hours": 11.68,
+    "literacy_pct": 64.3,
+    "degree_share_pct": 1.94,
+    "pacca_share_pct": 91.7,
+    "avg_household_size": 6
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KARACHI SOUTH DISTRICT|GARDEN SUB-DIVISION|||",
+    "subdivision_name": "GARDEN SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 17,
+    "share_12h_pct": 70.6,
+    "mean_scheduled_hours": 10.24,
+    "literacy_pct": 84.5,
+    "degree_share_pct": 5.93,
+    "pacca_share_pct": 98,
+    "avg_household_size": 6
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KORANGI DISTRICT|KORANGI SUB-DIVISION|||",
+    "subdivision_name": "KORANGI SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 39,
+    "share_12h_pct": 61.5,
+    "mean_scheduled_hours": 9.69,
+    "literacy_pct": 70.9,
+    "degree_share_pct": 3.36,
+    "pacca_share_pct": 95.5,
+    "avg_household_size": 7
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KORANGI DISTRICT|LANDHI SUB-DIVISION|||",
+    "subdivision_name": "LANDHI SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 32,
+    "share_12h_pct": 81.3,
+    "mean_scheduled_hours": 10.88,
+    "literacy_pct": 84.6,
+    "degree_share_pct": 4.98,
+    "pacca_share_pct": 97,
+    "avg_household_size": 6
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KARACHI CENTRAL DISTRICT|LIAQUATABAD SUB-DIVISION|||",
+    "subdivision_name": "LIAQUATABAD SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 28,
+    "share_12h_pct": 71.4,
+    "mean_scheduled_hours": 10.29,
+    "literacy_pct": 83.7,
+    "degree_share_pct": 5.55,
+    "pacca_share_pct": 98.4,
+    "avg_household_size": 6
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KARACHI SOUTH DISTRICT|LYARI SUB-DIVISION|||",
+    "subdivision_name": "LYARI SUB-DIVISION",
+    "ibcs": 2,
+    "scheduled_feeders": 60,
+    "share_12h_pct": 88.3,
+    "mean_scheduled_hours": 11.3,
+    "literacy_pct": 68.4,
+    "degree_share_pct": 2.54,
+    "pacca_share_pct": 97.1,
+    "avg_household_size": 6
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NAZIMABAD SUB-DIVISION|||",
+    "subdivision_name": "NAZIMABAD SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 17,
+    "share_12h_pct": 82.4,
+    "mean_scheduled_hours": 10.94,
+    "literacy_pct": 84.7,
+    "degree_share_pct": 9.82,
+    "pacca_share_pct": 97.2,
+    "avg_household_size": 6
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NEW KARACHI SUB-DIVISION|||",
+    "subdivision_name": "NEW KARACHI SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 27,
+    "share_12h_pct": 63,
+    "mean_scheduled_hours": 9.78,
+    "literacy_pct": 79.8,
+    "degree_share_pct": 5.8,
+    "pacca_share_pct": 94.4,
+    "avg_household_size": 6
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KARACHI CENTRAL DISTRICT|NORTH NAZIMABAD SUB-DIVISION|||",
+    "subdivision_name": "NORTH NAZIMABAD SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 12,
+    "share_12h_pct": 91.7,
+    "mean_scheduled_hours": 11.5,
+    "literacy_pct": 83,
+    "degree_share_pct": 17.11,
+    "pacca_share_pct": 96.6,
+    "avg_household_size": 6
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KARACHI WEST DISTRICT|ORANGI SUB-DIVISION|||",
+    "subdivision_name": "ORANGI SUB-DIVISION",
+    "ibcs": 2,
+    "scheduled_feeders": 58,
+    "share_12h_pct": 86.2,
+    "mean_scheduled_hours": 11.17,
+    "literacy_pct": 60.8,
+    "degree_share_pct": 1.76,
+    "pacca_share_pct": 93.7,
+    "avg_household_size": 6
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KARACHI SOUTH DISTRICT|SADDAR SUB-DIVISION|||",
+    "subdivision_name": "SADDAR SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 10,
+    "share_12h_pct": 80,
+    "mean_scheduled_hours": 10.8,
+    "literacy_pct": 88.6,
+    "degree_share_pct": 17.71,
+    "pacca_share_pct": 97.2,
+    "avg_household_size": 5
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KORANGI DISTRICT|SHAH FAISAL SUB-DIVISION|||",
+    "subdivision_name": "SHAH FAISAL SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 19,
+    "share_12h_pct": 52.6,
+    "mean_scheduled_hours": 9.16,
+    "literacy_pct": 89.6,
+    "degree_share_pct": 10.92,
+    "pacca_share_pct": 97.3,
+    "avg_household_size": 7
+   },
+   {
+    "subdivision_area_id": "pbs_urban:sindh:KEAMARI DISTRICT|SITE SUB-DIVISION|||",
+    "subdivision_name": "SITE SUB-DIVISION",
+    "ibcs": 1,
+    "scheduled_feeders": 11,
+    "share_12h_pct": 63.6,
+    "mean_scheduled_hours": 9.82,
+    "literacy_pct": 68.5,
+    "degree_share_pct": 2.99,
+    "pacca_share_pct": 95.3,
+    "avg_household_size": 7
+   }
+  ],
+  "correlations": [
+   {
+    "unit": "feeder",
+    "y_name": "scheduled_hours_per_day",
+    "x_name": "atc_loss_pct",
+    "n": 615,
+    "spearman_rho": 0.676
+   },
+   {
+    "unit": "subdivision",
+    "y_name": "share_12h_pct",
+    "x_name": "avg_household_size",
+    "n": 13,
+    "spearman_rho": -0.568
+   },
+   {
+    "unit": "subdivision",
+    "y_name": "share_12h_pct",
+    "x_name": "degree_share_pct",
+    "n": 13,
+    "spearman_rho": -0.258
+   },
+   {
+    "unit": "subdivision",
+    "y_name": "share_12h_pct",
+    "x_name": "literacy_pct",
+    "n": 13,
+    "spearman_rho": -0.39
+   },
+   {
+    "unit": "subdivision",
+    "y_name": "share_12h_pct",
+    "x_name": "mean_atc_loss_pct",
+    "n": 13,
+    "spearman_rho": 0.791
+   },
+   {
+    "unit": "subdivision",
+    "y_name": "share_12h_pct",
+    "x_name": "pacca_share_pct",
+    "n": 13,
+    "spearman_rho": -0.286
+   }
+  ],
+  "anomalies": [
+   {
+    "rule": "high_in_overlap_band",
+    "description": "Scheduled High feeders whose loss lies in the Medium/High overlap band",
+    "feeders": 89
+   },
+   {
+    "rule": "listed_without_loss",
+    "description": "Listed feeders with no published ATC loss",
+    "feeders": 2
+   },
+   {
+    "rule": "listed_without_schedule",
+    "description": "Listed feeders with no schedule row",
+    "feeders": 6
+   },
+   {
+    "rule": "medium_category_at_12h",
+    "description": "Medium-loss feeders scheduled 12 h (Medium is otherwise 6 h)",
+    "feeders": 2
+   },
+   {
+    "rule": "medium_in_overlap_band",
+    "description": "Scheduled Medium feeders whose loss lies in the Medium/High overlap band",
+    "feeders": 112
+   },
+   {
+    "rule": "schedule_without_listing",
+    "description": "Schedule rows whose feeder is not in the list",
+    "feeders": 1
+   }
+  ],
+  "report": {
+   "iso_week": "2026-W41",
+   "engine": "template",
+   "narrative": "This report describes published K-Electric load-shed schedules effective from 2026-08-05; they are schedules, not measured outages. K-Electric lists 623 feeders under load shed across 30 IBC areas, of which 617 have a schedule row. Among listed feeders with a schedule, 492 are scheduled for twelve hours a day and 125 for six (79.7% at twelve hours); exempt feeders are not published, so these shares cover listed feeders only.\n\nAmong IBC areas with at least ten scheduled feeders, the highest share at twelve hours is in IBC - Clifton (100%, n = 11) and the lowest in IBC - Johar - I (46.7%, n = 15). 2 IBC areas have every scheduled listed feeder at twelve hours.\n\nScheduled hours correspond to the published loss category; 2 Medium-category feeders are the exceptions at twelve hours. Category is not a pure function of the published loss figure: in the loss band where the Medium and High categories overlap there are 112 Medium and 89 High feeders. This is an observation about the published categories, not a finding about fairness.\n\nExploratory rank correlations (descriptive only; no significance or causal reading): across listed feeders, loss and scheduled hours have Spearman rho = 0.676 (n = 615). At census sub-division level, using the 15 IBC areas matched by name to 13 sub-divisions, the share of listed feeders at twelve hours has rho = -0.39 with literacy and rho = -0.258 with the degree-holder share (n = 13).",
+   "facts": [
+    {
+     "id": "coverage_listed_feeders",
+     "value": 623,
+     "unit": "count",
+     "query_id": "coverage"
+    },
+    {
+     "id": "coverage_scheduled_feeders",
+     "value": 617,
+     "unit": "count",
+     "query_id": "coverage"
+    },
+    {
+     "id": "coverage_ibcs",
+     "value": 30,
+     "unit": "count",
+     "query_id": "coverage"
+    },
+    {
+     "id": "hours_split_feeders_12h",
+     "value": 492,
+     "unit": "count",
+     "query_id": "hours_split"
+    },
+    {
+     "id": "hours_split_feeders_6h",
+     "value": 125,
+     "unit": "count",
+     "query_id": "hours_split"
+    },
+    {
+     "id": "hours_split_share_12h_pct",
+     "value": 79.7,
+     "unit": "%",
+     "query_id": "hours_split"
+    },
+    {
+     "id": "effective_schedule_effective_from",
+     "value": "2026-08-05",
+     "unit": "date",
+     "query_id": "effective"
+    },
+    {
+     "id": "ibc_highest_name",
+     "value": "IBC - Clifton",
+     "unit": "text",
+     "query_id": "ibc_highest"
+    },
+    {
+     "id": "ibc_highest_share_12h_pct",
+     "value": 100,
+     "unit": "%",
+     "query_id": "ibc_highest"
+    },
+    {
+     "id": "ibc_highest_n",
+     "value": 11,
+     "unit": "n",
+     "query_id": "ibc_highest"
+    },
+    {
+     "id": "ibc_lowest_name",
+     "value": "IBC - Johar - I",
+     "unit": "text",
+     "query_id": "ibc_lowest"
+    },
+    {
+     "id": "ibc_lowest_share_12h_pct",
+     "value": 46.7,
+     "unit": "%",
+     "query_id": "ibc_lowest"
+    },
+    {
+     "id": "ibc_lowest_n",
+     "value": 15,
+     "unit": "n",
+     "query_id": "ibc_lowest"
+    },
+    {
+     "id": "ibc_all_12h",
+     "value": 2,
+     "unit": "count",
+     "query_id": "ibc_all_12h"
+    },
+    {
+     "id": "medium_12h",
+     "value": 2,
+     "unit": "count",
+     "query_id": "medium_12h"
+    },
+    {
+     "id": "overlap_medium",
+     "value": 112,
+     "unit": "count",
+     "query_id": "overlap"
+    },
+    {
+     "id": "overlap_high",
+     "value": 89,
+     "unit": "count",
+     "query_id": "overlap"
+    },
+    {
+     "id": "rho_loss_hours_rho",
+     "value": 0.676,
+     "unit": "rho",
+     "query_id": "rho_loss_hours"
+    },
+    {
+     "id": "rho_loss_hours_n",
+     "value": 615,
+     "unit": "n",
+     "query_id": "rho_loss_hours"
+    },
+    {
+     "id": "rho_literacy_rho",
+     "value": -0.39,
+     "unit": "rho",
+     "query_id": "rho_literacy"
+    },
+    {
+     "id": "rho_literacy_n",
+     "value": 13,
+     "unit": "n",
+     "query_id": "rho_literacy"
+    },
+    {
+     "id": "rho_degree_rho",
+     "value": -0.258,
+     "unit": "rho",
+     "query_id": "rho_degree"
+    },
+    {
+     "id": "rho_degree_n",
+     "value": 13,
+     "unit": "n",
+     "query_id": "rho_degree"
+    },
+    {
+     "id": "crosswalk_accepted_ibcs",
+     "value": 15,
+     "unit": "count",
+     "query_id": "crosswalk"
+    },
+    {
+     "id": "crosswalk_subdivisions",
+     "value": 13,
+     "unit": "count",
+     "query_id": "crosswalk"
+    }
+   ]
+  }
+ }
+}

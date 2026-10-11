@@ -1,0 +1,83 @@
+{
+ "schema_id": "roshni/meta/v1",
+ "schema_version": "1.0.0",
+ "generated_at": "2026-10-11T15:44:09Z",
+ "last_updated": "2026-10-11T15:43:58.563657Z",
+ "label": "Scheduled (published schedule data), not measured outages",
+ "data": {
+  "timezone_display": "Asia/Karachi",
+  "utc_offset_hours": 5,
+  "documents": [
+   "meta",
+   "feeders",
+   "dark_profiles",
+   "planned_shutdowns",
+   "areas",
+   "equity"
+  ],
+  "sources": [
+   {
+    "source": "iesco_schedule_xlsx",
+    "source_file": "iesco-ajk-sep26.xlsx",
+    "effective_from": "2026-01-14",
+    "effective_basis": "HTTP Last-Modified (file states no date)",
+    "published_label": "Sep-2026"
+   },
+   {
+    "source": "iesco_schedule_xlsx",
+    "source_file": "iesco-attock-sep26.xlsx",
+    "effective_from": "2026-01-14",
+    "effective_basis": "HTTP Last-Modified (file states no date)",
+    "published_label": "Sep-2026"
+   },
+   {
+    "source": "iesco_schedule_xlsx",
+    "source_file": "iesco-chakwal-sep26.xlsx",
+    "effective_from": "2026-01-14",
+    "effective_basis": "HTTP Last-Modified (file states no date)",
+    "published_label": "Sep-2026"
+   },
+   {
+    "source": "iesco_schedule_xlsx",
+    "source_file": "iesco-islamabad-sep26.xlsx",
+    "effective_from": "2026-01-14",
+    "effective_basis": "HTTP Last-Modified (file states no date)",
+    "published_label": "Sep-2026"
+   },
+   {
+    "source": "iesco_schedule_xlsx",
+    "source_file": "iesco-jhelum-sep26.xlsx",
+    "effective_from": "2026-01-14",
+    "effective_basis": "HTTP Last-Modified (file states no date)",
+    "published_label": "Sep-2026"
+   },
+   {
+    "source": "iesco_schedule_xlsx",
+    "source_file": "iesco-rawalpindi-sep26.xlsx",
+    "effective_from": "2026-01-14",
+    "effective_basis": "HTTP Last-Modified (file states no date)",
+    "published_label": "Sep-2026"
+   },
+   {
+    "source": "kelectric_feeder_list",
+    "source_file": "kelectric-feeder-list.pdf",
+    "effective_from": "2026-07-06",
+    "effective_basis": "HTTP Last-Modified (file states no date)",
+    "published_label": null
+   },
+   {
+    "source": "kelectric_schedule",
+    "source_file": "kelectric-load-shed-schedule.pdf",
+    "effective_from": "2026-08-05",
+    "effective_basis": "Applies from 5 Aug 2026 (file name and HTTP Last-Modified); tentative per K-Electric disclaimer; may predate the 2026-09-11 directive",
+    "published_label": "LSMnew-PDF-Aug-5th"
+   }
+  ],
+  "attribution": [
+   "Load-shedding schedules and press releases: Islamabad Electric Supply Company (IESCO), iesco.com.pk",
+   "Feeder list and load-shed schedule: K-Electric, ke.com.pk",
+   "Census 2023 tables: Pakistan Bureau of Statistics"
+  ],
+  "disclaimer": "Not affiliated with IESCO, K-Electric or PBS. Schedules are published plans, not measured outages; IESCO schedules are a scenario playbook by interruption level."
+ }
+}
