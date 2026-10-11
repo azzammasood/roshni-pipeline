@@ -158,5 +158,14 @@ def dark_now(
         notes.append(
             f"{unmatched} planned shutdown(s) name a feeder not matched to the feeder list"
         )
-    rows.sort(key=lambda r: (r.kind, r.source, r.area or "", r.feeder_name))
+    rows.sort(
+        key=lambda r: (
+            r.kind,
+            r.source,
+            r.area or "",
+            r.feeder_name,
+            r.feeder_id or "",
+            r.window_local,
+        )
+    )
     return DarkNow(local, iesco_level, rows, notes)
