@@ -139,3 +139,23 @@ def test_equity_report_numbers_trace_to_queries(wh) -> None:
         row = dict(zip([d[0] for d in cur.description], cur.fetchone(), strict=True))
         assert f["value"] in [v if not isinstance(v, float) or not v.is_integer() else int(v)
                               for v in row.values()]  # fmt: skip
+
+
+def test_static_export_validates(wh, tmp_path) -> None:
+    import json
+
+    from roshni.export.build import build_export, validate_export
+
+    counts = build_export(wh.con, tmp_path)
+    assert counts["feeders"] == 1725 and counts["planned_shutdowns"] == 1853
+    assert counts["dark_profiles"] == 1101 + 618  # IESCO feeders + K-Electric scheduled
+    assert set(validate_export(tmp_path).values()) == {"valid"}
+    profiles = {
+        p["feeder_id"]: p for p in json.loads((tmp_path / "dark_profiles.json").read_text())["data"]
+    }
+    # Every K-Electric profile sums to its 6 or 12 daily hours; every IESCO level N to N hours.
+    for p in profiles.values():
+        if p["daily"] is not None:
+            assert sum(p["daily"]) in (360, 720)
+        for level, minutes in (p["scenario_levels"] or {}).items():
+            assert sum(minutes) == int(level) * 60
