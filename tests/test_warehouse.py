@@ -114,3 +114,28 @@ def test_dark_now_on_real_schedules(wh) -> None:
     # K-Electric cycles wrapping midnight are dark just after midnight.
     r = dark_now(wh.con, datetime(2026, 10, 6, 0, 30))
     assert any(x.window_local.startswith("23:05") for x in r.rows if x.kind == "daily_cycle")
+
+
+def test_equity_report_numbers_trace_to_queries(wh) -> None:
+    import re
+
+    from roshni.narrate.facts import QUERIES
+    from roshni.narrate.report import build_report
+
+    rep = build_report(wh.con, engine="template")
+    facts = {f["id"]: f for f in rep.data["facts"]}
+    # Audit oracles that appear in the report.
+    assert facts["coverage_listed_feeders"]["value"] == 623
+    assert facts["overlap_medium"]["value"] == 112 and facts["overlap_high"]["value"] == 89
+    assert facts["medium_12h"]["value"] == 2
+    # Every number in the narrative is the rendered value of some fact ...
+    allowed = set()
+    for f in rep.data["facts"]:
+        allowed |= set(re.findall(r"\d+(?:[.,]\d+)*", str(f["value"])))
+    assert set(re.findall(r"\d+(?:[.,]\d+)*", rep.data["narrative"])) <= allowed
+    # ... and every fact is reproduced by re-running its named query.
+    for f in rep.data["facts"]:
+        cur = wh.con.execute(QUERIES[f["query_id"]])
+        row = dict(zip([d[0] for d in cur.description], cur.fetchone(), strict=True))
+        assert f["value"] in [v if not isinstance(v, float) or not v.is_integer() else int(v)
+                              for v in row.values()]  # fmt: skip
