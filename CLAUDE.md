@@ -1,6 +1,6 @@
 # Roshni Pipeline — working notes for Claude
 
-Backend data pipeline: Pakistan load-shedding **schedules** (IESCO, K-Electric) + PBS Census 2023 → DuckDB/dbt → "dark now" view, K-Electric fairness analysis, AI narration, static JSON export. **Backend only**: no frontend, no logo.
+Data pipeline: Pakistan load-shedding **schedules** (IESCO, K-Electric) + PBS Census 2023 → DuckDB/dbt → "dark now" view, K-Electric fairness analysis, AI narration, static JSON export, and a static Next.js site in `web/` (plan: `docs/frontend-plan.md`). No logo.
 
 Long facts: `docs/data-audit.md` (oracles, file inventory). Decisions: `docs/DECISIONS.md`. Keep both current.
 
@@ -46,6 +46,10 @@ docker compose -f airflow/docker-compose.yml up --build    # Airflow showcase on
 uv run --group databricks python scripts/databricks_load.py     # upload parsed tables (env creds)
 uv run --group databricks roshni build --target databricks      # same models on Databricks
 docker compose build ; docker compose run --rm app <cmd>   # canonical pdftotext
+# web/ (Node 24, npm), run inside web/:
+npm ci ; npm run sync-data        # copy data/export/v1 -> public/data/v1 (or sync-data:fixtures)
+npm run gen:types                 # after any schemas/v1 change (check:types in CI)
+npm run lint ; npm run typecheck ; npm test ; npm run build   # static site -> web/out
 ```
 
 ## Layout
@@ -62,6 +66,7 @@ config/                sources.yml, policy.yml
 dbt/                   staging views, int_ke_feeder_join, marts + quarantine_* tables, seeds/source_documents.csv
 tests/                 cross-cutting tests, fixtures/
 scripts/  docs/  .github/workflows/
+web/                   Next.js static site: src/app/[lang], src/i18n, src/lib, src/types/v1 (generated), fixtures/v1
 data/                  generated, git-ignored
 data-sources/          hand-downloaded, git-ignored, not managed by code
 ```
@@ -91,4 +96,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 5 (live layer): done 2026-10-10; dark-now function + CLI, mart_feeder_dark_hours; dbt PASS=116; midnight-wrap tests pass.
 - Phase 6 (analytics + narration): done 2026-10-11; dbt PASS=129; LLM report (gemini-2.5-flash via fallback, $0.0075) validated and traced to queries.
 - Phase 7 (export + orchestration): done 2026-10-11; export validates against schemas/v1; Airflow DAG ran all 6 tasks successfully.
-- Backend complete. Next: frontend (fresh session). Decided 2026-10-11: Next.js static export on GitHub Pages (deployed by Actions after the daily export; private repo needs owner to go public or paid plan first), English first with Urdu-ready i18n/RTL, no map in v1.
+- Frontend F0 (scaffold): done 2026-10-11; full build 1,731 static pages, fixture build in CI. Next: F1 (exact windows in export v1.1.0 + TS dark-now). F4 deploy waits on owner decisions (plan doc).
+- Backend complete. Frontend kickoff: Decided 2026-10-11: Next.js static export on GitHub Pages (deployed by Actions after the daily export; private repo needs owner to go public or paid plan first), English first with Urdu-ready i18n/RTL, no map in v1.

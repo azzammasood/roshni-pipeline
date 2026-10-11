@@ -2,6 +2,15 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-11 (Frontend F0 scaffold)
+- **Plan in `docs/frontend-plan.md`** (phases F0-F5, page list, UI non-negotiables, owner decisions before deploy).
+- **`web/` = Next.js 16.4 App Router, `output: "export"`, `trailingSlash`, basePath from `NEXT_PUBLIC_BASE_PATH`** (`/roshni-pipeline` on Pages, empty locally). Node 24, npm (lockfile committed). Tailwind 4 with logical utilities only; system fonts (no build-time font download).
+- **i18n without a library:** Next's `[lang]` segment + JSON dictionaries (`web/src/i18n/`); `dir` from the locale; only `en` is generated until the Urdu pass. next-intl was dropped (not needed for a static export, one less dependency). `/` is a static `public/index.html` that refreshes to `en/` (static export has no redirects).
+- **Types generated from `schemas/v1`** (`json-schema-to-typescript`, property titles stripped) into `web/src/types/v1/`; `npm run check:types` fails on drift, in CI.
+- **Data:** `npm run sync-data` copies `data/export/v1` to `web/public/data/v1` (git-ignored) after checking each `schema_id`/major version; pages read it at build time. CI builds from `web/fixtures/v1` (6 feeders, 8 shutdowns, 12 areas, full equity/meta; public names and our own derived numbers only), made by `npm run make-fixtures`.
+- **Feeder pages:** one static page per feeder at `/en/feeder/<slug>/`, slug = lowercased id with separators as `-` (unique on case-insensitive file systems; the build fails on a collision). Full build: 1,731 pages in about 2 min locally.
+- **Found during planning:** (1) dark profiles are hourly minute counts, so a static site cannot tell whether 22:40 is dark when hour 22 has 25 scheduled minutes; F1 proposes an additive export v1.1.0 with exact local windows. (2) No workflow runs parse/build/export daily, and census inputs are hand-downloaded, so CI cannot rebuild `areas`/`equity`; deploy (F4) waits for an owner decision (options in the plan).
+
 ## 2026-10-11 (Frontend kickoff decisions)
 - **Hosting: GitHub Pages**, deployed by a GitHub Actions workflow after the daily snapshot/parse/build/export; the site reads `data/export/v1` JSON (static Next.js export, Next.js per the brief). **Caveat:** Pages on a private repo needs a paid GitHub plan; the repo is private, so the owner must make it public or upgrade before the first deploy (owner's decision; do not change visibility).
 - **Languages: English first, Urdu-ready**: all UI strings in translation files, RTL-safe layout (logical CSS properties); Urdu text added in a later pass with owner review.
