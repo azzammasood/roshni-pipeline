@@ -2,6 +2,12 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-11 (Frontend kickoff decisions)
+- **Hosting: GitHub Pages**, deployed by a GitHub Actions workflow after the daily snapshot/parse/build/export; the site reads `data/export/v1` JSON (static Next.js export, Next.js per the brief). **Caveat:** Pages on a private repo needs a paid GitHub plan; the repo is private, so the owner must make it public or upgrade before the first deploy (owner's decision; do not change visibility).
+- **Languages: English first, Urdu-ready**: all UI strings in translation files, RTL-safe layout (logical CSS properties); Urdu text added in a later pass with owner review.
+- **No map in v1** (docs/boundary-research.md): ranked lists and charts.
+- Frontend work starts in a fresh session (owner's choice), from CLAUDE.md.
+
 ## 2026-10-11 (Phase 7)
 - **Static export** `roshni export` → `data/export/v1/{meta,feeders,dark_profiles,planned_shutdowns,areas,equity}.json` (~2 MB uncompressed). Each file is an envelope: `schema_id` (roshni/<doc>/v1), `schema_version` (1.0.0), `generated_at`, `last_updated` (latest source fetch or warehouse build), the schedule-not-measurement `label`, `data`. Dark profiles are 24-hour minute vectors (K-Electric `daily`; IESCO `scenario_levels` per level), so a static site computes "dark now" client-side; planned shutdowns carry UTC bounds.
 - **JSON Schemas** in `schemas/v1/` are generated from the pydantic export models (`--write-schemas`, LF); a test fails on drift; every export is validated with `jsonschema` before it counts. Breaking changes → `v2` folder; additive → minor version bump.
