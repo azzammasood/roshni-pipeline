@@ -261,7 +261,11 @@ def export(
         for p in write_schema_files():
             typer.echo(f"schema {p}")
     out = out or DATA_DIR / "export" / "v1"
-    reports = sorted((DATA_DIR / "reports").glob("equity-*.json"))
+    # Latest week; within it prefer the LLM-narrated report over the template one.
+    reports = sorted(
+        (DATA_DIR / "reports").glob("equity-*-*.json"),
+        key=lambda p: (p.stem.rsplit("-", 1)[0], p.stem.endswith("-llm")),
+    )
     con = duckdb.connect(str(db or DATA_DIR / "roshni.duckdb"), read_only=True)
     try:
         counts = build_export(con, out, reports[-1] if reports else None)

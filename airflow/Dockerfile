@@ -12,10 +12,11 @@ COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
 
 COPY pyproject.toml uv.lock README.md /opt/roshni-src/
 COPY src /opt/roshni-src/src
-RUN chown -R airflow: /opt/roshni-src
+RUN mkdir -p /opt/roshni-venv && chown -R airflow: /opt/roshni-src /opt/roshni-venv
 
 USER airflow
 ENV UV_PROJECT_ENVIRONMENT=/opt/roshni-venv \
     UV_LINK_MODE=copy \
     UV_PYTHON_DOWNLOADS=never
-RUN cd /opt/roshni-src && uv sync --frozen --no-dev --python "$(command -v python3)"
+# The base interpreter, not Airflow's own environment, so the two stay independent.
+RUN cd /opt/roshni-src && VIRTUAL_ENV= uv sync --frozen --no-dev --python /usr/local/bin/python3

@@ -18,7 +18,7 @@ STEPS = [
     ("parse", "parse"),
     ("validate", "validate"),
     ("build", "build"),
-    ("report", "report --engine template"),
+    ("report", "report --engine auto"),  # LLM only if OPENROUTER_API_KEY is set
     ("export", "export"),
 ]
 

@@ -88,7 +88,9 @@ def build_report(
 
 def write_report(report: Report, out_dir: Path) -> tuple[Path, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
-    stem = f"equity-{report.data['iso_week']}"
+    # One file per week and engine kind, so a template run never overwrites an LLM report.
+    kind = "template" if report.engine == "template" else "llm"
+    stem = f"equity-{report.data['iso_week']}-{kind}"
     md, js = out_dir / f"{stem}.md", out_dir / f"{stem}.json"
     md.write_text(report.markdown, encoding="utf-8", newline="\n")
     js.write_text(json.dumps(report.data, default=str, indent=2), encoding="utf-8", newline="\n")
