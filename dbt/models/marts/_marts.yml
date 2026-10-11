@@ -291,3 +291,48 @@ models:
         arguments:
           min_value: 1
           max_value: 60
+- name: mart_ke_ibc_equity
+  description: 'Per K-Electric IBC: listed and scheduled feeders, feeders at 6 h and 12 h, share at 12
+    h, mean scheduled hours, mean ATC loss (n with loss), category counts, census sub-division if crosswalked.
+    Among listed feeders only; schedule data; descriptive.'
+  columns:
+  - name: ibc
+    data_tests:
+    - unique
+    - not_null
+  - name: share_12h_pct
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 100
+- name: mart_ke_subdivision_equity
+  description: Scheduled hours of listed K-Electric feeders aggregated to census sub-divisions via the
+    accepted IBC crosswalk, with census indicators. Exploratory; extents of IBCs and sub-divisions are
+    not verified.
+  columns:
+  - name: subdivision_area_id
+    data_tests:
+    - unique
+    - not_null
+- name: rpt_spearman
+  description: 'Exploratory Spearman rank correlations with n: sub-division share at 12 h vs census indicators
+    and mean loss; feeder-level ATC loss vs scheduled hours. No significance or causal claims.'
+  columns:
+  - name: n
+    data_tests:
+    - not_null
+  - name: spearman_rho
+    data_tests:
+    - accepted_range:
+        arguments:
+          min_value: -1
+          max_value: 1
+- name: rpt_ke_anomalies
+  description: Rule-based observations on the K-Electric list and schedule (counts per rule). Observations,
+    not findings of unfairness.
+  columns:
+  - name: rule
+    data_tests:
+    - unique
+    - not_null
