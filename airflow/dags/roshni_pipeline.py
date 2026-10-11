@@ -15,7 +15,7 @@ ROSHNI = os.environ.get("ROSHNI_BIN", "roshni")
 
 STEPS = [
     ("snapshot", "snapshot --store /opt/roshni/data/snapshots"),
-    ("parse", "parse"),
+    ("parse", "parse --snapshots /opt/roshni/data/snapshots"),
     ("validate", "validate"),
     ("build", "build"),
     ("report", "report --engine auto"),  # LLM only if OPENROUTER_API_KEY is set
