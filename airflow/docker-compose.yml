@@ -1,0 +1,24 @@
+# Local orchestration showcase:  docker compose -f airflow/docker-compose.yml up --build
+# UI: http://localhost:8080 (Airflow "standalone": scheduler, API server and SQLite in one
+# container; the admin password is printed in the logs). Not used in production.
+services:
+  airflow:
+    build:
+      context: ..
+      dockerfile: airflow/Dockerfile
+    image: roshni-airflow:dev
+    command: standalone
+    ports:
+      - "8080:8080"
+    environment:
+      ROSHNI_ROOT: /opt/roshni
+      ROSHNI_BIN: /opt/roshni-venv/bin/roshni
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+    volumes:
+      - ./dags:/opt/airflow/dags:ro
+      - ../dbt:/opt/roshni/dbt
+      - ../config:/opt/roshni/config:ro
+      - ../schemas:/opt/roshni/schemas:ro
+      - ../data:/opt/roshni/data
+      - ../data-sources:/opt/roshni/data-sources:ro
