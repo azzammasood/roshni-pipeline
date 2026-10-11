@@ -1,0 +1,140 @@
+// "Scheduled dark now", computed in the browser from the static export. Port of
+// src/roshni/live/dark_now.py: same window semantics, kinds, labels and ordering, and the gate
+// test (darkNow.oracle.test.ts) checks it row for row against the Python function.
+// Everything here is SCHEDULE data, never measured outages.
+import type { DarkProfile, Feeder, PlannedShutdown } from "@/types/v1";
+import { hhmm, karachiDate, karachiMinuteOfDay } from "./time";
+
+export const IESCO_LEVELS = [2, 4, 6, 8, 10, 12] as const;
+export type IescoLevel = (typeof IESCO_LEVELS)[number];
+
+export type DarkKind = "daily_cycle" | `scenario_level_${IescoLevel}` | "planned_shutdown";
+
+export interface DarkRow {
+  feederId: string | null;
+  feederName: string;
+  source: "iesco" | "kelectric";
+  kind: DarkKind;
+  /** K-Electric IBC or IESCO circle (as printed for planned shutdowns). */
+  area: string | null;
+  /** Local window, e.g. "22:35-02:05" (Asia/Karachi). */
+  windowLocal: string;
+  /** Schedule effective date, or the outage date for a planned shutdown. */
+  effectiveFrom: string;
+  matchState?: PlannedShutdown["feeder_match_state"];
+}
+
+export type DarkNote =
+  | { kind: "not_yet_effective"; source: string; effectiveFrom: string }
+  | { kind: "iesco_level_not_chosen" }
+  | { kind: "unmatched_shutdowns"; count: number };
+
+export interface DarkNowResult {
+  minuteOfDay: number;
+  localDate: string;
+  level: IescoLevel | null;
+  rows: DarkRow[];
+  notes: DarkNote[];
+}
+
+export interface DarkNowData {
+  feeders: Feeder[];
+  profiles: DarkProfile[];
+  shutdowns: PlannedShutdown[];
+}
+
+/** Is `minute` (0..1439) inside [start, end)? end <= start wraps midnight. */
+export function windowActive(startMin: number, endMin: number, minute: number): boolean {
+  if (endMin > startMin) return startMin <= minute && minute < endMin;
+  return minute >= startMin || minute < endMin;
+}
+
+const area = (f: Feeder | undefined) => f?.ibc ?? f?.circle ?? (f?.grid ? `grid ${f.grid}` : null);
+const cmp = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+
+export function darkNow(
+  data: DarkNowData,
+  instant: Date,
+  level: IescoLevel | null = null,
+): DarkNowResult {
+  if (level !== null && !IESCO_LEVELS.includes(level)) {
+    throw new Error(`IESCO level must be one of ${IESCO_LEVELS.join(", ")}`);
+  }
+  const minute = karachiMinuteOfDay(instant);
+  const today = karachiDate(instant);
+  const hour = Math.floor(minute / 60);
+  const byId = new Map(data.feeders.map((f) => [f.feeder_id, f]));
+  const rows: DarkRow[] = [];
+  const notYet = new Map<string, DarkNote>();
+
+  for (const p of data.profiles) {
+    const feeder = byId.get(p.feeder_id);
+    const base = {
+      feederId: p.feeder_id,
+      feederName: feeder?.name ?? p.feeder_id,
+      source: p.source,
+      area: area(feeder),
+      effectiveFrom: p.effective_from,
+    };
+    const hasWindows = (p.daily_windows?.length ?? 0) > 0;
+    const levelHours = level !== null ? p.scenario_levels?.[String(level)] : undefined;
+    if (!hasWindows && !levelHours) continue;
+    // ISO dates compare correctly as strings.
+    if (p.effective_from > today) {
+      notYet.set(`${p.source} ${p.effective_from}`, {
+        kind: "not_yet_effective",
+        source: p.source,
+        effectiveFrom: p.effective_from,
+      });
+      continue;
+    }
+    for (const w of p.daily_windows ?? []) {
+      if (windowActive(w.start_min, w.end_min, minute)) {
+        rows.push({ ...base, kind: "daily_cycle", windowLocal: `${hhmm(w.start_min)}-${hhmm(w.end_min)}` });
+      }
+    }
+    // IESCO slots are whole local hours (checked at export), so 60 means the whole hour is dark.
+    if (levelHours && levelHours[hour] === 60) {
+      rows.push({
+        ...base,
+        kind: `scenario_level_${level!}`,
+        windowLocal: `${hhmm(hour * 60)}-${hhmm(hour * 60 + 60)}`,
+      });
+    }
+  }
+
+  const notes: DarkNote[] = [...notYet.entries()]
+    .sort(([a], [b]) => cmp(a, b))
+    .map(([, note]) => note);
+  if (level === null) notes.push({ kind: "iesco_level_not_chosen" });
+
+  const at = instant.getTime();
+  let unmatched = 0;
+  for (const s of data.shutdowns) {
+    if (!(Date.parse(s.start_utc) <= at && at < Date.parse(s.end_utc))) continue;
+    const feeder = s.feeder_id ? byId.get(s.feeder_id) : undefined;
+    rows.push({
+      feederId: s.feeder_id,
+      feederName: feeder?.name ?? s.feeder_name_as_printed,
+      source: "iesco",
+      kind: "planned_shutdown",
+      area: s.circle_as_printed,
+      windowLocal: `${s.start_local}-${s.end_local}`,
+      effectiveFrom: s.outage_date,
+      matchState: s.feeder_match_state,
+    });
+    if (s.feeder_match_state !== "matched") unmatched += 1;
+  }
+  if (unmatched) notes.push({ kind: "unmatched_shutdowns", count: unmatched });
+
+  rows.sort(
+    (a, b) =>
+      cmp(a.kind, b.kind) ||
+      cmp(a.source, b.source) ||
+      cmp(a.area ?? "", b.area ?? "") ||
+      cmp(a.feederName, b.feederName) ||
+      cmp(a.feederId ?? "", b.feederId ?? "") ||
+      cmp(a.windowLocal, b.windowLocal),
+  );
+  return { minuteOfDay: minute, localDate: today, level, rows, notes };
+}

@@ -1,7 +1,7 @@
 {
  "schema_id": "roshni/meta/v1",
- "schema_version": "1.0.0",
- "generated_at": "2026-10-11T15:44:09Z",
+ "schema_version": "1.1.0",
+ "generated_at": "2026-10-11T16:51:23Z",
  "last_updated": "2026-10-11T15:43:58.563657Z",
  "label": "Scheduled (published schedule data), not measured outages",
  "data": {

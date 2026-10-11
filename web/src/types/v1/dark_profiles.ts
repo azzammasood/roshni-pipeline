@@ -28,13 +28,27 @@ export interface DarkProfile {
    * K-Electric: scheduled dark minutes in each local hour 0-23
    */
   daily?: number[] | null;
+  /**
+   * K-Electric: exact scheduled windows behind `daily` (since 1.1.0)
+   */
+  daily_windows?: Window[] | null;
   effective_from: string;
   feeder_id: string;
   /**
-   * IESCO: per interruption level ('2'..'12'), dark minutes in each local hour 0-23 IF that level is active (the files never say which level applies)
+   * IESCO: per interruption level ('2'..'12'), dark minutes in each local hour 0-23 IF that level is active (the files never say which level applies). IESCO slots are whole local hours (checked at export), so each value is 0 or 60 and exact
    */
   scenario_levels?: {
     [k: string]: number[];
   } | null;
   source: "iesco" | "kelectric";
+}
+export interface Window {
+  /**
+   * Local minute of day, exclusive; end <= start wraps midnight
+   */
+  end_min: number;
+  /**
+   * Local (Asia/Karachi) minute of day, inclusive
+   */
+  start_min: number;
 }
