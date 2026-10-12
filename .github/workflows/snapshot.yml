@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  issues: write # failure-issue.sh
 
 concurrency:
   group: snapshot
@@ -74,3 +75,14 @@ jobs:
       - name: Fail if the snapshot reported errors
         if: steps.snap.outputs.status != '0'
         run: exit 1
+
+      - name: Open or update the failure issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/failure-issue.sh fail "snapshot"
+      - name: Close the failure issue after a good run
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/failure-issue.sh ok "snapshot"

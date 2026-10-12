@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  issues: write # failure-issue.sh
 
 concurrency:
   group: publish
@@ -105,3 +106,14 @@ jobs:
           GIT_SSH_COMMAND="ssh -i ~/.ssh/site_deploy -o IdentitiesOnly=yes" \
             git push -q --force "$SITE_REPO" main
           echo "deployed $(git ls-files | wc -l) files"
+
+      - name: Open or update the failure issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/failure-issue.sh fail "publish"
+      - name: Close the failure issue after a good run
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/failure-issue.sh ok "publish"

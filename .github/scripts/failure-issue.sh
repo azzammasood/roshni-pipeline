@@ -11,12 +11,18 @@ run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
 gh label create "$label" --color B60205 \
   --description "Daily snapshot or publish run failed" >/dev/null 2>&1 || true
-open=$(gh issue list --label "$label" --state open --json number,title \
-  --jq "map(select(.title == \"$title\")) | .[0].number // empty")
+
+# Open issues for this workflow, read from the REST list: `gh issue list` goes through an index
+# that lags just after an issue is created, which produced duplicates in testing.
+open_issues() {
+  gh api "repos/${GITHUB_REPOSITORY}/issues?labels=${label}&state=open&per_page=100" \
+    --jq ".[] | select(.title == \"${title}\") | .number"
+}
+mapfile -t open < <(open_issues)
 
 if [ "$mode" = fail ]; then
-  if [ -n "$open" ]; then
-    gh issue comment "$open" --body "Failed again: $run_url"
+  if [ "${#open[@]}" -gt 0 ]; then
+    gh issue comment "${open[0]}" --body "Failed again: $run_url"
   else
     gh issue create --label "$label" --title "$title" --body "$(cat <<BODY
 The **${workflow}** run failed: $run_url
@@ -31,6 +37,8 @@ This issue closes itself when the workflow next succeeds.
 BODY
 )"
   fi
-elif [ -n "$open" ]; then
-  gh issue close "$open" --comment "Recovered: $run_url"
+else
+  for n in "${open[@]}"; do
+    gh issue close "$n" --comment "Recovered: $run_url"
+  done
 fi
