@@ -5,6 +5,7 @@
     "skip": "Skip to content"
   },
   "nav": {
+    "label": "Main",
     "home": "Scheduled now",
     "shutdowns": "Planned shutdowns",
     "equity": "Karachi equity",
@@ -15,13 +16,49 @@
   },
   "footer": {
     "lastUpdated": "Data last updated",
-    "timezone": "All times are Pakistan Standard Time (Asia/Karachi, UTC+5).",
-    "sources": "Sources"
+    "timezone": "All times are Pakistan Standard Time (Asia/Karachi, UTC+5)."
+  },
+  "common": {
+    "loading": "Loading schedule data…",
+    "loadError": "Could not load the schedule data. Try reloading the page.",
+    "search": "Search",
+    "searchPlaceholder": "Feeder name, code, grid, IBC or circle",
+    "feeder": "Feeder",
+    "area": "Area",
+    "window": "Scheduled window",
+    "effectiveFrom": "Effective from",
+    "date": "Date",
+    "showAll": "Show all {n}",
+    "showFewer": "Show fewer",
+    "none": "None.",
+    "confidence": "{pct}% match confidence",
+    "exact": "exact match",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}"
+  },
+  "matchState": {
+    "matched": "Matched to feeder list",
+    "pending_review": "Match pending review",
+    "unmatched": "Not matched to feeder list",
+    "out_of_scope": "Outside the feeder lists"
   },
   "home": {
     "title": "Who is scheduled to be dark now?",
-    "intro": "Search a feeder, grid or area. K-Electric schedules apply daily. IESCO publishes one schedule per interruption level and never says which level is in force, so you choose the level.",
-    "counts": "{feeders} feeders with published schedules ({iesco} IESCO, {ke} K-Electric)."
+    "intro": "K-Electric schedules apply daily. IESCO publishes one schedule per interruption level and never says which level is in force, so choose a level to see IESCO.",
+    "counts": "{feeders} feeders with published schedules ({iesco} IESCO, {ke} K-Electric).",
+    "time": "Time (Pakistan)",
+    "useNow": "Use current time",
+    "level": "IESCO interruption level",
+    "levelNone": "Not chosen",
+    "levelOption": "Level {n} ({n} hours a day)",
+    "summary": "Scheduled at {time} on {date} (Pakistan time):",
+    "groupDaily": "K-Electric daily schedule",
+    "groupScenario": "IESCO, if level {n} is in force",
+    "groupPlanned": "IESCO planned shutdowns (press releases)",
+    "noteNotYet": "The {source} schedule applies from {date}, so it is not shown for this date.",
+    "noteLevel": "IESCO feeders are not shown: choose an interruption level. IESCO's files never say which level is in force.",
+    "noteUnmatched": "{n} planned shutdowns name a feeder that could not be matched to the feeder list; they are shown as printed."
   },
   "feeder": {
     "source": "Source",
@@ -29,13 +66,35 @@
     "circle": "Circle",
     "grid": "Grid",
     "ibc": "IBC",
+    "category": "K-Electric loss category (as published)",
+    "atcLoss": "AT&C loss (as published)",
     "effectiveFrom": "Schedule effective from",
-    "noSchedule": "No published schedule for this feeder."
+    "noSchedule": "No published schedule for this feeder.",
+    "dailyTitle": "Daily schedule",
+    "dailyIntro": "Scheduled dark minutes in each hour of the day.",
+    "windows": "Scheduled windows",
+    "minutesPerDay": "{h} hours {m} minutes scheduled per day",
+    "scenarioTitle": "IESCO schedule by interruption level",
+    "scenarioIntro": "Each row is the schedule IF that level is in force. IESCO does not publish which level applies on a given day.",
+    "levelRow": "Level {n}",
+    "hour": "Hour",
+    "darkCell": "scheduled dark",
+    "localitiesTitle": "Census localities matched by name",
+    "localitiesIntro": "Matched by name only, not by boundary. Approximate matches show their confidence.",
+    "shutdownsTitle": "Planned shutdowns for this feeder",
+    "release": "Press release",
+    "asPrinted": "Name as printed"
   },
   "shutdowns": {
     "title": "Planned shutdowns",
-    "intro": "Dated maintenance shutdowns from IESCO press releases, as printed. Feeder matches carry a confidence; unmatched names are shown as printed.",
-    "count": "{n} planned shutdown windows from {from} to {to}."
+    "intro": "Dated maintenance shutdowns announced in IESCO press releases, as printed. Feeder matches carry a confidence; names that could not be matched are shown as printed.",
+    "count": "{n} planned shutdown windows from {from} to {to}.",
+    "circle": "Circle",
+    "allCircles": "All circles",
+    "state": "Feeder match",
+    "allStates": "All",
+    "upcoming": "Today and later only",
+    "results": "{n} matching windows."
   },
   "equity": {
     "title": "K-Electric schedule hours by IBC",
@@ -43,8 +102,20 @@
   },
   "about": {
     "title": "About the data",
-    "disclaimer": "Disclaimer",
-    "attribution": "Attribution"
+    "whatTitle": "What this site shows",
+    "what": "Roshni shows the load-shedding schedules that IESCO and K-Electric publish, and the planned shutdowns IESCO announces in press releases. These are plans, not measurements: a feeder listed as scheduled may have had power, and a feeder not listed may not have.",
+    "levelsTitle": "IESCO interruption levels",
+    "levels": "IESCO publishes a playbook: one schedule for each interruption level (2 to 12 hours a day). Its files never say which level is in force, so this site never assumes one. You choose the level.",
+    "timeTitle": "Time",
+    "time": "All times are Pakistan Standard Time (Asia/Karachi, UTC+5, no daylight saving). A window such as 22:35–02:05 crosses midnight; the end minute is not included.",
+    "matchingTitle": "Matching",
+    "matching": "Feeders are matched to census localities and press-release names by name only. Exact matches are accepted automatically; other matches were reviewed against written rules and always show their confidence. Unmatched names are shown as printed.",
+    "sourcesTitle": "Sources and effective dates",
+    "sourceFile": "File",
+    "published": "Published label",
+    "basis": "How the date was set",
+    "attribution": "Attribution",
+    "disclaimer": "Disclaimer"
   },
   "sources": {
     "iesco": "IESCO",

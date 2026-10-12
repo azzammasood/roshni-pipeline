@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { HourBars } from "@/components/HourBars";
+import { LevelGrid } from "@/components/LevelGrid";
 import { locales } from "@/i18n/config";
-import { loadDocument } from "@/lib/data";
+import { fill } from "@/i18n/dictionaries";
+import { loadDocument, loadFeederIndex } from "@/lib/data";
 import { resolveLocale } from "@/lib/locale";
 import { feederSlug, slugIndex } from "@/lib/slug";
+import { formatKarachi, hhmm } from "@/lib/time";
+import { ScrollRegion } from "@/components/ScrollRegion";
 
 export const dynamicParams = false;
 
@@ -14,7 +19,7 @@ export async function generateStaticParams() {
 }
 
 async function findFeeder(slug: string) {
-  const feeder = slugIndex((await loadDocument("feeders")).data).get(slug);
+  const feeder = (await loadFeederIndex()).bySlug.get(slug);
   if (!feeder) notFound();
   return feeder;
 }
@@ -26,33 +31,145 @@ export async function generateMetadata({
 }
 
 export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[slug]">) {
-  const { dict } = await resolveLocale(params);
+  const { locale, dict } = await resolveLocale(params);
+  const t = dict.feeder;
   const feeder = await findFeeder((await params).slug);
-  const profile = (await loadDocument("dark_profiles")).data.find(
-    (p) => p.feeder_id === feeder.feeder_id,
-  );
+  const profilesDoc = await loadDocument("dark_profiles");
+  const index = await loadFeederIndex();
+  const profile = index.profiles.get(feeder.feeder_id);
+  const shutdowns = index.shutdowns.get(feeder.feeder_id) ?? [];
+
   const rows: [string, string | null][] = [
-    [dict.feeder.source, dict.sources[feeder.source]],
-    [dict.feeder.code, feeder.feeder_code],
-    [dict.feeder.circle, feeder.circle],
-    [dict.feeder.grid, feeder.grid],
-    [dict.feeder.ibc, feeder.ibc],
-    [dict.feeder.effectiveFrom, profile?.effective_from ?? null],
+    [t.source, dict.sources[feeder.source]],
+    [t.code, feeder.feeder_code],
+    [t.circle, feeder.circle],
+    [t.grid, feeder.grid],
+    [t.ibc, feeder.ibc],
+    [t.category, feeder.category],
+    [t.atcLoss, feeder.atc_loss_pct === null ? null : `${feeder.atc_loss_pct.toLocaleString(locale)}%`],
+    [t.effectiveFrom, profile?.effective_from ?? null],
   ];
+  const dailyTotal = profile?.daily?.reduce((a, b) => a + b, 0) ?? 0;
+
   return (
-    <article className="space-y-4">
-      <h1 className="text-2xl font-semibold">{feeder.name}</h1>
-      <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-1">
-        {rows
-          .filter(([, v]) => v)
-          .map(([k, v]) => (
-            <div key={k} className="contents">
-              <dt className="text-muted">{k}</dt>
-              <dd>{v}</dd>
-            </div>
-          ))}
-      </dl>
-      {!profile && <p>{dict.feeder.noSchedule}</p>}
+    <article className="space-y-8">
+      <header className="space-y-3">
+        <h1 className="text-2xl font-semibold">{feeder.name}</h1>
+        <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-1">
+          {rows
+            .filter(([, v]) => v)
+            .map(([k, v]) => (
+              <div key={k} className="contents">
+                <dt className="text-muted">{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+        </dl>
+        <p className="text-sm text-muted">
+          {profilesDoc.label}. {dict.footer.lastUpdated}:{" "}
+          <time dateTime={profilesDoc.last_updated}>{formatKarachi(profilesDoc.last_updated)}</time>
+        </p>
+      </header>
+
+      {!profile && <p>{t.noSchedule}</p>}
+
+      {profile?.daily && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">{t.dailyTitle}</h2>
+          <p className="text-sm text-muted">{t.dailyIntro}</p>
+          <HourBars minutes={profile.daily} label={t.dailyIntro} />
+          <p className="font-medium">
+            {fill(t.minutesPerDay, { h: Math.floor(dailyTotal / 60), m: dailyTotal % 60 }, locale)}
+          </p>
+          {profile.daily_windows && (
+            <>
+              <h3 className="font-semibold">{t.windows}</h3>
+              <ul className="tabular-nums" dir="ltr">
+                {profile.daily_windows.map((w) => (
+                  <li key={w.start_min} className="text-start">
+                    {hhmm(w.start_min)}–{hhmm(w.end_min)}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
+      )}
+
+      {profile?.scenario_levels && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">{t.scenarioTitle}</h2>
+          <p className="text-sm text-muted max-w-prose">{t.scenarioIntro}</p>
+          <LevelGrid
+            levels={profile.scenario_levels}
+            caption={t.scenarioTitle}
+            levelLabel={(n) => fill(t.levelRow, { n }, locale)}
+            hourLabel={t.hour}
+            darkLabel={t.darkCell}
+          />
+        </section>
+      )}
+
+      {feeder.localities.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">{t.localitiesTitle}</h2>
+          <p className="text-sm text-muted">{t.localitiesIntro}</p>
+          <ul className="space-y-1">
+            {feeder.localities.map((l) => (
+              <li key={l.area_id}>
+                {l.area_name}{" "}
+                <span className="text-sm text-muted">
+                  (
+                  {l.match_status === "auto_exact"
+                    ? dict.common.exact
+                    : fill(dict.common.confidence, { pct: Math.round(l.match_confidence * 100) }, locale)}
+                  )
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {shutdowns.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">
+            {t.shutdownsTitle}{" "}
+            <span className="font-normal text-muted">({shutdowns.length.toLocaleString(locale)})</span>
+          </h2>
+          <ScrollRegion label={t.shutdownsTitle}>
+            <table className="data">
+              <thead>
+                <tr>
+                  <th scope="col">{dict.common.date}</th>
+                  <th scope="col">{dict.common.window}</th>
+                  <th scope="col">{t.asPrinted}</th>
+                  <th scope="col">{t.release}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shutdowns.map((s) => (
+                  <tr key={s.shutdown_id}>
+                    <td className="tabular-nums whitespace-nowrap">{s.outage_date}</td>
+                    <td className="tabular-nums whitespace-nowrap" dir="ltr">
+                      {s.start_local}–{s.end_local}
+                    </td>
+                    <td>
+                      {s.feeder_name_as_printed}
+                      {s.match_confidence !== null && s.match_confidence < 1 && (
+                        <span className="block text-xs text-muted">
+                          {fill(dict.common.confidence, { pct: Math.round(s.match_confidence * 100) }, locale)}
+                        </span>
+                      )}
+                    </td>
+                    <td>{s.release_no}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollRegion>
+        </section>
+      )}
     </article>
   );
 }

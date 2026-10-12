@@ -38,12 +38,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         </a>
         <header className="border-b border-line">
           <div className="mx-auto max-w-5xl px-4 py-3 flex flex-wrap items-baseline gap-x-6 gap-y-2">
-            <Link href={`/${locale}/`} className="text-lg font-semibold">
+            <Link prefetch={false} href={`/${locale}/`} className="text-lg font-semibold">
               {dict.site.name}
             </Link>
-            <nav aria-label="Main" className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <nav aria-label={dict.nav.label} className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
               {nav.map(([href, label]) => (
-                <Link key={href} href={`/${locale}/${href}`} className="hover:underline">
+                <Link key={href} prefetch={false} href={`/${locale}/${href}`} className="hover:underline">
                   {label}
                 </Link>
               ))}
