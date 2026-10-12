@@ -1,13 +1,27 @@
 import type { Metadata } from "next";
+import { Noto_Nastaliq_Urdu } from "next/font/google";
 import Link from "next/link";
-import { dirOf, locales } from "@/i18n/config";
+import { ExportText } from "@/components/ExportText";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { builtLocales, dirOf } from "@/i18n/config";
+import { fromExport } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
 import { resolveLocale } from "@/lib/locale";
 import { formatKarachi } from "@/lib/time";
 import "./globals.css";
 
+// Urdu is set in Nastaliq, self-hosted by next/font at build time. Not preloaded: only Urdu
+// pages use it, so English pages never download it.
+const nastaliq = Noto_Nastaliq_Urdu({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  display: "swap",
+  preload: false,
+  variable: "--font-urdu",
+});
+
 export const dynamicParams = false;
-export const generateStaticParams = () => locales.map((lang) => ({ lang }));
+export const generateStaticParams = () => builtLocales.map((lang) => ({ lang }));
 
 export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Promise<Metadata> {
   const { dict } = await resolveLocale(params);
@@ -20,6 +34,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
 export default async function LocaleLayout({ children, params }: LayoutProps<"/[lang]">) {
   const { locale, dict } = await resolveLocale(params);
   const meta = await loadDocument("meta");
+  const other = builtLocales.find((l) => l !== locale);
   const nav = [
     ["", dict.nav.home],
     ["shutdowns/", dict.nav.shutdowns],
@@ -28,7 +43,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   ] as const;
 
   return (
-    <html lang={locale} dir={dirOf(locale)}>
+    <html lang={locale} dir={dirOf(locale)} className={nastaliq.variable}>
       <body className="min-h-dvh flex flex-col">
         <a
           href="#main"
@@ -48,6 +63,16 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
                 </Link>
               ))}
             </nav>
+            {other && (
+              <span className="ms-auto text-sm">
+                <LanguageSwitch
+                  from={locale}
+                  to={other}
+                  label={dict.site.otherLanguage}
+                  ariaLabel={dict.site.otherLanguageLabel}
+                />
+              </span>
+            )}
           </div>
           <p role="note" className="bg-notice text-notice-ink text-sm">
             <span className="block mx-auto max-w-5xl px-4 py-1.5">{dict.banner.scheduled}</span>
@@ -60,10 +85,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
           <div className="mx-auto max-w-5xl px-4 py-4 space-y-1">
             <p>
               {dict.footer.lastUpdated}:{" "}
-              <time dateTime={meta.last_updated}>{formatKarachi(meta.last_updated)}</time>
+              <time dateTime={meta.last_updated}>{formatKarachi(meta.last_updated, locale)}</time>
             </p>
             <p>{dict.footer.timezone}</p>
-            <p>{meta.data.disclaimer}</p>
+            <ExportText as="p" value={fromExport(meta.data.disclaimer, locale)} />
           </div>
         </footer>
       </body>

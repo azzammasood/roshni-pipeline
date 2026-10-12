@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import { loadDocument } from "@/lib/data";
 import { resolveLocale } from "@/lib/locale";
 import { ScrollRegion } from "@/components/ScrollRegion";
+import { ExportText } from "@/components/ExportText";
+import { fromExport } from "@/i18n/dictionaries";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/about">): Promise<Metadata> {
   return { title: (await resolveLocale(params)).dict.about.title };
 }
 
 export default async function About({ params }: PageProps<"/[lang]/about">) {
-  const { dict } = await resolveLocale(params);
+  const { locale, dict } = await resolveLocale(params);
   const t = dict.about;
   const meta = (await loadDocument("meta")).data;
   const prose: [string, string][] = [
@@ -41,10 +43,16 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
             <tbody>
               {meta.sources.map((s) => (
                 <tr key={s.source_file}>
-                  <td>{s.source_file}</td>
+                  <td>
+                    <bdi>{s.source_file}</bdi>
+                  </td>
                   <td className="tabular-nums whitespace-nowrap">{s.effective_from}</td>
-                  <td>{s.published_label}</td>
-                  <td>{s.effective_basis}</td>
+                  <td>
+                    <bdi>{s.published_label}</bdi>
+                  </td>
+                  <td>
+                    <ExportText value={fromExport(s.effective_basis, locale)} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -55,13 +63,15 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
         <h2 className="text-lg font-semibold">{t.attribution}</h2>
         <ul className="list-disc ps-5">
           {meta.attribution.map((a) => (
-            <li key={a}>{a}</li>
+            <li key={a}>
+              <ExportText value={fromExport(a, locale)} />
+            </li>
           ))}
         </ul>
       </section>
       <section className="space-y-1">
         <h2 className="text-lg font-semibold">{t.disclaimer}</h2>
-        <p className="max-w-prose">{meta.disclaimer}</p>
+        <ExportText as="p" className="max-w-prose" value={fromExport(meta.disclaimer, locale)} />
       </section>
     </article>
   );

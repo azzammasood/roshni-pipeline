@@ -3,8 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=en/">
+<script>
+  // Urdu browsers go to /ur/ when it is built; everyone else (and no-JS) to /en/.
+  try {
+    var ur = (navigator.languages || [navigator.language]).some(function (l) { return /^ur\b/i.test(l); });
+    if (ur) fetch("ur/", { method: "HEAD" }).then(function (r) { location.replace(r.ok ? "ur/" : "en/"); }, function () { location.replace("en/"); });
+    else location.replace("en/");
+  } catch (e) { location.replace("en/"); }
+</script>
+<noscript><meta http-equiv="refresh" content="0; url=en/"></noscript>
 <title>Roshni</title>
 </head>
-<body><p><a href="en/">Roshni: published load-shedding schedules (English)</a></p></body>
+<body><p><a href="en/">Roshni</a></p></body>
 </html>

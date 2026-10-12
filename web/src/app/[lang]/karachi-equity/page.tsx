@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { ScrollRegion } from "@/components/ScrollRegion";
 import { ShareBars } from "@/components/ShareBars";
-import { fill } from "@/i18n/dictionaries";
+import { fill, fromExport } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
 import { num, pct } from "@/lib/format";
 import { resolveLocale } from "@/lib/locale";
+import { ExportText } from "@/components/ExportText";
 
 /** IBCs with fewer scheduled feeders than this are flagged (same threshold as the weekly report). */
 const MIN_N = 10;
@@ -45,11 +46,11 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
         <h1 className="text-2xl font-semibold">{t.title}</h1>
         <p className="max-w-prose">{t.intro}</p>
         <p className="max-w-prose rounded border border-line bg-surface p-3 text-sm">
-          <strong>{t.scope}:</strong> {scope_note}
+          <strong>{t.scope}:</strong> <ExportText value={fromExport(scope_note, locale)} />
         </p>
         {effective && (
           <p className="text-sm text-muted">
-            {doc.label}. {fill(t.effective, { date: effective }, locale)}
+            <ExportText value={fromExport(doc.label, locale)} />. {fill(t.effective, { date: effective }, locale)}
           </p>
         )}
       </header>
@@ -101,7 +102,7 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
               {byName.map((r) => (
                 <tr key={r.ibc}>
                   <th scope="row" className="whitespace-nowrap font-normal">
-                    {r.ibc}
+                    <bdi>{r.ibc}</bdi>
                   </th>
                   <td>{n(r.listed_feeders)}</td>
                   <td>{n(r.scheduled_feeders)}</td>
@@ -111,7 +112,9 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
                   <td>{opt(r.mean_scheduled_hours)}</td>
                   <td>{pct(r.mean_atc_loss_pct, locale)}</td>
                   <td>{n(r.feeders_with_loss)}</td>
-                  <td>{r.census_subdivision ?? "–"}</td>
+                  <td>
+                    <bdi>{r.census_subdivision ?? "–"}</bdi>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -149,7 +152,7 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
                 .map((s) => (
                   <tr key={s.subdivision_area_id}>
                     <th scope="row" className="whitespace-nowrap font-normal">
-                      {s.subdivision_name}
+                      <bdi>{s.subdivision_name}</bdi>
                     </th>
                     <td>{n(s.ibcs)}</td>
                     <td>{n(s.scheduled_feeders)}</td>
@@ -228,7 +231,8 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
           <p className="text-sm text-muted max-w-prose">
             {report.engine === "template" ? t.engineTemplate : fill(t.engineLlm, { engine: report.engine }, locale)}
           </p>
-          <div className="space-y-3 max-w-prose">
+          {locale !== "en" && <p className="text-sm font-medium">{dict.common.englishOnly}</p>}
+          <div className="space-y-3 max-w-prose" lang="en" dir="ltr">
             {report.narrative
               .split(/\n\s*\n/)
               .filter((p) => p.trim())

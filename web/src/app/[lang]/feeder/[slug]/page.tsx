@@ -2,20 +2,22 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HourBars } from "@/components/HourBars";
 import { LevelGrid } from "@/components/LevelGrid";
-import { locales } from "@/i18n/config";
-import { fill } from "@/i18n/dictionaries";
+import { builtLocales } from "@/i18n/config";
+import { fill, fromExport } from "@/i18n/dictionaries";
 import { loadDocument, loadFeederIndex } from "@/lib/data";
+import { num, pct } from "@/lib/format";
 import { resolveLocale } from "@/lib/locale";
 import { feederSlug, slugIndex } from "@/lib/slug";
 import { formatKarachi, hhmm } from "@/lib/time";
 import { ScrollRegion } from "@/components/ScrollRegion";
+import { ExportText } from "@/components/ExportText";
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const feeders = (await loadDocument("feeders")).data;
   slugIndex(feeders); // fails the build on a slug collision
-  return locales.flatMap((lang) => feeders.map((f) => ({ lang, slug: feederSlug(f.feeder_id) })));
+  return builtLocales.flatMap((lang) => feeders.map((f) => ({ lang, slug: feederSlug(f.feeder_id) })));
 }
 
 async function findFeeder(slug: string) {
@@ -46,7 +48,7 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
     [t.grid, feeder.grid],
     [t.ibc, feeder.ibc],
     [t.category, feeder.category],
-    [t.atcLoss, feeder.atc_loss_pct === null ? null : `${feeder.atc_loss_pct.toLocaleString(locale)}%`],
+    [t.atcLoss, feeder.atc_loss_pct === null ? null : pct(feeder.atc_loss_pct, locale)],
     [t.effectiveFrom, profile?.effective_from ?? null],
   ];
   const dailyTotal = profile?.daily?.reduce((a, b) => a + b, 0) ?? 0;
@@ -54,20 +56,24 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
   return (
     <article className="space-y-8">
       <header className="space-y-3">
-        <h1 className="text-2xl font-semibold">{feeder.name}</h1>
-        <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-1">
+        <h1 className="text-2xl font-semibold">
+          <bdi>{feeder.name}</bdi>
+        </h1>
+        <dl className="grid grid-cols-[fit-content(50%)_1fr] gap-x-6 gap-y-1">
           {rows
             .filter(([, v]) => v)
             .map(([k, v]) => (
               <div key={k} className="contents">
                 <dt className="text-muted">{k}</dt>
-                <dd>{v}</dd>
+                <dd>
+                  <bdi>{v}</bdi>
+                </dd>
               </div>
             ))}
         </dl>
         <p className="text-sm text-muted">
-          {profilesDoc.label}. {dict.footer.lastUpdated}:{" "}
-          <time dateTime={profilesDoc.last_updated}>{formatKarachi(profilesDoc.last_updated)}</time>
+          <ExportText value={fromExport(profilesDoc.label, locale)} />. {dict.footer.lastUpdated}:{" "}
+          <time dateTime={profilesDoc.last_updated}>{formatKarachi(profilesDoc.last_updated, locale)}</time>
         </p>
       </header>
 
@@ -117,7 +123,7 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
           <ul className="space-y-1">
             {feeder.localities.map((l) => (
               <li key={l.area_id}>
-                {l.area_name}{" "}
+                <bdi>{l.area_name}</bdi>{" "}
                 <span className="text-sm text-muted">
                   (
                   {l.match_status === "auto_exact"
@@ -135,7 +141,7 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">
             {t.shutdownsTitle}{" "}
-            <span className="font-normal text-muted">({shutdowns.length.toLocaleString(locale)})</span>
+            <span className="font-normal text-muted">({num(shutdowns.length, locale)})</span>
           </h2>
           <ScrollRegion label={t.shutdownsTitle}>
             <table className="data">
@@ -155,7 +161,7 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
                       {s.start_local}–{s.end_local}
                     </td>
                     <td>
-                      {s.feeder_name_as_printed}
+                      <bdi>{s.feeder_name_as_printed}</bdi>
                       {s.match_confidence !== null && s.match_confidence < 1 && (
                         <span className="block text-xs text-muted">
                           {fill(dict.common.confidence, { pct: Math.round(s.match_confidence * 100) }, locale)}

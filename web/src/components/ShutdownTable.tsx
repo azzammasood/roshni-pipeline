@@ -132,12 +132,16 @@ export function ShutdownTable({ locale, t }: { locale: string; t: Strings }) {
                   <td className="tabular-nums whitespace-nowrap" dir="ltr">
                     {s.start_local}–{s.end_local}
                   </td>
-                  <td>{s.circle_as_printed}</td>
-                  <td>{s.feeder_name_as_printed}</td>
+                  <td>
+                    <bdi>{s.circle_as_printed}</bdi>
+                  </td>
+                  <td>
+                    <bdi>{s.feeder_name_as_printed}</bdi>
+                  </td>
                   <td>
                     {s.feeder_id && s.feeder_match_state === "matched" ? (
                       <Link prefetch={false} href={feederHref(locale, s.feeder_id)} className="link">
-                        {names.get(s.feeder_id) ?? s.feeder_id}
+                        <bdi>{names.get(s.feeder_id) ?? s.feeder_id}</bdi>
                       </Link>
                     ) : (
                       <span className="text-muted">{t.matchState[s.feeder_match_state]}</span>

@@ -1,0 +1,11 @@
+{
+  "_note": "Urdu for fixed English text that comes from the export (meta/equity). Keys are the exact English; scripts/check-i18n.mjs fails if a required export string has no entry here.",
+  "Scheduled (published schedule data), not measured outages": "شیڈول (شائع شدہ شیڈول کا ڈیٹا)، اصل ناپی گئی بندشیں نہیں",
+  "Not affiliated with IESCO, K-Electric or PBS. Schedules are published plans, not measured outages; IESCO schedules are a scenario playbook by interruption level.": "آئیسکو، کے الیکٹرک یا ادارہ شماریات پاکستان (پی بی ایس) سے کوئی وابستگی نہیں۔ شیڈول شائع شدہ منصوبے ہیں، اصل ناپی گئی بندشیں نہیں؛ آئیسکو کے شیڈول انٹرپشن لیول کے لحاظ سے ممکنہ صورتوں کا لائحہ عمل ہیں۔",
+  "K-Electric shares are among listed feeders only (exempt feeders are not published); statistics are descriptive and exploratory, not causal.": "کے الیکٹرک کے تناسب صرف لسٹ میں شامل فیڈرز میں سے ہیں (مستثنیٰ فیڈر شائع نہیں ہوتے)؛ اعداد و شمار بیانیہ اور ابتدائی ہیں، سبب و نتیجہ نہیں بتاتے۔",
+  "Load-shedding schedules and press releases: Islamabad Electric Supply Company (IESCO), iesco.com.pk": "لوڈ شیڈنگ شیڈول اور پریس ریلیز: اسلام آباد الیکٹرک سپلائی کمپنی (آئیسکو)، iesco.com.pk",
+  "Feeder list and load-shed schedule: K-Electric, ke.com.pk": "فیڈر لسٹ اور لوڈ شیڈ شیڈول: کے الیکٹرک، ke.com.pk",
+  "Census 2023 tables: Pakistan Bureau of Statistics": "مردم شماری 2023 کے جدول: ادارہ شماریات پاکستان",
+  "HTTP Last-Modified (file states no date)": "سرور کی HTTP Last-Modified تاریخ (فائل میں کوئی تاریخ درج نہیں)",
+  "Applies from 5 Aug 2026 (file name and HTTP Last-Modified); tentative per K-Electric disclaimer; may predate the 2026-09-11 directive": "5 اگست 2026 سے لاگو (فائل کا نام اور HTTP Last-Modified)؛ کے الیکٹرک کے اعلان کے مطابق عارضی؛ ممکن ہے 2026-09-11 کی ہدایت سے پہلے کا ہو"
+}

@@ -30,5 +30,6 @@ export function formatKarachi(isoUtc: string, locale = "en-GB"): string {
     hour: "2-digit",
     minute: "2-digit",
     hourCycle: "h23",
+    numberingSystem: "latn",
   }).format(new Date(isoUtc));
 }

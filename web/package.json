@@ -13,7 +13,9 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "check:equity": "node scripts/check-equity-numbers.mjs"
+    "check:equity": "node scripts/check-equity-numbers.mjs",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "i18n:review": "node scripts/i18n-review.mjs"
   },
   "dependencies": {
     "next": "16.4.0",

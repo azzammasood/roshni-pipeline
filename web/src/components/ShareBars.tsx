@@ -12,7 +12,7 @@ export function ShareBars({ rows, valueText }: { rows: ShareBar[]; valueText: (v
         >
           <span className="col-span-2 flex min-w-0 items-center gap-1 sm:col-span-1">
             <span className="truncate" title={r.label}>
-              {r.label}
+              <bdi>{r.label}</bdi>
             </span>
             {r.flag && (
               <span className="shrink-0 rounded bg-notice px-1 text-xs text-notice-ink">{r.flag}</span>

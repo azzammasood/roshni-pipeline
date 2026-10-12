@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/fill";
 import { darkNow, IESCO_LEVELS, type DarkNote, type DarkRow, type IescoLevel } from "@/lib/darkNow";
+import { num } from "@/lib/format";
 import { hhmm, KARACHI_OFFSET_MIN } from "@/lib/time";
 import { feederHref } from "@/lib/urls";
 import { useExport } from "@/lib/useExport";
@@ -156,7 +157,7 @@ function Group({ title, rows, locale, t }: { title: string; rows: DarkRow[]; loc
   return (
     <section className="space-y-2">
       <h2 className="text-lg font-semibold">
-        {title} <span className="text-muted font-normal">({rows.length.toLocaleString(locale)})</span>
+        {title} <span className="text-muted font-normal">({num(rows.length, locale)})</span>
       </h2>
       {rows.length === 0 ? (
         <p className="text-muted">{t.common.none}</p>
@@ -179,18 +180,20 @@ function Group({ title, rows, locale, t }: { title: string; rows: DarkRow[]; loc
                   <td>
                     {r.feederId && (r.matchState ?? "matched") === "matched" ? (
                       <Link prefetch={false} href={feederHref(locale, r.feederId)} className="link">
-                        {r.feederName}
+                        <bdi>{r.feederName}</bdi>
                       </Link>
                     ) : (
                       <>
-                        {r.feederName}
+                        <bdi>{r.feederName}</bdi>
                         {r.matchState && (
                           <span className="block text-xs text-muted">{t.matchState[r.matchState]}</span>
                         )}
                       </>
                     )}
                   </td>
-                  <td>{r.area}</td>
+                  <td>
+                    <bdi>{r.area}</bdi>
+                  </td>
                   <td className="tabular-nums whitespace-nowrap">
                     <span dir="ltr">{r.windowLocal.replace("-", "–")}</span>
                     <span className="block text-xs text-muted sm:hidden">

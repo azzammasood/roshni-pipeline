@@ -103,3 +103,12 @@ body {
     outline-offset: 2px;
   }
 }
+
+/* Urdu: Nastaliq needs generous line height; form controls inherit the font. */
+html[lang="ur"] body {
+  font-family: var(--font-urdu), "Jameel Noori Nastaleeq", "Urdu Typesetting", system-ui, sans-serif;
+  line-height: 2.1;
+}
+html[lang="ur"] :is(input, select, button) {
+  font-family: inherit;
+}
