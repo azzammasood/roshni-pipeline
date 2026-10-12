@@ -1,5 +1,7 @@
 -- Planned shutdowns with the IESCO feeder they refer to, where the printed name was matched
 -- (auto_exact or owner-accepted). Unmatched rows keep feeder_id null and say why.
+-- Transmission assets (132 kV lines, grid transformers; flagged by the parser) are never feeders
+-- and are excluded from matching, so they are out_of_scope, not "unmatched".
 select
     s.*,
     m.candidate_id as feeder_id,
@@ -8,6 +10,7 @@ select
     case
         when m.candidate_id is not null then 'matched'
         when r.out_of_scope = 1 then 'out_of_scope'
+        when s.flags like '%transmission_asset%' then 'out_of_scope'
         when r.undecided > 0 then 'pending_review'
         else 'unmatched'
     end as feeder_match_state
