@@ -51,7 +51,7 @@ GitHub Pages by Actions. English first, Urdu-ready (RTL-safe). No map. Decisions
 - **F2 pages** (done 2026-10-12): home, feeder, shutdowns, about. Gate: screenshots desktop + mobile, a11y check, sizes.
   A11y check: build, copy `web/node_modules/axe-core/axe.min.js` into `web/out/` (never committed), serve `out/`, run `axe.run()` on each page in light and dark.
 - **F3 equity page** (done 2026-10-12). Gate: every number on the page traced to `equity.json` (`npm run check:equity`, in CI).
-- **F4 deploy** (built 2026-10-12): `publish.yml` after each snapshot run → public repo `roshni-site` (Pages). Owner decisions below were made: separate public site repo; census option (a).
+- **F4 deploy** (done 2026-10-12, live at https://azzammasood.github.io/roshni-site/): `publish.yml` after each snapshot run → public repo `roshni-site` (Pages). Owner decisions below were made: separate public site repo; census option (a).
 - **F5 Urdu**: translations with owner review, RTL screenshots.
 
 ## Owner decisions needed before F4

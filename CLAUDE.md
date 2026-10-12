@@ -103,5 +103,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Frontend F0 (scaffold): done 2026-10-11; full build 1,731 static pages, fixture build in CI. F1 (export 1.1.0 exact K-E windows, TS dark-now): done 2026-10-11, oracle 144/144 cases.
 - Frontend F2 (pages: home, feeder, shutdowns, about): done 2026-10-12; axe 0 violations light/dark at 375 px.
 - Frontend F3 (Karachi equity page): done 2026-10-12; `npm run check:equity` traces all 499 numbers to equity.json (in CI).
-- Frontend F4 (daily publish to roshni-site): built 2026-10-12; CI-style rehearsal reproduced the export exactly. Pending: first run of publish.yml on GitHub. Next: F5 Urdu.
+- Frontend F4 (daily publish): done 2026-10-12; first publish run green (dbt PASS=129, equity check, 8,675 files), live at https://azzammasood.github.io/roshni-site/. Next: F5 Urdu.
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).
