@@ -36,3 +36,6 @@ dbt/dbt_packages/
 *.png
 *.jpg
 dbt/.user.yml
+
+# Local Claude Code preview config
+.claude/
