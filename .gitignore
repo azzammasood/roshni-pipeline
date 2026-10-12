@@ -24,6 +24,8 @@ build/
 *.duckdb
 *.duckdb.wal
 *.parquet
+# Committed census tables (DECISIONS 2026-10-12) are the one exception.
+!census/pbs_*.parquet
 dbt/target/
 dbt/logs/
 dbt/dbt_packages/
