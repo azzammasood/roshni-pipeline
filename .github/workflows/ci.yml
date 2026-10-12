@@ -45,8 +45,11 @@ jobs:
       - run: npm test
       # No export in CI: build the static site from trimmed fixtures, with the Pages base path.
       - run: npm run sync-data:fixtures
+      # Dictionaries complete and consistent; required export text translated.
+      - run: npm run check:i18n
       - run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /roshni-site
       # Every number on the equity page must trace to equity.json (fixtures carry the full file).
       - run: npm run check:equity
+      - run: npm run check:equity -- --locale ur
