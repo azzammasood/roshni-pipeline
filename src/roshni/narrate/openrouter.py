@@ -5,7 +5,8 @@
 - Prices are read live from GET /models (never hardcoded); a call is skipped if its worst-case
   cost would exceed what is left of the per-run cap.
 - Responses are cached by a hash of (model, prompt) under data/cache/narrate/.
-- Free (":free") models are for tests only; the default chain uses paid models.
+- Free (":free") models end the chain; the daily job runs with a $0 spend cap, so only they run
+  there (owner, 2026-10-12). Tests use a mocked API.
 """
 
 import hashlib

@@ -2,10 +2,17 @@
 # Fallback chain: the first model that exists in the live /models list, fits the spend cap and
 # passes validation is used. Unknown ids are skipped (ids change; edit freely).
 # ROSHNI_NARRATOR_MODEL (env) is tried first; ROSHNI_NARRATOR_SPEND_CAP_USD overrides the cap.
+# The daily publish job sets ROSHNI_NARRATOR_SPEND_CAP_USD=0: every paid model's worst case exceeds
+# a $0 cap and is skipped, so only the free (":free") models below run there (OpenRouter free tier:
+# 50 requests/day). Local runs keep the $0.05 cap and try the paid models first.
 models:
   - anthropic/claude-haiku-4.5
   - openai/gpt-4.1-mini
   - google/gemini-2.5-flash
+  - nvidia/nemotron-3-ultra-550b-a55b:free
+  - google/gemma-4-31b-it:free
+  - nvidia/nemotron-3-super-120b-a12b:free
+  - google/gemma-4-26b-a4b-it:free
 max_tokens: 700
 temperature: 0.2
 spend_cap_usd: 0.05   # hard cap per run, priced from the live /models endpoint

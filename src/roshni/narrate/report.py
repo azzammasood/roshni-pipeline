@@ -7,6 +7,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import duckdb
+import httpx
 
 from roshni.narrate import facts as facts_mod
 from roshni.narrate.openrouter import NarratorConfig, narrate
@@ -36,10 +37,17 @@ def build_report(
     if engine == "openrouter" or (engine == "auto" and key):
         if not key:
             raise RuntimeError("OPENROUTER_API_KEY is not set")
-        res = narrate(facts, NarratorConfig.load(), key, transport=transport)
-        attempts, spent = res.attempts, res.spent_usd
-        if res.draft is not None:
-            draft, used = res.draft, f"openrouter:{res.model}"
+        try:
+            res = narrate(facts, NarratorConfig.load(), key, transport=transport)
+        except (httpx.HTTPError, KeyError, ValueError) as e:
+            # auto: an OpenRouter outage or odd response must not block the daily publish.
+            if engine != "auto":
+                raise
+            attempts.append(f"openrouter unavailable ({type(e).__name__}: {e}); template used")
+        else:
+            attempts, spent = res.attempts, res.spent_usd
+            if res.draft is not None:
+                draft, used = res.draft, f"openrouter:{res.model}"
     if draft is None:
         draft = TEMPLATE
     try:

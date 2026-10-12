@@ -117,3 +117,27 @@ def test_spend_cap_and_cache(tmp_path: Path) -> None:
     assert first.draft == GOOD and first.spent_usd == pytest.approx(1200 * 1e-7)
     second = run(cheap, cfg, tmp_path)
     assert cheap.calls == ["c/cheap"] and "cache" in second.attempts[0] and second.spent_usd == 0
+
+
+def test_zero_cap_runs_only_free_models(tmp_path: Path) -> None:
+    """The daily job's $0 cap: paid models are skipped, a free model still runs."""
+    fake = FakeOpenRouter(
+        {"p/paid": GOOD, "f/free:free": GOOD}, {"p/paid": 1e-7, "f/free:free": 0.0}
+    )
+    res = run(fake, NarratorConfig(models=["p/paid", "f/free:free"], spend_cap_usd=0.0), tmp_path)
+    assert fake.calls == ["f/free:free"] and res.model == "f/free:free" and res.spent_usd == 0
+    assert "exceeds remaining cap" in res.attempts[0]
+
+
+def test_auto_falls_back_to_template_when_openrouter_is_down(monkeypatch, tmp_path: Path) -> None:
+    from roshni.narrate import report
+
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
+    monkeypatch.setattr(report.facts_mod, "collect", lambda con: FACTS)
+    monkeypatch.setattr(report, "TEMPLATE", GOOD)  # a template valid for the small FACTS set
+    down = httpx.MockTransport(lambda req: httpx.Response(503, json={"error": "down"}))
+    rep = report.build_report(None, engine="auto", transport=down)
+    assert rep.data["engine"] == "template"
+    assert any("openrouter unavailable" in a for a in rep.data["narrator_log"])
+    with pytest.raises(httpx.HTTPError):
+        report.build_report(None, engine="openrouter", transport=down)
