@@ -700,6 +700,7 @@ Rawalpindi City:DHQ,DHQ,Rawalpindi City,,,0,0,,no_candidate,,claude-review 2026-
 Rawalpindi City:Dhoke Chaudhrian,Dhoke Chaudhrian,Rawalpindi City,iesco:rawalpindi:008621,DHOKE CHODRIAN,1,86.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi City:Dhoke Chaudrian,Dhoke Chaudrian,Rawalpindi City,iesco:rawalpindi:008621,DHOKE CHODRIAN,1,89.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi City:Dhoke Hukam Dad,Dhoke Hukam Dad,Rawalpindi City,iesco:rawalpindi:002527,DHOKE HUKAMDAD,1,96.6,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Rawalpindi City:Dk Chaudharian,Dk Chaudharian,Rawalpindi City,iesco:rawalpindi:008621,DHOKE CHODRIAN,1,71.4,fuzzy,suggested,accepted,claude-review 2026-10-12: Dk = Dhoke (abbreviation) and same consonant skeleton; same as accepted Dk. Chaudrian
 Rawalpindi City:Dk. Chaudrian,Dk. Chaudrian,Rawalpindi City,iesco:rawalpindi:008621,DHOKE CHODRIAN,1,76.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi City:Dk. Hukam Dad,Dk. Hukam Dad,Rawalpindi City,iesco:rawalpindi:002527,DHOKE HUKAMDAD,1,84.6,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi City:Dk. Sulaiman,Dk. Sulaiman,Rawalpindi City,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
