@@ -2,6 +2,13 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-12 (Frontend F3: Karachi equity page)
+- **Page content, all from `equity.json`** (plus the K-Electric schedule effective date from `meta.json`): scope note shown first; headline counts (sums of IBC rows: 623 listed, 617 scheduled, 492 at 12 h, 125 at 6 h, 30 IBCs; equal to the report's coverage facts); share at 12 h per IBC as bars with n, IBCs with fewer than 10 scheduled feeders tagged "small n" (same threshold as the weekly report); full IBC table; 13 sub-divisions with census indicators and the name-only crosswalk caveat; Spearman rho with n and a no-significance / no-causal note; the six rules with counts; the weekly summary with its engine note and the fact table (id, value, query).
+- **Numbers are shown as exported** (up to 3 decimals, trailing zeros dropped, never re-rounded), so the page and the export can be compared by value.
+- **Gate kept as a CI check:** `npm run check:equity` reads the built page's `<main>`, extracts every number and date, and fails unless each is a value in `equity.json` (or inside one of its strings), one of the listed row sums, or a named UI constant (6 and 12 hour bands, the n < 10 threshold, the rho range -1..1). Result: 499 numbers (164 distinct) and 4 dates, all traced; planting an absent number or date makes it fail. Limitation: the match is by value, not position; the page code maps fields directly.
+- The exported report is the **2026-W41 template** narrative (the latest week has no LLM run; the Phase 6 LLM report was an earlier week), and the page says which engine wrote it.
+- a11y: axe 0 violations on the page at 375 px in light and dark; bars stack under their label on narrow screens (bar width 219 px at 375 px; 616 px on desktop, all rows aligned).
+
 ## 2026-10-12 (Frontend F2: pages)
 - **Pages built:** home "scheduled now" (client-side `darkNow` over the export: Karachi time picker, IESCO level picker defaulting to *not chosen*, search, groups for K-Electric daily / IESCO "if level N" / planned shutdowns, translated notes); feeder page (details, K-E 24-hour bars + exact windows, IESCO level × hour table, census localities with confidence, matched planned shutdowns); planned-shutdowns table (search, circle, match state, today-and-later, 50 per page; unmatched names as printed); about (method, levels, time, matching, sources with effective dates, attribution, disclaimer). Equity page stays a placeholder until F3.
 - **No grand total on the home page:** an early draft summed K-Electric daily rows and IESCO "if level N" rows into one "N feeders scheduled dark"; that mixes the published schedule with a hypothetical, so each group shows only its own count.
