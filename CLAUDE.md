@@ -20,7 +20,7 @@ Long facts: `docs/data-audit.md` (oracles, file inventory). Decisions: `docs/DEC
 - Section-7 numbers are regression tests: if one changes, surface it; don't edit the test.
 
 ## Repo and git safety
-- Remote: `git@github-azzammasood:azzammasood/roshni-pipeline.git`. **Never use `gh`** (it is logged into the wrong account). Never force-push without asking.
+- Remote: `git@github-azzammasood:azzammasood/roshni-pipeline.git`. `gh` is allowed (owner, 2026-10-12) **only after `gh api user --jq .login` prints `azzammasood`**; the keyring also holds azzamverse, so check before every session's first use and stop if it differs. Never force-push without asking.
 - Commit identity is set per repo (azzammasood). Don't touch the global git config.
 - `data-sources/` is git-ignored and guarded by a pre-commit hook. **Never read images/screenshots there**, nor files not in the inventory. Never commit full third-party documents without asking; CI uses trimmed fixtures in `tests/fixtures/`.
 - Ask before installing system packages, Docker changes, or anything destructive.
