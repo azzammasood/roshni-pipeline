@@ -61,8 +61,16 @@ jobs:
       - run: uv run roshni parse --snapshots store --census-from census
       - run: uv run roshni validate
       - run: uv run roshni build
-      # Template narrative: no LLM spend from the scheduled job.
-      - run: uv run roshni report --engine template
+      # New press-release names get candidates; only exact unique matches auto-accept (Phase 4
+      # rules), the rest show as pending review. CI seed edits are not committed: the committed
+      # seeds keep every review decision.
+      - run: uv run roshni resolve
+      - run: uv run roshni build
+      # Free OpenRouter models only ($0 cap skips paid ones); no key or no valid draft -> template.
+      - run: uv run roshni report --engine auto
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ROSHNI_NARRATOR_SPEND_CAP_USD: "0"
       - run: uv run roshni export
 
       - uses: actions/setup-node@v4
