@@ -2,6 +2,13 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-12 (Daily resolve and free-model narration)
+- **Publish now runs `roshni resolve` and a second `roshni build`.** Before, a press-release name added after the last local review had no seed row, and `fct_planned_shutdown_feeder` fell through to `unmatched`, so never-reviewed names looked reviewed-and-failed. Now new names get candidates daily: exact unique matches auto-accept (Phase 4 rule), the rest show `pending_review` until a review session. Seed edits made in CI are not committed; the committed seeds keep every decision.
+- **Transmission assets are `out_of_scope`, not `unmatched`.** Parser-flagged 132 kV lines and grid transformers are excluded from matching by rule (they are not feeders), but had no seed row and so were labelled unmatched. Rehearsal on the 12 Oct data: out_of_scope 335 → 428, unmatched 517 → 423, matched 1,027 → 1,028; dbt PASS=129; the release-03 golden test is unchanged.
+- **Review (delegated):** `Rawalpindi City: Dk Chaudharian` → DHOKE CHODRIAN accepted (Dk = Dhoke; same consonant skeleton; same as the accepted `Dk. Chaudrian`). That was the only new pending name.
+- **Daily narration uses OpenRouter free models (owner).** `config/narrator.yml` ends with four `:free` models (nemotron-3-ultra, gemma-4-31b, nemotron-3-super, gemma-4-26b; unknown ids are skipped against the live list). Publish runs `report --engine auto` with `ROSHNI_NARRATOR_SPEND_CAP_USD=0`: every paid model's worst case exceeds the cap and is skipped, so only free models run (at most 4 requests per run, within the 50/day free tier). Local runs keep the $0.05 cap and paid-first order. Needs the `OPENROUTER_API_KEY` secret (owner adds it; Claude never enters keys); until then, and whenever no free draft passes validation, the template is used.
+- **`auto` never fails the publish on an OpenRouter outage:** errors from the model list, timeouts or odd responses are logged in the report's narrator log and the template is used; an explicit `--engine openrouter` still raises.
+
 ## 2026-10-12 (Follow-ups after F5)
 - **Failure alerts:** `snapshot.yml` and `publish.yml` run `.github/scripts/failure-issue.sh` (permission `issues: write`): a failed run opens one issue per workflow (label `pipeline-failure`) or comments on the open one; the next good run closes it. It reads open issues from the REST list, because `gh issue list` lagged right after creation and produced duplicates in the self-test (issues #1-#5, all closed, are that test).
 - **Default Next.js favicon removed** (it is the Next.js logo; the project has no logo).

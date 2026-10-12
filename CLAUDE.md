@@ -85,7 +85,8 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - dbt SQL stays portable (must also run on Databricks): avoid DuckDB-only syntax.
 - Every schedule row carries `effective_from`; every live output carries source, effective date, `last_updated`.
 - Narration: the LLM writes prose only; numbers are injected from queries and validated.
-- Schedulers: GitHub Actions = production (`snapshot.yml` daily, then `publish.yml` → public repo `azzammasood/roshni-site`, never edited by hand); Airflow = local showcase calling the CLI.
+- Schedulers: GitHub Actions = production (`snapshot.yml` daily, then `publish.yml`: parse → validate → build → resolve → build → report (free models, $0 cap) → export → site → public repo `azzammasood/roshni-site`, never edited by hand; failures open a `pipeline-failure` issue); Airflow = local showcase calling the CLI.
+- Press-release names left `pending_review` by the daily resolve need a delegated review pass (local `roshni resolve`, decide per DECISIONS 2026-10-10 rules, commit the seed).
 
 ## Working agreement
 - Work phase by phase; stop at each gate with evidence (test output, row counts).
