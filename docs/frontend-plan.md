@@ -48,7 +48,8 @@ GitHub Pages by Actions. English first, Urdu-ready (RTL-safe). No map. Decisions
   "is 22:40 dark?" when hour 22 has 25 scheduled minutes. Port Phase 5 window semantics ([start, end),
   midnight wrap, not before `effective_from`) to TS with tests mirroring the Python ones.
   Gate: TS results equal `roshni dark-now --json` for a set of times.
-- **F2 pages**: home, feeder, shutdowns, about. Gate: screenshots desktop + mobile, a11y check, sizes.
+- **F2 pages** (done 2026-10-12): home, feeder, shutdowns, about. Gate: screenshots desktop + mobile, a11y check, sizes.
+  A11y check: build, copy `web/node_modules/axe-core/axe.min.js` into `web/out/` (never committed), serve `out/`, run `axe.run()` on each page in light and dark.
 - **F3 equity page**. Gate: every number on the page traced to `equity.json`.
 - **F4 deploy**: daily pipeline workflow + Pages deploy. Blocked on two owner decisions (below).
 - **F5 Urdu**: translations with owner review, RTL screenshots.

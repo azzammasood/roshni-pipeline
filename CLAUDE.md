@@ -97,5 +97,6 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 5 (live layer): done 2026-10-10; dark-now function + CLI, mart_feeder_dark_hours; dbt PASS=116; midnight-wrap tests pass.
 - Phase 6 (analytics + narration): done 2026-10-11; dbt PASS=129; LLM report (gemini-2.5-flash via fallback, $0.0075) validated and traced to queries.
 - Phase 7 (export + orchestration): done 2026-10-11; export validates against schemas/v1; Airflow DAG ran all 6 tasks successfully.
-- Frontend F0 (scaffold): done 2026-10-11; full build 1,731 static pages, fixture build in CI. F1 (export 1.1.0 exact K-E windows, TS dark-now): done 2026-10-11, oracle 144/144 cases. Next: F2 pages. F4 deploy waits on owner decisions (plan doc).
+- Frontend F0 (scaffold): done 2026-10-11; full build 1,731 static pages, fixture build in CI. F1 (export 1.1.0 exact K-E windows, TS dark-now): done 2026-10-11, oracle 144/144 cases.
+- Frontend F2 (pages: home, feeder, shutdowns, about): done 2026-10-12; axe 0 violations light/dark at 375 px. Next: F3 equity page. F4 deploy waits on owner decisions (plan doc).
 - Backend complete. Frontend kickoff: Decided 2026-10-11: Next.js static export on GitHub Pages (deployed by Actions after the daily export; private repo needs owner to go public or paid plan first), English first with Urdu-ready i18n/RTL, no map in v1.
