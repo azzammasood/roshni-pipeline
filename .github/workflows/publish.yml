@@ -73,9 +73,8 @@ jobs:
         working-directory: web
         env:
           NEXT_PUBLIC_BASE_PATH: ${{ env.SITE_BASE_PATH }}
-          # Urdu is built in CI but published only after the owner approves the translation
-          # (docs/urdu-review.md); then change this to "en,ur".
-          NEXT_PUBLIC_LOCALES: en
+          # Urdu approved by the owner 2026-10-12 (docs/urdu-review.md).
+          NEXT_PUBLIC_LOCALES: en,ur
         run: |
           npm ci
           npm run sync-data
