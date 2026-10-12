@@ -35,7 +35,8 @@ uv run pre-commit run --all-files
 uv run roshni --help
 uv run python scripts/inventory.py   # data-sources sizes + SHA-256
 uv run roshni snapshot [--store DIR] [--only SOURCE]   # polite fetch; default store data/snapshots
-uv run roshni parse [--snapshots data/snapshots-branch]  # -> data/parsed/*.parquet + quarantine/
+uv run roshni parse [--snapshots data/snapshots-branch] [--census-from census]  # -> data/parsed/*.parquet + quarantine/
+uv run roshni census-freeze                             # parsed census -> census/ (committed; after census-parser changes only)
 uv run roshni validate                                   # Great Expectations on data/parsed
 uv run roshni build [--command build|parse|test] [--select X]  # dbt -> data/roshni.duckdb
 uv run roshni resolve                                           # candidates -> dbt/seeds/review_*.csv (keeps decisions)
@@ -69,6 +70,7 @@ dbt/                   staging views, int_ke_feeder_join, marts + quarantine_* t
 tests/                 cross-cutting tests, fixtures/
 scripts/  docs/  .github/workflows/
 web/                   Next.js static site: src/app/[lang], src/i18n, src/lib, src/types/v1 (generated), fixtures/v1
+census/                committed trimmed census tables + manifest (used by publish.yml)
 data/                  generated, git-ignored
 data-sources/          hand-downloaded, git-ignored, not managed by code
 ```
@@ -82,7 +84,7 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - dbt SQL stays portable (must also run on Databricks): avoid DuckDB-only syntax.
 - Every schedule row carries `effective_from`; every live output carries source, effective date, `last_updated`.
 - Narration: the LLM writes prose only; numbers are injected from queries and validated.
-- Schedulers: GitHub Actions = production; Airflow = local showcase calling the CLI.
+- Schedulers: GitHub Actions = production (`snapshot.yml` daily, then `publish.yml` → public repo `azzammasood/roshni-site`, never edited by hand); Airflow = local showcase calling the CLI.
 
 ## Working agreement
 - Work phase by phase; stop at each gate with evidence (test output, row counts).
@@ -100,5 +102,6 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Phase 7 (export + orchestration): done 2026-10-11; export validates against schemas/v1; Airflow DAG ran all 6 tasks successfully.
 - Frontend F0 (scaffold): done 2026-10-11; full build 1,731 static pages, fixture build in CI. F1 (export 1.1.0 exact K-E windows, TS dark-now): done 2026-10-11, oracle 144/144 cases.
 - Frontend F2 (pages: home, feeder, shutdowns, about): done 2026-10-12; axe 0 violations light/dark at 375 px.
-- Frontend F3 (Karachi equity page): done 2026-10-12; `npm run check:equity` traces all 499 numbers to equity.json (in CI). Next: F4 deploy (needs owner decisions in docs/frontend-plan.md). F4 deploy waits on owner decisions (plan doc).
-- Backend complete. Frontend kickoff: Decided 2026-10-11: Next.js static export on GitHub Pages (deployed by Actions after the daily export; private repo needs owner to go public or paid plan first), English first with Urdu-ready i18n/RTL, no map in v1.
+- Frontend F3 (Karachi equity page): done 2026-10-12; `npm run check:equity` traces all 499 numbers to equity.json (in CI).
+- Frontend F4 (daily publish to roshni-site): built 2026-10-12; CI-style rehearsal reproduced the export exactly. Pending: first run of publish.yml on GitHub. Next: F5 Urdu.
+- Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).
