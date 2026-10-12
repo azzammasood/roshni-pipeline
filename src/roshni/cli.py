@@ -79,7 +79,12 @@ def parse(
     sources: Path = typer.Option(None, help="Folder of source files (default: data-sources/)."),
     out: Path = typer.Option(None, help="Output folder (default: data/parsed)."),
     snapshots: Path = typer.Option(
-        None, help="Optional snapshot store (data-snapshots checkout) for extra press releases."
+        None,
+        help="Optional snapshot store (data-snapshots checkout): extra press releases, and any "
+        "schedule file missing from the sources folder.",
+    ),
+    census_from: Path = typer.Option(
+        None, help="Use committed census tables (e.g. census/) instead of parsing census files."
     ),
 ) -> None:
     """Parse every source into typed Parquet tables plus quarantine files."""
@@ -87,9 +92,21 @@ def parse(
     from roshni.paths import DATA_DIR, DATA_SOURCES_DIR
 
     out = out or DATA_DIR / "parsed"
-    for s in run_all(sources or DATA_SOURCES_DIR, out, snapshots):
+    for s in run_all(sources or DATA_SOURCES_DIR, out, snapshots, census_from):
         typer.echo(f"{s.table:30} rows={s.rows:6} quarantined={s.quarantined}")
     typer.echo(f"written to {out}")
+
+
+@app.command("census-freeze")
+def census_freeze(
+    parsed: Path = typer.Option(None, help="Parsed Parquet folder (default: data/parsed)."),
+) -> None:
+    """Write the trimmed census tables to census/ (committed; used by the daily job)."""
+    from roshni.parsers.census import freeze
+    from roshni.paths import DATA_DIR
+
+    for table, rows in freeze(parsed or DATA_DIR / "parsed").items():
+        typer.echo(f"{table:30} rows={rows}")
 
 
 @app.command()

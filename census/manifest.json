@@ -1,0 +1,123 @@
+{
+  "pbs_urban_population": {
+    "rows": 10352,
+    "columns": [
+      "source_file",
+      "source_sha256",
+      "fetched_at",
+      "table_no",
+      "location",
+      "flags",
+      "province",
+      "level",
+      "name",
+      "district",
+      "tehsil",
+      "body",
+      "charge",
+      "circle",
+      "area_key",
+      "pop_total",
+      "pop_male",
+      "pop_female",
+      "literacy_pct_total",
+      "edu_degree_above_male",
+      "edu_degree_above_female",
+      "edu_degree_above_transgender"
+    ],
+    "source_sha256": [
+      "98d6244c28625dfe5a67d4d9666c5e1b6506e61017a3855d5f2bc2078397340d",
+      "c8f2ee3e872644aa67a10b0ec86a2a642477dd1dfaddcc436c7f2828dbedc471",
+      "d1e87b65b08e8193d712794075260b64755be9cce22224f8dc2d2274cfd2f5bc"
+    ]
+  },
+  "pbs_urban_housing": {
+    "rows": 10342,
+    "columns": [
+      "source_file",
+      "source_sha256",
+      "fetched_at",
+      "table_no",
+      "location",
+      "flags",
+      "province",
+      "level",
+      "name",
+      "district",
+      "tehsil",
+      "body",
+      "charge",
+      "circle",
+      "area_key",
+      "housing_units_total",
+      "structure_pacca",
+      "electricity",
+      "avg_household_size"
+    ],
+    "source_sha256": [
+      "93f3aa6122549d61203fc167d0e65ed93093288927d73930eeb9981e17d74c75",
+      "eb5c82f84f3f28c2cdd7641c9ad91dcbe9a88d0b3eff829b23947cf132298595",
+      "f205c282c37bb981a976113f07f89dd02ba8ec63023b5731649efff7c9c18bca"
+    ]
+  },
+  "pbs_rural_population": {
+    "rows": 33285,
+    "columns": [
+      "source_file",
+      "source_sha256",
+      "fetched_at",
+      "table_no",
+      "location",
+      "flags",
+      "province",
+      "level",
+      "name",
+      "hadbast",
+      "district",
+      "tehsil",
+      "qh",
+      "pc",
+      "area_key",
+      "pop_total",
+      "pop_male",
+      "pop_female",
+      "literacy_pct_total",
+      "edu_degree_above_male",
+      "edu_degree_above_female",
+      "edu_degree_above_transgender",
+      "area_acres"
+    ],
+    "source_sha256": [
+      "601b3120b756291993a10a0e23ae9f35baf77806b38c18072218d6a0fc50c7c4",
+      "cc5380eed832fe3d6ddca9d6705654b9a173325fa32baaf92c96948d329c2e5e"
+    ]
+  },
+  "pbs_rural_housing": {
+    "rows": 33285,
+    "columns": [
+      "source_file",
+      "source_sha256",
+      "fetched_at",
+      "table_no",
+      "location",
+      "flags",
+      "province",
+      "level",
+      "name",
+      "hadbast",
+      "district",
+      "tehsil",
+      "qh",
+      "pc",
+      "area_key",
+      "housing_units_total",
+      "structure_pacca",
+      "electricity",
+      "avg_household_size"
+    ],
+    "source_sha256": [
+      "265774635dd8d2946580059eb71aa1d3ac9997494ca6c2de771c27b0aef7d57d",
+      "b0a6ce9412ab34ea12694996b400b37411940346f3bd63ced7e6a3ab1cf10bcf"
+    ]
+  }
+}

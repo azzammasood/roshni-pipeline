@@ -24,6 +24,10 @@ class PdfTextUnavailable(RuntimeError):
 
 @functools.cache
 def _local_poppler() -> str | None:
+    # ROSHNI_PDFTEXT=docker forces the project image (the daily job: a runner's own poppler
+    # may be a different version from the canonical one).
+    if os.environ.get("ROSHNI_PDFTEXT") == "docker":
+        return None
     exe = shutil.which("pdftotext")
     if not exe:
         return None
