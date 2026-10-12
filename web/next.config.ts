@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
-// Static export for GitHub Pages. The Pages workflow sets NEXT_PUBLIC_BASE_PATH=/roshni-pipeline;
+// Static export for GitHub Pages (public repo azzammasood/roshni-site). The publish workflow sets
+// NEXT_PUBLIC_BASE_PATH=/roshni-site;
 // local builds serve from the root.
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 

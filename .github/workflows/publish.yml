@@ -1,0 +1,104 @@
+# Production pipeline after the daily snapshot: parse -> validate -> build -> report -> export ->
+# static site -> push to the public site repo (azzammasood/roshni-site, served by GitHub Pages).
+# This repo stays private; the site repo holds only the built site and is replaced on every run.
+# Inputs: schedule files and press releases from the data-snapshots branch, census tables from
+# census/ (committed, DECISIONS 2026-10-12). A failing step (e.g. a new schedule file without an
+# effective_from seed row) stops the run and the site keeps its last good version.
+name: publish
+
+on:
+  workflow_run:
+    workflows: [snapshot]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ROSHNI_PDFTEXT: docker # canonical poppler from the project image, never the runner's
+      SITE_REPO: git@github.com:azzammasood/roshni-site.git
+      SITE_BASE_PATH: /roshni-site
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out data-snapshots into ./store
+        run: |
+          git fetch --depth=1 origin data-snapshots:data-snapshots
+          git worktree add store data-snapshots
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv python install
+      - run: uv sync --frozen --no-dev
+
+      - name: Build the image with canonical poppler
+        run: docker build -q -t roshni:dev .
+      - name: Require poppler 25.03 (golden counts depend on it)
+        run: |
+          v=$(uv run python -c "from roshni.parsers.pdftext import poppler_version; print(poppler_version())")
+          echo "$v"
+          case "$v" in *" 25.03."*) ;; *) echo "unexpected poppler: $v"; exit 1 ;; esac
+
+      - name: Restore PDF text cache (keyed by file SHA-256)
+        uses: actions/cache@v4
+        with:
+          path: data/cache/pdftext
+          key: pdftext-${{ github.run_id }}
+          restore-keys: pdftext-
+
+      - run: uv run roshni parse --snapshots store --census-from census
+      - run: uv run roshni validate
+      - run: uv run roshni build
+      # Template narrative: no LLM spend from the scheduled job.
+      - run: uv run roshni report --engine template
+      - run: uv run roshni export
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Build the static site
+        working-directory: web
+        env:
+          NEXT_PUBLIC_BASE_PATH: ${{ env.SITE_BASE_PATH }}
+        run: |
+          npm ci
+          npm run sync-data
+          npm run build
+          npm run check:equity
+
+      - name: Push the site to the public site repo
+        env:
+          SITE_DEPLOY_KEY: ${{ secrets.SITE_DEPLOY_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SITE_DEPLOY_KEY" > ~/.ssh/site_deploy
+          chmod 600 ~/.ssh/site_deploy
+          # GitHub's published ed25519 host key (pinned instead of trusting ssh-keyscan).
+          echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> ~/.ssh/known_hosts
+          cp -r web/out site
+          touch site/.nojekyll # Pages must serve _next/ (Jekyll drops underscore folders)
+          printf '%s\n' "# roshni-site" "" \
+            "Built static site of roshni (published load-shedding schedules, not measured outages)." \
+            "Generated and force-pushed by the publish workflow; do not edit by hand." > site/README.md
+          cd site
+          git init -q -b main
+          git add -A
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898283+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "deploy: ${GITHUB_SHA::7} $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          GIT_SSH_COMMAND="ssh -i ~/.ssh/site_deploy -o IdentitiesOnly=yes" \
+            git push -q --force "$SITE_REPO" main
+          echo "deployed $(git ls-files | wc -l) files"

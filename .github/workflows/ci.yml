@@ -47,6 +47,6 @@ jobs:
       - run: npm run sync-data:fixtures
       - run: npm run build
         env:
-          NEXT_PUBLIC_BASE_PATH: /roshni-pipeline
+          NEXT_PUBLIC_BASE_PATH: /roshni-site
       # Every number on the equity page must trace to equity.json (fixtures carry the full file).
       - run: npm run check:equity
