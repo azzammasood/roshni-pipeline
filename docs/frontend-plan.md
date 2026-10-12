@@ -52,7 +52,7 @@ GitHub Pages by Actions. English first, Urdu-ready (RTL-safe). No map. Decisions
   A11y check: build, copy `web/node_modules/axe-core/axe.min.js` into `web/out/` (never committed), serve `out/`, run `axe.run()` on each page in light and dark.
 - **F3 equity page** (done 2026-10-12). Gate: every number on the page traced to `equity.json` (`npm run check:equity`, in CI).
 - **F4 deploy** (done 2026-10-12, live at https://azzammasood.github.io/roshni-site/): `publish.yml` after each snapshot run → public repo `roshni-site` (Pages). Owner decisions below were made: separate public site repo; census option (a).
-- **F5 Urdu**: translations with owner review, RTL screenshots.
+- **F5 Urdu** (built 2026-10-12): translations, RTL, checks. Waiting for owner review of `docs/urdu-review.md` before publishing `/ur/`.
 
 ## Owner decisions needed before F4
 1. **Repo visibility / plan** for GitHub Pages (public repo or paid plan). Not changed by Claude.
