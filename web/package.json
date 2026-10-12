@@ -12,7 +12,8 @@
     "build": "next build",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:equity": "node scripts/check-equity-numbers.mjs"
   },
   "dependencies": {
     "next": "16.4.0",
