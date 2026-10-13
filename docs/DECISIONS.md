@@ -2,6 +2,10 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-13 (Delegated review: press releases of 13-14 Oct)
+- 9 names were pending after the daily resolve. Accepted: Attock `Gulshan Sehat` → GULSHAN E SEHAT (izafat vowel), Rawalpindi City `Haidri Chowk` → HAIDERI CHOWK (skeleton), Rawalpindi Cantt `Askari Heights (IV)` → ASKARI HIEGHT-4 (roman IV = 4, typo, only candidate). Rejected: `Sector A-2`, `Sector B-2` (number dropped; Scheme-II precedent; SECTOR A vs SECTOR A (DHA) ambiguous), `Commercial-I`/`-II` → COMMERCIAL CENTER (substance differs; both point to one candidate), `Sector-C`, `A-Block` (different letter). Fuzzy alternatives of subjects with an exact match rejected. Result: matched 1,058, out_of_scope 428, unmatched 444, pending 0; dbt PASS=129.
+- **Flagged for the owner, not edited:** `tests/test_warehouse.py::test_static_export_validates` pins `planned_shutdowns == 1853` (the 65 releases parsed in Phase 2, data-audit §8). With today's snapshots the local export has 1,930 windows, so this local-only test (skipped in CI) now fails by design of the data, not by a regression. Options: pin it to the 65 audited releases (filter by their SHA-256) or assert the audited subset still yields 1,853.
+
 ## 2026-10-13 (Narration: prepaid credits first, then free)
 - **Owner: use the prepaid OpenRouter credits ($4.97) on a cheap model first, free models when they run out.** Chain: `anthropic/claude-haiku-5.5` (owner asked for "a cheap efficient model like Haiku 4.5"; Haiku 5.5 is listed at $0.10 / $0.50 per M tokens vs $1 / $5 for 4.5, about $0.0006 per report), then the free models. Publish runs with a $0.01 cap (Haiku's worst case is about $0.0012). When credits run out OpenRouter answers HTTP 402, logged as "out of credits", and the chain moves on to the free models; no config change needed. Supersedes the $0 cap of 2026-10-12.
 - `reasoning.effort=low` is sent only to `:free` models (paid models would bill thinking tokens).
