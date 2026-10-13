@@ -87,6 +87,8 @@ def check_draft(draft: str, facts: list[Fact]) -> list[str]:
     if (m := NUMBER.search(stripped)) is not None:
         problems.append(f"number written outside a placeholder: {m.group(0)!r}")
     problems += _number_word_problems(stripped, facts)
+    if (m := re.search(r"[{}][^{}]{0,30}", stripped)) is not None:  # e.g. cut off mid-placeholder
+        problems.append(f"broken placeholder: {m.group(0)!r}")
     unknown = sorted(set(PLACEHOLDER.findall(draft)) - known)
     if unknown:
         problems.append(f"unknown placeholders: {unknown}")

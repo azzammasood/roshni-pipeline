@@ -50,7 +50,7 @@ load-shed SCHEDULES in Karachi (not measured outages). Rules, all mandatory:
 @dataclass
 class NarratorConfig:
     models: list[str]
-    max_tokens: int = 2000
+    max_tokens: int = 4000
     temperature: float = 0.2
     spend_cap_usd: float = 0.05
 
@@ -127,11 +127,10 @@ def narrate(
                     ],
                     "max_tokens": cfg.max_tokens,
                     "temperature": cfg.temperature,
+                    # Reasoning models (free ones, and Haiku 5.5 by default) otherwise spend most
+                    # of the budget thinking and return null or cut-off text.
+                    "reasoning": {"effort": "low"},
                 }
-                if model.endswith(":free"):
-                    # Free reasoning models otherwise spend the whole budget thinking (content
-                    # null). Not sent to paid models: thinking tokens would be billed.
-                    request["reasoning"] = {"effort": "low"}
                 resp = http.post("/chat/completions", json=request)
                 if resp.status_code == 429:  # busy free endpoint: one retry after a short wait
                     _sleep(min(float(resp.headers.get("retry-after") or 15), 20))
@@ -155,6 +154,9 @@ def narrate(
                     # e.g. a reasoning model that spent max_tokens thinking: content is null
                     why = choice.get("finish_reason") or "no finish_reason"
                     result.attempts.append(f"{model}: empty response ({why}), skipped")
+                    continue
+                if choice.get("finish_reason") == "length":  # cut off: never publish half a text
+                    result.attempts.append(f"{model}: truncated at max_tokens, skipped")
                     continue
                 tokens_in, tokens_out = (
                     usage.get("prompt_tokens", "?"),

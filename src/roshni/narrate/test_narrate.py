@@ -245,5 +245,20 @@ def test_out_of_credits_falls_through_to_free_models(tmp_path: Path) -> None:
     res = narrate(FACTS, cfg, "test-key", httpx.MockTransport(handler), tmp_path)
     assert res.model == "f/free:free"
     assert res.attempts[0] == "p/cheap: HTTP 402 (out of credits)"
-    assert "reasoning" not in sent["p/cheap"]  # thinking tokens would be billed
-    assert sent["f/free:free"]["reasoning"] == {"effort": "low"}
+    assert sent["p/cheap"]["reasoning"] == sent["f/free:free"]["reasoning"] == {"effort": "low"}
+
+
+def test_cut_off_draft_is_rejected(tmp_path: Path) -> None:
+    """Regression (publish 2026-10-13): Haiku hit max_tokens mid-placeholder and was published."""
+    cut = "Rho is {rho_literacy_rho} (n = {rho_literacy_n}). Then rho = {rho_loss_hours_r"
+    assert any("broken placeholder" in p for p in check_draft(cut, FACTS))
+
+    def handler(req: httpx.Request) -> httpx.Response:
+        if req.url.path.endswith("/models"):
+            return httpx.Response(200, json={"data": [{"id": "h/haiku", "pricing": {}}]})
+        return httpx.Response(200, json={"choices": [
+            {"message": {"content": GOOD}, "finish_reason": "length"}]})  # fmt: skip
+
+    res = narrate(FACTS, NarratorConfig(models=["h/haiku"]), "test-key",
+                  httpx.MockTransport(handler), tmp_path)  # fmt: skip
+    assert res.draft is None and res.attempts == ["h/haiku: truncated at max_tokens, skipped"]

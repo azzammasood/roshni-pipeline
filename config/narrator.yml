@@ -10,6 +10,6 @@ models:
   - nvidia/nemotron-3-ultra-550b-a55b:free
   - google/gemma-4-31b-it:free
   - google/gemma-4-26b-a4b-it:free
-max_tokens: 2000   # room for reasoning models; billed on actual use
+max_tokens: 4000   # room for reasoning; billed on actual use (worst case ~$0.0023 on Haiku 5.5)
 temperature: 0.2
-spend_cap_usd: 0.01   # hard cap per run (Haiku 5.5 worst case ~$0.0012), priced from live /models
+spend_cap_usd: 0.01   # hard cap per run, priced from the live /models endpoint
