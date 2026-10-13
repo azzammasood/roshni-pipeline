@@ -33,6 +33,14 @@ const dates = new Set();
   }
 })(equity, "equity");
 for (const s of meta.sources) if (s.source === "kelectric_schedule") dates.add(s.effective_from);
+// The report's ISO week is shown as the date of its Monday ("week of 2026-10-12").
+const isoWeekMonday = (week) => {
+  const [, y, w] = /^(\d{4})-W(\d{2})$/.exec(week);
+  const jan4 = Date.UTC(Number(y), 0, 4);
+  const monday = jan4 - ((new Date(jan4).getUTCDay() + 6) % 7) * 86400000;
+  return new Date(monday + (Number(w) - 1) * 7 * 86400000).toISOString().slice(0, 10);
+};
+for (const d of [...dates]) if (/W/.test(d)) dates.add(isoWeekMonday(d));
 
 const sum = (rows, key) => rows.reduce((a, r) => a + r[key], 0);
 const derived = {

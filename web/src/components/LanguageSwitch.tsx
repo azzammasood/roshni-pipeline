@@ -17,7 +17,7 @@ export function LanguageSwitch({
   const path = usePathname() ?? `/${from}/`;
   const href = path.replace(new RegExp(`^/${from}(?=/|$)`), `/${to}`);
   return (
-    <Link prefetch={false} href={href} hrefLang={to} lang={to} aria-label={ariaLabel} className="link">
+    <Link prefetch={false} href={href} hrefLang={to} lang={to} aria-label={`${label}: ${ariaLabel}`} className="link">
       {label}
     </Link>
   );

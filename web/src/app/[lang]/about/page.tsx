@@ -3,7 +3,8 @@ import { loadDocument } from "@/lib/data";
 import { resolveLocale } from "@/lib/locale";
 import { ScrollRegion } from "@/components/ScrollRegion";
 import { ExportText } from "@/components/ExportText";
-import { fromExport } from "@/i18n/dictionaries";
+import { fill, fromExport } from "@/i18n/dictionaries";
+import { IESCO_RELEASES } from "@/components/ReleaseLink";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/about">): Promise<Metadata> {
   return { title: (await resolveLocale(params)).dict.about.title };
@@ -13,6 +14,10 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
   const { locale, dict } = await resolveLocale(params);
   const t = dict.about;
   const meta = (await loadDocument("meta")).data;
+  const shutdowns = (await loadDocument("planned_shutdowns")).data;
+  const releases = new Set(shutdowns.map((r) => `${r.release_period}#${r.release_no}`)).size;
+  const dates = shutdowns.map((r) => r.outage_date).sort();
+  const iesco = meta.sources.find((s) => s.source === "iesco_schedule_xlsx");
   const prose: [string, string][] = [
     [t.whatTitle, t.what],
     [t.levelsTitle, t.levels],
@@ -55,9 +60,28 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
                   </td>
                 </tr>
               ))}
+              {releases > 0 && (
+                <tr>
+                  <td>
+                    <a href={IESCO_RELEASES} className="link" rel="noopener noreferrer" target="_blank">
+                      {fill(t.pressFile, { n: releases }, locale)}
+                    </a>
+                  </td>
+                  <td className="tabular-nums whitespace-nowrap">
+                    {fill(t.pressFrom, { from: dates[0], to: dates.at(-1)! }, locale)}
+                  </td>
+                  <td />
+                  <td>{t.pressBasis}</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </ScrollRegion>
+        {iesco?.published_label && (
+          <p className="max-w-prose text-sm text-muted">
+            {fill(t.datesNote, { label: iesco.published_label, date: iesco.effective_from }, locale)}
+          </p>
+        )}
       </section>
       <section className="space-y-1">
         <h2 className="text-lg font-semibold">{t.attribution}</h2>

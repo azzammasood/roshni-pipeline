@@ -8,9 +8,13 @@ import { loadDocument, loadFeederIndex } from "@/lib/data";
 import { num, pct } from "@/lib/format";
 import { resolveLocale } from "@/lib/locale";
 import { feederSlug, slugIndex } from "@/lib/slug";
-import { formatKarachi, hhmm } from "@/lib/time";
+import { censusName, circleName, ibcName } from "@/lib/names";
+import { hourWindows } from "@/lib/windows";
 import { ScrollRegion } from "@/components/ScrollRegion";
 import { ExportText } from "@/components/ExportText";
+import { ClockRange, Stamp } from "@/components/Clock";
+import { MatchInfo } from "@/components/MatchInfo";
+import { ReleaseLink } from "@/components/ReleaseLink";
 
 export const dynamicParams = false;
 
@@ -44,14 +48,16 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
   const rows: [string, string | null][] = [
     [t.source, dict.sources[feeder.source]],
     [t.code, feeder.feeder_code],
-    [t.circle, feeder.circle],
+    [t.circle, circleName(feeder.circle)],
     [t.grid, feeder.grid],
-    [t.ibc, feeder.ibc],
+    [t.ibc, feeder.ibc && ibcName(feeder.ibc)],
     [t.category, feeder.category],
     [t.atcLoss, feeder.atc_loss_pct === null ? null : pct(feeder.atc_loss_pct, locale)],
     [t.effectiveFrom, profile?.effective_from ?? null],
   ];
   const dailyTotal = profile?.daily?.reduce((a, b) => a + b, 0) ?? 0;
+  const halves = { am: dict.site.clock.am, pm: dict.site.clock.pm };
+  const matchStrings = { ...dict.match, confidence: dict.common.confidence, exact: dict.common.exact };
 
   return (
     <article className="space-y-8">
@@ -73,7 +79,7 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
         </dl>
         <p className="text-sm text-muted">
           <ExportText value={fromExport(profilesDoc.label, locale)} />. {dict.footer.lastUpdated}:{" "}
-          <time dateTime={profilesDoc.last_updated}>{formatKarachi(profilesDoc.last_updated, locale)}</time>
+          <Stamp iso={profilesDoc.last_updated} />
         </p>
       </header>
 
@@ -83,7 +89,11 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
         <section className="space-y-2">
           <h2 className="text-lg font-semibold">{t.dailyTitle}</h2>
           <p className="text-sm text-muted">{t.dailyIntro}</p>
-          <HourBars minutes={profile.daily} label={t.dailyIntro} />
+          <HourBars
+            minutes={profile.daily}
+            label={t.dailyIntro}
+            unit={(n) => fill(t.minutes, { n }, locale)}
+          />
           <p className="font-medium">
             {fill(t.minutesPerDay, { h: Math.floor(dailyTotal / 60), m: dailyTotal % 60 }, locale)}
           </p>
@@ -93,7 +103,7 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
               <ul className="tabular-nums" dir="ltr">
                 {profile.daily_windows.map((w) => (
                   <li key={w.start_min} className="text-start">
-                    {hhmm(w.start_min)}–{hhmm(w.end_min)}
+                    <ClockRange start={w.start_min} end={w.end_min} />
                   </li>
                 ))}
               </ul>
@@ -112,7 +122,21 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
             levelLabel={(n) => fill(t.levelRow, { n }, locale)}
             hourLabel={t.hour}
             darkLabel={t.darkCell}
+            halves={halves}
           />
+          <h3 className="font-semibold pt-2">{t.levelWindows}</h3>
+          <dl className="grid grid-cols-[fit-content(30%)_1fr] gap-x-4 gap-y-1 text-sm">
+            {Object.entries(profile.scenario_levels).map(([n, mins]) => (
+              <div key={n} className="contents">
+                <dt className="text-muted whitespace-nowrap">{fill(t.levelRow, { n }, locale)}</dt>
+                <dd className="flex flex-wrap gap-x-3">
+                  {hourWindows(mins).map((w) => (
+                    <ClockRange key={w.start} start={w.start} end={w.end} />
+                  ))}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </section>
       )}
 
@@ -123,14 +147,15 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
           <ul className="space-y-1">
             {feeder.localities.map((l) => (
               <li key={l.area_id}>
-                <bdi>{l.area_name}</bdi>{" "}
-                <span className="text-sm text-muted">
-                  (
-                  {l.match_status === "auto_exact"
-                    ? dict.common.exact
-                    : fill(dict.common.confidence, { pct: Math.round(l.match_confidence * 100) }, locale)}
-                  )
-                </span>
+                <bdi>{censusName(l.area_name)}</bdi>{" "}
+                <MatchInfo
+                  confidence={l.match_status === "auto_exact" ? null : l.match_confidence}
+                  review={l.review}
+                  printed={feeder.name}
+                  matched={l.area_name}
+                  locale={locale}
+                  t={matchStrings}
+                />
               </li>
             ))}
           </ul>
@@ -157,18 +182,25 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
                 {shutdowns.map((s) => (
                   <tr key={s.shutdown_id}>
                     <td className="tabular-nums whitespace-nowrap">{s.outage_date}</td>
-                    <td className="tabular-nums whitespace-nowrap" dir="ltr">
-                      {s.start_local}–{s.end_local}
+                    <td>
+                      <ClockRange start={s.start_local} end={s.end_local} />
                     </td>
                     <td>
                       <bdi>{s.feeder_name_as_printed}</bdi>
-                      {s.match_confidence !== null && s.match_confidence < 1 && (
-                        <span className="block text-xs text-muted">
-                          {fill(dict.common.confidence, { pct: Math.round(s.match_confidence * 100) }, locale)}
-                        </span>
-                      )}
+                      <span className="block">
+                        <MatchInfo
+                          confidence={s.match_confidence}
+                          review={s.match_review}
+                          printed={s.feeder_name_as_printed}
+                          matched={feeder.name}
+                          locale={locale}
+                          t={matchStrings}
+                        />
+                      </span>
                     </td>
-                    <td>{s.release_no}</td>
+                    <td>
+                      <ReleaseLink no={s.release_no} period={s.release_period} locale={locale} t={dict.common} />
+                    </td>
                   </tr>
                 ))}
               </tbody>

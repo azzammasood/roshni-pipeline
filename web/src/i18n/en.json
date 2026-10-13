@@ -4,13 +4,20 @@
     "tagline": "Published load-shedding schedules for IESCO and K-Electric, in Pakistan time.",
     "skip": "Skip to content",
     "otherLanguage": "اردو",
-    "otherLanguageLabel": "Read this page in Urdu"
+    "otherLanguageLabel": "Read this page in Urdu",
+    "clock": {
+      "label": "Clock",
+      "h24": "24h",
+      "h12": "12h",
+      "am": "AM",
+      "pm": "PM"
+    }
   },
   "nav": {
     "label": "Main",
     "home": "Scheduled now",
     "shutdowns": "Planned shutdowns",
-    "equity": "Karachi equity",
+    "equity": "Karachi schedule hours",
     "about": "About the data"
   },
   "banner": {
@@ -38,7 +45,10 @@
     "previous": "Previous",
     "next": "Next",
     "page": "Page {page} of {pages}",
-    "englishOnly": "Available in English only"
+    "englishOnly": "Available in English only",
+    "release": "No. {no} ({month})",
+    "releaseNoMonth": "No. {no}",
+    "releaseLink": "IESCO press releases (opens iesco.com.pk)"
   },
   "matchState": {
     "matched": "Matched to feeder list",
@@ -55,13 +65,16 @@
     "level": "IESCO interruption level",
     "levelNone": "Not chosen",
     "levelOption": "Level {n} ({n} hours a day)",
-    "summary": "Scheduled at {time} on {date} (Pakistan time):",
+    "summary": "Scheduled at {time} on {date} (Pakistan time)",
     "groupDaily": "K-Electric daily schedule",
     "groupScenario": "IESCO, if level {n} is in force",
     "groupPlanned": "IESCO planned shutdowns (press releases)",
     "noteNotYet": "The {source} schedule applies from {date}, so it is not shown for this date.",
     "noteLevel": "IESCO feeders are not shown: choose an interruption level. IESCO's files never say which level is in force.",
-    "noteUnmatched": "{n} planned shutdowns name a feeder that could not be matched to the feeder list; they are shown as printed."
+    "noteUnmatched": "{n} planned shutdowns name a feeder that could not be matched to the feeder list; they are shown as printed.",
+    "date": "Date",
+    "hour": "Hour",
+    "minute": "Minute"
   },
   "feeder": {
     "source": "Source",
@@ -78,7 +91,7 @@
     "windows": "Scheduled windows",
     "minutesPerDay": "{h} hours {m} minutes scheduled per day",
     "scenarioTitle": "IESCO schedule by interruption level",
-    "scenarioIntro": "Each row is the schedule IF that level is in force. IESCO does not publish which level applies on a given day.",
+    "scenarioIntro": "Each row is the schedule if that level is in force. IESCO does not publish which level applies on a given day.",
     "levelRow": "Level {n}",
     "hour": "Hour",
     "darkCell": "scheduled dark",
@@ -86,7 +99,9 @@
     "localitiesIntro": "Matched by name only, not by boundary. Approximate matches show their confidence.",
     "shutdownsTitle": "Planned shutdowns for this feeder",
     "release": "Press release",
-    "asPrinted": "Name as printed"
+    "asPrinted": "Name as printed",
+    "levelWindows": "Scheduled windows by level",
+    "minutes": "{n} min"
   },
   "shutdowns": {
     "title": "Planned shutdowns",
@@ -97,10 +112,12 @@
     "state": "Feeder match",
     "allStates": "All",
     "upcoming": "Today and later only",
-    "results": "{n} matching windows."
+    "results": "{n} matching windows.",
+    "searchPlaceholder": "Name as printed, feeder or press release number",
+    "sortBy": "Sort by {col}"
   },
   "equity": {
-    "title": "K-Electric schedule hours by IBC",
+    "title": "Karachi schedule hours by IBC",
     "intro": "How K-Electric's published load-shed schedule is spread across its IBC areas, with census indicators for the sub-divisions that share an IBC's name. Descriptive only: these figures do not show why a feeder has its schedule.",
     "scope": "Scope",
     "kpiListed": "Listed feeders",
@@ -119,7 +136,7 @@
     "col12h": "At 12 h",
     "col6h": "At 6 h",
     "colShare": "Share at 12 h",
-    "colMeanHours": "Mean scheduled hours",
+    "colMeanHours": "Mean scheduled hours a day",
     "colLoss": "Mean AT&C loss (as published)",
     "colLossN": "n with loss",
     "colSubdivision": "Census sub-division (same name)",
@@ -142,7 +159,7 @@
     "anomIntro": "Counts of feeders that fall under each rule. They describe the published data, not errors by anyone.",
     "colRule": "Rule",
     "colFeeders": "Feeders",
-    "reportTitle": "Weekly summary ({week})",
+    "reportTitle": "Weekly summary (week of {week})",
     "engineTemplate": "Generated from a fixed template. Every number comes from a named warehouse query.",
     "engineLlm": "Prose drafted by a language model ({engine}). Every number was inserted from a named warehouse query and checked; drafts with any other number or with causal wording are rejected.",
     "factsTitle": "Numbers behind this summary",
@@ -181,16 +198,38 @@
     "timeTitle": "Time",
     "time": "All times are Pakistan Standard Time (Asia/Karachi, UTC+5, no daylight saving). A window such as 22:35–02:05 crosses midnight; the end minute is not included.",
     "matchingTitle": "Matching",
-    "matching": "Feeders are matched to census localities and press-release names by name only. Exact matches are accepted automatically; other matches were reviewed against written rules and always show their confidence. Unmatched names are shown as printed.",
+    "matching": "Feeders are matched to census localities and press-release names by name only. A match's percentage is the name similarity after ignoring case, spacing and punctuation; 100% means identical names, which are accepted automatically. Other matches are decided by written rules, then by a language model choosing only among listed candidates, then by Claude; each shows its confidence, who accepted it and why. Unmatched names are shown as printed.",
     "sourcesTitle": "Sources and effective dates",
     "sourceFile": "File",
-    "published": "Published label",
+    "published": "Label on the source page",
     "basis": "How the date was set",
     "attribution": "Attribution",
-    "disclaimer": "Disclaimer"
+    "disclaimer": "Disclaimer",
+    "datesNote": "When a file states no date, its effective date is when the server says the file last changed. That can differ from the label on the source page: IESCO labels its schedule files {label}, but the files were last changed on {date}, so the schedule may have applied since then.",
+    "pressFile": "IESCO press releases ({n} releases)",
+    "pressFrom": "{from} to {to}",
+    "pressBasis": "The shutdown dates printed in each release"
   },
   "sources": {
     "iesco": "IESCO",
     "kelectric": "K-Electric"
+  },
+  "match": {
+    "similarity": "{pct}% is the name similarity between “{printed}” and “{matched}”, after ignoring case, spacing and punctuation (100% = identical names).",
+    "exactInfo": "The names are identical after ignoring case, spacing and punctuation, so the match was accepted automatically.",
+    "acceptedBy": "Accepted by {who}.",
+    "acceptedOn": "Accepted by {who} on {date}.",
+    "reason": "Reason given:",
+    "who": {
+      "rules": "the written matching rules",
+      "llm": "a language model",
+      "claude": "Claude (an AI assistant)",
+      "owner": "the site owner"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This page does not exist. The schedule pages are listed below.",
+    "home": "Go to the home page"
   }
 }

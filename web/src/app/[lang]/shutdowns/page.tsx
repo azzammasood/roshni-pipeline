@@ -14,7 +14,7 @@ export default async function Shutdowns({ params }: PageProps<"/[lang]/shutdowns
   const { locale, dict } = await resolveLocale(params);
   const rows = (await loadDocument("planned_shutdowns")).data;
   const dates = rows.map((r) => r.outage_date).sort();
-  const { shutdowns, common, matchState, feeder } = dict;
+  const { shutdowns, common, matchState, feeder, match } = dict;
   return (
     <div className="space-y-5">
       <section className="space-y-2">
@@ -26,7 +26,7 @@ export default async function Shutdowns({ params }: PageProps<"/[lang]/shutdowns
           </p>
         )}
       </section>
-      <ShutdownTable locale={locale} t={{ shutdowns, common, matchState, feeder }} />
+      <ShutdownTable locale={locale} t={{ shutdowns, common, matchState, feeder, match }} />
     </div>
   );
 }

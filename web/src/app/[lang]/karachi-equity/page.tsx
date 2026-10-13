@@ -3,7 +3,9 @@ import { ScrollRegion } from "@/components/ScrollRegion";
 import { ShareBars } from "@/components/ShareBars";
 import { fill, fromExport } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
-import { num, pct } from "@/lib/format";
+import { columnFormat, num } from "@/lib/format";
+import { censusName, ibcName } from "@/lib/names";
+import { isoWeekMonday } from "@/lib/time";
 import { resolveLocale } from "@/lib/locale";
 import { ExportText } from "@/components/ExportText";
 
@@ -38,7 +40,19 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
   const byName = [...ibc].sort((a, b) => (a.ibc < b.ibc ? -1 : 1));
   const measure = (k: string) => (t.measures as Record<string, string>)[k] ?? k;
   const n = (v: number) => num(v, locale);
-  const opt = (v: number | null) => (v === null ? "–" : n(v));
+  // One number of decimals per column (padded, never rounded: the equity gate checks values).
+  const col = <T,>(rows: T[], pick: (r: T) => number | null, suffix = "") =>
+    columnFormat(rows.map(pick), locale, suffix);
+  const ibcShare = col(ibc, (r) => r.share_12h_pct, "%");
+  const ibcHours = col(ibc, (r) => r.mean_scheduled_hours);
+  const ibcLoss = col(ibc, (r) => r.mean_atc_loss_pct, "%");
+  const subShare = col(subdivisions, (s) => s.share_12h_pct, "%");
+  const subHours = col(subdivisions, (s) => s.mean_scheduled_hours);
+  const subLit = col(subdivisions, (s) => s.literacy_pct, "%");
+  const subDeg = col(subdivisions, (s) => s.degree_share_pct, "%");
+  const subPacca = col(subdivisions, (s) => s.pacca_share_pct, "%");
+  const subHh = col(subdivisions, (s) => s.avg_household_size);
+  const rho = col(correlations, (c) => c.spearman_rho);
 
   return (
     <article className="space-y-10">
@@ -71,12 +85,12 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
         <p className="max-w-prose text-sm text-muted">{fill(t.shareIntro, { min: MIN_N }, locale)}</p>
         <ShareBars
           rows={ranked.map((r) => ({
-            label: r.ibc,
+            label: ibcName(r.ibc),
             value: r.share_12h_pct!,
             note: `(n = ${n(r.scheduled_feeders)})`,
             flag: r.scheduled_feeders < MIN_N ? t.smallN : undefined,
           }))}
-          valueText={(v) => pct(v, locale)}
+          valueText={ibcShare}
         />
       </section>
 
@@ -102,18 +116,18 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
               {byName.map((r) => (
                 <tr key={r.ibc}>
                   <th scope="row" className="whitespace-nowrap font-normal">
-                    <bdi>{r.ibc}</bdi>
+                    <bdi>{ibcName(r.ibc)}</bdi>
                   </th>
                   <td>{n(r.listed_feeders)}</td>
                   <td>{n(r.scheduled_feeders)}</td>
                   <td>{n(r.feeders_12h)}</td>
                   <td>{n(r.feeders_6h)}</td>
-                  <td>{pct(r.share_12h_pct, locale)}</td>
-                  <td>{opt(r.mean_scheduled_hours)}</td>
-                  <td>{pct(r.mean_atc_loss_pct, locale)}</td>
+                  <td>{ibcShare(r.share_12h_pct)}</td>
+                  <td>{ibcHours(r.mean_scheduled_hours)}</td>
+                  <td>{ibcLoss(r.mean_atc_loss_pct)}</td>
                   <td>{n(r.feeders_with_loss)}</td>
                   <td>
-                    <bdi>{r.census_subdivision ?? "–"}</bdi>
+                    <bdi>{r.census_subdivision ? censusName(r.census_subdivision) : "–"}</bdi>
                   </td>
                 </tr>
               ))}
@@ -152,16 +166,16 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
                 .map((s) => (
                   <tr key={s.subdivision_area_id}>
                     <th scope="row" className="whitespace-nowrap font-normal">
-                      <bdi>{s.subdivision_name}</bdi>
+                      <bdi>{censusName(s.subdivision_name)}</bdi>
                     </th>
                     <td>{n(s.ibcs)}</td>
                     <td>{n(s.scheduled_feeders)}</td>
-                    <td>{pct(s.share_12h_pct, locale)}</td>
-                    <td>{n(s.mean_scheduled_hours)}</td>
-                    <td>{pct(s.literacy_pct, locale)}</td>
-                    <td>{pct(s.degree_share_pct, locale)}</td>
-                    <td>{pct(s.pacca_share_pct, locale)}</td>
-                    <td>{opt(s.avg_household_size)}</td>
+                    <td>{subShare(s.share_12h_pct)}</td>
+                    <td>{subHours(s.mean_scheduled_hours)}</td>
+                    <td>{subLit(s.literacy_pct)}</td>
+                    <td>{subDeg(s.degree_share_pct)}</td>
+                    <td>{subPacca(s.pacca_share_pct)}</td>
+                    <td>{subHh(s.avg_household_size)}</td>
                   </tr>
                 ))}
             </tbody>
@@ -191,7 +205,7 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
                   <th scope="row" className="font-normal">
                     {fill(t.pair, { y: measure(c.y_name), x: measure(c.x_name) }, locale)}
                   </th>
-                  <td className="tabular-nums">{opt(c.spearman_rho)}</td>
+                  <td className="tabular-nums">{rho(c.spearman_rho)}</td>
                   <td className="tabular-nums">{n(c.n)}</td>
                 </tr>
               ))}
@@ -227,7 +241,7 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
 
       {report && (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold">{fill(t.reportTitle, { week: report.iso_week }, locale)}</h2>
+          <h2 className="text-lg font-semibold">{fill(t.reportTitle, { week: isoWeekMonday(report.iso_week) }, locale)}</h2>
           <p className="text-sm text-muted max-w-prose">
             {report.engine === "template" ? t.engineTemplate : fill(t.engineLlm, { engine: report.engine }, locale)}
           </p>

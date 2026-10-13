@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
   basePath,
   trailingSlash: true,
   images: { unoptimized: true },
+  // The root layout is app/[lang]/layout.tsx, so the site-wide 404 is app/global-not-found.tsx.
+  experimental: { globalNotFound: true },
   turbopack: {
     rules: {
       "*.css": {

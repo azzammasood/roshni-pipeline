@@ -1,16 +1,20 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/fill";
 import { darkNow, IESCO_LEVELS, type DarkNote, type DarkRow, type IescoLevel } from "@/lib/darkNow";
 import { num } from "@/lib/format";
-import { hhmm, KARACHI_OFFSET_MIN } from "@/lib/time";
+import { circleName, ibcName } from "@/lib/names";
+import { KARACHI_OFFSET_MIN, parseHhmm } from "@/lib/time";
 import { feederHref } from "@/lib/urls";
 import { useExport } from "@/lib/useExport";
 import { ScrollRegion } from "@/components/ScrollRegion";
+import { useClock, useClockMode } from "@/components/Clock";
 
-type Strings = Pick<Dictionary, "home" | "common" | "matchState" | "sources">;
+type Strings = Pick<Dictionary, "home" | "common" | "matchState" | "sources"> & {
+  halves: { am: string; pm: string };
+};
 const PREVIEW_ROWS = 25;
 
 /** "YYYY-MM-DDTHH:MM" Karachi wall time, the value format of <input type="datetime-local">. */
@@ -18,6 +22,33 @@ const toInput = (d: Date) =>
   new Date(d.getTime() + KARACHI_OFFSET_MIN * 60000).toISOString().slice(0, 16);
 /** The input's value is Karachi wall time, whatever the browser's own zone is. */
 const fromInput = (v: string) => new Date(`${v}:00+05:00`);
+const VALUE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+const pad = (n: number) => String(n).padStart(2, "0");
+
+/** Area column: the IBC without its "IBC - " prefix, or the IESCO circle's name. */
+const areaText = (a: string | null) => (a ? (circleName(ibcName(a)) ?? a) : "");
+
+/** Time, level and search live in the URL (?at=2026-10-13T17:40&level=12&q=...), so a view can be
+ *  bookmarked or shared. Read once after mount (static export: no server-side search params). */
+function readUrl() {
+  const p = new URLSearchParams(window.location.search);
+  const at = p.get("at");
+  const level = Number(p.get("level"));
+  return {
+    at: at && VALUE.test(at) ? at : null,
+    level: (IESCO_LEVELS as readonly number[]).includes(level) ? (level as IescoLevel) : null,
+    q: p.get("q") ?? "",
+  };
+}
+
+function writeUrl(at: string | null, level: IescoLevel | null, q: string) {
+  const p = new URLSearchParams();
+  if (at) p.set("at", at);
+  if (level !== null) p.set("level", String(level));
+  if (q.trim()) p.set("q", q.trim());
+  const search = p.toString();
+  window.history.replaceState(null, "", `${window.location.pathname}${search ? `?${search}` : ""}`);
+}
 
 export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
   const state = useExport(["feeders", "dark_profiles", "planned_shutdowns"] as const);
@@ -25,6 +56,21 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
   const [now, setNow] = useState<Date | null>(null);
   const [level, setLevel] = useState<IescoLevel | null>(null);
   const [query, setQuery] = useState("");
+  const loaded = useRef(false);
+  const clock = useClock();
+
+  useEffect(() => {
+    const u = readUrl();
+    /* eslint-disable react-hooks/set-state-in-effect -- one-time read of the URL after hydration */
+    setChosen(u.at);
+    setLevel(u.level);
+    setQuery(u.q);
+    /* eslint-enable react-hooks/set-state-in-effect */
+    loaded.current = true;
+  }, []);
+  useEffect(() => {
+    if (loaded.current) writeUrl(chosen, level, query);
+  }, [chosen, level, query]);
 
   useEffect(() => {
     // The clock only starts in the browser, so the static HTML never shows a build-time "now".
@@ -58,7 +104,7 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
   const rows = (result?.rows ?? []).filter(
     (r) =>
       !q ||
-      [r.feederName, r.feederId ?? "", r.area ?? "", grids.get(r.feederId ?? "") ?? ""]
+      [r.feederName, r.feederId ?? "", r.area ?? "", areaText(r.area), grids.get(r.feederId ?? "") ?? ""]
         .join(" ")
         .toLowerCase()
         .includes(q),
@@ -70,20 +116,12 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
   return (
     <div className="space-y-5">
       <form className="grid gap-3 sm:grid-cols-3 items-end" onSubmit={(e) => e.preventDefault()}>
-        <label className="grid gap-1 text-sm">
-          <span className="font-medium">{t.home.time}</span>
-          <input
-            type="datetime-local"
-            className="field"
-            value={chosen ?? (now ? toInput(now) : "")}
-            onChange={(e) => setChosen(e.target.value || null)}
-          />
-          {chosen && (
-            <button type="button" className="link text-start" onClick={() => setChosen(null)}>
-              {t.home.useNow}
-            </button>
-          )}
-        </label>
+        <WhenField
+          value={chosen ?? (now ? toInput(now) : "")}
+          following={!chosen}
+          onChange={setChosen}
+          t={t}
+        />
         <label className="grid gap-1 text-sm">
           <span className="font-medium">{t.home.level}</span>
           <select
@@ -120,7 +158,7 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
         <>
           <p aria-live="polite" className="text-lg font-medium">
             {/* No grand total: IESCO rows are "if level N", not the published daily schedule. */}
-            {fill(t.home.summary, { time: hhmm(result.minuteOfDay), date: result.localDate }, locale)}
+            {fill(t.home.summary, { time: clock(result.minuteOfDay), date: result.localDate }, locale)}
           </p>
           {result.notes.length > 0 && (
             <ul className="space-y-1 text-sm text-muted">
@@ -149,6 +187,91 @@ function noteText(n: DarkNote, t: Strings, locale: string): string {
     case "unmatched_shutdowns":
       return fill(t.home.noteUnmatched, { n: n.count }, locale);
   }
+}
+
+function WindowText({ value }: { value: string }) {
+  const clock = useClock();
+  const [start, end] = value.split("-");
+  return (
+    <span dir="ltr">
+      {clock(parseHhmm(start))}–{clock(parseHhmm(end))}
+    </span>
+  );
+}
+
+/** Date (ISO, native calendar on click) plus hour and minute lists in the viewer's clock, instead
+ *  of <input type="datetime-local">, whose format follows the browser's locale. */
+function WhenField({
+  value,
+  following,
+  onChange,
+  t,
+}: {
+  value: string;
+  following: boolean;
+  onChange: (v: string | null) => void;
+  t: Strings;
+}) {
+  const mode = useClockMode();
+  const date = value.slice(0, 10);
+  const hour = Number(value.slice(11, 13)) || 0;
+  const minute = Number(value.slice(14, 16)) || 0;
+  const set = (d: string, h: number, m: number) => d && onChange(`${d}T${pad(h)}:${pad(m)}`);
+  const hourText = (h: number) =>
+    mode === "24" ? pad(h) : `${h % 12 || 12} ${h < 12 ? t.halves.am : t.halves.pm}`;
+  return (
+    <fieldset className="grid gap-1 text-sm min-w-0">
+      <legend className="font-medium mb-1">{t.home.time}</legend>
+      <div className="flex flex-wrap gap-2" dir="ltr">
+        <label className="field relative flex items-center gap-2 cursor-pointer focus-within:outline-2 focus-within:outline-accent tabular-nums">
+          <span className="sr-only">{t.home.date}</span>
+          <span aria-hidden="true">{date || "––––-––-––"}</span>
+          <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4 fill-none stroke-current text-muted">
+            <rect x="2" y="3" width="12" height="11" rx="1.5" />
+            <path d="M2 6.5h12M5 1.5v3M11 1.5v3" />
+          </svg>
+          <input
+            type="date"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            value={date}
+            onChange={(e) => set(e.target.value, hour, minute)}
+            onClick={(e) => {
+              try {
+                e.currentTarget.showPicker();
+              } catch {
+                // Older browsers open their own picker or accept typing.
+              }
+            }}
+          />
+        </label>
+        <label>
+          <span className="sr-only">{t.home.hour}</span>
+          <select className="field tabular-nums" value={hour} onChange={(e) => set(date, Number(e.target.value), minute)}>
+            {Array.from({ length: 24 }, (_, h) => (
+              <option key={h} value={h}>
+                {hourText(h)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span className="sr-only">{t.home.minute}</span>
+          <select className="field tabular-nums" value={minute} onChange={(e) => set(date, hour, Number(e.target.value))}>
+            {Array.from({ length: 60 }, (_, m) => (
+              <option key={m} value={m}>
+                {`:${pad(m)}`}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      {!following && (
+        <button type="button" className="link text-start w-fit" onClick={() => onChange(null)}>
+          {t.home.useNow}
+        </button>
+      )}
+    </fieldset>
+  );
 }
 
 function Group({ title, rows, locale, t }: { title: string; rows: DarkRow[]; locale: string; t: Strings }) {
@@ -192,10 +315,10 @@ function Group({ title, rows, locale, t }: { title: string; rows: DarkRow[]; loc
                     )}
                   </td>
                   <td>
-                    <bdi>{r.area}</bdi>
+                    <bdi>{areaText(r.area)}</bdi>
                   </td>
                   <td className="tabular-nums whitespace-nowrap">
-                    <span dir="ltr">{r.windowLocal.replace("-", "–")}</span>
+                    <WindowText value={r.windowLocal} />
                     <span className="block text-xs text-muted sm:hidden">
                       {t.common.effectiveFrom} {r.effectiveFrom}
                     </span>

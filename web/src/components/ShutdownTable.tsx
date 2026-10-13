@@ -8,8 +8,12 @@ import { feederHref } from "@/lib/urls";
 import { useExport } from "@/lib/useExport";
 import type { PlannedShutdown } from "@/types/v1";
 import { ScrollRegion } from "@/components/ScrollRegion";
+import { ClockRange } from "@/components/Clock";
+import { MatchInfo } from "@/components/MatchInfo";
+import { ReleaseLink } from "@/components/ReleaseLink";
 
-type Strings = Pick<Dictionary, "shutdowns" | "common" | "matchState" | "feeder">;
+type Strings = Pick<Dictionary, "shutdowns" | "common" | "matchState" | "feeder" | "match">;
+type SortKey = "date" | "circle" | "name" | "match";
 const PAGE = 50;
 const STATES: PlannedShutdown["feeder_match_state"][] = [
   "matched",
@@ -25,16 +29,9 @@ export function ShutdownTable({ locale, t }: { locale: string; t: Strings }) {
   const [match, setMatch] = useState("");
   const [upcoming, setUpcoming] = useState(false);
   const [page, setPage] = useState(0);
+  const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: "date", desc: true });
 
-  const all = useMemo(
-    () =>
-      state.status === "ready"
-        ? [...state.data.planned_shutdowns.data].sort(
-            (a, b) => (a.start_utc < b.start_utc ? 1 : a.start_utc > b.start_utc ? -1 : 0),
-          )
-        : [],
-    [state],
-  );
+  const all = useMemo(() => (state.status === "ready" ? state.data.planned_shutdowns.data : []), [state]);
   const names = useMemo(
     () =>
       state.status === "ready"
@@ -57,6 +54,18 @@ export function ShutdownTable({ locale, t }: { locale: string; t: Strings }) {
           .toLowerCase()
           .includes(q)),
   );
+  const value = (r: PlannedShutdown): string =>
+    sort.key === "date"
+      ? r.start_utc
+      : sort.key === "circle"
+        ? r.circle_as_printed
+        : sort.key === "name"
+          ? r.feeder_name_as_printed.toLowerCase()
+          : `${STATES.indexOf(r.feeder_match_state)}${(names.get(r.feeder_id ?? "") ?? "").toLowerCase()}`;
+  rows.sort((a, b) => {
+    const c = value(a).localeCompare(value(b)) || a.start_utc.localeCompare(b.start_utc);
+    return sort.desc ? -c : c;
+  });
   const pages = Math.max(1, Math.ceil(rows.length / PAGE));
   const current = Math.min(page, pages - 1);
   const shown = rows.slice(current * PAGE, current * PAGE + PAGE);
@@ -76,6 +85,7 @@ export function ShutdownTable({ locale, t }: { locale: string; t: Strings }) {
           <input
             type="search"
             className="field"
+            placeholder={t.shutdowns.searchPlaceholder}
             value={query}
             onChange={(e) => reset(setQuery)(e.target.value)}
           />
@@ -117,42 +127,65 @@ export function ShutdownTable({ locale, t }: { locale: string; t: Strings }) {
           <table className="data">
             <thead>
               <tr>
-                <th scope="col">{t.common.date}</th>
-                <th scope="col">{t.common.window}</th>
-                <th scope="col">{t.shutdowns.circle}</th>
-                <th scope="col">{t.feeder.asPrinted}</th>
-                <th scope="col">{t.shutdowns.state}</th>
-                <th scope="col">{t.feeder.release}</th>
+                <SortHeader k="date" label={t.common.date} sort={sort} setSort={reset(setSort)} t={t} locale={locale} />
+                <th scope="col" className="hidden sm:table-cell">
+                  {t.common.window}
+                </th>
+                <SortHeader k="circle" label={t.shutdowns.circle} sort={sort} setSort={reset(setSort)} t={t} locale={locale} className="hidden sm:table-cell" />
+                <SortHeader k="name" label={t.feeder.asPrinted} sort={sort} setSort={reset(setSort)} t={t} locale={locale} />
+                <SortHeader k="match" label={t.shutdowns.state} sort={sort} setSort={reset(setSort)} t={t} locale={locale} />
+                <th scope="col" className="hidden sm:table-cell">
+                  {t.feeder.release}
+                </th>
               </tr>
             </thead>
             <tbody>
               {shown.map((s) => (
                 <tr key={s.shutdown_id}>
-                  <td className="tabular-nums whitespace-nowrap">{s.outage_date}</td>
-                  <td className="tabular-nums whitespace-nowrap" dir="ltr">
-                    {s.start_local}–{s.end_local}
+                  <td className="tabular-nums whitespace-nowrap">
+                    {s.outage_date}
+                    {/* Narrow screens: window under the date, so the match column stays in view. */}
+                    <span className="block text-xs text-muted sm:hidden">
+                      <ClockRange start={s.start_local} end={s.end_local} />
+                    </span>
                   </td>
-                  <td>
+                  <td className="hidden sm:table-cell">
+                    <ClockRange start={s.start_local} end={s.end_local} />
+                  </td>
+                  <td className="hidden sm:table-cell">
                     <bdi>{s.circle_as_printed}</bdi>
                   </td>
                   <td>
                     <bdi>{s.feeder_name_as_printed}</bdi>
+                    <span className="block text-xs text-muted sm:hidden">
+                      <bdi>{s.circle_as_printed}</bdi> ·{" "}
+                      <ReleaseLink no={s.release_no} period={s.release_period} locale={locale} t={t.common} />
+                    </span>
                   </td>
                   <td>
                     {s.feeder_id && s.feeder_match_state === "matched" ? (
-                      <Link prefetch={false} href={feederHref(locale, s.feeder_id)} className="link">
-                        <bdi>{names.get(s.feeder_id) ?? s.feeder_id}</bdi>
-                      </Link>
+                      <>
+                        <Link prefetch={false} href={feederHref(locale, s.feeder_id)} className="link">
+                          <bdi>{names.get(s.feeder_id) ?? s.feeder_id}</bdi>
+                        </Link>
+                        <span className="block">
+                          <MatchInfo
+                            confidence={s.match_confidence}
+                            review={s.match_review}
+                            printed={s.feeder_name_as_printed}
+                            matched={names.get(s.feeder_id) ?? s.feeder_id}
+                            locale={locale}
+                            t={{ ...t.match, confidence: t.common.confidence, exact: t.common.exact }}
+                          />
+                        </span>
+                      </>
                     ) : (
                       <span className="text-muted">{t.matchState[s.feeder_match_state]}</span>
                     )}
-                    {s.match_confidence !== null && s.match_confidence < 1 && (
-                      <span className="block text-xs text-muted">
-                        {fill(t.common.confidence, { pct: Math.round(s.match_confidence * 100) }, locale)}
-                      </span>
-                    )}
                   </td>
-                  <td>{s.release_no}</td>
+                  <td className="hidden sm:table-cell">
+                    <ReleaseLink no={s.release_no} period={s.release_period} locale={locale} t={t.common} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -172,5 +205,44 @@ export function ShutdownTable({ locale, t }: { locale: string; t: Strings }) {
         </nav>
       )}
     </div>
+  );
+}
+
+function SortHeader({
+  k,
+  label,
+  sort,
+  setSort,
+  t,
+  locale,
+  className,
+}: {
+  k: SortKey;
+  label: string;
+  sort: { key: SortKey; desc: boolean };
+  setSort: (v: { key: SortKey; desc: boolean }) => void;
+  t: Strings;
+  locale: string;
+  className?: string;
+}) {
+  const active = sort.key === k;
+  return (
+    <th
+      scope="col"
+      className={className}
+      aria-sort={active ? (sort.desc ? "descending" : "ascending") : undefined}
+    >
+      <button
+        type="button"
+        className="inline-flex items-center gap-1 font-semibold text-start hover:underline"
+        title={fill(t.shutdowns.sortBy, { col: label }, locale)}
+        onClick={() => setSort({ key: k, desc: active ? !sort.desc : k === "date" })}
+      >
+        {label}
+        <span aria-hidden="true" className={active ? "" : "opacity-30"}>
+          {active && !sort.desc ? "▲" : "▼"}
+        </span>
+      </button>
+    </th>
   );
 }

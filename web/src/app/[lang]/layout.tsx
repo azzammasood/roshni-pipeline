@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Noto_Nastaliq_Urdu } from "next/font/google";
 import Link from "next/link";
+import { ClockProvider, ClockToggle, Stamp } from "@/components/Clock";
 import { ExportText } from "@/components/ExportText";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { builtLocales, dirOf } from "@/i18n/config";
 import { fromExport } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
 import { resolveLocale } from "@/lib/locale";
-import { formatKarachi } from "@/lib/time";
 import "./globals.css";
 
 // Urdu is set in Nastaliq, self-hosted by next/font at build time. Not preloaded: only Urdu
@@ -52,45 +52,51 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
           {dict.site.skip}
         </a>
         <header className="border-b border-line">
-          <div className="mx-auto max-w-5xl px-4 py-3 flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          {/* Brand and controls share the first row; the nav wraps under them on narrow screens. */}
+          <div className="mx-auto max-w-5xl px-4 py-3 flex flex-wrap items-center gap-x-6 gap-y-2">
             <Link prefetch={false} href={`/${locale}/`} className="text-lg font-semibold">
               {dict.site.name}
             </Link>
-            <nav aria-label={dict.nav.label} className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <nav
+              aria-label={dict.nav.label}
+              className="order-last w-full sm:order-none sm:w-auto flex flex-wrap gap-x-4 gap-y-1 text-sm"
+            >
               {nav.map(([href, label]) => (
                 <Link key={href} prefetch={false} href={`/${locale}/${href}`} className="hover:underline">
                   {label}
                 </Link>
               ))}
             </nav>
-            {other && (
-              <span className="ms-auto text-sm">
+            <span className="ms-auto flex items-center gap-3 text-sm">
+              <ClockToggle label={dict.site.clock.label} h24={dict.site.clock.h24} h12={dict.site.clock.h12} />
+              {other && (
                 <LanguageSwitch
                   from={locale}
                   to={other}
                   label={dict.site.otherLanguage}
                   ariaLabel={dict.site.otherLanguageLabel}
                 />
-              </span>
-            )}
+              )}
+            </span>
           </div>
           <p role="note" className="bg-notice text-notice-ink text-sm">
             <span className="block mx-auto max-w-5xl px-4 py-1.5">{dict.banner.scheduled}</span>
           </p>
         </header>
-        <main id="main" className="flex-1 mx-auto w-full max-w-5xl px-4 py-6">
-          {children}
-        </main>
-        <footer className="border-t border-line text-sm text-muted">
-          <div className="mx-auto max-w-5xl px-4 py-4 space-y-1">
-            <p>
-              {dict.footer.lastUpdated}:{" "}
-              <time dateTime={meta.last_updated}>{formatKarachi(meta.last_updated, locale)}</time>
-            </p>
-            <p>{dict.footer.timezone}</p>
-            <ExportText as="p" value={fromExport(meta.data.disclaimer, locale)} />
-          </div>
-        </footer>
+        <ClockProvider halves={{ am: dict.site.clock.am, pm: dict.site.clock.pm }}>
+          <main id="main" className="flex-1 mx-auto w-full max-w-5xl px-4 py-6">
+            {children}
+          </main>
+          <footer className="border-t border-line text-sm text-muted">
+            <div className="mx-auto max-w-5xl px-4 py-4 space-y-1">
+              <p>
+                {dict.footer.lastUpdated}: <Stamp iso={meta.last_updated} />
+              </p>
+              <p>{dict.footer.timezone}</p>
+              <ExportText as="p" value={fromExport(meta.data.disclaimer, locale)} />
+            </div>
+          </footer>
+        </ClockProvider>
       </body>
     </html>
   );

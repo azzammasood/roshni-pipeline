@@ -32,9 +32,29 @@ export interface PlannedShutdown {
   feeder_name_as_printed: string;
   flags: string;
   match_confidence: number | null;
+  match_review?: MatchReview | null;
   outage_date: string;
   release_no: string | null;
+  /**
+   * Month of the press release as printed, MM/YYYY (since 1.2.0)
+   */
+  release_period?: string | null;
   shutdown_id: string;
   start_local: string;
   start_utc: string;
+}
+/**
+ * Why an approximate match was accepted (from the review seed's note; since 1.2.0).
+ */
+export interface MatchReview {
+  /**
+   * exact: identical after normalising; fuzzy: name-similarity score below 100
+   */
+  method: "exact" | "fuzzy";
+  reason: string | null;
+  /**
+   * rules (autoreview.py), llm (OpenRouter), claude, owner; null if automatic
+   */
+  reviewed_by: ("rules" | "llm" | "claude" | "owner") | null;
+  reviewed_on: string | null;
 }

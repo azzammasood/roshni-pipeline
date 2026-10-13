@@ -44,4 +44,20 @@ export interface LocalityMatch {
   area_name: string;
   match_confidence: number;
   match_status: "auto_exact" | "accepted";
+  review?: MatchReview | null;
+}
+/**
+ * Why an approximate match was accepted (from the review seed's note; since 1.2.0).
+ */
+export interface MatchReview {
+  /**
+   * exact: identical after normalising; fuzzy: name-similarity score below 100
+   */
+  method: "exact" | "fuzzy";
+  reason: string | null;
+  /**
+   * rules (autoreview.py), llm (OpenRouter), claude, owner; null if automatic
+   */
+  reviewed_by: ("rules" | "llm" | "claude" | "owner") | null;
+  reviewed_on: string | null;
 }
