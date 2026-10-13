@@ -141,3 +141,12 @@ def test_auto_falls_back_to_template_when_openrouter_is_down(monkeypatch, tmp_pa
     assert any("openrouter unavailable" in a for a in rep.data["narrator_log"])
     with pytest.raises(httpx.HTTPError):
         report.build_report(None, engine="openrouter", transport=down)
+
+
+def test_empty_reply_is_skipped_not_fatal(tmp_path: Path) -> None:
+    """Regression (publish 2026-10-13): a free model returned content null -> TypeError."""
+    fake = FakeOpenRouter({"r/thinker:free": None, "b/good:free": GOOD},
+                          {"r/thinker:free": 0.0, "b/good:free": 0.0})  # fmt: skip
+    res = run(fake, NarratorConfig(models=["r/thinker:free", "b/good:free"]), tmp_path)
+    assert res.model == "b/good:free"
+    assert res.attempts[0].startswith("r/thinker:free: empty response")

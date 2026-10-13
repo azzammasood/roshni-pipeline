@@ -39,7 +39,7 @@ def build_report(
             raise RuntimeError("OPENROUTER_API_KEY is not set")
         try:
             res = narrate(facts, NarratorConfig.load(), key, transport=transport)
-        except (httpx.HTTPError, KeyError, ValueError) as e:
+        except (httpx.HTTPError, KeyError, ValueError, TypeError) as e:
             # auto: an OpenRouter outage or odd response must not block the daily publish.
             if engine != "auto":
                 raise

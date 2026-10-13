@@ -130,7 +130,13 @@ def narrate(
                 result.spent_usd += (
                     usage.get("prompt_tokens", 0) * p_in + usage.get("completion_tokens", 0) * p_out
                 )
-                draft = body["choices"][0]["message"]["content"]
+                choice = body["choices"][0]
+                draft = choice["message"].get("content")
+                if not isinstance(draft, str) or not draft.strip():
+                    # e.g. a reasoning model that spent max_tokens thinking: content is null
+                    why = choice.get("finish_reason") or "no finish_reason"
+                    result.attempts.append(f"{model}: empty response ({why}), skipped")
+                    continue
                 tokens_in, tokens_out = (
                     usage.get("prompt_tokens", "?"),
                     usage.get("completion_tokens", "?"),
