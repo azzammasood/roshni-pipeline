@@ -36,9 +36,10 @@ load-shed SCHEDULES in Karachi (not measured outages). Rules, all mandatory:
    claims of discrimination or unfairness, no speculation about motives.
 3. Say that shares are among listed feeders only, that schedules are not measurements, and
    that the correlations are exploratory with their n.
-4. Use each fact ONLY with the meaning given for it. Write a percentage as {id}% ; a sample
-   size as n = {id} ; a correlation as rho = {id} . Counts are numbers of feeders or areas,
-   never hours or percentages. Do not expand abbreviations such as IBC or ATC.
+4. Use each fact ONLY with the meaning given for it. Formats, shown with real ids from the list:
+   a percentage as {hours_split_share_12h_pct}% ; a sample size as n = {rho_loss_hours_n} ; a
+   correlation as rho = {rho_loss_hours_rho} . Counts are numbers of feeders or areas, never
+   hours or percentages. Do not expand abbreviations such as IBC or ATC.
 5. Three or four short paragraphs, plain English, no headings (no '#'), no lists."""
 
 
