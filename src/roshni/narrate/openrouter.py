@@ -138,6 +138,10 @@ def narrate(
                 result.spent_usd += (
                     usage.get("prompt_tokens", 0) * p_in + usage.get("completion_tokens", 0) * p_out
                 )
+                if not body.get("choices"):  # OpenRouter can answer 200 with an error object
+                    err = (body.get("error") or {}).get("message", "no choices")
+                    result.attempts.append(f"{model}: provider error ({str(err)[:120]}), skipped")
+                    continue
                 choice = body["choices"][0]
                 draft = choice["message"].get("content")
                 if not isinstance(draft, str) or not draft.strip():

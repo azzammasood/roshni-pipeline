@@ -171,3 +171,21 @@ def test_busy_endpoint_is_retried_once(monkeypatch, tmp_path: Path) -> None:
     cfg = NarratorConfig(models=["g/busy:free"])
     res = narrate(FACTS, cfg, "test-key", httpx.MockTransport(handler), tmp_path)
     assert res.model == "g/busy:free" and waits == [3.0] and hits["n"] == 2
+
+
+def test_error_body_with_http_200_moves_to_next_model(tmp_path: Path) -> None:
+    """Regression (publish 2026-10-13): 200 with {"error": ...} and no choices stopped the chain."""
+    fake = FakeOpenRouter({"b/good:free": GOOD}, {"e/err:free": 0.0, "b/good:free": 0.0})
+
+    def handler(req: httpx.Request) -> httpx.Response:
+        if (
+            req.url.path.endswith("/chat/completions")
+            and json.loads(req.content)["model"] == "e/err:free"
+        ):
+            return httpx.Response(200, json={"error": {"message": "Provider returned error"}})
+        return fake.handler(req)
+
+    cfg = NarratorConfig(models=["e/err:free", "b/good:free"])
+    res = narrate(FACTS, cfg, "test-key", httpx.MockTransport(handler), tmp_path)
+    assert res.model == "b/good:free"
+    assert res.attempts[0] == "e/err:free: provider error (Provider returned error), skipped"
