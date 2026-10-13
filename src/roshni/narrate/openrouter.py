@@ -40,12 +40,15 @@ load-shed SCHEDULES in Karachi (not measured outages). Rules, all mandatory:
 4. Use each fact ONLY with the meaning given for it. Formats, shown with real ids from the list:
    a percentage as {hours_split_share_12h_pct}% ; a sample size as n = {rho_loss_hours_n} ; a
    correlation as rho = {rho_loss_hours_rho} . Counts are numbers of feeders or areas, never
-   hours or percentages. Do not expand abbreviations such as IBC or ATC.
+   hours or percentages. Do not expand abbreviations such as IBC or AT&C.
    Facts whose meaning ends with "(its n)" are sample sizes: write each one ONLY as
    "n = {id}" in brackets right after the figure it belongs to, e.g.
    "rho = {rho_loss_hours_rho} (n = {rho_loss_hours_n})" or "{ibc_highest_share_12h_pct}%
    (n = {ibc_highest_n})". Never write a sample size as a plain count ("across {id} feeders").
-5. Three or four short paragraphs, plain English, no headings (no '#'), no lists."""
+5. The highest and lowest IBC facts only cover IBC areas with at least ten scheduled feeders;
+   whenever you name one, say so in words ("among IBC areas with at least ten scheduled
+   feeders").
+6. Three or four short paragraphs, plain English, no headings (no '#'), no lists."""
 
 
 @dataclass

@@ -18,7 +18,8 @@ FACTS = [
 ]
 GOOD = (
     "Among {coverage_listed_feeders} listed feeders, {hours_split_share_12h_pct}% are scheduled "
-    "for twelve hours; the highest share is in {ibc_highest_name}. Rho is {rho_literacy_rho} "
+    "for twelve hours; among IBC areas with at least ten scheduled feeders, "
+    "the highest share is in {ibc_highest_name}. Rho is {rho_literacy_rho} "
     "(n = {rho_literacy_n}), exploratory only."
 )
 
@@ -57,6 +58,9 @@ def test_bad_drafts_rejected(draft: str, problem: str) -> None:
         ("Feeders run {coverage_listed_feeders} hours.", "used as a percentage or hours"),
         ("Based on {rho_literacy_n} feeders.", "not written as 'n = ...'"),
         ("A value of {rho_literacy_rho} was seen.", "not introduced as rho"),
+        # 2026-W42 draft: named the lowest IBC without the n >= 10 filter, while the chart
+        # shows a smaller area lower still.
+        ("The highest share is in {ibc_highest_name}.", "without 'at least ten"),
     ],
 )
 def test_unit_misuse_rejected(draft: str, problem: str) -> None:

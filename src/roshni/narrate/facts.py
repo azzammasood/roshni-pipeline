@@ -96,7 +96,7 @@ MEANINGS: dict[str, tuple[str, str]] = {
     "overlap_high": ("number of scheduled High-category feeders whose published loss lies in the "
                      "loss range where the Medium and High categories overlap", "count"),
     "rho_loss_hours_rho": ("Spearman rank correlation across listed feeders between published "
-                           "ATC loss percentage and scheduled hours per day", "rho"),
+                           "AT&C loss percentage and scheduled hours per day", "rho"),
     "rho_loss_hours_n": ("number of feeders in that correlation (its n)", "n"),
     "rho_literacy_rho": ("Spearman rank correlation across census sub-divisions between the "
                          "percentage of listed feeders at 12 hours and the literacy rate", "rho"),

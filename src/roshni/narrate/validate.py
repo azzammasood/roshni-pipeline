@@ -8,7 +8,9 @@ Rules for a draft:
 - no causal or accusatory wording (statistics here are descriptive only);
 - units are respected: a percentage is followed by "%", a sample size follows "n =", a
   correlation sits next to "rho" or "correlation", a count is never followed by "%" or "hour";
-- no headings.
+- no headings;
+- the highest/lowest IBC facts only cover areas with at least ten scheduled feeders, so a draft
+  that names one must say "at least ten" (otherwise a smaller area on the chart looks lower).
 After rendering, every number in the text must be a rendered fact value.
 """
 
@@ -98,6 +100,9 @@ def check_draft(draft: str, facts: list[Fact]) -> list[str]:
         problems.append("empty draft")
     if re.search(r"(?m)^\s*#", draft):
         problems.append("headings are not allowed")
+    named_ibc = re.search(r"\{ibc_(highest|lowest)_", draft)
+    if named_ibc and not re.search(r"(?i)\bat least ten\b", draft):
+        problems.append("highest/lowest IBC named without 'at least ten scheduled feeders'")
     units = {f.id: f.unit for f in facts}
     for m in PLACEHOLDER.finditer(draft):
         unit = units.get(m.group(1))
