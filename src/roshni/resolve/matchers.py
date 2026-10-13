@@ -1,8 +1,9 @@
 """Candidate generation from the warehouse (DuckDB) into review seeds.
 
 Statuses: auto_exact (identical normalised name, unique in its group: auto-accepted),
-suggested (everything else; needs an owner decision), no_candidate (nothing above the cutoff),
-out_of_scope (no comparable census or feeder data). Only auto_exact is accepted without review.
+suggested (everything else; needs a decision), no_candidate (nothing above the cutoff),
+out_of_scope (no comparable census or feeder data). Press-release suggestions are then decided
+by the written rules in autoreview.py where they apply; the rest wait for a delegated review.
 """
 
 import re

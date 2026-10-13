@@ -168,6 +168,7 @@ def resolve(
 
     from roshni.paths import DATA_DIR, REPO_ROOT
     from roshni.resolve import matchers
+    from roshni.resolve.autoreview import review_press
     from roshni.resolve.review import merge_write
 
     con = duckdb.connect(str(db or DATA_DIR / "roshni.duckdb"), read_only=True)
@@ -178,7 +179,10 @@ def resolve(
     }
     for name, fn in jobs.items():
         rows = fn(con)
-        stats = merge_write(REPO_ROOT / "dbt" / "seeds" / name, rows, matchers.REVIEW_COLUMNS)
+        review = review_press if name == "review_press_feeder.csv" else None
+        stats = merge_write(
+            REPO_ROOT / "dbt" / "seeds" / name, rows, matchers.REVIEW_COLUMNS, review
+        )
         top = Counter(r["status"] for r in rows if r["rank"] in (0, 1))
         typer.echo(f"{name:28} subjects={sum(top.values()):4} {dict(top)} {stats}")
     con.close()

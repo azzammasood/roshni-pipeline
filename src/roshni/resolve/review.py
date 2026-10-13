@@ -1,17 +1,24 @@
 """Review CSVs in dbt/seeds: regenerate candidates while keeping the owner's decisions."""
 
 import csv
+from collections.abc import Callable
 from pathlib import Path
 
 DECISIONS = ("", "accepted", "rejected")
 KEY = ("subject_id", "candidate_id")
 
 
-def merge_write(path: Path, rows: list[dict], columns: list[str]) -> dict[str, int]:
+def merge_write(
+    path: Path,
+    rows: list[dict],
+    columns: list[str],
+    review: Callable[[list[dict]], dict[str, int]] | None = None,
+) -> dict[str, int]:
     """Write rows; carry over `decision` and `note` for (subject_id, candidate_id) seen before.
 
     Decisions for pairs that are no longer generated are kept too (appended), so nothing the
-    owner reviewed is lost when matching rules change.
+    owner reviewed is lost when matching rules change. `review` (e.g. the automatic press-name
+    review) then decides rows that are still undecided.
     """
     old: dict[tuple, dict] = {}
     if path.exists():
@@ -28,6 +35,7 @@ def merge_write(path: Path, rows: list[dict], columns: list[str]) -> dict[str, i
         r["note"] = prev["note"] if prev else r.get("note", "")
         if r["decision"] not in DECISIONS:
             raise ValueError(f"{path.name}: bad decision {r['decision']!r} for {k}")
+    auto = review(rows) if review else {}
     kept = [r for k, r in old.items() if k not in seen]
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as f:
@@ -35,5 +43,6 @@ def merge_write(path: Path, rows: list[dict], columns: list[str]) -> dict[str, i
         w.writeheader()
         w.writerows(rows)
         w.writerows(kept)
-    return {"rows": len(rows), "decisions_kept": sum(1 for r in rows if r["decision"])
-            + len(kept), "orphaned_decisions": len(kept)}  # fmt: skip
+    stats = {"rows": len(rows), "decisions_kept": sum(1 for r in rows if r["decision"])
+             + len(kept), "orphaned_decisions": len(kept)}  # fmt: skip
+    return stats | {f"auto_{k}": v for k, v in auto.items()}
