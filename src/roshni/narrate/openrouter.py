@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -93,12 +94,30 @@ def narrate(
     transport: httpx.BaseTransport | None = None,
     cache_dir: Path = CACHE_DIR,
 ) -> NarrationResult:
+    """Report prose: the first draft in the model chain that passes `check_draft`."""
+    return ask(SYSTEM, build_prompt(facts), lambda d: check_draft(d, facts), cfg, api_key,
+               transport, cache_dir)  # fmt: skip
+
+
+def ask(
+    system: str,
+    prompt: str,
+    check: Callable[[str], list[str]],
+    cfg: NarratorConfig,
+    api_key: str,
+    transport: httpx.BaseTransport | None = None,
+    cache_dir: Path = CACHE_DIR,
+) -> NarrationResult:
+    """Walk the model chain; return the first reply that `check` finds no problems with.
+
+    Shared by the report narrator and the press-name reviewer: live model list, spend cap,
+    cache (re-validated on use), one retry on 429, and empty / cut-off / error replies skipped.
+    """
     headers = {
         "Authorization": f"Bearer {api_key}",
         "HTTP-Referer": "https://github.com/azzammasood/roshni-pipeline",
         "X-Title": "roshni-pipeline",
     }
-    prompt = build_prompt(facts)
     result = NarrationResult(None, None, 0.0)
     with httpx.Client(base_url=API, headers=headers, timeout=60, transport=transport) as http:
         live = {m["id"]: m for m in http.get("/models").raise_for_status().json()["data"]}
@@ -106,19 +125,19 @@ def narrate(
             if model not in live:
                 result.attempts.append(f"{model}: not in OpenRouter model list, skipped")
                 continue
-            key = hashlib.sha256(json.dumps([model, SYSTEM, prompt]).encode()).hexdigest()
+            key = hashlib.sha256(json.dumps([model, system, prompt]).encode()).hexdigest()
             cached = cache_dir / f"{key}.json"
             draft = None
             if cached.exists():
                 draft = json.loads(cached.read_text(encoding="utf-8"))["draft"]
                 note = "cache"
-                if check_draft(draft, facts):  # stale or bad cache (e.g. stricter rules): ask again
+                if check(draft):  # stale or bad cache (e.g. stricter rules): ask again
                     cached.unlink()
                     result.attempts.append(f"{model}: cached draft no longer valid, discarded")
                     draft = None
             if draft is None:
                 p_in, p_out = _price(live[model])
-                worst = (len(SYSTEM) + len(prompt)) / 3 * p_in + cfg.max_tokens * p_out
+                worst = (len(system) + len(prompt)) / 3 * p_in + cfg.max_tokens * p_out
                 if result.spent_usd + worst > cfg.spend_cap_usd:
                     result.attempts.append(
                         f"{model}: worst-case ${worst:.4f} exceeds remaining cap, skipped"
@@ -127,7 +146,7 @@ def narrate(
                 request = {
                     "model": model,
                     "messages": [
-                        {"role": "system", "content": SYSTEM},
+                        {"role": "system", "content": system},
                         {"role": "user", "content": prompt},
                     ],
                     "max_tokens": cfg.max_tokens,
@@ -168,7 +187,7 @@ def narrate(
                     usage.get("completion_tokens", "?"),
                 )
                 note = f"{tokens_in}+{tokens_out} tokens"
-            problems = check_draft(draft, facts)
+            problems = check(draft)
             if problems:
                 result.attempts.append(f"{model}: rejected ({'; '.join(problems)})")
                 continue
