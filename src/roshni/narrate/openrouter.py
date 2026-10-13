@@ -108,10 +108,15 @@ def narrate(
                 continue
             key = hashlib.sha256(json.dumps([model, SYSTEM, prompt]).encode()).hexdigest()
             cached = cache_dir / f"{key}.json"
+            draft = None
             if cached.exists():
                 draft = json.loads(cached.read_text(encoding="utf-8"))["draft"]
                 note = "cache"
-            else:
+                if check_draft(draft, facts):  # stale or bad cache (e.g. stricter rules): ask again
+                    cached.unlink()
+                    result.attempts.append(f"{model}: cached draft no longer valid, discarded")
+                    draft = None
+            if draft is None:
                 p_in, p_out = _price(live[model])
                 worst = (len(SYSTEM) + len(prompt)) / 3 * p_in + cfg.max_tokens * p_out
                 if result.spent_usd + worst > cfg.spend_cap_usd:

@@ -262,3 +262,15 @@ def test_cut_off_draft_is_rejected(tmp_path: Path) -> None:
     res = narrate(FACTS, NarratorConfig(models=["h/haiku"]), "test-key",
                   httpx.MockTransport(handler), tmp_path)  # fmt: skip
     assert res.draft is None and res.attempts == ["h/haiku: truncated at max_tokens, skipped"]
+
+
+def test_invalid_cached_draft_is_discarded_and_model_asked_again(tmp_path: Path) -> None:
+    """Regression (publish 2026-10-13): a bad cached draft blocked the model on every run."""
+    fake = FakeOpenRouter({"c/cheap": GOOD}, {"c/cheap": 1e-7})
+    cfg = NarratorConfig(models=["c/cheap"], spend_cap_usd=0.05)
+    run(fake, cfg, tmp_path)  # caches GOOD
+    (cache_file,) = tmp_path.glob("*.json")
+    cache_file.write_text(json.dumps({"model": "c/cheap", "draft": "rho = {rho_lo"}), "utf-8")
+    res = run(fake, cfg, tmp_path)
+    assert res.draft == GOOD and fake.calls == ["c/cheap", "c/cheap"]
+    assert res.attempts[0] == "c/cheap: cached draft no longer valid, discarded"
