@@ -2,6 +2,11 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-13 (Narration: prepaid credits first, then free)
+- **Owner: use the prepaid OpenRouter credits ($4.97) on a cheap model first, free models when they run out.** Chain: `anthropic/claude-haiku-5.5` (owner asked for "a cheap efficient model like Haiku 4.5"; Haiku 5.5 is listed at $0.10 / $0.50 per M tokens vs $1 / $5 for 4.5, about $0.0006 per report), then the free models. Publish runs with a $0.01 cap (Haiku's worst case is about $0.0012). When credits run out OpenRouter answers HTTP 402, logged as "out of credits", and the chain moves on to the free models; no config change needed. Supersedes the $0 cap of 2026-10-12.
+- `reasoning.effort=low` is sent only to `:free` models (paid models would bill thinking tokens).
+- **Narrator cache persisted between publish runs** (actions/cache on `data/cache/narrate`): accepted drafts are keyed by (model, prompt), so unchanged facts cost nothing on later runs.
+
 ## 2026-10-12 (Daily resolve and free-model narration)
 - **Publish now runs `roshni resolve` and a second `roshni build`.** Before, a press-release name added after the last local review had no seed row, and `fct_planned_shutdown_feeder` fell through to `unmatched`, so never-reviewed names looked reviewed-and-failed. Now new names get candidates daily: exact unique matches auto-accept (Phase 4 rule), the rest show `pending_review` until a review session. Seed edits made in CI are not committed; the committed seeds keep every decision.
 - **Transmission assets are `out_of_scope`, not `unmatched`.** Parser-flagged 132 kV lines and grid transformers are excluded from matching by rule (they are not feeders), but had no seed row and so were labelled unmatched. Rehearsal on the 12 Oct data: out_of_scope 335 → 428, unmatched 517 → 423, matched 1,027 → 1,028; dbt PASS=129; the release-03 golden test is unchanged.
