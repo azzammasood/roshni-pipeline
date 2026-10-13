@@ -157,11 +157,15 @@ def build(
 @app.command()
 def resolve(
     db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
+    llm: bool = typer.Option(
+        False, help="Let the OpenRouter chain decide press names the rules leave pending."
+    ),
 ) -> None:
     """Generate match candidates into review seeds (dbt/seeds/review_*.csv), keeping decisions.
 
     Run after `roshni build`; then fill `decision` (accepted/rejected) and run `roshni build`.
     """
+    import os
     from collections import Counter
 
     import duckdb
@@ -169,6 +173,7 @@ def resolve(
     from roshni.paths import DATA_DIR, REPO_ROOT
     from roshni.resolve import matchers
     from roshni.resolve.autoreview import review_press
+    from roshni.resolve.llmreview import review_with_llm
     from roshni.resolve.review import merge_write
 
     con = duckdb.connect(str(db or DATA_DIR / "roshni.duckdb"), read_only=True)
@@ -179,7 +184,15 @@ def resolve(
     }
     for name, fn in jobs.items():
         rows = fn(con)
-        review = review_press if name == "review_press_feeder.csv" else None
+        review = None
+        if name == "review_press_feeder.csv":
+
+            def review(rows: list[dict]) -> dict[str, int]:
+                counts = review_press(rows)
+                if llm:
+                    counts |= review_with_llm(rows, os.environ.get("OPENROUTER_API_KEY"))
+                return counts
+
         stats = merge_write(
             REPO_ROOT / "dbt" / "seeds" / name, rows, matchers.REVIEW_COLUMNS, review
         )
