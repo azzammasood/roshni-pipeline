@@ -12,7 +12,7 @@ Long facts: `docs/data-audit.md` (oracles, file inventory). Decisions: `docs/DEC
 - Fairness stats are descriptive: no causal language, always show n. K-Electric shares are **among listed feeders only**.
 - Never invent data. Unparseable rows → quarantine with a reason. Known anomalies are flagged, never silently fixed.
 - Display Asia/Karachi (UTC+5, no DST); store UTC.
-- Approximate matches always carry a stored, displayed confidence. Only exact matches auto-accept; the owner delegated the review of the rest to Claude (rules in DECISIONS.md 2026-10-10, reason in each seed row's note).
+- Approximate matches always carry a stored, displayed confidence. Exact matches auto-accept; press-release suggestions are also decided automatically by the written, tested rules in `src/roshni/resolve/autoreview.py` (owner, 2026-10-13; note `auto-review: …`). The rest are delegated to Claude (rules in DECISIONS.md 2026-10-10, reason `claude-review …` in each seed row's note). A rule change must keep `test_backtest_agrees_with_every_reviewed_decision` green.
 - IESCO XLSX = scenario playbook, never inequity analysis. IESCO feeder **code** (6-digit zero-padded) is the join key.
 - No gas-connection wealth proxy; no district-level income claims.
 - Do not label any feeder or file as "the author's own".
@@ -86,7 +86,7 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Every schedule row carries `effective_from`; every live output carries source, effective date, `last_updated`.
 - Narration: the LLM writes prose only; numbers are injected from queries and validated.
 - Schedulers: GitHub Actions = production (`snapshot.yml` daily, then `publish.yml`: parse → validate → build → resolve → build → report (Haiku 5.5 on prepaid credits, ≤$0.01/run; free models after credits run out) → export → site → public repo `azzammasood/roshni-site`, never edited by hand; failures open a `pipeline-failure` issue); Airflow = local showcase calling the CLI.
-- Press-release names left `pending_review` by the daily resolve need a delegated review pass (local `roshni resolve`, decide per DECISIONS 2026-10-10 rules, commit the seed).
+- The daily resolve auto-reviews press-release names; only judgment cases (e.g. a number on one side only, typos with plurals, two equally good candidates) stay `pending_review` for an occasional delegated pass (local `roshni resolve`, decide per DECISIONS 2026-10-10 rules, commit the seed).
 
 ## Working agreement
 - Work phase by phase; stop at each gate with evidence (test output, row counts).
