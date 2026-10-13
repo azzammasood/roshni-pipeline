@@ -1,6 +1,7 @@
 """Build the static export (data/export/v1/*.json) from the warehouse and validate it."""
 
 import json
+import re
 from collections import defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
@@ -48,11 +49,34 @@ def write_schemas(out: Path = SCHEMA_DIR) -> list[Path]:
     return paths
 
 
+# Review-seed note prefixes (CLAUDE.md): rules, LLM and Claude stamp their notes; anything else
+# with a decision is the owner's.
+_NOTE = re.compile(
+    r"^(?:(?P<rules>auto-review)|(?P<llm>llm-review)|(?P<claude>claude-review))"
+    r"(?: (?P<date>\d{4}-\d{2}-\d{2}))?[^:]*:\s*(?P<reason>.*)$",
+    re.S,
+)
+
+
+def match_review(method: str | None, note: str | None, status: str) -> m.MatchReview | None:
+    """Who accepted a match and why, from the seed note; None for automatic exact matches."""
+    if method is None or (status == "auto_exact" and not note):
+        return None
+    note = (note or "").strip()
+    if found := _NOTE.match(note):
+        by = next(k for k in ("rules", "llm", "claude") if found.group(k))
+        return m.MatchReview(method=method, reviewed_by=by, reviewed_on=found.group("date"),
+                             reason=found.group("reason").strip() or None)  # fmt: skip
+    return m.MatchReview(method=method, reviewed_by="owner", reviewed_on=None, reason=note or None)
+
+
 def _feeders(con) -> list[m.Feeder]:
     loc = defaultdict(list)
-    for r in _rows(con, "select feeder_id, area_id, area_name, match_status, match_confidence "
-                        "from feeder_locality_match order by feeder_id, area_name"):  # fmt: skip
-        loc[r.pop("feeder_id")].append(m.LocalityMatch(**r))
+    for r in _rows(con, "select feeder_id, area_id, area_name, match_status, match_confidence, "
+                        "method, match_note from feeder_locality_match "
+                        "order by feeder_id, area_name"):  # fmt: skip
+        review = match_review(r.pop("method"), r.pop("match_note"), r["match_status"])
+        loc[r.pop("feeder_id")].append(m.LocalityMatch(**r, review=review))
     out = []
     for r in _rows(con, "select * from dim_feeder order by feeder_id"):
         out.append(m.Feeder(
@@ -193,7 +217,10 @@ def build_export(
         "feeders": _feeders(con),
         "dark_profiles": _dark_profiles(con),
         "planned_shutdowns": [
-            m.PlannedShutdown(**{k: r[k] for k in m.PlannedShutdown.model_fields})
+            m.PlannedShutdown(
+                **{k: r[k] for k in m.PlannedShutdown.model_fields if k != "match_review"},
+                match_review=match_review(r["match_method"], r["match_note"], r["match_status"]),
+            )
             for r in _rows(con, "select * from fct_planned_shutdown_feeder order by shutdown_id")
         ],
         "areas": _areas(con),

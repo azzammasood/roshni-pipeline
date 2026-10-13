@@ -178,6 +178,17 @@
           ],
           "title": "Match Status",
           "type": "string"
+        },
+        "review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MatchReview"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -187,6 +198,70 @@
         "match_confidence"
       ],
       "title": "LocalityMatch",
+      "type": "object"
+    },
+    "MatchReview": {
+      "additionalProperties": false,
+      "description": "Why an approximate match was accepted (from the review seed's note; since 1.2.0).",
+      "properties": {
+        "method": {
+          "description": "exact: identical after normalising; fuzzy: name-similarity score below 100",
+          "enum": [
+            "exact",
+            "fuzzy"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reason"
+        },
+        "reviewed_by": {
+          "anyOf": [
+            {
+              "enum": [
+                "rules",
+                "llm",
+                "claude",
+                "owner"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "rules (autoreview.py), llm (OpenRouter), claude, owner; null if automatic",
+          "title": "Reviewed By"
+        },
+        "reviewed_on": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reviewed On"
+        }
+      },
+      "required": [
+        "method",
+        "reviewed_by",
+        "reviewed_on",
+        "reason"
+      ],
+      "title": "MatchReview",
       "type": "object"
     }
   },

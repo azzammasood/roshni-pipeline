@@ -7,6 +7,8 @@ select
     m.candidate_id as feeder_id,
     m.match_status,
     m.match_confidence,
+    m.method as match_method,
+    m.note as match_note,
     case
         when m.candidate_id is not null then 'matched'
         when r.out_of_scope = 1 then 'out_of_scope'

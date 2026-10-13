@@ -7,5 +7,6 @@ select
     m.subject_group as circle,
     m.method,
     m.match_status,
-    m.match_confidence
+    m.match_confidence,
+    m.note as match_note
 from ({{ accepted_matches('review_feeder_locality') }}) as m

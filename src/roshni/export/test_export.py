@@ -7,7 +7,14 @@ import jsonschema
 import pytest
 
 from roshni.export import models as m
-from roshni.export.build import SCHEMA_DIR, _rows, hourly_minutes, utc_session, write_schemas
+from roshni.export.build import (
+    SCHEMA_DIR,
+    _rows,
+    hourly_minutes,
+    match_review,
+    utc_session,
+    write_schemas,
+)
 
 
 def test_committed_schemas_match_models(tmp_path: Path) -> None:
@@ -38,6 +45,29 @@ def test_v1_0_document_still_valid() -> None:
     """1.1.0 is additive: a profile without daily_windows (1.0.0 shape) still validates."""
     old = {k: v for k, v in PROFILE.items() if k != "daily_windows"}
     jsonschema.validate(envelope([old]), schema("dark_profiles"))
+
+
+@pytest.mark.parametrize(
+    "method,note,status,expected",
+    [
+        ("exact", "", "auto_exact", None),
+        ("fuzzy", "claude-review 2026-10-13: roman IV = 4", "suggested",
+         ("claude", "2026-10-13", "roman IV = 4")),
+        ("fuzzy", "llm-review 2026-10-14 anthropic/claude-haiku-5.5: same place", "suggested",
+         ("llm", "2026-10-14", "same place")),
+        ("fuzzy", "auto-review: only candidate, spelling variant", "suggested",
+         ("rules", None, "only candidate, spelling variant")),
+        ("fuzzy", "checked on site", "suggested", ("owner", None, "checked on site")),
+    ],
+)  # fmt: skip
+def test_match_review_from_seed_note(method, note, status, expected) -> None:
+    review = match_review(method, note, status)
+    if expected is None:
+        assert review is None
+    else:
+        got = (review.reviewed_by, review.reviewed_on and review.reviewed_on.isoformat(),
+               review.reason)  # fmt: skip
+        assert got == expected and review.method == method
 
 
 def test_hourly_minutes_from_windows() -> None:

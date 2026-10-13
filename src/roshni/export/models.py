@@ -6,7 +6,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-SCHEMA_VERSION = "1.1.0"  # 1.1.0: DarkProfile.daily_windows (additive)
+SCHEMA_VERSION = "1.2.0"  # 1.1.0: DarkProfile.daily_windows; 1.2.0: match review, release month
 LABEL = "Scheduled (published schedule data), not measured outages"
 
 
@@ -40,11 +40,28 @@ class Meta(Strict):
     disclaimer: str
 
 
+ReviewedBy = Literal["rules", "llm", "claude", "owner"]
+
+
+class MatchReview(Strict):
+    """Why an approximate match was accepted (from the review seed's note; since 1.2.0)."""
+
+    method: Literal["exact", "fuzzy"] = Field(
+        description="exact: identical after normalising; fuzzy: name-similarity score below 100"
+    )
+    reviewed_by: ReviewedBy | None = Field(
+        description="rules (autoreview.py), llm (OpenRouter), claude, owner; null if automatic"
+    )
+    reviewed_on: date | None
+    reason: str | None
+
+
 class LocalityMatch(Strict):
     area_id: str
     area_name: str
     match_status: Literal["auto_exact", "accepted"]
     match_confidence: float = Field(ge=0, le=1)
+    review: MatchReview | None = None
 
 
 class Feeder(Strict):
@@ -94,6 +111,9 @@ class DarkProfile(Strict):
 class PlannedShutdown(Strict):
     shutdown_id: str
     release_no: str | None
+    release_period: str | None = Field(
+        default=None, description="Month of the press release as printed, MM/YYYY (since 1.2.0)"
+    )
     outage_date: date
     start_utc: datetime
     end_utc: datetime
@@ -104,6 +124,7 @@ class PlannedShutdown(Strict):
     feeder_id: str | None
     feeder_match_state: Literal["matched", "pending_review", "unmatched", "out_of_scope"]
     match_confidence: float | None
+    match_review: MatchReview | None = None
     flags: str
 
 

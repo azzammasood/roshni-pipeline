@@ -9,6 +9,7 @@ select
     candidate_name,
     score,
     method,
+    note,
     case when decision = 'accepted' then 'accepted' else 'auto_exact' end as match_status,
     score / 100.0 as match_confidence
 from {{ ref(review_seed) }}

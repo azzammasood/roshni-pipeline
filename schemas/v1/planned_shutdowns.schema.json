@@ -1,5 +1,69 @@
 {
   "$defs": {
+    "MatchReview": {
+      "additionalProperties": false,
+      "description": "Why an approximate match was accepted (from the review seed's note; since 1.2.0).",
+      "properties": {
+        "method": {
+          "description": "exact: identical after normalising; fuzzy: name-similarity score below 100",
+          "enum": [
+            "exact",
+            "fuzzy"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reason"
+        },
+        "reviewed_by": {
+          "anyOf": [
+            {
+              "enum": [
+                "rules",
+                "llm",
+                "claude",
+                "owner"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "rules (autoreview.py), llm (OpenRouter), claude, owner; null if automatic",
+          "title": "Reviewed By"
+        },
+        "reviewed_on": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reviewed On"
+        }
+      },
+      "required": [
+        "method",
+        "reviewed_by",
+        "reviewed_on",
+        "reason"
+      ],
+      "title": "MatchReview",
+      "type": "object"
+    },
     "PlannedShutdown": {
       "additionalProperties": false,
       "properties": {
@@ -56,6 +120,17 @@
           ],
           "title": "Match Confidence"
         },
+        "match_review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MatchReview"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "outage_date": {
           "format": "date",
           "title": "Outage Date",
@@ -71,6 +146,19 @@
             }
           ],
           "title": "Release No"
+        },
+        "release_period": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Month of the press release as printed, MM/YYYY (since 1.2.0)",
+          "title": "Release Period"
         },
         "shutdown_id": {
           "title": "Shutdown Id",
