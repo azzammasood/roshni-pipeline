@@ -1,6 +1,7 @@
 subject_id,subject_name,subject_group,candidate_id,candidate_name,rank,score,method,status,decision,note
 Attock:08:00 AM to 12:00 PM,08:00 AM to 12:00 PM,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Attock:6 am to 12 Noon,6 am to 12 Noon,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Attock:AWC Housing,AWC Housing,Attock,iesco:attock:014624,AWC HOUSING,1,100.0,exact,auto_exact,,
 Attock:AWT-1,AWT-1,Attock,iesco:attock:081009,AWT 4,1,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Attock:AWT-4,AWT-4,Attock,iesco:attock:081009,AWT 4,1,100.0,exact,auto_exact,,
 Attock:Attock Cantt,Attock Cantt,Attock,iesco:attock:018901,ATTOCK CANTT,1,100.0,exact,auto_exact,,
@@ -23,6 +24,7 @@ Attock:GBHP Power Channel,GBHP Power Channel,Attock,,,0,0,,no_candidate,,claude-
 Attock:GBHP power Channel,GBHP power Channel,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Attock:Gharhi Afghan,Gharhi Afghan,Attock,iesco:attock:014626,GHARI AFGHAN,1,96.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Attock:Gulsha e Sehat,Gulsha e Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,96.6,fuzzy,suggested,accepted,claude-review 2026-10-10: typo
+Attock:Gulshan Sehat,Gulshan Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,92.9,fuzzy,suggested,accepted,claude-review 2026-10-13: same consonant skeleton (izafat 'e' is a vowel)
 Attock:Gulshan e Sehat,Gulshan e Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,100.0,exact,auto_exact,,
 Attock:Gulshan-e- Sehat,Gulshan-e- Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,100.0,exact,auto_exact,,
 Attock:Gulshan-e-Sehat,Gulshan-e-Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,100.0,exact,auto_exact,,
@@ -57,6 +59,7 @@ Attock:Munirabad,Munirabad,Attock,iesco:attock:014628,MUNIRABAD,1,100.0,exact,au
 Attock:Munirabad,Munirabad,Attock,iesco:attock:075102,AMINABAD,2,70.6,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Attock:P. Small Industrial,P. Small Industrial,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Attock:POF,POF,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Attock:POF Emergency,POF Emergency,Attock,,,0,0,,no_candidate,,claude-review 2026-10-13: no candidate; left unmatched
 Attock:Paswal,Paswal,Attock,iesco:attock:081002,PASWAL,1,100.0,exact,auto_exact,,
 Attock:Pind Parian,Pind Parian,Attock,iesco:attock:121801,PIND PARRIAN,1,95.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Attock:Punjab Small Industries,Punjab Small Industries,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
@@ -71,12 +74,15 @@ Attock:Saray Kharbuza,Saray Kharbuza,Attock,iesco:attock:121802,SARAI KHRABOZA,1
 Attock:Shafi Chohan,Shafi Chohan,Attock,iesco:attock:012023,SHAFI CHOHAN,1,100.0,exact,auto_exact,,
 Attock:Shafi Chohan,Shafi Chohan,Attock,iesco:attock:089901,SHADI KHAN,2,72.7,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Attock:Shah Allah Ditta,Shah Allah Ditta,Attock,iesco:attock:081011,SHAH ALLAH DITA,1,96.8,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Attock:Shahia,Shahia,Attock,iesco:attock:014629,SHAHIA,1,100.0,exact,auto_exact,,
+Attock:Shahia,Shahia,Attock,iesco:attock:133601,SAFIA TOWN,2,72.7,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
 Attock:Teen Mela,Teen Mela,Attock,iesco:attock:075113,TEEN MILA,1,88.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Attock:Valley,Valley,Attock,iesco:attock:081001,VALLEY,1,100.0,exact,auto_exact,,
 Attock:Vally,Vally,Attock,iesco:attock:081001,VALLEY,1,90.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Attock:Wah General Hospital,Wah General Hospital,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Chakwal:Abdullah Pur,Abdullah Pur,Chakwal,iesco:chakwal:058206,ABDULLAH PUR,1,100.0,exact,auto_exact,,
 Chakwal:Al- Qaim Mills,Al- Qaim Mills,Chakwal,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Chakwal:Al-Qaim Mills,Al-Qaim Mills,Chakwal,,,0,0,,no_candidate,,claude-review 2026-10-13: no candidate; left unmatched
 Chakwal:Bhoun,Bhoun,Chakwal,iesco:chakwal:002202,BHOUN,1,100.0,exact,auto_exact,,
 Chakwal:CWO,CWO,Chakwal,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Chakwal:D/Jalip,D/Jalip,Chakwal,iesco:chakwal:058205,DHRYALA JALIP,1,70.0,fuzzy,suggested,accepted,claude-review 2026-10-10: D/ abbreviates Dhryala
@@ -565,9 +571,14 @@ Jhelum:Ward No. 8,Ward No. 8,Jhelum,iesco:jhelum:004911,WARD-NO-8,1,100.0,exact,
 Rawalpindi Cantt:08:00 AM to 12:00 PM,08:00 AM to 12:00 PM,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Rawalpindi Cantt:AOWHS,AOWHS,Rawalpindi Cantt,iesco:rawalpindi:087402,AWHS,1,88.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi Cantt:AOWHS,AOWHS,Rawalpindi Cantt,iesco:rawalpindi:061131,AFOHS,2,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Rawalpindi Cantt:ARC-I,ARC-I,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-13: no candidate; left unmatched
 Rawalpindi Cantt:Adiala,Adiala,Rawalpindi Cantt,iesco:rawalpindi:109106,ADYALA,1,83.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi Cantt:Adyala,Adyala,Rawalpindi Cantt,iesco:rawalpindi:109106,ADYALA,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Adyala Jail,Adyala Jail,Rawalpindi Cantt,iesco:rawalpindi:109106,ADYALA,1,70.6,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Rawalpindi Cantt:Askari Heights (IV),Askari Heights (IV),Rawalpindi Cantt,iesco:rawalpindi:126010,ASKARI HIEGHT-4,1,82.8,fuzzy,suggested,accepted,claude-review 2026-10-13: roman IV = 4; HIEGHT is a typo of HEIGHT (plural s); only candidate
+Rawalpindi Cantt:Askari Tower,Askari Tower,Rawalpindi Cantt,iesco:rawalpindi:126004,ASKARI TOWER,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Askari Tower,Askari Tower,Rawalpindi Cantt,iesco:rawalpindi:099713,ASKARI TOWER 2,2,92.3,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
+Rawalpindi Cantt:Askari Tower,Askari Tower,Rawalpindi Cantt,iesco:rawalpindi:017919,ASKARI 7,3,70.0,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
 Rawalpindi Cantt:Askari-14,Askari-14,Rawalpindi Cantt,iesco:rawalpindi:109112,ASKRI 14,1,94.1,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi Cantt:Askari-14,Askari-14,Rawalpindi Cantt,iesco:rawalpindi:017919,ASKARI 7,2,82.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Rawalpindi Cantt:Askari-14,Askari-14,Rawalpindi Cantt,iesco:rawalpindi:043325,ASKARI XI,3,77.8,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
@@ -584,6 +595,8 @@ Rawalpindi Cantt:Chaklala,Chaklala,Rawalpindi Cantt,iesco:rawalpindi:008604,CHAK
 Rawalpindi Cantt:Chakri,Chakri,Rawalpindi Cantt,iesco:rawalpindi:096801,CHAKRI,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Chakri,Chakri,Rawalpindi Cantt,iesco:rawalpindi:008604,CHAKRA,2,83.3,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Rawalpindi Cantt:Chowk Pindori,Chowk Pindori,Rawalpindi Cantt,iesco:rawalpindi:017720,CHOWK PINDORI,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Commercial-I,Commercial-I,Rawalpindi Cantt,iesco:rawalpindi:095802,COMMERCIAL CENTER,1,75.9,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Commercial-II,Commercial-II,Rawalpindi Cantt,iesco:rawalpindi:095802,COMMERCIAL CENTER,1,73.3,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
 Rawalpindi Cantt:DK. Farman Ali,DK. Farman Ali,Rawalpindi Cantt,iesco:rawalpindi:017922,DHOK FARMAN ALI,1,92.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi Cantt:Defence Road,Defence Road,Rawalpindi Cantt,iesco:rawalpindi:109113,DEFENCE ROAD,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Dhok Noor,Dhok Noor,Rawalpindi Cantt,iesco:rawalpindi:109104,DHOK NOOR,1,100.0,exact,auto_exact,,
@@ -592,6 +605,8 @@ Rawalpindi Cantt:Dk Noor,Dk Noor,Rawalpindi Cantt,iesco:rawalpindi:109104,DHOK N
 Rawalpindi Cantt:Dk. Farman Ali,Dk. Farman Ali,Rawalpindi Cantt,iesco:rawalpindi:017922,DHOK FARMAN ALI,1,92.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi Cantt:Dk. Noor,Dk. Noor,Rawalpindi Cantt,iesco:rawalpindi:109104,DHOK NOOR,1,87.5,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi Cantt:Fatima Jinnah,Fatima Jinnah,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Rawalpindi Cantt:Feeder No.4,Feeder No.4,Rawalpindi Cantt,iesco:rawalpindi:126007,FEEDER 4,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Feeder no. 3,Feeder no. 3,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-13: no candidate; left unmatched
 Rawalpindi Cantt:Ghazan Khan,Ghazan Khan,Rawalpindi Cantt,iesco:rawalpindi:009009,GHAZAN KHAN,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Gracy Line,Gracy Line,Rawalpindi Cantt,iesco:rawalpindi:002533,GRACY LINE,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Gulshan Abad,Gulshan Abad,Rawalpindi Cantt,iesco:rawalpindi:109102,GULSHANABAD,1,95.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
@@ -641,6 +656,7 @@ Rawalpindi Cantt:PAF,PAF,Rawalpindi Cantt,iesco:rawalpindi:002509,PAF,1,100.0,ex
 Rawalpindi Cantt:PGHS,PGHS,Rawalpindi Cantt,iesco:rawalpindi:109109,PGHS,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Park View,Park View,Rawalpindi Cantt,iesco:rawalpindi:087410,PARK VIEW,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Pindi Board,Pindi Board,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Rawalpindi Cantt:Pine Hills-1,Pine Hills-1,Rawalpindi Cantt,iesco:rawalpindi:126012,PINE HILLS-1,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:RIC,RIC,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Rawalpindi Cantt:Rahimabad,Rahimabad,Rawalpindi Cantt,iesco:rawalpindi:008619,RAJABAD,1,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Rawalpindi Cantt:Rahimabad,Rahimabad,Rawalpindi Cantt,iesco:rawalpindi:043336,ALAMABAD,2,70.6,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
@@ -651,6 +667,24 @@ Rawalpindi Cantt:Rose Lane,Rose Lane,Rawalpindi Cantt,,,0,0,,no_candidate,,claud
 Rawalpindi Cantt:Sagri,Sagri,Rawalpindi Cantt,iesco:rawalpindi:017713,SAGHRI,1,90.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi Cantt:Samar Zar,Samar Zar,Rawalpindi Cantt,iesco:rawalpindi:109114,SAMARZAR,1,94.1,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi Cantt:Samar Zar,Samar Zar,Rawalpindi Cantt,iesco:rawalpindi:001005,LALA ZAR,2,70.6,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector A-2,Sector A-2,Rawalpindi Cantt,iesco:rawalpindi:126001,SECTOR A,1,88.9,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector A-2,Sector A-2,Rawalpindi Cantt,iesco:rawalpindi:099702,SECTOR AC&F,2,85.7,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector A-2,Sector A-2,Rawalpindi Cantt,iesco:rawalpindi:099701,SECTOR A (DHA),3,81.8,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector B-2,Sector B-2,Rawalpindi Cantt,iesco:rawalpindi:099705,SECTOR B,1,88.9,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector B-2,Sector B-2,Rawalpindi Cantt,iesco:rawalpindi:099709,SECTOR H&F,2,80.0,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector B-2,Sector B-2,Rawalpindi Cantt,iesco:rawalpindi:126011,SECTOR -D,3,77.8,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector-A,Sector-A,Rawalpindi Cantt,iesco:rawalpindi:126001,SECTOR A,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Sector-A,Sector-A,Rawalpindi Cantt,iesco:rawalpindi:126011,SECTOR -D,2,87.5,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
+Rawalpindi Cantt:Sector-A,Sector-A,Rawalpindi Cantt,iesco:rawalpindi:002536,SECTOR 4,3,87.5,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
+Rawalpindi Cantt:Sector-C,Sector-C,Rawalpindi Cantt,iesco:rawalpindi:126011,SECTOR -D,1,87.5,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector-C,Sector-C,Rawalpindi Cantt,iesco:rawalpindi:002536,SECTOR 4,2,87.5,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector-C,Sector-C,Rawalpindi Cantt,iesco:rawalpindi:126001,SECTOR A,3,87.5,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi Cantt:Sector-D,Sector-D,Rawalpindi Cantt,iesco:rawalpindi:126011,SECTOR -D,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Sector-D,Sector-D,Rawalpindi Cantt,iesco:rawalpindi:002536,SECTOR 4,2,87.5,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
+Rawalpindi Cantt:Sector-D,Sector-D,Rawalpindi Cantt,iesco:rawalpindi:126001,SECTOR A,3,87.5,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
+Rawalpindi Cantt:Sector-F,Sector-F,Rawalpindi Cantt,iesco:rawalpindi:126003,SECTOR F,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Sector-F,Sector-F,Rawalpindi Cantt,iesco:rawalpindi:099709,SECTOR H&F,2,88.9,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
+Rawalpindi Cantt:Sector-F,Sector-F,Rawalpindi Cantt,iesco:rawalpindi:126011,SECTOR -D,3,87.5,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
 Rawalpindi Cantt:Shahpur,Shahpur,Rawalpindi Cantt,iesco:rawalpindi:109103,SHAPUR,1,92.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi Cantt:Shaigan,Shaigan,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Rawalpindi Cantt:Shehgan,Shehgan,Rawalpindi Cantt,iesco:rawalpindi:096802,CHEHAN,1,76.9,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
@@ -668,6 +702,9 @@ Rawalpindi Cantt:Tipu Road,Tipu Road,Rawalpindi Cantt,iesco:rawalpindi:017916,TI
 Rawalpindi Cantt:Tipu Road,Tipu Road,Rawalpindi Cantt,iesco:rawalpindi:001026,TULSA ROAD,2,73.7,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Rawalpindi Cantt:Tipu Road,Tipu Road,Rawalpindi Cantt,iesco:rawalpindi:095801,SAID PUR ROAD,3,72.7,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Rawalpindi City:08:00 AM to 12:00 PM,08:00 AM to 12:00 PM,Rawalpindi City,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Rawalpindi City:A-Block,A-Block,Rawalpindi City,iesco:rawalpindi:095807,B BLOCK,1,85.7,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi City:A-Block,A-Block,Rawalpindi City,iesco:rawalpindi:095831,C BLOCK,2,85.7,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
+Rawalpindi City:A-Block,A-Block,Rawalpindi City,iesco:rawalpindi:095811,E BLOCK,3,85.7,fuzzy,suggested,rejected,claude-review 2026-10-13: names differ in substance or are ambiguous
 Rawalpindi City:AFOSH,AFOSH,Rawalpindi City,iesco:rawalpindi:061131,AFOHS,1,80.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi City:APHS,APHS,Rawalpindi City,iesco:rawalpindi:087402,AWHS,1,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Rawalpindi City:APHS,APHS,Rawalpindi City,iesco:rawalpindi:109109,PGHS,2,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
@@ -706,6 +743,9 @@ Rawalpindi City:Dk. Hukam Dad,Dk. Hukam Dad,Rawalpindi City,iesco:rawalpindi:002
 Rawalpindi City:Dk. Sulaiman,Dk. Sulaiman,Rawalpindi City,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Rawalpindi City:Dk. Suleman,Dk. Suleman,Rawalpindi City,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Rawalpindi City:EME Complex,EME Complex,Rawalpindi City,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Rawalpindi City:Faizabad,Faizabad,Rawalpindi City,iesco:rawalpindi:095813,FAIZABAD,1,100.0,exact,auto_exact,,
+Rawalpindi City:Faizabad,Faizabad,Rawalpindi City,iesco:rawalpindi:001020,AZIZABAD,2,87.5,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
+Rawalpindi City:Faizabad,Faizabad,Rawalpindi City,iesco:rawalpindi:043324,QAIDABAD,3,75.0,fuzzy,suggested,rejected,claude-review 2026-10-13: subject already has an exact match
 Rawalpindi City:Faizia,Faizia,Rawalpindi City,iesco:rawalpindi:061112,FAZIA,1,90.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi City:Faizia,Faizia,Rawalpindi City,iesco:rawalpindi:095813,FAIZABAD,2,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Rawalpindi City:Faizia,Faizia,Rawalpindi City,iesco:rawalpindi:104902,FIZAIA 1,3,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
@@ -717,6 +757,9 @@ Rawalpindi City:Fazaia,Fazaia,Rawalpindi City,iesco:rawalpindi:104902,FIZAIA 1,3
 Rawalpindi City:Ghauri Garden,Ghauri Garden,Rawalpindi City,iesco:rawalpindi:090011,RIVER GARDEN,1,72.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Rawalpindi City:Golra,Golra,Rawalpindi City,iesco:rawalpindi:008605,GOLRA,1,100.0,exact,auto_exact,,
 Rawalpindi City:HPT,HPT,Rawalpindi City,iesco:rawalpindi:017709,HPT-3,1,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Rawalpindi City:Haidri Chowk,Haidri Chowk,Rawalpindi City,iesco:rawalpindi:095830,HAIDERI CHOWK,1,96.0,fuzzy,suggested,accepted,claude-review 2026-10-13: same consonant skeleton: spelling variant
+Rawalpindi City:Haidri Chowk,Haidri Chowk,Rawalpindi City,iesco:rawalpindi:087414,CAR CHOWK,2,76.2,fuzzy,suggested,rejected,claude-review 2026-10-13: another candidate accepted
+Rawalpindi City:Haidri Chowk,Haidri Chowk,Rawalpindi City,iesco:rawalpindi:006438,MUHAMMADI CHOWK,3,74.1,fuzzy,suggested,rejected,claude-review 2026-10-13: another candidate accepted
 Rawalpindi City:I-14/3,I-14/3,Rawalpindi City,iesco:rawalpindi:104602,I-14/3,1,100.0,exact,auto_exact,,
 Rawalpindi City:I-14/3,I-14/3,Rawalpindi City,iesco:rawalpindi:104610,I-14/4,2,83.3,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Rawalpindi City:I-14/3,I-14/3,Rawalpindi City,iesco:rawalpindi:104605,I-16/3,3,83.3,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
