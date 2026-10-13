@@ -226,3 +226,24 @@ def test_published_narrative_style_passes() -> None:
     """The accepted 2026-W42 draft wrote "Two Medium loss-category feeders": still valid."""
     draft = "Two Medium loss-category feeders are scheduled at twelve hours instead of six."
     assert check_draft(draft, WORD_FACTS) == []
+
+
+def test_out_of_credits_falls_through_to_free_models(tmp_path: Path) -> None:
+    """Owner: prepaid credits first; when they run out (402), free models take over."""
+    fake = FakeOpenRouter({"f/free:free": GOOD}, {"p/cheap": 1e-7, "f/free:free": 0.0})
+    sent: dict[str, dict] = {}
+
+    def handler(req: httpx.Request) -> httpx.Response:
+        if req.url.path.endswith("/chat/completions"):
+            body = json.loads(req.content)
+            sent[body["model"]] = body
+            if body["model"] == "p/cheap":
+                return httpx.Response(402, json={"error": {"message": "Insufficient credits"}})
+        return fake.handler(req)
+
+    cfg = NarratorConfig(models=["p/cheap", "f/free:free"], spend_cap_usd=0.01)
+    res = narrate(FACTS, cfg, "test-key", httpx.MockTransport(handler), tmp_path)
+    assert res.model == "f/free:free"
+    assert res.attempts[0] == "p/cheap: HTTP 402 (out of credits)"
+    assert "reasoning" not in sent["p/cheap"]  # thinking tokens would be billed
+    assert sent["f/free:free"]["reasoning"] == {"effort": "low"}

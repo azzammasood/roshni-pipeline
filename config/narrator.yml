@@ -2,16 +2,14 @@
 # Fallback chain: the first model that exists in the live /models list, fits the spend cap and
 # passes validation is used. Unknown ids are skipped (ids change; edit freely).
 # ROSHNI_NARRATOR_MODEL (env) is tried first; ROSHNI_NARRATOR_SPEND_CAP_USD overrides the cap.
-# The daily publish job sets ROSHNI_NARRATOR_SPEND_CAP_USD=0: every paid model's worst case exceeds
-# a $0 cap and is skipped, so only the free (":free") models below run there (OpenRouter free tier:
-# 50 requests/day). Local runs keep the $0.05 cap and try the paid models first.
+# Owner (2026-10-13): use prepaid credits on a cheap model first; when they run out, OpenRouter
+# answers HTTP 402 and the chain falls through to the free (":free") models (50 requests/day).
+# Claude Haiku 5.5: $0.10 / $0.50 per M tokens, about $0.0006 per report.
 models:
-  - anthropic/claude-haiku-4.5
-  - openai/gpt-4.1-mini
-  - google/gemini-2.5-flash
+  - anthropic/claude-haiku-5.5
   - nvidia/nemotron-3-ultra-550b-a55b:free
   - google/gemma-4-31b-it:free
   - google/gemma-4-26b-a4b-it:free
 max_tokens: 2000   # room for reasoning models; billed on actual use
 temperature: 0.2
-spend_cap_usd: 0.05   # hard cap per run, priced from the live /models endpoint
+spend_cap_usd: 0.01   # hard cap per run (Haiku 5.5 worst case ~$0.0012), priced from live /models

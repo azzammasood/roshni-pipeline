@@ -5,8 +5,8 @@
 - Prices are read live from GET /models (never hardcoded); a call is skipped if its worst-case
   cost would exceed what is left of the per-run cap.
 - Responses are cached by a hash of (model, prompt) under data/cache/narrate/.
-- Free (":free") models end the chain; the daily job runs with a $0 spend cap, so only they run
-  there (owner, 2026-10-12). Tests use a mocked API.
+- A cheap paid model uses prepaid credits first; free (":free") models end the chain and take over
+  when credits run out (HTTP 402). Owner, 2026-10-13. Tests use a mocked API.
 """
 
 import hashlib
@@ -123,15 +123,18 @@ def narrate(
                     ],
                     "max_tokens": cfg.max_tokens,
                     "temperature": cfg.temperature,
-                    # Reasoning models otherwise spend the whole budget thinking (content null).
-                    "reasoning": {"effort": "low"},
                 }
+                if model.endswith(":free"):
+                    # Free reasoning models otherwise spend the whole budget thinking (content
+                    # null). Not sent to paid models: thinking tokens would be billed.
+                    request["reasoning"] = {"effort": "low"}
                 resp = http.post("/chat/completions", json=request)
                 if resp.status_code == 429:  # busy free endpoint: one retry after a short wait
                     _sleep(min(float(resp.headers.get("retry-after") or 15), 20))
                     resp = http.post("/chat/completions", json=request)
                 if resp.status_code != 200:
-                    result.attempts.append(f"{model}: HTTP {resp.status_code}")
+                    why = " (out of credits)" if resp.status_code == 402 else ""
+                    result.attempts.append(f"{model}: HTTP {resp.status_code}{why}")
                     continue
                 body = resp.json()
                 usage = body.get("usage", {})
