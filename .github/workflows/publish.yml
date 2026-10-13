@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write # commits review decisions (dbt/seeds) back to main
   issues: write # failure-issue.sh
 
 concurrency:
@@ -31,6 +31,8 @@ jobs:
       SITE_BASE_PATH: /roshni-site
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the review commit is rebased onto main before pushing
 
       - name: Check out data-snapshots into ./store
         run: |
@@ -61,11 +63,24 @@ jobs:
       - run: uv run roshni parse --snapshots store --census-from census
       - run: uv run roshni validate
       - run: uv run roshni build
-      # New press-release names get candidates; only exact unique matches auto-accept (Phase 4
-      # rules), the rest show as pending review. CI seed edits are not committed: the committed
-      # seeds keep every review decision.
-      - run: uv run roshni resolve
+      # New press-release names get candidates; exact matches and the written rules
+      # (resolve/autoreview.py) decide most; the OpenRouter chain decides the rest (--llm).
+      - run: uv run roshni resolve --llm
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ROSHNI_NARRATOR_SPEND_CAP_USD: "0.01"
       - run: uv run roshni build
+      # Persist the decisions so each name is decided once (an LLM must not re-decide daily).
+      - name: Commit review decisions
+        run: |
+          if git diff --quiet -- dbt/seeds; then echo "no new review decisions"; exit 0; fi
+          git add dbt/seeds/review_*.csv
+          git -c user.name="github-actions[bot]"               -c user.email="41898283+github-actions[bot]@users.noreply.github.com"               commit -q -m "chore(review): automatic review of new press-release names [skip ci]"
+          for attempt in 1 2 3; do
+            if git pull -q --rebase origin main && git push -q origin HEAD:main; then exit 0; fi
+            sleep 5
+          done
+          echo "::warning::could not push review decisions; they will be re-made next run"
       # Accepted drafts are cached by (model, prompt): unchanged facts cost nothing on later runs.
       - name: Restore narrator cache
         uses: actions/cache@v4
