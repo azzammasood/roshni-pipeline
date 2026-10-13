@@ -461,7 +461,7 @@ Islamabad:Scheme-1,Scheme-1,Islamabad,iesco:islamabad:105525,SCHEME-I,2,87.5,fuz
 Islamabad:Scheme-2,Scheme-2,Islamabad,iesco:islamabad:017430,SCHEME-2,1,100.0,exact,auto_exact,,
 Islamabad:Scheme-2,Scheme-2,Islamabad,iesco:islamabad:105525,SCHEME-I,2,87.5,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Islamabad:Scheme-II,Scheme-II,Islamabad,iesco:islamabad:105525,SCHEME-I,1,94.1,fuzzy,suggested,rejected,claude-review 2026-10-10: audit of skeleton rule: different name (numeral or extra syllable)
-Islamabad:Scheme-II,Scheme-II,Islamabad,iesco:islamabad:017430,SCHEME-2,2,82.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Scheme-II,Scheme-II,Islamabad,iesco:islamabad:017430,SCHEME-2,2,82.4,fuzzy,suggested,accepted,claude-review 2026-10-13: corrected; roman II = 2
 Islamabad:Service Road,Service Road,Islamabad,iesco:islamabad:022333,SERVICE ROAD EAST,1,82.8,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Service road,Service road,Islamabad,iesco:islamabad:022333,SERVICE ROAD EAST,1,82.8,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Shahzad Town,Shahzad Town,Islamabad,iesco:islamabad:089213,SHAHDRA,1,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
@@ -763,7 +763,7 @@ Rawalpindi City:Haidri Chowk,Haidri Chowk,Rawalpindi City,iesco:rawalpindi:00643
 Rawalpindi City:I-14/3,I-14/3,Rawalpindi City,iesco:rawalpindi:104602,I-14/3,1,100.0,exact,auto_exact,,
 Rawalpindi City:I-14/3,I-14/3,Rawalpindi City,iesco:rawalpindi:104610,I-14/4,2,83.3,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Rawalpindi City:I-14/3,I-14/3,Rawalpindi City,iesco:rawalpindi:104605,I-16/3,3,83.3,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
-Rawalpindi City:Iqbal Road-II,Iqbal Road-II,Rawalpindi City,iesco:rawalpindi:017931,IQBAL ROAD 2,1,88.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Rawalpindi City:Iqbal Road-II,Iqbal Road-II,Rawalpindi City,iesco:rawalpindi:017931,IQBAL ROAD 2,1,88.0,fuzzy,suggested,accepted,claude-review 2026-10-13: corrected; roman II = 2
 Rawalpindi City:Iqbal Road-II,Iqbal Road-II,Rawalpindi City,iesco:rawalpindi:043306,IQBAL ROAD,2,87.0,fuzzy,suggested,rejected,claude-review 2026-10-10: audit of skeleton rule: different name (numeral or extra syllable)
 Rawalpindi City:Jhangi,Jhangi,Rawalpindi City,iesco:rawalpindi:008608,JHANGI,1,100.0,exact,auto_exact,,
 Rawalpindi City:Jhangi,Jhangi,Rawalpindi City,iesco:rawalpindi:007406,BHANGALI,2,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
