@@ -3,6 +3,8 @@
 Needs the parsed Parquet layer (`roshni parse`), so it is marked needs_data_sources.
 """
 
+from pathlib import Path
+
 import duckdb
 import pytest
 from typer.testing import CliRunner
@@ -12,6 +14,7 @@ from roshni.paths import DATA_DIR
 
 pytestmark = pytest.mark.needs_data_sources
 PARSED = DATA_DIR / "parsed"
+FIXTURES = Path(__file__).parent / "fixtures"
 
 
 @pytest.fixture(scope="module")
@@ -147,7 +150,18 @@ def test_static_export_validates(wh, tmp_path) -> None:
     from roshni.export.build import build_export, validate_export
 
     counts = build_export(wh.con, tmp_path)
-    assert counts["feeders"] == 1725 and counts["planned_shutdowns"] == 1853
+    # 1,853 windows = the 65 releases audited in Phase 2 (data-audit §8). New releases keep
+    # arriving, so the regression count is checked on that fixed set (owner, 2026-10-13).
+    audited = [
+        line for line in (FIXTURES / "audited_press_releases.txt").read_text("utf-8").splitlines()
+        if line and not line.startswith("#")
+    ]  # fmt: skip
+    assert len(audited) == 65
+    in_list = ", ".join(f"'{sha}'" for sha in audited)
+    assert wh(
+        f"select count(*) from fct_planned_shutdown_feeder where source_sha256 in ({in_list})"
+    ) == [(1853,)]
+    assert counts["feeders"] == 1725 and counts["planned_shutdowns"] >= 1853
     assert counts["dark_profiles"] == 1101 + 618  # IESCO feeders + K-Electric scheduled
     assert set(validate_export(tmp_path).values()) == {"valid"}
     profiles = {
