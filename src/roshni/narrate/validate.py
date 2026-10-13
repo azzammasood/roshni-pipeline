@@ -2,6 +2,8 @@
 
 Rules for a draft:
 - numbers appear only as {fact_id} placeholders; any digit outside a placeholder is rejected;
+- a number written as words ("two", "twenty-one") must equal a fact value, except the schedule
+  bands ("twelve hours", "six") and the small-n threshold ("at least ten");
 - every placeholder names a known fact;
 - no causal or accusatory wording (statistics here are descriptive only);
 - units are respected: a percentage is followed by "%", a sample size follows "n =", a
@@ -22,6 +24,57 @@ CAUSAL = re.compile(
 )
 NUMBER = re.compile(r"\d+(?:[.,]\d+)*")
 
+_UNITS = [
+    "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+    "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen",
+    "nineteen",
+]  # fmt: skip
+_TENS = ["twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+WORD_VALUE = {w: i for i, w in enumerate(_UNITS)} | {w: 20 + 10 * i for i, w in enumerate(_TENS)}
+SCALE = {"hundred": 100, "thousand": 1000, "million": 1_000_000}
+_WORD = "|".join([*WORD_VALUE, *SCALE])
+# A run of number words: "two", "twenty-one", "two hundred and fifteen"; "half"/"dozen" too.
+NUMBER_WORDS = re.compile(
+    rf"(?i)\b(?:(?:{_WORD})(?:[\s-]+(?:and[\s-]+)?(?:{_WORD}))*|half|dozen)\b"
+)
+# Constants the prose may name in words: the two K-Electric schedule bands, and the threshold.
+BAND = re.compile(r"(?i)^\s*(?:-\s*)?hours?\b|^\s*(?:[(),.;:]|$)")
+THRESHOLD = re.compile(r"(?i)\b(?:at least|fewer than|more than)\s+$")
+
+
+def words_to_number(text: str) -> float | None:
+    """Value of a run of English number words; None for words without a single value."""
+    words = [w for w in re.split(r"[\s-]+", text.lower()) if w and w != "and"]
+    if words in (["half"], ["dozen"]):
+        return {"half": 0.5, "dozen": 12.0}[words[0]]
+    total = current = 0
+    for w in words:
+        if w in WORD_VALUE:
+            current += WORD_VALUE[w]
+        elif w == "hundred":
+            current = max(current, 1) * 100
+        else:  # thousand / million
+            total += max(current, 1) * SCALE[w]
+            current = 0
+    return float(total + current)
+
+
+def _number_word_problems(draft: str, facts: list[Fact]) -> list[str]:
+    values = {float(f.value) for f in facts if isinstance(f.value, int | float)}
+    problems = []
+    for m in NUMBER_WORDS.finditer(draft):
+        word, after, before = m.group(0), draft[m.end() : m.end() + 12], draft[: m.start()]
+        if re.search(r"(?i)\bno\s+$", before) and word.lower() == "one":
+            continue  # "no one"
+        value = words_to_number(word)
+        if value in (6.0, 12.0) and word.lower() in ("six", "twelve") and BAND.match(after):
+            continue
+        if value == 10.0 and THRESHOLD.search(before[-20:]):
+            continue
+        if value not in values:
+            problems.append(f"number word {word!r} is not a fact value")
+    return problems
+
 
 class InvalidDraft(ValueError):
     pass
@@ -33,6 +86,7 @@ def check_draft(draft: str, facts: list[Fact]) -> list[str]:
     stripped = PLACEHOLDER.sub("", draft)
     if (m := NUMBER.search(stripped)) is not None:
         problems.append(f"number written outside a placeholder: {m.group(0)!r}")
+    problems += _number_word_problems(stripped, facts)
     unknown = sorted(set(PLACEHOLDER.findall(draft)) - known)
     if unknown:
         problems.append(f"unknown placeholders: {unknown}")

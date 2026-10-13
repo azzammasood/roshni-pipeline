@@ -189,3 +189,40 @@ def test_error_body_with_http_200_moves_to_next_model(tmp_path: Path) -> None:
     res = narrate(FACTS, cfg, "test-key", httpx.MockTransport(handler), tmp_path)
     assert res.model == "b/good:free"
     assert res.attempts[0] == "e/err:free: provider error (Provider returned error), skipped"
+
+
+WORD_FACTS = [*FACTS, Fact("medium_12h", "Medium feeders at 12 h", 2, "count", "medium_12h")]
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Two Medium-category feeders are scheduled at twelve hours.",  # 2 is a fact value
+        "{coverage_listed_feeders} feeders: most at twelve hours, the rest for six (see above).",
+        "a six-hour band and a twelve-hour band",
+        "Among IBC areas with at least ten scheduled feeders, the share varies.",
+        "No one area dominates; this is often described as uneven.",  # "often", "no one"
+    ],
+)
+def test_number_words_allowed(text: str) -> None:
+    assert not [p for p in check_draft(text, WORD_FACTS) if "number word" in p]
+
+
+@pytest.mark.parametrize(
+    "text, word",
+    [
+        ("Three IBC areas have every feeder at twelve hours.", "Three"),  # 3 is no fact value
+        ("Twenty-one feeders are exempt.", "Twenty-one"),
+        ("About half of the feeders are scheduled.", "half"),
+        ("six feeders have no schedule row", "six"),  # band word used as a count
+        ("ten IBC areas are listed", "ten"),  # threshold word used as a count
+    ],
+)
+def test_number_words_rejected(text: str, word: str) -> None:
+    assert f"number word {word!r} is not a fact value" in check_draft(text, WORD_FACTS)
+
+
+def test_published_narrative_style_passes() -> None:
+    """The accepted 2026-W42 draft wrote "Two Medium loss-category feeders": still valid."""
+    draft = "Two Medium loss-category feeders are scheduled at twelve hours instead of six."
+    assert check_draft(draft, WORD_FACTS) == []
