@@ -150,3 +150,24 @@ def test_empty_reply_is_skipped_not_fatal(tmp_path: Path) -> None:
     res = run(fake, NarratorConfig(models=["r/thinker:free", "b/good:free"]), tmp_path)
     assert res.model == "b/good:free"
     assert res.attempts[0].startswith("r/thinker:free: empty response")
+
+
+def test_busy_endpoint_is_retried_once(monkeypatch, tmp_path: Path) -> None:
+    from roshni.narrate import openrouter
+
+    waits: list[float] = []
+    monkeypatch.setattr(openrouter, "_sleep", waits.append)
+    fake = FakeOpenRouter({"g/busy:free": GOOD}, {"g/busy:free": 0.0})
+    hits = {"n": 0}
+
+    def handler(req: httpx.Request) -> httpx.Response:
+        if req.url.path.endswith("/chat/completions"):
+            hits["n"] += 1
+            if hits["n"] == 1:
+                return httpx.Response(429, headers={"retry-after": "3"})
+            assert json.loads(req.content)["reasoning"] == {"effort": "low"}
+        return fake.handler(req)
+
+    cfg = NarratorConfig(models=["g/busy:free"])
+    res = narrate(FACTS, cfg, "test-key", httpx.MockTransport(handler), tmp_path)
+    assert res.model == "g/busy:free" and waits == [3.0] and hits["n"] == 2

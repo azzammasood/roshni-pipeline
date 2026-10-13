@@ -12,6 +12,7 @@
 import hashlib
 import json
 import os
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -21,6 +22,8 @@ import yaml
 from roshni.narrate.facts import Fact
 from roshni.narrate.validate import check_draft
 from roshni.paths import CONFIG_DIR, DATA_DIR
+
+_sleep = time.sleep  # patched in tests
 
 API = "https://openrouter.ai/api/v1"
 CACHE_DIR = DATA_DIR / "cache" / "narrate"
@@ -41,7 +44,7 @@ load-shed SCHEDULES in Karachi (not measured outages). Rules, all mandatory:
 @dataclass
 class NarratorConfig:
     models: list[str]
-    max_tokens: int = 700
+    max_tokens: int = 2000
     temperature: float = 0.2
     spend_cap_usd: float = 0.05
 
@@ -110,18 +113,21 @@ def narrate(
                         f"{model}: worst-case ${worst:.4f} exceeds remaining cap, skipped"
                     )
                     continue
-                resp = http.post(
-                    "/chat/completions",
-                    json={
-                        "model": model,
-                        "messages": [
-                            {"role": "system", "content": SYSTEM},
-                            {"role": "user", "content": prompt},
-                        ],
-                        "max_tokens": cfg.max_tokens,
-                        "temperature": cfg.temperature,
-                    },
-                )
+                request = {
+                    "model": model,
+                    "messages": [
+                        {"role": "system", "content": SYSTEM},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "max_tokens": cfg.max_tokens,
+                    "temperature": cfg.temperature,
+                    # Reasoning models otherwise spend the whole budget thinking (content null).
+                    "reasoning": {"effort": "low"},
+                }
+                resp = http.post("/chat/completions", json=request)
+                if resp.status_code == 429:  # busy free endpoint: one retry after a short wait
+                    _sleep(min(float(resp.headers.get("retry-after") or 15), 20))
+                    resp = http.post("/chat/completions", json=request)
                 if resp.status_code != 200:
                     result.attempts.append(f"{model}: HTTP {resp.status_code}")
                     continue
