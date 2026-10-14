@@ -1,0 +1,215 @@
+{
+  "$defs": {
+    "National": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "title": "Basis",
+          "type": "string"
+        },
+        "caveat": {
+          "title": "Caveat",
+          "type": "string"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/PolicyEvent"
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "gaps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Gaps",
+          "type": "array"
+        },
+        "reports": {
+          "items": {
+            "$ref": "#/$defs/NepraReport"
+          },
+          "title": "Reports",
+          "type": "array"
+        },
+        "series": {
+          "items": {
+            "$ref": "#/$defs/ReportedHours"
+          },
+          "title": "Series",
+          "type": "array"
+        }
+      },
+      "required": [
+        "basis",
+        "caveat",
+        "gaps",
+        "series",
+        "reports",
+        "events"
+      ],
+      "title": "National",
+      "type": "object"
+    },
+    "NepraReport": {
+      "additionalProperties": false,
+      "properties": {
+        "report_year": {
+          "title": "Report Year",
+          "type": "string"
+        },
+        "source_file": {
+          "title": "Source File",
+          "type": "string"
+        }
+      },
+      "required": [
+        "report_year",
+        "source_file"
+      ],
+      "title": "NepraReport",
+      "type": "object"
+    },
+    "PolicyEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "max_hours": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Max Hours"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "date",
+        "summary",
+        "max_hours",
+        "source_url"
+      ],
+      "title": "PolicyEvent",
+      "type": "object"
+    },
+    "ReportedHours": {
+      "additionalProperties": false,
+      "properties": {
+        "chosen_report_year": {
+          "description": "Report the value comes from (earliest listing)",
+          "title": "Chosen Report Year",
+          "type": "string"
+        },
+        "company": {
+          "description": "Distribution company as printed by NEPRA, e.g. PESCO",
+          "title": "Company",
+          "type": "string"
+        },
+        "fiscal_year": {
+          "description": "Pakistan fiscal year, July-June, e.g. 2024-25",
+          "title": "Fiscal Year",
+          "type": "string"
+        },
+        "max_reported": {
+          "title": "Max Reported",
+          "type": "number"
+        },
+        "min_reported": {
+          "title": "Min Reported",
+          "type": "number"
+        },
+        "reported_hours_per_day": {
+          "description": "Average daily load-shedding hours the company reported to NEPRA",
+          "title": "Reported Hours Per Day",
+          "type": "number"
+        },
+        "reports": {
+          "description": "Number of NEPRA reports that list this company and year",
+          "title": "Reports",
+          "type": "integer"
+        },
+        "values_disagree": {
+          "description": "Reports differ by more than 0.01 h (flagged)",
+          "title": "Values Disagree",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "company",
+        "fiscal_year",
+        "reported_hours_per_day",
+        "chosen_report_year",
+        "reports",
+        "min_reported",
+        "max_reported",
+        "values_disagree"
+      ],
+      "title": "ReportedHours",
+      "type": "object"
+    }
+  },
+  "$id": "https://github.com/azzammasood/roshni-pipeline/schemas/v1/national.json",
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/National"
+    },
+    "generated_at": {
+      "description": "When this export was produced (UTC)",
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "label": {
+      "description": "What the numbers are: schedules, or figures reported to the regulator; never measurements",
+      "title": "Label",
+      "type": "string"
+    },
+    "last_updated": {
+      "description": "Latest source fetch or warehouse build (UTC)",
+      "format": "date-time",
+      "title": "Last Updated",
+      "type": "string"
+    },
+    "schema_id": {
+      "description": "Document type and major version, e.g. roshni/feeders/v1",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Semantic version of the document schema",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_id",
+    "schema_version",
+    "generated_at",
+    "last_updated",
+    "label",
+    "data"
+  ],
+  "title": "roshni/national/v1",
+  "type": "object"
+}
