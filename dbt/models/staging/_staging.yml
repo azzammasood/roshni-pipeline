@@ -87,3 +87,20 @@ models:
     data_tests:
     - unique
     - not_null
+- name: stg_nepra_load_shedding
+  description: Load-shedding hours reported to NEPRA, one row per report x fiscal year x company.
+  columns:
+  - name: observation_id
+    data_tests:
+    - unique
+    - not_null
+  - name: reported_hours_per_day
+    data_tests:
+    - not_null
+- name: stg_news_headline
+  description: Load-shedding headlines, one row per story link.
+  columns:
+  - name: link
+    data_tests:
+    - unique
+    - not_null

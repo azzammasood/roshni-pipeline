@@ -7,7 +7,17 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-from roshni.parsers import census, iesco_press, iesco_xlsx, kelectric, pbs_rural, pbs_urban
+from roshni.parsers import (
+    census,
+    iesco_press,
+    iesco_xlsx,
+    kelectric,
+    nepra_ke_order,
+    nepra_per,
+    news,
+    pbs_rural,
+    pbs_urban,
+)
 from roshni.parsers.common import ParseResult, write_result
 from roshni.sources.inventory import IESCO_CIRCLES, sha256_of
 
@@ -120,6 +130,38 @@ def _run_all(
     )  # fmt: skip
     sched, cycles = kelectric.parse_schedule(files / "kelectric-load-shed-schedule.pdf")
     results += [(sched, kelectric.KeScheduleRow), (cycles, kelectric.KeCycle)]
+
+    # NEPRA annual reports come only from the snapshot store (no hand-downloaded copies).
+    nepra = ParseResult("nepra_load_shedding")
+    for _, (path, _, source) in sorted(snaps.items(), key=lambda kv: kv[1][0].name):
+        if source == "nepra_per_distribution":
+            nepra.extend(nepra_per.parse_report(path))
+    results.append((nepra, nepra_per.NepraLoadShedding))
+
+    # NEPRA's order on K-Electric (one document, from the snapshot store).
+    ke_cats = ParseResult("nepra_ke_order_category")
+    ke_bands = ParseResult("nepra_ke_order_band")
+    for _, (path, _, source) in sorted(snaps.items(), key=lambda kv: kv[1][0].name):
+        if source == "nepra_ke_order":
+            c, b = nepra_ke_order.parse_order(path)
+            ke_cats.extend(c)
+            ke_bands.extend(b)
+    results += [
+        (ke_cats, nepra_ke_order.KeOrderCategory),
+        (ke_bands, nepra_ke_order.KeOrderBand),
+    ]
+
+    # News headlines: trimmed feed snapshots only (fetch/trim.py), merged to one row per story.
+    results.append(
+        (
+            news.merge([
+                news.parse_snapshot(path, source, at)
+                for path, at, source in sorted(snaps.values(), key=lambda v: v[0].name)
+                if news.outlet_of(source)
+            ]),
+            news.NewsHeadline,
+        )
+    )  # fmt: skip
 
     summaries = []
     if census_dir is not None:

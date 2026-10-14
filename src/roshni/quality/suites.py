@@ -95,6 +95,69 @@ SUITES: dict[str, list[gxe.Expectation]] = {
         gxe.ExpectColumnValuesToBeBetween(column="minutes", min_value=1, max_value=720),
         gxe.ExpectCompoundColumnsToBeUnique(column_list=["feeder_name_norm", "cycle_no"]),
     ],
+    "nepra_load_shedding": [
+        *PROVENANCE,
+        gxe.ExpectColumnValuesToMatchRegex(column="fiscal_year", regex=r"^20\d{2}-\d{2}$"),
+        gxe.ExpectColumnValuesToMatchRegex(column="report_year", regex=r"^20\d{2}-\d{2}$"),
+        gxe.ExpectColumnValuesToBeInSet(
+            column="company",
+            value_set=[
+                "PESCO",
+                "IESCO",
+                "GEPCO",
+                "FESCO",
+                "LESCO",
+                "MEPCO",
+                "QESCO",
+                "SEPCO",
+                "HESCO",
+                "TESCO",
+                "K-Electric",
+            ],
+        ),  # fmt: skip
+        gxe.ExpectColumnValuesToBeBetween(
+            column="reported_hours_per_day", min_value=0, max_value=24
+        ),
+        # One value per company and year within a report; reports may restate earlier years.
+        gxe.ExpectCompoundColumnsToBeUnique(
+            column_list=["source_sha256", "fiscal_year", "company"]
+        ),
+    ],
+    "nepra_ke_order_category": [
+        *PROVENANCE,
+        gxe.ExpectColumnValuesToBeInSet(
+            column="category", value_set=["Very High Loss", "High Loss", "Medium Loss"]
+        ),
+        gxe.ExpectCompoundColumnsToBeUnique(column_list=["source_sha256", "category"]),
+        *_nonneg("feeders", "consumers"),
+        _pct("avg_atc_loss_pct"),
+        gxe.ExpectColumnValuesToBeBetween(
+            column="scheduled_minutes_per_day", min_value=0, max_value=1440
+        ),
+    ],
+    "nepra_ke_order_band": [
+        *PROVENANCE,
+        gxe.ExpectColumnValuesToNotBeNull(column="band"),
+        gxe.ExpectCompoundColumnsToBeUnique(column_list=["source_sha256", "category", "band"]),
+        *_nonneg("feeders", "consumers", "lower_minutes"),
+        _pct("pct_feeders"),
+        _pct("pct_consumers"),
+    ],
+    "news_headline": [
+        *PROVENANCE,
+        gxe.ExpectColumnValuesToBeUnique(column="link"),
+        gxe.ExpectColumnValuesToMatchRegex(column="link", regex=r"^https://"),
+        gxe.ExpectColumnValuesToNotBeNull(column="title"),
+        gxe.ExpectColumnValuesToBeInSet(
+            column="outlet",
+            value_set=[
+                "Dawn",
+                "Business Recorder",
+                "The Express Tribune",
+                "Associated Press of Pakistan",
+            ],
+        ),  # fmt: skip
+    ],
     "pbs_urban_population": [
         *PROVENANCE,
         gxe.ExpectColumnValuesToBeInSet(column="level", value_set=URBAN_LEVELS),

@@ -23,6 +23,23 @@ sources:
         description: K-Electric schedule, one row per feeder (grid, total daily minutes).
       - name: kelectric_schedule_cycle
         description: K-Electric schedule, one row per feeder x cycle (four per feeder).
+      - name: nepra_load_shedding
+        description: >
+          NEPRA Performance Evaluation Reports, section 3.6: average daily load-shedding hours each
+          distribution company reported to NEPRA, one row per report x fiscal year x company
+          (reports restate the previous four years).
+      - name: nepra_ke_order_category
+        description: >
+          NEPRA's order on K-Electric (2026-08-31): feeders, consumers, average AT&C % and
+          K-Electric's scheduled hours per loss category, as printed (NEPRA's analysis of
+          K-Electric data, not measured by Roshni).
+      - name: nepra_ke_order_band
+        description: >
+          Same order: feeders and consumers per average daily outage band and loss category.
+      - name: news_headline
+        description: >
+          Load-shedding headlines from the approved outlets' RSS feeds (trimmed before storage):
+          headline, outlet, link, publication time; one row per story link.
       - name: pbs_urban_population
         description: PBS Census 2023 table 33, urban localities, population.
       - name: pbs_urban_housing

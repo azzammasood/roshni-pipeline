@@ -336,3 +336,42 @@ models:
     data_tests:
     - unique
     - not_null
+- name: mart_nepra_load_shedding
+  description: 'Average daily load-shedding hours as reported to NEPRA, one value per company and
+    fiscal year (earliest report listing the year), with the spread across reports that restate it.
+
+    '
+  columns:
+  - name: company_year_id
+    data_tests:
+    - unique
+    - not_null
+  - name: reported_hours_per_day
+    data_tests:
+    - not_null
+  - name: values_disagree
+    data_tests:
+    - not_null
+- name: mart_news_headline
+  description: 'The 12 most recent load-shedding headlines, however old, shown with outlet, date and
+    link only.
+
+    '
+  columns:
+  - name: link
+    data_tests:
+    - unique
+    - not_null
+- name: mart_nepra_ke_order
+  description: 'NEPRA order on K-Electric (2026-08-31): feeders by average daily outage band and loss
+    category, with the category schedule; NEPRA''s figures from K-Electric data.
+
+    '
+  columns:
+  - name: band_id
+    data_tests:
+    - unique
+    - not_null
+  - name: above_schedule
+    data_tests:
+    - not_null

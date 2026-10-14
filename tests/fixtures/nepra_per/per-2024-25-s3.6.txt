@@ -1,0 +1,16 @@
+3.6   Load Shedding (Hours):
+      The details of the Load Shedding (Hours) by DISCOs for the past five years
+(2020–21 to 2024–25) are illustrated as follows:
+ Name of DISCO                             2020-21          2021-22           2022-23              2023-24                           2024-25
+    PESCO                                    1.8               6                4.5                   11                               5.5
+    IESCO                                      1              2.5               1.5                  2.5                                 0
+    GEPCO                                    0.33             0.4               0.85                 0.22                                0
+    FESCO                                      0               1                0.56                   0                               0.02
+    LESCO                                      3              0.5               0.5                  0.5                               0.1
+    MEPCO                                    0.66             0.6               1.15                 0.7                               1.2
+    QESCO                                      8              11.3             10.25                  10                              10.25
+    SEPCO                                    7.3              2.3               2.33                 2.3                               1.4
+    HESCO                                      6               8                8.66                 10.6                                8
+   K-Electric                                1.94             2.6               5.21                 8.52                              5.2
+
+                                                   Table 20: Load Shedding (Hours)

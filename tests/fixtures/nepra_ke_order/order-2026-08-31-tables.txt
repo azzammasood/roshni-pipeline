@@ -1,0 +1,95 @@
+   No. NLPRA/SA(M&E)/LAD-0 it \ &\         co                                            August 31, 2026
+   unannounced, excessive outages.
+   The summary of the data is as follows:
+                                                                          Scheduled
+                                         Number of       Average of     Load Shedding
+                          Number of
+         Category                        Consumers         %age            (As Per
+                           Feeders
+                                         Connected        AT&C           AT&C-based
+                                                                           Criteria)
+      Very High Loss         316          1,177,900          69%            10:00
+        High Loss            171           707,365           42%            10:00
+       Medium Loss           133           484,637           31%             6:00
+       Grand Total           620          2,369,902
+
+
+19. At a macro level, the data unequivocally shows that the actual average daily outage across
+   all assessed categories outpaces the utility's scheduled load shedding limits. The most
+    critical deviations are observed in the High and Very High Loss categories, where actual
+   outages exceed the declared 10-hour limit by substantial margins. The Authority provides
+   a detiled category-wise analytical breakdown as follows:
+
+
+     \c 2
+
+
+
+
+                                                                                  Page 60f 11
+i. Medium Loss Feeders:
+   Avg Daily                              Percentage of          Percentage of
+                    Number
+    Outage                      Consumers Total Feeders              Total
+                      of
+(Including LS)                  Connected   (Medium               Consumers
+                    Feeders
+   HH: MM                                     Loss)             (Medium Loss)
+  Upto 06:00           42        138,394      31.6%                 28.6%
+ 06:00-08:00+          91        346,243      68.4%                 71.4%
+                      133        484,637     100.0%                100.0%
+
+
+A staggering 68.4% of the feeders (91 out of 133) in this category experienced outages
+lasting between 6 and over 8 hours daily. Consequently, 71.4% of the consumers
+(346,243 individuals) classified under the Medium Loss category are subjected to an
+average daily outage of more than 6 hours, breaching the utility's maximum prescribed
+limit of 6 hours.
+ii. High Loss Feeders:
+
+   Avg Daily                                                    Percentage of
+                    Number                Percentage of
+    Outage                      Consumers                           Total
+                       of                 Total Feeders
+(Including LS)                  Connected                        Consumers
+                    Feeders                (High Loss)
+   HH: MM                                                        (High Loss)
+  Upto 10:00           31         122,801         18.1%             17.4%
+  10:00-12:00         109         458,343         63.7%             64.8%
+  12:00-14:00          29         119,274         17.0%             16.9%
+ Above 14:00            2          6,947          1.2%              1.0%
+                      171         707,365        100.0%            100.0%
+
+
+The data for the High Loss category (171 feeders) demonstrates a systemic failure to
+cap load shedding at the scheduled 10-hour mark. The actual average daily outage for
+this category stands at 10 hours and 39 minutes. A staggering 81.9% of the feeders in
+this category surpass the scheduled 10-hour limit. Specifically, 109 feeders (63.7%)
+face an average of 10 hours and 38 minutes of outages, while 29 feeders (17.0%) endure
+extreme outages averaging 12 hours and 39 minutes. In the most severe cases, 2 feeders
+suffer outages exceeding 14 hours, averagjgi4 hours and 14 minutes.
+
+
+                                   L
+
+                                       AUTHORITY
+
+
+
+
+                                                                         Page 7of 11
+        iii. Very High Loss Feeders:
+                                                                           Percentage of
+          Avg Daily                                Percentage of
+                             Number                                            Total
+            Outage                       Consumers Total Feeders
+                               of                                           Consumers
+        (Including LS)                   Connected  (Very High
+                             Feeders                                        (Very High
+           HH:MM                                       Loss)
+                                                                               Loss)
+          Upto 10:00            28         102,779               8.9%           8.7%
+          10:00-12:00          109         417,112              34.5%          35.4%
+          12:00-14:00          128         485,497              40.5%          41.2%
+         14:00-18:00+           51         172,512              16.1%          14.6%
+                               316        1,177,900            100.0%         100.0%
