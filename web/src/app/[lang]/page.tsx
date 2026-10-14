@@ -1,5 +1,6 @@
 import { DarkNowPanel } from "@/components/DarkNowPanel";
 import { NationalPanel } from "@/components/NationalPanel";
+import { MonthlyPanel } from "@/components/MonthlyPanel";
 import { NewsStrip } from "@/components/NewsStrip";
 import { fill } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
@@ -16,6 +17,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     <div className="space-y-12">
       {/* The national picture first (owner, 2026-10-13), then the visitor's own feeder. */}
       <NationalPanel data={national.data} locale={locale} t={dict.national} />
+      <MonthlyPanel data={national.data} locale={locale} t={dict.monthly} />
       <NewsStrip items={news.data} t={dict.news} />
       <div className="rule pt-6">
     <DarkNowPanel

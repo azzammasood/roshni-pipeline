@@ -2,6 +2,14 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-14 (Month by month, from Roshni's own records)
+- **NEPRA has no monthly load-shedding series.** Its half-year report (Jul–Dec 2024, same listing) has monthly tables, but its section 18 "Interruptions" counts faults and planned maintenance outages by voltage level, a different measure with implausible values (IESCO 12,600 planned 132 kV interruptions in July 2024); not used. **Owner chose a monthly series from Roshni's own data instead** (same day).
+- **IESCO planned shutdowns per month** (`mart_monthly_iesco_shutdowns`): windows, summed window hours (one per feeder window) and distinct press releases per outage month and circle. Announced maintenance, not load shedding and not measurements, and labelled so. First run: 2026-07 (from the 16th, when collected releases start) 515 windows / 2,755 h / 14 releases; 2026-08 791 / 3,907.5 / 29; 2026-09 368 / 1,675 / 17; 2026-10 (to the 14th) 256 / 1,186 / 7. Months only partly covered are hatched and say which dates they cover.
+- **K-Electric scheduled hours per month:** average scheduled hours a day across listed feeders (10.78 h, 617 feeders) for each month from the current schedule's effective date (2026-08-05) to the build month; earlier months are blank ("no schedule on file"), never back-filled. Months are expanded in the export (Python), not with a DuckDB-only date spine, so dbt SQL stays portable. Open: when K-Electric publishes a new schedule, earlier months must keep the old schedule's value, which needs every schedule version parsed (not just the latest).
+- **IESCO load-shedding schedules are not monthly:** IESCO never says which level is in force.
+- Export schema **1.4.0** (additive): `national.monthly_shutdowns`, `national.monthly_ke`, `national.as_of`.
+- Also (same day, PR #9): `known_broken` URLs per source; NEPRA's dead FY2023-24 link is a logged gap, not a failed snapshot run (it had blocked the first deploy after #7).
+
 ## 2026-10-14 (N4: NEPRA's order on K-Electric)
 - **Document:** NEPRA order "LAD-01 … under section 27C of NEPRA Act 1997 in matter of K-Electric", dated 2026-08-31 (linked from nepra.org.pk's home page; the news reports of 2026-09-01 describe it). Registered as `nepra_ke_order` (fixed URL, fetched once); robots.txt allows it.
 - **Parsed as printed** (`parsers/nepra_ke_order.py`): the category summary (feeders, consumers, average AT&C %, K-Electric's own scheduled hours) and each category's average-daily-outage bands. Bands must add up to the category's feeders and consumers and to the table's total row, or the category is quarantined. Result: 3 categories (620 feeders, 2,369,902 consumers), 10 bands, nothing quarantined. Shares above schedule from NEPRA's printed band percentages: Very High Loss 91.1%, High Loss 81.9%, Medium Loss 68.4%, which equal the figures in the order's own text (golden test).

@@ -394,3 +394,8 @@ html.intro-seen .intro {
   font-family: var(--font-plex), ui-monospace, monospace;
   font-size: 0.75rem;
 }
+
+/* Month by month: a month only partly covered by the collected records is hatched. */
+.month-partial {
+  background: repeating-linear-gradient(135deg, var(--dark) 0 4px, transparent 4px 8px);
+}

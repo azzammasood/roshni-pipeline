@@ -1,8 +1,133 @@
 {
   "$defs": {
+    "CircleMonth": {
+      "additionalProperties": false,
+      "properties": {
+        "circle": {
+          "description": "IESCO circle as printed in the press releases",
+          "title": "Circle",
+          "type": "string"
+        },
+        "window_hours": {
+          "title": "Window Hours",
+          "type": "number"
+        },
+        "windows": {
+          "title": "Windows",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "circle",
+        "windows",
+        "window_hours"
+      ],
+      "title": "CircleMonth",
+      "type": "object"
+    },
+    "MonthlyKeSchedule": {
+      "additionalProperties": false,
+      "properties": {
+        "avg_scheduled_hours": {
+          "description": "Average scheduled hours a day across K-Electric's listed feeders",
+          "title": "Avg Scheduled Hours",
+          "type": "number"
+        },
+        "effective_from": {
+          "description": "The schedule in force, effective from this date",
+          "format": "date",
+          "title": "Effective From",
+          "type": "string"
+        },
+        "feeders": {
+          "title": "Feeders",
+          "type": "integer"
+        },
+        "month": {
+          "title": "Month",
+          "type": "string"
+        }
+      },
+      "required": [
+        "month",
+        "avg_scheduled_hours",
+        "feeders",
+        "effective_from"
+      ],
+      "title": "MonthlyKeSchedule",
+      "type": "object"
+    },
+    "MonthlyShutdowns": {
+      "additionalProperties": false,
+      "properties": {
+        "circles": {
+          "items": {
+            "$ref": "#/$defs/CircleMonth"
+          },
+          "title": "Circles",
+          "type": "array"
+        },
+        "first_date": {
+          "description": "First outage date in the collected releases",
+          "format": "date",
+          "title": "First Date",
+          "type": "string"
+        },
+        "last_date": {
+          "description": "Last outage date in the collected releases",
+          "format": "date",
+          "title": "Last Date",
+          "type": "string"
+        },
+        "month": {
+          "description": "YYYY-MM (Asia/Karachi outage dates as printed)",
+          "title": "Month",
+          "type": "string"
+        },
+        "releases": {
+          "title": "Releases",
+          "type": "integer"
+        },
+        "window_hours": {
+          "description": "Sum of window lengths, one per feeder window",
+          "title": "Window Hours",
+          "type": "number"
+        },
+        "windows": {
+          "description": "Planned-shutdown windows announced for the month",
+          "title": "Windows",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "month",
+        "windows",
+        "window_hours",
+        "releases",
+        "first_date",
+        "last_date",
+        "circles"
+      ],
+      "title": "MonthlyShutdowns",
+      "type": "object"
+    },
     "National": {
       "additionalProperties": false,
       "properties": {
+        "as_of": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Karachi date of this build",
+          "title": "As Of"
+        },
         "basis": {
           "title": "Basis",
           "type": "string"
@@ -23,6 +148,22 @@
             "type": "string"
           },
           "title": "Gaps",
+          "type": "array"
+        },
+        "monthly_ke": {
+          "description": "K-Electric's published schedule per month, from its effective date only",
+          "items": {
+            "$ref": "#/$defs/MonthlyKeSchedule"
+          },
+          "title": "Monthly Ke",
+          "type": "array"
+        },
+        "monthly_shutdowns": {
+          "description": "IESCO planned shutdowns per month (announced maintenance, not load shedding)",
+          "items": {
+            "$ref": "#/$defs/MonthlyShutdowns"
+          },
+          "title": "Monthly Shutdowns",
           "type": "array"
         },
         "reports": {

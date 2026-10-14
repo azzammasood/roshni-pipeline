@@ -4,6 +4,6 @@ export type { DarkProfilesDocument, DarkProfile, Window } from "./dark_profiles"
 export type { EquityDocument, Equity, Anomaly, Correlation, IbcEquity, RegulatorReview, ReviewCategory, OutageBand, Report, ReportFact, SubdivisionEquity } from "./equity";
 export type { FeedersDocument, Feeder, LocalityMatch, MatchReview } from "./feeders";
 export type { MetaDocument, Meta, SourceInfo } from "./meta";
-export type { NationalDocument, National, PolicyEvent, NepraReport, ReportedHours } from "./national";
+export type { NationalDocument, National, PolicyEvent, MonthlyKeSchedule, MonthlyShutdowns, CircleMonth, NepraReport, ReportedHours } from "./national";
 export type { NewsDocument, NewsHeadline } from "./news";
 export type { PlannedShutdownsDocument, PlannedShutdown } from "./planned_shutdowns";

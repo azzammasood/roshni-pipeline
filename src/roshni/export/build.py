@@ -3,7 +3,7 @@
 import json
 import re
 from collections import defaultdict
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import duckdb
@@ -231,7 +231,39 @@ def _national(con) -> m.National:
             "NEPRA's FY 2023-24 report link returns an error, so FY 2023-24 comes from the "
             "FY 2024-25 report's five-year table."
         )
+    # A release lists several circles, so the month's release count comes from the fact table.
+    releases = {r["month"]: r["n"] for r in _rows(
+        con, "select substr(cast(outage_date as varchar), 1, 7) as month, "
+             "count(distinct concat(release_period, '#', release_no)) as n "
+             "from fct_planned_shutdown group by 1")}  # fmt: skip
+    by_month: dict[str, list[dict]] = defaultdict(list)
+    for r in _rows(con, "select * from mart_monthly_iesco_shutdowns order by month, circle"):
+        by_month[r["month"]].append(r)
+    monthly = [
+        m.MonthlyShutdowns(
+            month=mo, windows=sum(r["windows"] for r in rs),
+            window_hours=round(sum(r["window_hours"] for r in rs), 2),
+            releases=releases[mo],
+            first_date=min(r["first_date"] for r in rs), last_date=max(r["last_date"] for r in rs),
+            circles=[m.CircleMonth(circle=r["circle"], windows=r["windows"],
+                                   window_hours=round(r["window_hours"], 2)) for r in rs],
+        )
+        for mo, rs in sorted(by_month.items())
+    ]  # fmt: skip
+    today = (datetime.now(UTC) + timedelta(hours=5)).date()  # Asia/Karachi, fixed UTC+5
+    ke = _rows(con, "select min(effective_from) as effective_from, avg(scheduled_hours_per_day) "
+                    "as avg_hours, count(*) as feeders from mart_ke_feeder_hours")[0]  # fmt: skip
+    monthly_ke = []
+    if ke["effective_from"]:
+        y, mo = ke["effective_from"].year, ke["effective_from"].month
+        while (y, mo) <= (today.year, today.month):
+            monthly_ke.append(m.MonthlyKeSchedule(
+                month=f"{y}-{mo:02d}", avg_scheduled_hours=round(ke["avg_hours"], 2),
+                feeders=ke["feeders"], effective_from=ke["effective_from"],
+            ))  # fmt: skip
+            y, mo = (y + 1, 1) if mo == 12 else (y, mo + 1)
     return m.National(
+        monthly_shutdowns=monthly, monthly_ke=monthly_ke, as_of=today,
         basis="Average daily load-shedding hours that each distribution company reported to "
         "NEPRA in its annual performance report, as compiled in NEPRA's Performance Evaluation "
         "Reports. One value per company and fiscal year (July to June), taken from the earliest "

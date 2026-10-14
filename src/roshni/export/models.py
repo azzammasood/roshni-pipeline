@@ -7,8 +7,8 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 # 1.1.0: DarkProfile.daily_windows; 1.2.0: match review, release month; 1.3.0: national and news
-# documents
-SCHEMA_VERSION = "1.3.0"
+# documents; 1.4.0: national month-by-month series
+SCHEMA_VERSION = "1.4.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -273,6 +273,31 @@ class PolicyEvent(Strict):
     source_url: str
 
 
+class CircleMonth(Strict):
+    circle: str = Field(description="IESCO circle as printed in the press releases")
+    windows: int
+    window_hours: float
+
+
+class MonthlyShutdowns(Strict):
+    month: str = Field(description="YYYY-MM (Asia/Karachi outage dates as printed)")
+    windows: int = Field(description="Planned-shutdown windows announced for the month")
+    window_hours: float = Field(description="Sum of window lengths, one per feeder window")
+    releases: int
+    first_date: date = Field(description="First outage date in the collected releases")
+    last_date: date = Field(description="Last outage date in the collected releases")
+    circles: list[CircleMonth]
+
+
+class MonthlyKeSchedule(Strict):
+    month: str
+    avg_scheduled_hours: float = Field(
+        description="Average scheduled hours a day across K-Electric's listed feeders"
+    )
+    feeders: int
+    effective_from: date = Field(description="The schedule in force, effective from this date")
+
+
 class National(Strict):
     basis: str
     caveat: str
@@ -280,6 +305,15 @@ class National(Strict):
     series: list[ReportedHours]
     reports: list[NepraReport]
     events: list[PolicyEvent]
+    monthly_shutdowns: list[MonthlyShutdowns] = Field(
+        default_factory=list,
+        description="IESCO planned shutdowns per month (announced maintenance, not load shedding)",
+    )
+    monthly_ke: list[MonthlyKeSchedule] = Field(
+        default_factory=list,
+        description="K-Electric's published schedule per month, from its effective date only",
+    )
+    as_of: date | None = Field(default=None, description="Karachi date of this build")
 
 
 NEWS_LABEL = "Headlines as published by each outlet, linked to the original; not Roshni's reporting"
