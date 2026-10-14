@@ -41,9 +41,12 @@ def snapshot(
         None,
         help="Snapshot store root (default: data/snapshots). CI uses a data-snapshots checkout.",
     ),
-    only: list[str] = typer.Option(None, help="Limit to these source ids (repeatable)."),
+    only: list[str] = typer.Option(
+        None, help="Limit to these source ids (repeatable; shell-style patterns such as news_*)."
+    ),
 ) -> None:
     """Discover and fetch source files; store changed ones and log every check."""
+    import fnmatch
     import os
 
     from roshni.fetch.http import PoliteClient
@@ -53,9 +56,15 @@ def snapshot(
     from roshni.sources.registry import load_registry
 
     reg = load_registry()
+    selected = None
+    if only:
+        selected = {name for pat in only for name in fnmatch.filter(reg.sources, pat)}
+        unknown = [pat for pat in only if not fnmatch.filter(reg.sources, pat)]
+        if unknown:
+            raise typer.BadParameter(f"no source matches {unknown}", param_hint="--only")
     st = SnapshotStore(store or DATA_DIR / "snapshots")
     with PoliteClient(reg.user_agent, reg.min_request_interval_seconds, reg.timeout_seconds) as c:
-        report = run_snapshot(c, st, reg, set(only) if only else None)
+        report = run_snapshot(c, st, reg, selected)
 
     lines = [
         f"- `{i.source}/{i.item_key}`: **{i.outcome}** {i.detail}".rstrip()

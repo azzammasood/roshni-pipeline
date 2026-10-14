@@ -37,3 +37,83 @@ sources:
     # All K-Electric links read "Download"; the schedule is identified by file name.
     link_pattern: "(?i)(lsm|load[-_ ]?shed|schedule)"
     exclude_pattern: "(?i)(feeders?[-_ ]?list|non[-_ ]?payers)"
+
+  # National context (owner approval 2026-10-13, DECISIONS.md). NEPRA's annual Performance
+  # Evaluation Reports of the distribution companies: load-shedding hours as reported to NEPRA.
+  nepra_per_distribution:
+    discovery: listing_pdfs
+    listing_url: https://nepra.org.pk/publications/Performance%20Reports.php
+    link_pattern: "(?i)(disco|dsico|distribution)"   # NEPRA's own spelling varies (DSICOs)
+    exclude_pattern: "(?i)(jul-dec|quarterly|hse|ntdc|transmission|generation)"
+    refetch: false          # published reports do not change; fetched once per URL
+
+  # News headlines (owner approval 2026-10-13): RSS feeds, filtered for load-shedding stories.
+  # Stored trimmed (owner, 2026-10-13): load-shedding items only, headline + link + date, as JSON.
+  # Only headline, outlet, date and link are ever shown; never article text or summaries.
+  news_dawn:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.dawn.com/feeds/home
+  news_brecorder:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.brecorder.com/feeds/latest-news
+  news_tribune:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://tribune.com.pk/feed/home
+  news_app:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.app.com.pk/feed/
+
+  # Category and topic feeds of the same approved outlets (owner, 2026-10-14): more chances to
+  # catch load-shedding stories between fetches; the topic feeds also carry older stories, so the
+  # site can show the latest headlines whenever they were published. Same trimming as above.
+  news_dawn_business:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.dawn.com/feeds/business
+  news_dawn_pakistan:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.dawn.com/feeds/pakistan
+  news_brecorder_business:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.brecorder.com/feeds/business-finance
+  news_brecorder_pakistan:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.brecorder.com/feeds/pakistan
+  news_tribune_business:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://tribune.com.pk/feed/business
+  news_tribune_pakistan:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://tribune.com.pk/feed/pakistan
+  news_tribune_load_shedding:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://tribune.com.pk/feed/load-shedding
+  news_app_business:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.app.com.pk/business/feed/
+  news_app_tag_load_shedding:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.app.com.pk/tag/load-shedding/feed/
+  news_app_tag_loadshedding:
+    discovery: fixed_url
+    trim: news_headlines
+    url: https://www.app.com.pk/tag/loadshedding/feed/
+
+  # NEPRA order on K-Electric (section 27C), 2026-08-31: the regulator's review of 620 listed
+  # feeders (outage hours vs schedule). Approved 2026-10-13; one document, fetched once.
+  nepra_ke_order:
+    discovery: fixed_url
+    url: https://nepra.org.pk/M&E/Decisions/2026/08%20Aug/LAD-01%20ORDER%20UNDER%20SECTION%2027C%20OF%20NEPRA%20ACT%201997%20IN%20MATER%20OF%20K-ELECTRIC%2031-08-2026%2018150.PDF
+    refetch: false

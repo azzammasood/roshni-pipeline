@@ -64,9 +64,17 @@ class SnapshotStore:
         return any(r.url == url and r.sha256 for r in self.records)
 
     def write_file(
-        self, source: str, item_key: str, url: str, content: bytes, sha256: str, at: datetime
+        self,
+        source: str,
+        item_key: str,
+        url: str,
+        content: bytes,
+        sha256: str,
+        at: datetime,
+        ext: str | None = None,
     ) -> str:
-        ext = PurePosixPath(urlsplit(url).path).suffix.lower()
+        """`ext` overrides the URL's suffix (trimmed news feeds are stored as .json)."""
+        ext = ext if ext is not None else PurePosixPath(urlsplit(url).path).suffix.lower()
         rel = PurePosixPath("files", source, item_key, f"{at:%Y%m%dT%H%M%SZ}_{sha256[:12]}{ext}")
         dest = self.root.joinpath(*rel.parts)
         dest.parent.mkdir(parents=True, exist_ok=True)

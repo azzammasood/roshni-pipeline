@@ -9,7 +9,11 @@ from pydantic import BaseModel, ConfigDict
 from roshni.paths import CONFIG_DIR
 
 Discovery = Literal[
-    "iesco_xlsx_table", "iesco_press_release_tab", "fixed_url", "listing_pdf_pattern"
+    "iesco_xlsx_table",
+    "iesco_press_release_tab",
+    "fixed_url",
+    "listing_pdf_pattern",
+    "listing_pdfs",
 ]
 
 
@@ -26,6 +30,8 @@ class SourceConfig(BaseModel):
     listing_link_pattern: str | None = None
     link_pattern: str | None = None
     exclude_pattern: str | None = None
+    # Reduce the fetched file before storing it (news feeds: load-shedding headlines only).
+    trim: Literal["news_headlines"] | None = None
 
 
 class Registry(BaseModel):

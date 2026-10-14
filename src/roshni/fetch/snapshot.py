@@ -1,5 +1,6 @@
 """Snapshot job: discover targets, fetch politely, store changed files, log every check."""
 
+import dataclasses
 import hashlib
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -11,6 +12,7 @@ import httpx
 from roshni.fetch.discover import DISCOVERERS, DiscoveryError, Target
 from roshni.fetch.http import FetchRefused, PoliteClient
 from roshni.fetch.store import SnapshotRecord, SnapshotStore
+from roshni.fetch.trim import TRIMMERS, TrimError
 from roshni.sources.registry import Registry
 
 Outcome = Literal["new", "changed", "unchanged", "known", "error"]
@@ -70,7 +72,7 @@ def discover(client: PoliteClient, registry: Registry, only: set[str] | None, re
             continue
         for t in found:
             report.warnings.extend(f"{name}/{t.item_key}: {w}" for w in t.warnings)
-        targets.extend(found)
+        targets.extend(dataclasses.replace(t, trim=cfg.trim) if cfg.trim else t for t in found)
     return targets
 
 
@@ -120,6 +122,14 @@ def snapshot_target(
         return ItemResult(t.source, t.item_key, "error", f"HTTP {resp.status_code}")
 
     content = resp.content
+    ext = None
+    if t.trim:
+        try:
+            content = TRIMMERS[t.trim](content, t.source)
+        except TrimError as e:
+            store.append(SnapshotRecord(**base, **meta, note=f"not stored: {e}"[:300]))
+            return ItemResult(t.source, t.item_key, "error", str(e))
+        ext = ".json"
     sha = hashlib.sha256(content).hexdigest()
     notes = []
     if prev and prev.url != t.url:
@@ -137,7 +147,7 @@ def snapshot_target(
         )
         return ItemResult(t.source, t.item_key, "unchanged", "same sha256")
 
-    path = store.write_file(t.source, t.item_key, t.url, content, sha, at)
+    path = store.write_file(t.source, t.item_key, t.url, content, sha, at, ext=ext)
     outcome: Outcome = "changed" if prev else "new"
     if prev:
         notes.insert(0, f"content changed from {prev.sha256[:12]}")
