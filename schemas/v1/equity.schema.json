@@ -93,6 +93,18 @@
           "title": "Ibc",
           "type": "array"
         },
+        "regulator_review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RegulatorReview"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "NEPRA's order on K-Electric: outage bands from K-Electric data"
+        },
         "report": {
           "anyOf": [
             {
@@ -213,6 +225,104 @@
       "title": "IbcEquity",
       "type": "object"
     },
+    "OutageBand": {
+      "additionalProperties": false,
+      "properties": {
+        "above_schedule": {
+          "description": "Band starts at or above the category's schedule",
+          "title": "Above Schedule",
+          "type": "boolean"
+        },
+        "band": {
+          "description": "Average daily outage band as printed by NEPRA, e.g. 10:00-12:00",
+          "title": "Band",
+          "type": "string"
+        },
+        "consumers": {
+          "title": "Consumers",
+          "type": "integer"
+        },
+        "feeders": {
+          "title": "Feeders",
+          "type": "integer"
+        },
+        "lower_minutes": {
+          "title": "Lower Minutes",
+          "type": "integer"
+        },
+        "pct_consumers": {
+          "title": "Pct Consumers",
+          "type": "number"
+        },
+        "pct_feeders": {
+          "description": "As printed by NEPRA",
+          "title": "Pct Feeders",
+          "type": "number"
+        },
+        "upper_minutes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Upper Minutes"
+        }
+      },
+      "required": [
+        "band",
+        "lower_minutes",
+        "upper_minutes",
+        "feeders",
+        "consumers",
+        "pct_feeders",
+        "pct_consumers",
+        "above_schedule"
+      ],
+      "title": "OutageBand",
+      "type": "object"
+    },
+    "RegulatorReview": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "title": "Basis",
+          "type": "string"
+        },
+        "categories": {
+          "items": {
+            "$ref": "#/$defs/ReviewCategory"
+          },
+          "title": "Categories",
+          "type": "array"
+        },
+        "order_date": {
+          "format": "date",
+          "title": "Order Date",
+          "type": "string"
+        },
+        "source_file": {
+          "title": "Source File",
+          "type": "string"
+        },
+        "source_url": {
+          "description": "The order on nepra.org.pk (from config/sources.yml)",
+          "title": "Source Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "order_date",
+        "source_file",
+        "source_url",
+        "basis",
+        "categories"
+      ],
+      "title": "RegulatorReview",
+      "type": "object"
+    },
     "Report": {
       "additionalProperties": false,
       "properties": {
@@ -282,6 +392,56 @@
         "query_id"
       ],
       "title": "ReportFact",
+      "type": "object"
+    },
+    "ReviewCategory": {
+      "additionalProperties": false,
+      "properties": {
+        "avg_atc_loss_pct": {
+          "title": "Avg Atc Loss Pct",
+          "type": "integer"
+        },
+        "bands": {
+          "items": {
+            "$ref": "#/$defs/OutageBand"
+          },
+          "title": "Bands",
+          "type": "array"
+        },
+        "category": {
+          "description": "K-Electric loss category as printed (e.g. High Loss)",
+          "title": "Category",
+          "type": "string"
+        },
+        "consumers": {
+          "title": "Consumers",
+          "type": "integer"
+        },
+        "feeders": {
+          "title": "Feeders",
+          "type": "integer"
+        },
+        "pct_feeders_above_schedule": {
+          "description": "Sum of NEPRA's printed band shares at or above the schedule",
+          "title": "Pct Feeders Above Schedule",
+          "type": "number"
+        },
+        "scheduled_hours_per_day": {
+          "description": "K-Electric's own schedule for the category",
+          "title": "Scheduled Hours Per Day",
+          "type": "number"
+        }
+      },
+      "required": [
+        "category",
+        "feeders",
+        "consumers",
+        "avg_atc_loss_pct",
+        "scheduled_hours_per_day",
+        "pct_feeders_above_schedule",
+        "bands"
+      ],
+      "title": "ReviewCategory",
       "type": "object"
     },
     "SubdivisionEquity": {
@@ -385,7 +545,7 @@
       "type": "string"
     },
     "label": {
-      "description": "Reminder that the data are schedules, not measurements",
+      "description": "What the numbers are: schedules, or figures reported to the regulator; never measurements",
       "title": "Label",
       "type": "string"
     },

@@ -124,7 +124,7 @@
       "type": "string"
     },
     "label": {
-      "description": "Reminder that the data are schedules, not measurements",
+      "description": "What the numbers are: schedules, or figures reported to the regulator; never measurements",
       "title": "Label",
       "type": "string"
     },

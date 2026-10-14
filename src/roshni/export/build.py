@@ -8,9 +8,11 @@ from pathlib import Path
 
 import duckdb
 import jsonschema
+import yaml
 
 from roshni.export import models as m
-from roshni.paths import REPO_ROOT
+from roshni.paths import CONFIG_DIR, REPO_ROOT
+from roshni.sources.registry import load_registry
 
 SCHEMA_DIR = REPO_ROOT / "schemas" / "v1"
 KARACHI = (
@@ -176,10 +178,68 @@ def _equity(con, report_json: Path | None) -> m.Equity:
             iso_week=d["iso_week"], engine=d["engine"], narrative=d["narrative"],
             facts=[m.ReportFact(**f) for f in d["facts"]],
         )  # fmt: skip
+    review = None
+    rows = _rows(con, "select * from mart_nepra_ke_order order by category, lower_minutes")
+    if rows:
+        cats = []
+        for name in ("Very High Loss", "High Loss", "Medium Loss"):
+            bs = [r for r in rows if r["category"] == name]
+            if not bs:
+                continue
+            cats.append(m.ReviewCategory(
+                category=name, feeders=bs[0]["category_feeders"],
+                consumers=bs[0]["category_consumers"], avg_atc_loss_pct=bs[0]["avg_atc_loss_pct"],
+                scheduled_hours_per_day=bs[0]["scheduled_minutes_per_day"] / 60,
+                pct_feeders_above_schedule=round(
+                    sum(b["pct_feeders"] for b in bs if b["above_schedule"]), 1),
+                bands=[m.OutageBand(**{k: b[k] for k in m.OutageBand.model_fields}) for b in bs],
+            ))  # fmt: skip
+        review = m.RegulatorReview(
+            order_date=rows[0]["order_date"], source_file=rows[0]["source_file"],
+            source_url=load_registry().sources["nepra_ke_order"].url or "",
+            basis="NEPRA's order on K-Electric under section 27C of the NEPRA Act analysed data "
+            "K-Electric supplied for its listed feeders by loss category: average daily outage "
+            "(including load shedding) against K-Electric's own schedule. NEPRA's figures, as "
+            "printed; the order does not state the period the data covers.",
+            categories=cats,
+        )  # fmt: skip
     return m.Equity(
         scope_note="K-Electric shares are among listed feeders only (exempt feeders are not "
         "published); statistics are descriptive and exploratory, not causal.",
         ibc=ibc, subdivisions=subs, correlations=corr, anomalies=anom, report=report,
+        regulator_review=review,
+    )  # fmt: skip
+
+
+def _national(con) -> m.National:
+    series = [m.ReportedHours(**{k: r[k] for k in m.ReportedHours.model_fields})
+              for r in _rows(con, "select * from mart_nepra_load_shedding "
+                                  "order by company, fiscal_year")]  # fmt: skip
+    reports = [m.NepraReport(**r) for r in _rows(
+        con, "select distinct report_year, source_file from stg_nepra_load_shedding "
+             "order by report_year")]  # fmt: skip
+    policy = yaml.safe_load((CONFIG_DIR / "policy.yml").read_text(encoding="utf-8"))
+    events = [
+        m.PolicyEvent(id=e["id"], date=e["date"], summary=e["summary"],
+                      max_hours=e.get("max_hours"), source_url=e["source_url"])
+        for e in policy.get("events", []) if e.get("date_verified")
+    ]  # fmt: skip
+    years = {s.fiscal_year for s in series}
+    gaps = []
+    if "2023-24" in years and not any(r.report_year == "2023-24" for r in reports):
+        gaps.append(
+            "NEPRA's FY 2023-24 report link returns an error, so FY 2023-24 comes from the "
+            "FY 2024-25 report's five-year table."
+        )
+    return m.National(
+        basis="Average daily load-shedding hours that each distribution company reported to "
+        "NEPRA in its annual performance report, as compiled in NEPRA's Performance Evaluation "
+        "Reports. One value per company and fiscal year (July to June), taken from the earliest "
+        "report that lists the year.",
+        caveat="These are the companies' own figures, not measurements. NEPRA states that some "
+        "companies under-report: for FY 2024-25 its monitoring found more than 8 to 10 hours a "
+        "day in PESCO, QESCO, SEPCO and HESCO.",
+        gaps=gaps, series=series, reports=reports, events=events,
     )  # fmt: skip
 
 
@@ -199,9 +259,12 @@ def _meta(con, docs: list[str]) -> m.Meta:
             "(IESCO), iesco.com.pk",
             "Feeder list and load-shed schedule: K-Electric, ke.com.pk",
             "Census 2023 tables: Pakistan Bureau of Statistics",
+            "Load-shedding hours reported by distribution companies: National Electric Power "
+            "Regulatory Authority (NEPRA), Performance Evaluation Reports, nepra.org.pk",
         ],
-        disclaimer="Not affiliated with IESCO, K-Electric or PBS. Schedules are published plans, "
-        "not measured outages; IESCO schedules are a scenario playbook by interruption level.",
+        disclaimer="Not affiliated with IESCO, K-Electric, NEPRA or PBS. Schedules are published "
+        "plans, not measured outages; IESCO schedules are a scenario playbook by interruption "
+        "level; NEPRA figures are what the companies reported.",
     )
 
 
@@ -225,6 +288,11 @@ def build_export(
         ],
         "areas": _areas(con),
         "equity": _equity(con, report_json),
+        "national": _national(con),
+        "news": [
+            m.NewsHeadline(**{k: r[k] for k in m.NewsHeadline.model_fields})
+            for r in _rows(con, "select * from mart_news_headline order by recency")
+        ],
     }
     docs = {"meta": _meta(con, ["meta", *docs]), **docs}
     out.mkdir(parents=True, exist_ok=True)
@@ -232,7 +300,9 @@ def build_export(
     for name, data in docs.items():
         env = m.DOCUMENTS[name](
             schema_id=f"roshni/{name}/v1", schema_version=m.SCHEMA_VERSION, generated_at=now,
-            last_updated=last, label=m.LABEL, data=data,
+            last_updated=last,
+            label={"national": m.NATIONAL_LABEL, "news": m.NEWS_LABEL}.get(name, m.LABEL),
+            data=data,
         )  # fmt: skip
         (out / f"{name}.json").write_text(env.model_dump_json(), encoding="utf-8")
         counts[name] = len(data) if isinstance(data, list) else 1
