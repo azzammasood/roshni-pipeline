@@ -3,7 +3,7 @@
 import re
 from dataclasses import dataclass, field
 from pathlib import PurePosixPath
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import unquote, urljoin, urlsplit
 
 from bs4 import BeautifulSoup
 
@@ -21,6 +21,7 @@ class Target:
     url: str
     label: str = ""  # human context: listing-page date label, release title
     refetch: bool = True  # False: fetch once per URL, never re-check
+    trim: str | None = None  # stored content is reduced by fetch.trim.TRIMMERS[trim]
     warnings: tuple[str, ...] = field(default=())
 
 
@@ -102,6 +103,22 @@ def listing_pdf_pattern(source: str, cfg: SourceConfig, html: str) -> list[Targe
     return [Target(source, "schedule", hits[0])]
 
 
+def listing_pdfs(source: str, cfg: SourceConfig, html: str) -> list[Target]:
+    """Every PDF link on the listing page whose (decoded) file name matches the pattern, e.g. a
+    series of annual reports. Item key = file name with runs of other characters as "-"."""
+    inc = re.compile(cfg.link_pattern or ".")
+    exc = re.compile(cfg.exclude_pattern) if cfg.exclude_pattern else None
+    targets = []
+    for u in _pdf_links(html, cfg.listing_url or ""):
+        stem = unquote(_file_stem(u))
+        if inc.search(stem) and not (exc and exc.search(stem)):
+            key = re.sub(r"[^A-Za-z0-9.]+", "-", stem).strip("-")
+            targets.append(Target(source, key, u, label=stem, refetch=cfg.refetch))
+    if not targets:
+        raise DiscoveryError(f"no matching PDF on {cfg.listing_url}")
+    return targets
+
+
 def fixed_url(source: str, cfg: SourceConfig, html: str | None) -> list[Target]:
     """A configured URL. If a listing page is given, warn when it links a different candidate."""
     assert cfg.url
@@ -118,5 +135,6 @@ DISCOVERERS = {
     "iesco_xlsx_table": iesco_xlsx_table,
     "iesco_press_release_tab": iesco_press_release_tab,
     "listing_pdf_pattern": listing_pdf_pattern,
+    "listing_pdfs": listing_pdfs,
     "fixed_url": fixed_url,
 }

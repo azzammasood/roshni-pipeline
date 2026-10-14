@@ -8,6 +8,7 @@ from roshni.fetch.discover import (
     iesco_press_release_tab,
     iesco_xlsx_table,
     listing_pdf_pattern,
+    listing_pdfs,
 )
 from roshni.sources.registry import SourceConfig
 
@@ -131,3 +132,38 @@ def test_fixed_url_warns_on_new_listing_link() -> None:
     page = KE_PAGE.replace("2026/07/Feeders-List", "2026/10/Feeders-List-Oct")
     (t,) = fixed_url("kelectric_feeder_list", KE_LIST, page)
     assert t.warnings and "Feeders-List-Oct" in t.warnings[0]
+
+
+NEPRA_PAGE = """
+<a href="../M&E/PER/Distribution/2026/PER%202024-25%20Distribution%20Companies.pdf">x</a>
+<a href="../M&E/PER/Transmission/2025/PER%20Transmission%20FY%202024-25.pdf">x</a>
+<a href="../M&E/PER/Distribution/Performance%20Evaluation%20Report%20-%20Distribution%20Companies%20Jul-Dec%202024.pdf">x</a>
+<a href="../M&E/PER/Distribution/PER%202022-23%20-%20DSICOs.pdf">x</a>
+<a href="../M&E/PER/Distribution/PER%202022-23%20-%20DSICOs.pdf">x</a>
+<a href="../HSE/Reports/2026/1.%20HSE%20Performance%20Evaluation%20Report%202024-25.pdf">x</a>
+"""
+
+NEPRA_PER = SourceConfig(
+    discovery="listing_pdfs",
+    listing_url="https://nepra.org.pk/publications/Performance%20Reports.php",
+    link_pattern="(?i)(disco|dsico|distribution)",
+    exclude_pattern="(?i)(jul-dec|quarterly|hse|ntdc|transmission|generation)",
+    refetch=False,
+)
+
+
+def test_listing_pdfs_keeps_every_annual_report_once() -> None:
+    found = listing_pdfs("nepra_per_distribution", NEPRA_PER, NEPRA_PAGE)
+    assert [t.item_key for t in found] == [
+        "PER-2024-25-Distribution-Companies",
+        "PER-2022-23-DSICOs",
+    ]
+    assert found[0].url == (
+        "https://nepra.org.pk/M&E/PER/Distribution/2026/PER%202024-25%20Distribution%20Companies.pdf"
+    )
+    assert all(not t.refetch for t in found)
+
+
+def test_listing_pdfs_none_fails() -> None:
+    with pytest.raises(DiscoveryError, match="no matching PDF"):
+        listing_pdfs("s", NEPRA_PER, "<a href='/x/Annual%20Report.pdf'>x</a>")
