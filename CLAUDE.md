@@ -109,4 +109,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Frontend F5 (Urdu, RTL): done 2026-10-12; axe 0 on all Urdu pages; owner approved the translation, /ur/ published.
 - Redesign "Grid Gazette" (2026-10-13/14): owner chose direction D; pinned-feeder lead, power-line day strips, tower skyline, theme toggle, opening animation; axe 0 at 375 px light/dark en/ur; equity trace passes.
 - National context N1–N4 (2026-10-13/14, owner-approved sources): NEPRA reported load-shedding hours (130 company-years, FY2012-13…FY2024-25), news headlines (14 trimmed feeds, every 3 h), NEPRA order on K-Electric (620 feeders); export 1.3.0; dbt PASS=148.
+- Month by month (2026-10-14): IESCO planned shutdowns per month and K-Electric's schedule per month from every stored schedule version; export 1.5.0. Fonts self-hosted (OFL); Urdu review of 131 strings done by Claude (owner-delegated).
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).

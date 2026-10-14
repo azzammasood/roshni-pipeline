@@ -131,6 +131,18 @@ def _run_all(
     sched, cycles = kelectric.parse_schedule(files / "kelectric-load-shed-schedule.pdf")
     results += [(sched, kelectric.KeScheduleRow), (cycles, kelectric.KeCycle)]
 
+    # Every stored version of the K-Electric schedule, summarised (the current one reuses the
+    # parse above), so month-by-month figures keep the schedule that was in force at the time.
+    versions = ParseResult("kelectric_schedule_version")
+    versions.rows.extend(kelectric.summarize_version(sched))
+    seen = {v.source_sha256 for v in versions.rows}
+    for sha, (path, _, source) in sorted(snaps.items(), key=lambda kv: kv[1][0].name):
+        if source == "kelectric_schedule" and sha not in seen:
+            older, _ = kelectric.parse_schedule(path)
+            versions.rows.extend(kelectric.summarize_version(older))
+            seen.add(sha)
+    results.append((versions, kelectric.KeScheduleVersion))
+
     # NEPRA annual reports come only from the snapshot store (no hand-downloaded copies).
     nepra = ParseResult("nepra_load_shedding")
     for _, (path, _, source) in sorted(snaps.items(), key=lambda kv: kv[1][0].name):

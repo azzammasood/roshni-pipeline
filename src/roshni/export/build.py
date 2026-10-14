@@ -3,7 +3,7 @@
 import json
 import re
 from collections import defaultdict
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 import duckdb
@@ -211,6 +211,29 @@ def _equity(con, report_json: Path | None) -> m.Equity:
     )  # fmt: skip
 
 
+def ke_months(versions: list[dict], today: date) -> list[m.MonthlyKeSchedule]:
+    """One row per month from the first schedule's effective date to `today`'s month: the version
+    in force at the month's end (latest effective_from on or before its last day). Months before
+    the first version are not rows; they are never back-filled."""
+    if not versions:
+        return []
+    versions = sorted(versions, key=lambda v: v["effective_from"])
+    first = versions[0]["effective_from"]
+    out = []
+    y, mo = first.year, first.month
+    while (y, mo) <= (today.year, today.month):
+        nxt = date(y + 1, 1, 1) if mo == 12 else date(y, mo + 1, 1)
+        in_force = [v for v in versions if v["effective_from"] < nxt]
+        v = in_force[-1]
+        out.append(m.MonthlyKeSchedule(
+            month=f"{y}-{mo:02d}", avg_scheduled_hours=round(v["avg_scheduled_hours"], 2),
+            feeders=v["feeders"], effective_from=v["effective_from"],
+            changed_in_month=len(in_force) > 1 and v["effective_from"] >= date(y, mo, 1),
+        ))  # fmt: skip
+        y, mo = nxt.year, nxt.month
+    return out
+
+
 def _national(con) -> m.National:
     series = [m.ReportedHours(**{k: r[k] for k in m.ReportedHours.model_fields})
               for r in _rows(con, "select * from mart_nepra_load_shedding "
@@ -251,17 +274,9 @@ def _national(con) -> m.National:
         for mo, rs in sorted(by_month.items())
     ]  # fmt: skip
     today = (datetime.now(UTC) + timedelta(hours=5)).date()  # Asia/Karachi, fixed UTC+5
-    ke = _rows(con, "select min(effective_from) as effective_from, avg(scheduled_hours_per_day) "
-                    "as avg_hours, count(*) as feeders from mart_ke_feeder_hours")[0]  # fmt: skip
-    monthly_ke = []
-    if ke["effective_from"]:
-        y, mo = ke["effective_from"].year, ke["effective_from"].month
-        while (y, mo) <= (today.year, today.month):
-            monthly_ke.append(m.MonthlyKeSchedule(
-                month=f"{y}-{mo:02d}", avg_scheduled_hours=round(ke["avg_hours"], 2),
-                feeders=ke["feeders"], effective_from=ke["effective_from"],
-            ))  # fmt: skip
-            y, mo = (y + 1, 1) if mo == 12 else (y, mo + 1)
+    versions = _rows(con, "select effective_from, avg_scheduled_hours, feeders "
+                          "from mart_ke_schedule_history order by effective_from")  # fmt: skip
+    monthly_ke = ke_months(versions, today)
     return m.National(
         monthly_shutdowns=monthly, monthly_ke=monthly_ke, as_of=today,
         basis="Average daily load-shedding hours that each distribution company reported to "

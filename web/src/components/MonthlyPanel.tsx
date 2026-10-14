@@ -123,9 +123,14 @@ export function MonthlyPanel({
               return (
                 <li key={mo} className="min-w-0">
                   {k ? (
-                    <p className="font-mono text-sm">
-                      <span className="mark">{fill(t.keHours, { h: n(k.avg_scheduled_hours) }, locale)}</span>
-                    </p>
+                    <>
+                      <p className="font-mono text-sm">
+                        <span className="mark">{fill(t.keHours, { h: n(k.avg_scheduled_hours) }, locale)}</span>
+                      </p>
+                      {k.changed_in_month && (
+                        <p className="kicker text-signal">{fill(t.keChanged, { date: k.effective_from }, locale)}</p>
+                      )}
+                    </>
                   ) : (
                     <p className="text-xs text-muted">{t.keNone}</p>
                   )}

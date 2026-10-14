@@ -7,8 +7,9 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 # 1.1.0: DarkProfile.daily_windows; 1.2.0: match review, release month; 1.3.0: national and news
-# documents; 1.4.0: national month-by-month series
-SCHEMA_VERSION = "1.4.0"
+# documents; 1.4.0: national month-by-month series; 1.5.0: K-Electric months from every schedule
+# version (MonthlyKeSchedule.changed_in_month)
+SCHEMA_VERSION = "1.5.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -292,10 +293,14 @@ class MonthlyShutdowns(Strict):
 class MonthlyKeSchedule(Strict):
     month: str
     avg_scheduled_hours: float = Field(
-        description="Average scheduled hours a day across K-Electric's listed feeders"
+        description="Average scheduled hours a day across the feeders in the schedule in force"
     )
     feeders: int
     effective_from: date = Field(description="The schedule in force, effective from this date")
+    changed_in_month: bool = Field(
+        default=False,
+        description="A new schedule took effect during the month (value at month end)",
+    )
 
 
 class National(Strict):

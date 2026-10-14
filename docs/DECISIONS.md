@@ -2,6 +2,11 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-14 (K-Electric schedule history for the month-by-month row)
+- Resolves the open item below: every stored K-Electric schedule version is summarised (`kelectric_schedule_version`: feeders, mean scheduled minutes, provenance; the current file reuses its parse, older versions are parsed once each) and joined to its effective date from the `source_documents` seed (`mart_ke_schedule_history`). Each month shows the version in force at its end (`ke_months`, unit-tested with two versions); a month where a new schedule took effect is flagged (`changed_in_month`) and says "new schedule from <date>". Earlier months are never back-filled.
+- Definition: the average is over all feeders in each schedule version (618 now, 10.79 h), not the separate feeder list (617, 10.78 h), because older versions need not match the current list.
+- Export schema 1.5.0 (additive: `MonthlyKeSchedule.changed_in_month`). dbt PASS=157.
+
 ## 2026-10-14 (Fonts self-hosted; Urdu review of the redesign and national-context strings)
 - **Fonts:** the build no longer fetches Google Fonts (a publish run had failed on a bad font response). The WOFF2 subsets the site uses are committed in `web/src/app/fonts/` with each family's SIL OFL 1.1 licence (owner approved committing them): DM Serif Display, Source Serif 4 (variable), IBM Plex Mono 400/600, Noto Nastaliq Urdu (Arabic, variable; ~350 KB in all), loaded with `next/font/local`. Latin runs on Urdu pages fall back to Source Serif 4.
 - **Urdu review delegated to Claude** (owner, same day): all 131 new or changed strings were read against the English. Ten fixed: `national.top` gained its missing object (لوڈ شیڈنگ); caveat is انتباہ, not وضاحت (clarification); clock times use بجے, not پر (`lead.next`, `statKe`, `statPlanned`, `statLevel`); `lead.statKe` and `equity.review.line` reworded to read after the big number ("… میں سے"); the K-Electric feeder-list label uses نقصان کی کیٹیگری with feminine agreement; `monthly.soFar` and `monthly.keNote` word order. `docs/urdu-review.md` regenerated.

@@ -123,6 +123,14 @@ SUITES: dict[str, list[gxe.Expectation]] = {
             column_list=["source_sha256", "fiscal_year", "company"]
         ),
     ],
+    "kelectric_schedule_version": [
+        *PROVENANCE,
+        gxe.ExpectColumnValuesToBeUnique(column="source_sha256"),
+        gxe.ExpectColumnValuesToBeBetween(column="feeders", min_value=1),
+        gxe.ExpectColumnValuesToBeBetween(
+            column="avg_scheduled_minutes", min_value=360, max_value=720
+        ),
+    ],
     "nepra_ke_order_category": [
         *PROVENANCE,
         gxe.ExpectColumnValuesToBeInSet(
