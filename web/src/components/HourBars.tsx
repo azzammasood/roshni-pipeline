@@ -24,9 +24,9 @@ export function HourBars({ minutes, label, unit }: { minutes: number[]; label: s
         ))}
         {minutes.map((m, i) => (
           <rect key={i} x={LEFT + i * BAR + 2} y={y(m)} width={BAR - 4} height={(m / 60) * H} className="fill-dark">
-            <title>
-              <HourLabel hour={i} /> · {unit(m)}
-            </title>
+            {/* Plain text: React hoists/skips <title> children that are components, which broke
+                hydration. The hour is the 24-hour slot start, as on the axis in 24-hour mode. */}
+            <title>{`${String(i).padStart(2, "0")}:00 · ${unit(m)}`}</title>
           </rect>
         ))}
         {[0, 3, 6, 9, 12, 15, 18, 21].map((i) => (

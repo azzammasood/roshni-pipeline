@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ScrollRegion } from "@/components/ScrollRegion";
-import { ShareBars } from "@/components/ShareBars";
+import { EquitySkyline } from "@/components/EquitySkyline";
+import { RegulatorReview } from "@/components/RegulatorReview";
+import { dirOf } from "@/i18n/config";
 import { fill, fromExport } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
 import { columnFormat, num } from "@/lib/format";
@@ -56,11 +58,12 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
 
   return (
     <article className="space-y-10">
-      <header className="space-y-3">
-        <h1 className="text-2xl font-semibold">{t.title}</h1>
-        <p className="max-w-prose">{t.intro}</p>
-        <p className="max-w-prose rounded border border-line bg-surface p-3 text-sm">
-          <strong>{t.scope}:</strong> <ExportText value={fromExport(scope_note, locale)} />
+      <header className="space-y-4">
+        <p className="kicker">{t.kicker}</p>
+        <h1 className="headline text-4xl sm:text-6xl max-w-4xl">{t.title}</h1>
+        <p className="max-w-prose text-lg">{t.intro}</p>
+        <p className="max-w-prose border-s-4 border-wire ps-4 text-sm">
+          <strong className="kicker text-ink me-1">{t.scope}</strong> <ExportText value={fromExport(scope_note, locale)} />
         </p>
         {effective && (
           <p className="text-sm text-muted">
@@ -69,33 +72,46 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
         )}
       </header>
 
-      <section>
-        <dl className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <section aria-label={t.kpiLabel}>
+        <dl className="rule grid grid-cols-2 sm:grid-cols-5">
           {kpis.map(([label, value]) => (
-            <div key={label} className="rounded border border-line bg-surface p-3">
-              <dt className="text-xs text-muted">{label}</dt>
-              <dd className="text-2xl font-semibold tabular-nums">{n(value)}</dd>
+            <div
+              key={label}
+              className="flex flex-col-reverse justify-end py-3 pe-3 border-b border-line sm:border-b-0 sm:border-e sm:last:border-e-0 sm:ps-3 sm:first:ps-0"
+            >
+              <dt className="text-sm">{label}</dt>
+              <dd className="headline text-5xl tabular-nums">{n(value)}</dd>
             </div>
           ))}
         </dl>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">{t.shareTitle}</h2>
+      <section className="rule pt-4 space-y-3">
+        <h2 className="headline text-3xl sm:text-4xl">{t.shareTitle}</h2>
         <p className="max-w-prose text-sm text-muted">{fill(t.shareIntro, { min: MIN_N }, locale)}</p>
-        <ShareBars
+        <EquitySkyline
+          rtl={dirOf(locale) === "rtl"}
+          label={t.shareTitle}
+          ticks={[
+            [50, `${n(50)}%`],
+            [100, `${n(100)}%`],
+          ]}
           rows={ranked.map((r) => ({
             label: ibcName(r.ibc),
             value: r.share_12h_pct!,
+            valueText: ibcShare(r.share_12h_pct),
             note: `(n = ${n(r.scheduled_feeders)})`,
             flag: r.scheduled_feeders < MIN_N ? t.smallN : undefined,
           }))}
-          valueText={ibcShare}
         />
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">{t.ibcTableTitle}</h2>
+      {doc.data.regulator_review && (
+        <RegulatorReview review={doc.data.regulator_review} locale={locale} t={t.review} />
+      )}
+
+      <section className="rule pt-4 space-y-3">
+        <h2 className="headline text-3xl">{t.ibcTableTitle}</h2>
         <ScrollRegion label={t.ibcTableTitle}>
           <table className="data">
             <thead>
@@ -136,8 +152,8 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
         </ScrollRegion>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">{t.subTitle}</h2>
+      <section className="rule pt-4 space-y-3">
+        <h2 className="headline text-3xl">{t.subTitle}</h2>
         <p className="max-w-prose text-sm text-muted">
           {fill(
             t.subIntro,
@@ -183,8 +199,8 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
         </ScrollRegion>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">{t.corrTitle}</h2>
+      <section className="rule pt-4 space-y-3">
+        <h2 className="headline text-3xl">{t.corrTitle}</h2>
         <p className="max-w-prose text-sm text-muted">
           {fill(t.corrIntro, { n: subdivisions.length }, locale)}
         </p>
@@ -214,8 +230,8 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
         </ScrollRegion>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">{t.anomTitle}</h2>
+      <section className="rule pt-4 space-y-3">
+        <h2 className="headline text-3xl">{t.anomTitle}</h2>
         <p className="max-w-prose text-sm text-muted">{t.anomIntro}</p>
         <ScrollRegion label={t.anomTitle}>
           <table className="data">
@@ -240,18 +256,21 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
       </section>
 
       {report && (
-        <section className="space-y-3">
-          <h2 className="text-lg font-semibold">{fill(t.reportTitle, { week: isoWeekMonday(report.iso_week) }, locale)}</h2>
+        <section className="rule pt-4 space-y-3">
+          <p className="kicker">{t.reportKicker}</p>
+          <h2 className="headline text-3xl">{fill(t.reportTitle, { week: isoWeekMonday(report.iso_week) }, locale)}</h2>
           <p className="text-sm text-muted max-w-prose">
             {report.engine === "template" ? t.engineTemplate : fill(t.engineLlm, { engine: report.engine }, locale)}
           </p>
           {locale !== "en" && <p className="text-sm font-medium">{dict.common.englishOnly}</p>}
-          <div className="space-y-3 max-w-prose" lang="en" dir="ltr">
+          <div className="space-y-3 max-w-prose text-lg leading-relaxed" lang="en" dir="ltr">
             {report.narrative
               .split(/\n\s*\n/)
               .filter((p) => p.trim())
               .map((p, i) => (
-                <p key={i}>{p.trim()}</p>
+                <p key={i} className={i === 0 ? "dropcap" : undefined}>
+                  {p.trim()}
+                </p>
               ))}
           </div>
           <details className="text-sm">

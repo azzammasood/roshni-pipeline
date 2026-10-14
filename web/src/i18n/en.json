@@ -11,6 +11,12 @@
       "h12": "12h",
       "am": "AM",
       "pm": "PM"
+    },
+    "theme": {
+      "label": "Theme",
+      "system": "Match system theme",
+      "light": "Light theme",
+      "dark": "Dark theme"
     }
   },
   "nav": {
@@ -56,6 +62,42 @@
     "unmatched": "Not matched to feeder list",
     "out_of_scope": "Outside the feeder lists"
   },
+  "national": {
+    "kicker": "Pakistan · every distribution company",
+    "title": "Load shedding, as the companies report it",
+    "lead": "In FY {year}, the companies reported between {min} and {max} hours of load shedding a day.",
+    "top": "{company} ({region}) reported the most: {hours} hours a day.",
+    "tableLabel": "Average daily load-shedding hours reported to NEPRA, by company and fiscal year",
+    "company": "Company",
+    "legend": "Hours a day reported to NEPRA:",
+    "disagree": "NEPRA reports disagree: {min} to {max} hours",
+    "flag": "{company} {year}: NEPRA reports give {min} to {max} hours; the value shown is from the {used} report.",
+    "caveatLabel": "NEPRA's caveat",
+    "basisLabel": "What these numbers are",
+    "policy": "Policy",
+    "eventMax": "The Prime Minister ordered load shedding capped at a maximum of {hours} hours.",
+    "eventSource": "Dawn report",
+    "regions": {
+      "PESCO": "Peshawar",
+      "IESCO": "Islamabad",
+      "GEPCO": "Gujranwala",
+      "FESCO": "Faisalabad",
+      "LESCO": "Lahore",
+      "MEPCO": "Multan",
+      "QESCO": "Quetta",
+      "SEPCO": "Sukkur",
+      "HESCO": "Hyderabad",
+      "TESCO": "Tribal districts",
+      "K-Electric": "Karachi"
+    }
+  },
+  "news": {
+    "kicker": "In the news",
+    "title": "Load-shedding headlines",
+    "empty": "No load-shedding headlines yet from the approved outlets' feeds.",
+    "note": "Headlines from Dawn, Business Recorder, The Express Tribune and the Associated Press of Pakistan, as each outlet published them and linked to the original. They are the outlets' words, not Roshni's reporting.",
+    "external": "opens the outlet's site in a new tab"
+  },
   "home": {
     "title": "Who is scheduled to be dark now?",
     "intro": "K-Electric schedules apply daily. IESCO publishes one schedule per interruption level and never says which level is in force, so choose a level to see IESCO.",
@@ -76,6 +118,40 @@
     "hour": "Hour",
     "minute": "Minute"
   },
+  "lead": {
+    "kicker": "Your feeder",
+    "findTitle": "Find your feeder",
+    "findIntro": "Search by feeder name, code, grid, IBC or circle, then pin it here. The pin is kept in this browser only.",
+    "results": "{n} matching feeders",
+    "noResults": "No feeder matches that search.",
+    "more": "{n} more: type more of the name to narrow the list.",
+    "pin": "Pin",
+    "cancel": "Keep the current feeder",
+    "chooseLevel": "IESCO never says which interruption level is in force. Choose a level to see this feeder's schedule for it.",
+    "levelGroup": "IESCO interruption level",
+    "levelChip": "Level {n}",
+    "ifLevel": "If level {n} is in force",
+    "pickLevel": "{name}: choose a level to see its schedule",
+    "notYet": "The schedule for {name} applies from {date}",
+    "none": "{name} has no scheduled dark window in this schedule",
+    "darkNow": "{name} is scheduled to be dark now, until {end}",
+    "darkLeft": "The scheduled window ends in {left}.",
+    "next": "{name} is next scheduled to go dark at {start}",
+    "nextLeft": "In {left}, until {end}.",
+    "hours": "{h} h {m} min",
+    "minutes": "{m} min",
+    "strip": "The feeder's scheduled dark windows across the day, in Pakistan time. The windows are listed below.",
+    "windows": "Scheduled windows",
+    "open": "Full schedule",
+    "change": "Change feeder",
+    "unpin": "Unpin",
+    "statsLabel": "Scheduled dark at this time",
+    "statKe": "of {total} K-Electric feeders scheduled dark at {time}",
+    "statPlanned": "IESCO planned shutdowns (press releases) scheduled at {time}",
+    "statLevel": "IESCO feeders scheduled dark at {time} if level {n} is in force",
+    "statLevelNone": "Choose an IESCO level to count IESCO feeders.",
+    "listingsKicker": "Every feeder, any time"
+  },
   "feeder": {
     "source": "Source",
     "code": "Feeder code",
@@ -93,15 +169,15 @@
     "scenarioTitle": "IESCO schedule by interruption level",
     "scenarioIntro": "Each row is the schedule if that level is in force. IESCO does not publish which level applies on a given day.",
     "levelRow": "Level {n}",
-    "hour": "Hour",
-    "darkCell": "scheduled dark",
     "localitiesTitle": "Census localities matched by name",
     "localitiesIntro": "Matched by name only, not by boundary. Approximate matches show their confidence.",
     "shutdownsTitle": "Planned shutdowns for this feeder",
     "release": "Press release",
     "asPrinted": "Name as printed",
-    "levelWindows": "Scheduled windows by level",
-    "minutes": "{n} min"
+    "minutes": "{n} min",
+    "pin": "Pin to home page",
+    "pinned": "Pinned to home page: unpin",
+    "levelStrip": "Scheduled dark windows if level {n} is in force, Pakistan time. The windows are listed below."
   },
   "shutdowns": {
     "title": "Planned shutdowns",
@@ -114,7 +190,15 @@
     "upcoming": "Today and later only",
     "results": "{n} matching windows.",
     "searchPlaceholder": "Name as printed, feeder or press release number",
-    "sortBy": "Sort by {col}"
+    "sortBy": "Sort by {col}",
+    "kicker": "IESCO · press releases",
+    "noticesKicker": "Notices",
+    "noticesTitle": "Today and the coming days",
+    "noticesNone": "No planned shutdowns are listed for today or later.",
+    "today": "Today",
+    "dayCount": "planned shutdowns listed",
+    "moreBelow": "{n} more in the table below.",
+    "tableTitle": "All planned shutdowns"
   },
   "equity": {
     "title": "Karachi schedule hours by IBC",
@@ -187,6 +271,24 @@
       "listed_without_loss": "Listed feeders with no published AT&C loss",
       "listed_without_schedule": "Listed feeders with no schedule row",
       "schedule_without_listing": "Schedule rows whose feeder is not in the list"
+    },
+    "kicker": "Karachi · K-Electric schedules",
+    "kpiLabel": "K-Electric listed feeders in the published schedule",
+    "reportKicker": "Weekly summary",
+    "review": {
+      "kicker": "What the regulator found",
+      "title": "NEPRA's review of K-Electric's listed feeders",
+      "line": "of {n} {category} feeders had average daily outages above their {hours}-hour schedule.",
+      "meta": "{consumers} consumers; average AT&C loss {atc}% (as printed by NEPRA).",
+      "band": "· {feeders} feeders ({pct})",
+      "above": "above schedule",
+      "source": "NEPRA order dated {date}.",
+      "read": "Read the order (NEPRA, PDF)",
+      "categories": {
+        "Very High Loss": "Very High Loss",
+        "High Loss": "High Loss",
+        "Medium Loss": "Medium Loss"
+      }
     }
   },
   "about": {
@@ -208,7 +310,43 @@
     "datesNote": "When a file states no date, its effective date is when the server says the file last changed. That can differ from the label on the source page: IESCO labels its schedule files {label}, but the files were last changed on {date}, so the schedule may have applied since then.",
     "pressFile": "IESCO press releases ({n} releases)",
     "pressFrom": "{from} to {to}",
-    "pressBasis": "The shutdown dates printed in each release"
+    "pressBasis": "The shutdown dates printed in each release",
+    "kicker": "Method and sources",
+    "glossaryTitle": "Glossary",
+    "glossary": [
+      [
+        "Scheduled",
+        "A published plan for when a feeder's power is to be switched off. This site shows schedules only; it never measures whether power actually went off."
+      ],
+      [
+        "Feeder",
+        "A distribution line from a grid station that supplies a neighbourhood. Schedules are published per feeder."
+      ],
+      [
+        "IBC",
+        "K-Electric's Integrated Business Centre, the company's own service area in Karachi."
+      ],
+      [
+        "Interruption level",
+        "IESCO's scenario for how many hours a day feeders are switched off (2 to 12). IESCO publishes one schedule per level and does not say which level is in force."
+      ]
+    ],
+    "sourceName": "Source",
+    "sourceNames": {
+      "iesco_schedule_xlsx": "Islamabad Electric Supply Company (IESCO): load-shedding schedule by interruption level",
+      "kelectric_schedule": "K-Electric: load-shed schedule",
+      "kelectric_feeder_list": "K-Electric: feeder list (loss categories as published)",
+      "iesco_press_release": "Islamabad Electric Supply Company (IESCO): planned shutdown press releases",
+      "nepra_per": "National Electric Power Regulatory Authority (NEPRA): Performance Evaluation Reports of the distribution companies",
+      "nepra_ke_order": "National Electric Power Regulatory Authority (NEPRA): order on K-Electric under section 27C",
+      "news": "News headlines: Dawn, Business Recorder, The Express Tribune, Associated Press of Pakistan"
+    },
+    "nepraFile": "{n} annual reports (editions {from} to {to})",
+    "nepraBasis": "Section 3.6 tables: load-shedding hours each company reported to NEPRA",
+    "orderFile": "Order dated {date} (PDF)",
+    "orderBasis": "NEPRA's analysis of K-Electric's outage data for its listed feeders; period not stated",
+    "newsFile": "RSS feeds, checked every 3 hours",
+    "newsBasis": "Load-shedding headlines only: headline, outlet, date and link"
   },
   "sources": {
     "iesco": "IESCO",

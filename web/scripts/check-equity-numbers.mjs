@@ -60,6 +60,8 @@ const constants = {
   10: "small-n threshold (MIN_N, same as the weekly report)",
   1: "rho range -1 to 1",
   [-1]: "rho range -1 to 1",
+  50: "skyline chart gridline (50%), axis label only",
+  100: "skyline chart gridline (100%), axis label only",
 };
 for (const [v, why] of Object.entries(constants)) allow(Number(v), `constant: ${why}`);
 

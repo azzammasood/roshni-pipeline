@@ -81,7 +81,7 @@ export function ShutdownTable({ locale, t }: { locale: string; t: Strings }) {
     <div className="space-y-4">
       <form className="grid gap-3 sm:grid-cols-4 items-end" onSubmit={(e) => e.preventDefault()}>
         <label className="grid gap-1 text-sm sm:col-span-2">
-          <span className="font-medium">{t.common.search}</span>
+          <span className="kicker">{t.common.search}</span>
           <input
             type="search"
             className="field"
@@ -91,7 +91,7 @@ export function ShutdownTable({ locale, t }: { locale: string; t: Strings }) {
           />
         </label>
         <label className="grid gap-1 text-sm">
-          <span className="font-medium">{t.shutdowns.circle}</span>
+          <span className="kicker">{t.shutdowns.circle}</span>
           <select className="field" value={circle} onChange={(e) => reset(setCircle)(e.target.value)}>
             <option value="">{t.shutdowns.allCircles}</option>
             {circles.map((c) => (
@@ -100,7 +100,7 @@ export function ShutdownTable({ locale, t }: { locale: string; t: Strings }) {
           </select>
         </label>
         <label className="grid gap-1 text-sm">
-          <span className="font-medium">{t.shutdowns.state}</span>
+          <span className="kicker">{t.shutdowns.state}</span>
           <select className="field" value={match} onChange={(e) => reset(setMatch)(e.target.value)}>
             <option value="">{t.shutdowns.allStates}</option>
             {STATES.map((s) => (

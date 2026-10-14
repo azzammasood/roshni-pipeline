@@ -7,7 +7,7 @@ export interface FeedersDocument {
    */
   generated_at: string;
   /**
-   * Reminder that the data are schedules, not measurements
+   * What the numbers are: schedules, or figures reported to the regulator; never measurements
    */
   label: string;
   /**

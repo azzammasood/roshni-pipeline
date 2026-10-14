@@ -1,0 +1,30 @@
+{
+ "schema_id": "roshni/news/v1",
+ "schema_version": "1.3.0",
+ "generated_at": "2026-10-14T05:09:16Z",
+ "last_updated": "2026-10-14T05:08:46.007483Z",
+ "label": "Headlines as published by each outlet, linked to the original; not Roshni's reporting",
+ "data": [
+  {
+   "outlet": "Associated Press of Pakistan",
+   "title": "Chief Minister expresses concern over unannounced load-shedding",
+   "link": "https://www.app.com.pk/kp/chief-minister-expresses-concern-over-unannounced-load-shedding/",
+   "published_at": "2026-07-13T08:11:24Z",
+   "first_seen_at": "2026-10-14T05:01:59Z"
+  },
+  {
+   "outlet": "Associated Press of Pakistan",
+   "title": "Governor Kundi, Energy Minister discuss load shedding, power issues in KP",
+   "link": "https://www.app.com.pk/kp/governor-kundi-energy-minister-discuss-load-shedding-power-issues-in-kp/",
+   "published_at": "2026-07-10T13:06:03Z",
+   "first_seen_at": "2026-10-14T05:01:59Z"
+  },
+  {
+   "outlet": "Associated Press of Pakistan",
+   "title": "MEPCO issues load shedding schedule for city",
+   "link": "https://www.app.com.pk/punjab/mepco-issues-load-shedding-schedule-for-city/",
+   "published_at": "2026-07-01T13:16:58Z",
+   "first_seen_at": "2026-10-14T05:01:59Z"
+  }
+ ]
+}

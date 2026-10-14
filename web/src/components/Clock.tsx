@@ -1,8 +1,17 @@
 "use client";
 // Site-wide 24/12-hour preference. Static HTML is always 24-hour (the server has no preference);
 // the browser re-renders times in the chosen clock after hydration. Stored per viewer only.
-import { createContext, useCallback, useContext, useSyncExternalStore, type ReactNode } from "react";
-import { clockText, hhmm, karachiStamp, parseHhmm, type ClockMode, type DayHalves } from "@/lib/time";
+import { createContext, useCallback, useContext, useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
+import {
+  clockText,
+  hhmm,
+  karachiDate,
+  karachiMinuteOfDay,
+  karachiStamp,
+  parseHhmm,
+  type ClockMode,
+  type DayHalves,
+} from "@/lib/time";
 
 const KEY = "roshni:clock";
 const EVENT = "roshni:clock";
@@ -70,13 +79,32 @@ export function Stamp({ iso }: { iso: string }) {
   );
 }
 
-/** Hour-of-day axis label: "06" (24-hour) or "6 AM" (12-hour). */
+/** The current Karachi date and time ("2026-10-13 15:10"), ticking each 30 s. Empty in the static
+ *  HTML so a build-time "now" is never shown. */
+export function NowStamp() {
+  const clock = useClock();
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    const tick = () => setNow(new Date());
+    tick();
+    const id = setInterval(tick, 30_000);
+    return () => clearInterval(id);
+  }, []);
+  if (!now) return null;
+  return (
+    <time dateTime={now.toISOString()} dir="ltr" className="tabular-nums">
+      {karachiDate(now)} {clock(karachiMinuteOfDay(now))}
+    </time>
+  );
+}
+
+/** Hour-of-day axis label: "06" (24-hour) or "6 AM" (12-hour); 24 is the closing midnight. */
 export function HourLabel({ hour, compact }: { hour: number; compact?: boolean }) {
   const mode = useClockMode();
   const halves = useContext(Halves);
   if (mode === "24") return <>{hhmm(hour * 60).slice(0, 2)}</>;
   const h = hour % 12 || 12;
-  return <>{compact ? h : `${h} ${hour < 12 ? halves.am : halves.pm}`}</>;
+  return <>{compact ? h : `${h} ${hour < 12 || hour === 24 ? halves.am : halves.pm}`}</>;
 }
 
 /** Shows `am`/`pm` only in 12-hour mode (e.g. a header row above compact hour labels). */

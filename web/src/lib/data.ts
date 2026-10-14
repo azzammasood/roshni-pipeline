@@ -12,6 +12,8 @@ import type {
   EquityDocument,
   FeedersDocument,
   MetaDocument,
+  NationalDocument,
+  NewsDocument,
   PlannedShutdownsDocument,
 } from "@/types/v1";
 
@@ -22,6 +24,8 @@ type Documents = {
   planned_shutdowns: PlannedShutdownsDocument;
   areas: AreasDocument;
   equity: EquityDocument;
+  national: NationalDocument;
+  news: NewsDocument;
 };
 
 const DATA_DIR = path.join(process.cwd(), "public", "data", "v1");

@@ -11,8 +11,10 @@ import { feederHref } from "@/lib/urls";
 import { useExport } from "@/lib/useExport";
 import { ScrollRegion } from "@/components/ScrollRegion";
 import { useClock, useClockMode } from "@/components/Clock";
+import { FeederFinder, PinnedFeeder } from "@/components/PinnedFeeder";
+import { usePin } from "@/lib/pin";
 
-type Strings = Pick<Dictionary, "home" | "common" | "matchState" | "sources"> & {
+type Strings = Pick<Dictionary, "home" | "common" | "matchState" | "sources" | "lead"> & {
   halves: { am: string; pm: string };
 };
 const PREVIEW_ROWS = 25;
@@ -50,7 +52,7 @@ function writeUrl(at: string | null, level: IescoLevel | null, q: string) {
   window.history.replaceState(null, "", `${window.location.pathname}${search ? `?${search}` : ""}`);
 }
 
-export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
+export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings; counts: string }) {
   const state = useExport(["feeders", "dark_profiles", "planned_shutdowns"] as const);
   const [chosen, setChosen] = useState<string | null>(null); // null = follow the clock
   const [now, setNow] = useState<Date | null>(null);
@@ -58,6 +60,7 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
   const [query, setQuery] = useState("");
   const loaded = useRef(false);
   const clock = useClock();
+  const pin = usePin();
 
   useEffect(() => {
     const u = readUrl();
@@ -113,8 +116,81 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
   const scenario = rows.filter((r) => r.kind.startsWith("scenario_level_"));
   const planned = rows.filter((r) => r.kind === "planned_shutdown");
 
+  const ready = state.status === "ready" ? state.data : null;
+  const scheduled = useMemo(() => ready?.feeders.data.filter((f) => f.has_schedule) ?? [], [ready]);
+  const profiles = useMemo(
+    () => new Map((ready?.dark_profiles.data ?? []).map((p) => [p.feeder_id, p])),
+    [ready],
+  );
+  const stats = useMemo(() => {
+    if (!result) return null;
+    const unique = (kind: (k: string) => boolean, source?: string) =>
+      new Set(result.rows.filter((r) => kind(r.kind) && (!source || r.source === source)).map((r) => r.feederId)).size;
+    const keTotal = [...profiles.values()].filter(
+      (p) => p.source === "kelectric" && (p.daily_windows?.length ?? 0) > 0 && p.effective_from <= result.localDate,
+    ).length;
+    return {
+      ke: unique((k) => k === "daily_cycle", "kelectric"),
+      keTotal,
+      planned: result.rows.filter((r) => r.kind === "planned_shutdown").length,
+      scenario: unique((k) => k.startsWith("scenario_level_")),
+    };
+  }, [result, profiles]);
+  const pinned = pin ? scheduled.find((f) => f.feeder_id === pin) : undefined;
+  const time = result ? clock(result.minuteOfDay) : "";
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-10">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_15rem]">
+        <div className="min-w-0">
+          {pinned && result ? (
+            <PinnedFeeder
+              feeders={scheduled}
+              feeder={pinned}
+              profile={profiles.get(pinned.feeder_id)}
+              minute={result.minuteOfDay}
+              today={result.localDate}
+              level={level}
+              onLevel={setLevel}
+              locale={locale}
+              t={t}
+            />
+          ) : ready && (!pin || result) ? (
+            <FeederFinder feeders={scheduled} locale={locale} t={t} />
+          ) : (
+            <section className="space-y-3">
+              <p className="kicker">{t.lead.kicker}</p>
+              <h1 className="headline text-[2.1rem] sm:text-5xl">{t.lead.findTitle}</h1>
+              <p className="text-muted">{state.status === "error" ? t.common.loadError : t.common.loading}</p>
+            </section>
+          )}
+        </div>
+        <aside
+          aria-label={t.lead.statsLabel}
+          className="rule grid grid-cols-2 gap-x-4 lg:grid-cols-1 lg:border-t-0 lg:border-s lg:border-line lg:ps-6 content-start"
+        >
+          <Stat value={stats ? num(stats.ke, locale) : "–"} text={fill(t.lead.statKe, { total: stats ? stats.keTotal : "–", time }, locale)} />
+          <Stat value={stats ? num(stats.planned, locale) : "–"} text={fill(t.lead.statPlanned, { time }, locale)} />
+          {level !== null ? (
+            <Stat
+              value={stats ? num(stats.scenario, locale) : "–"}
+              text={fill(t.lead.statLevel, { n: level, time }, locale)}
+            />
+          ) : (
+            <p className="col-span-2 lg:col-span-1 py-3 text-sm text-muted rule-thin">{t.lead.statLevelNone}</p>
+          )}
+        </aside>
+      </div>
+
+      <section aria-labelledby="listings" className="rule pt-4 space-y-5">
+        <div className="space-y-2">
+          <p className="kicker">{t.lead.listingsKicker}</p>
+          <h2 id="listings" className="headline text-3xl sm:text-4xl">
+            {t.home.title}
+          </h2>
+          <p className="max-w-prose">{t.home.intro}</p>
+          <p className="text-sm text-muted">{counts}</p>
+        </div>
       <form className="grid gap-3 sm:grid-cols-3 items-end" onSubmit={(e) => e.preventDefault()}>
         <WhenField
           value={chosen ?? (now ? toInput(now) : "")}
@@ -123,7 +199,7 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
           t={t}
         />
         <label className="grid gap-1 text-sm">
-          <span className="font-medium">{t.home.level}</span>
+          <span className="kicker">{t.home.level}</span>
           <select
             className="field"
             value={level ?? ""}
@@ -138,7 +214,7 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
           </select>
         </label>
         <label className="grid gap-1 text-sm">
-          <span className="font-medium">{t.common.search}</span>
+          <span className="kicker">{t.common.search}</span>
           <input
             type="search"
             className="field"
@@ -156,7 +232,7 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
 
       {result && (
         <>
-          <p aria-live="polite" className="text-lg font-medium">
+          <p aria-live="polite" className="headline text-xl">
             {/* No grand total: IESCO rows are "if level N", not the published daily schedule. */}
             {fill(t.home.summary, { time: clock(result.minuteOfDay), date: result.localDate }, locale)}
           </p>
@@ -174,7 +250,17 @@ export function DarkNowPanel({ locale, t }: { locale: string; t: Strings }) {
           <Group title={t.home.groupPlanned} rows={planned} locale={locale} t={t} />
         </>
       )}
+      </section>
     </div>
+  );
+}
+
+function Stat({ value, text }: { value: string; text: string }) {
+  return (
+    <p className="py-3 lg:border-t lg:border-line lg:first:border-t-0">
+      <span className="block headline text-5xl tabular-nums">{value}</span>
+      <span className="block text-sm">{text}</span>
+    </p>
   );
 }
 
@@ -221,7 +307,7 @@ function WhenField({
     mode === "24" ? pad(h) : `${h % 12 || 12} ${h < 12 ? t.halves.am : t.halves.pm}`;
   return (
     <fieldset className="grid gap-1 text-sm min-w-0">
-      <legend className="font-medium mb-1">{t.home.time}</legend>
+      <legend className="kicker mb-1">{t.home.time}</legend>
       <div className="flex flex-wrap gap-2" dir="ltr">
         <label className="field relative flex items-center gap-2 cursor-pointer focus-within:outline-2 focus-within:outline-accent tabular-nums">
           <span className="sr-only">{t.home.date}</span>
@@ -279,9 +365,9 @@ function Group({ title, rows, locale, t }: { title: string; rows: DarkRow[]; loc
   const shown = all ? rows : rows.slice(0, PREVIEW_ROWS);
   return (
     <section className="space-y-2">
-      <h2 className="text-lg font-semibold">
-        {title} <span className="text-muted font-normal">({num(rows.length, locale)})</span>
-      </h2>
+      <h3 className="headline text-2xl">
+        {title} <span className="font-mono text-base text-muted">({num(rows.length, locale)})</span>
+      </h3>
       {rows.length === 0 ? (
         <p className="text-muted">{t.common.none}</p>
       ) : (

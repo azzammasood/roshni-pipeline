@@ -1,8 +1,8 @@
 // Translation checks (CI, after sync-data):
 //  1. every dictionary has exactly the keys of en.json, with the same {placeholders};
 //  2. no leftover English words in non-English dictionaries (allow-list below);
-//  3. safety text from the export (label, disclaimer, scope note) has a translation, and every
-//     other fixed export string is reported if it would show in English.
+//  3. safety text from the export (labels, disclaimer, scope note, NEPRA basis and caveat) has a
+//     translation, and every other fixed export string is reported if it would show in English.
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -38,7 +38,21 @@ for (const locale of LOCALES) {
   const data = async (doc) => read(`public/data/v1/${doc}.json`);
   const meta = await data("meta");
   const equity = await data("equity");
-  const required = [meta.label, meta.data.disclaimer, equity.data.scope_note];
+  const national = await data("national");
+  const news = await data("news");
+  const required = [
+    meta.label,
+    meta.data.disclaimer,
+    equity.data.scope_note,
+    // NEPRA figures: what they are and the regulator's own caveat (reported, not measured).
+    national.label,
+    news.label,
+    // NEPRA's order on K-Electric: what the figures are (regulator's analysis, period not stated).
+    ...(equity.data.regulator_review ? [equity.data.regulator_review.basis] : []),
+    national.data.basis,
+    national.data.caveat,
+    ...national.data.gaps,
+  ];
   const optional = [...meta.data.attribution, ...meta.data.sources.map((s) => s.effective_basis)];
   for (const s of new Set(required)) if (!exportText[s]) problems.push(`${locale}: no translation for required export text "${s}"`);
   for (const s of new Set(optional)) if (!exportText[s]) warnings.push(`${locale}: export text shown in English: "${s}"`);
