@@ -388,3 +388,17 @@ models:
   - name: window_hours
     data_tests:
     - not_null
+- name: mart_ke_schedule_history
+  description: 'Every stored K-Electric schedule version with its effective date, feeders and mean
+    scheduled hours a day (schedule, not measurement).
+
+    '
+  columns:
+  - name: source_sha256
+    data_tests:
+    - unique
+    - not_null
+  - name: effective_from
+    data_tests:
+    - unique
+    - not_null

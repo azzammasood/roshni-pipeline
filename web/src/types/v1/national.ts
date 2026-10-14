@@ -52,9 +52,13 @@ export interface PolicyEvent {
 }
 export interface MonthlyKeSchedule {
   /**
-   * Average scheduled hours a day across K-Electric's listed feeders
+   * Average scheduled hours a day across the feeders in the schedule in force
    */
   avg_scheduled_hours: number;
+  /**
+   * A new schedule took effect during the month (value at month end)
+   */
+  changed_in_month?: boolean;
   /**
    * The schedule in force, effective from this date
    */

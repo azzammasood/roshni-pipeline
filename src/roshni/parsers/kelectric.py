@@ -162,3 +162,30 @@ def parse_schedule(path: Path) -> tuple[ParseResult, ParseResult]:
                         )
                     )
     return feeders, cycles
+
+
+class KeScheduleVersion(Provenance):
+    """One stored version of K-Electric's schedule PDF, summarised (its effective date comes from
+    the source_documents seed by SHA-256). Every version is kept, so a month keeps the schedule
+    that was in force then after K-Electric publishes a new one."""
+
+    feeders: int
+    avg_scheduled_minutes: float  # mean daily scheduled minutes across the feeders in the file
+    quarantined: int  # schedule lines this version could not parse
+
+
+def summarize_version(sched: ParseResult) -> list[KeScheduleVersion]:
+    """Summary of one parsed schedule file (empty if no rows parsed)."""
+    if not sched.rows:
+        return []
+    first = sched.rows[0]
+    return [
+        KeScheduleVersion(
+            source_file=first.source_file,
+            source_sha256=first.source_sha256,
+            fetched_at=first.fetched_at,
+            feeders=len(sched.rows),
+            avg_scheduled_minutes=sum(r.total_minutes for r in sched.rows) / len(sched.rows),
+            quarantined=len(sched.quarantine),
+        )
+    ]

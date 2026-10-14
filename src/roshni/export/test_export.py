@@ -106,3 +106,24 @@ def test_export_session_is_utc_on_any_machine() -> None:
     (row,) = _rows(con, "select timestamptz '2026-09-10 05:00:00+05' as start_utc")
     assert row["start_utc"].utcoffset().total_seconds() == 0
     assert row["start_utc"].hour == 0
+
+
+def test_ke_months_keep_each_months_schedule() -> None:
+    from datetime import date
+
+    from roshni.export.build import ke_months
+
+    versions = [
+        {"effective_from": date(2026, 8, 5), "avg_scheduled_hours": 10.78, "feeders": 618},
+        {"effective_from": date(2026, 10, 20), "avg_scheduled_hours": 8.5, "feeders": 600},
+    ]
+    got = [(r.month, r.avg_scheduled_hours, r.changed_in_month)
+           for r in ke_months(versions, date(2026, 11, 3))]  # fmt: skip
+    # August and September keep the first schedule; October ends on the new one (flagged).
+    assert got == [
+        ("2026-08", 10.78, False),
+        ("2026-09", 10.78, False),
+        ("2026-10", 8.5, True),
+        ("2026-11", 8.5, False),
+    ]
+    assert ke_months([], date(2026, 11, 3)) == []

@@ -107,7 +107,8 @@
     "keTitle": "K-Electric's published schedule",
     "keHours": "{h} h a day",
     "keNone": "No schedule on file",
-    "keNote": "Average scheduled hours a day across {n} listed feeders, from the schedule effective {date}. No earlier K-Electric schedule is on file, so earlier months are blank. A schedule, not a measurement."
+    "keNote": "Average scheduled hours a day across the {n} feeders in K-Electric's schedule, from the schedule effective {date}; each month shows the schedule in force at its end. No earlier K-Electric schedule is on file, so earlier months are blank. A schedule, not a measurement.",
+    "keChanged": "new schedule from {date}"
   },
   "news": {
     "kicker": "In the news",

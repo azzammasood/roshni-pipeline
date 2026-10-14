@@ -28,6 +28,10 @@ sources:
           NEPRA Performance Evaluation Reports, section 3.6: average daily load-shedding hours each
           distribution company reported to NEPRA, one row per report x fiscal year x company
           (reports restate the previous four years).
+      - name: kelectric_schedule_version
+        description: >
+          Every stored version of K-Electric's schedule PDF: feeders and mean daily scheduled
+          minutes (schedule, not measured); effective date from the source_documents seed.
       - name: nepra_ke_order_category
         description: >
           NEPRA's order on K-Electric (2026-08-31): feeders, consumers, average AT&C % and
