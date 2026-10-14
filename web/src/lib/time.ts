@@ -63,3 +63,18 @@ export function isoMonth(period: string): string {
   const m = /^(\d{1,2})\/(\d{4})$/.exec(period.trim());
   return m ? `${m[2]}-${m[1].padStart(2, "0")}` : period;
 }
+
+// Month names per locale, fixed here so server and browser always print the same text.
+const MONTHS: Record<string, readonly string[]> = {
+  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  ur: ["جنوری", "فروری", "مارچ", "اپریل", "مئی", "جون", "جولائی", "اگست", "ستمبر", "اکتوبر", "نومبر", "دسمبر"],
+};
+
+/** "2026-09" -> "Sep 2026" (Urdu "ستمبر 2026"). Data and `dateTime` attributes stay ISO; anything
+ *  that is not an ISO month is returned unchanged. */
+export function monthLabel(isoMonth: string, locale: string): string {
+  const m = /^(\d{4})-(\d{2})$/.exec(isoMonth);
+  const names = MONTHS[locale] ?? MONTHS.en;
+  const i = m ? Number(m[2]) - 1 : -1;
+  return m && names[i] ? `${names[i]} ${m[1]}` : isoMonth;
+}

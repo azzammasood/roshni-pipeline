@@ -6,6 +6,7 @@
 import type { Dictionary } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/dictionaries";
 import { num } from "@/lib/format";
+import { monthLabel } from "@/lib/time";
 import type { National } from "@/types/v1";
 import { ScrollRegion } from "@/components/ScrollRegion";
 
@@ -44,7 +45,7 @@ export function MonthlyPanel({
         <p className="text-sm text-muted max-w-prose">{t.shutNote}</p>
         <ScrollRegion label={t.shutTitle}>
         <ol className="grid gap-3 rule pt-3" style={{ gridTemplateColumns: `repeat(${months.length}, minmax(4.5rem, 1fr))` }}>
-          {months.map((mo) => {
+          {months.map((mo, i) => {
             const s = byMonth.get(mo);
             const partialStart = s && s.first_date.slice(8) !== "01" && mo === shut[0]?.month;
             const soFar = mo === asOfMonth;
@@ -58,16 +59,16 @@ export function MonthlyPanel({
                     <p className="text-xs text-muted">{fill(t.windows, { w: n(s.windows), r: n(s.releases) }, locale)}</p>
                     <div
                       aria-hidden="true"
-                      className={`mt-1 border border-ink ${partialStart || soFar ? "month-partial" : "bg-dark"}`}
-                      style={{ height: `${Math.max((s.window_hours / max) * BAR_MAX_REM, 0.3)}rem` }}
+                      className={`bar-grow mt-1 border border-ink ${partialStart || soFar ? "month-partial" : "bg-dark"}`}
+                      style={{ height: `${Math.max((s.window_hours / max) * BAR_MAX_REM, 0.3)}rem`, "--i": i } as React.CSSProperties}
                     />
                   </>
                 ) : (
                   <p className="text-xs text-muted">{t.none}</p>
                 )}
-                <p className="font-mono text-xs pt-1 border-t-2 border-ink" dir="ltr">
-                  {mo}
-                </p>
+                <time dateTime={mo} className="block text-xs font-semibold pt-1 border-t-2 border-ink whitespace-nowrap">
+                  {monthLabel(mo, locale)}
+                </time>
                 {s && partialStart && (
                   <p className="text-xs text-muted">{fill(t.from, { date: s.first_date }, locale)}</p>
                 )}
@@ -86,7 +87,7 @@ export function MonthlyPanel({
                   <th scope="col">{t.circle}</th>
                   {shut.map((s) => (
                     <th key={s.month} scope="col" className="num">
-                      <span dir="ltr">{s.month}</span>
+                      <time dateTime={s.month} className="whitespace-nowrap">{monthLabel(s.month, locale)}</time>
                     </th>
                   ))}
                 </tr>
@@ -134,9 +135,9 @@ export function MonthlyPanel({
                   ) : (
                     <p className="text-xs text-muted">{t.keNone}</p>
                   )}
-                  <p className="font-mono text-xs text-muted" dir="ltr">
-                    {mo}
-                  </p>
+                  <time dateTime={mo} className="block text-xs text-muted whitespace-nowrap">
+                    {monthLabel(mo, locale)}
+                  </time>
                 </li>
               );
             })}
