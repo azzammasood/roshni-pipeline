@@ -7,7 +7,7 @@ Long facts: `docs/data-audit.md` (oracles, file inventory). Decisions: `docs/DEC
 ## Hard rules
 - **Never touch CCMS** (`ccms.pitc.com.pk`) or any consumer reference number: not in code, tests or docs.
 - **Never fetch `lesco.gov.pk` or `pitc.com.pk`** (robots disallow). Check `robots.txt` for every host.
-- Polite client: UA `roshni-pipeline/0.1 (+https://github.com/azzammasood/roshni-pipeline)`, ≤1 req/s, daily, `If-Modified-Since`/`ETag`.
+- Polite client: UA `roshni-pipeline/0.1 (+https://github.com/azzammasood/roshni-pipeline)`, ≤1 req/s, daily (news feeds every 3 h, `news.yml`, owner 2026-10-14), `If-Modified-Since`/`ETag`.
 - **Schedules are not measurements.** Never call a scheduled outage an actual outage.
 - Fairness stats are descriptive: no causal language, always show n. K-Electric shares are **among listed feeders only**.
 - Never invent data. Unparseable rows → quarantine with a reason. Known anomalies are flagged, never silently fixed.
@@ -34,7 +34,7 @@ uv run ruff check . ; uv run ruff format .
 uv run pre-commit run --all-files
 uv run roshni --help
 uv run python scripts/inventory.py   # data-sources sizes + SHA-256
-uv run roshni snapshot [--store DIR] [--only SOURCE]   # polite fetch; default store data/snapshots
+uv run roshni snapshot [--store DIR] [--only SOURCE]   # polite fetch; default store data/snapshots; --only takes patterns (news_*)
 uv run roshni parse [--snapshots data/snapshots-branch] [--census-from census]  # -> data/parsed/*.parquet + quarantine/
 uv run roshni census-freeze                             # parsed census -> census/ (committed; after census-parser changes only)
 uv run roshni validate                                   # Great Expectations on data/parsed
@@ -85,7 +85,7 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - dbt SQL stays portable (must also run on Databricks): avoid DuckDB-only syntax.
 - Every schedule row carries `effective_from`; every live output carries source, effective date, `last_updated`.
 - Narration: the LLM writes prose only; numbers are injected from queries and validated.
-- Schedulers: GitHub Actions = production (`snapshot.yml` daily, then `publish.yml`: parse → validate → build → resolve → build → report (Haiku 5.5 on prepaid credits, ≤$0.01/run; free models after credits run out) → export → site → public repo `azzammasood/roshni-site`, never edited by hand; failures open a `pipeline-failure` issue); Airflow = local showcase calling the CLI.
+- Schedulers: GitHub Actions = production (`news.yml` every 3 h, news feeds only, trimmed; `snapshot.yml` daily, then `publish.yml`: parse → validate → build → resolve → build → report (Haiku 5.5 on prepaid credits, ≤$0.01/run; free models after credits run out) → export → site → public repo `azzammasood/roshni-site`, never edited by hand; failures open a `pipeline-failure` issue); Airflow = local showcase calling the CLI.
 - The daily resolve (`roshni resolve --llm` in publish) decides press-release names by rules, then by LLM; the publish job commits `dbt/seeds/review_*.csv` back to main (bot commits: pull before editing seeds locally). Names stay `pending_review` only when no key/credits/valid reply; an owner or Claude decision always wins and is never overwritten.
 
 ## Working agreement
@@ -107,4 +107,6 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Frontend F3 (Karachi equity page): done 2026-10-12; `npm run check:equity` traces all 499 numbers to equity.json (in CI).
 - Frontend F4 (daily publish): done 2026-10-12; first publish run green (dbt PASS=129, equity check, 8,675 files), live at https://azzammasood.github.io/roshni-site/.
 - Frontend F5 (Urdu, RTL): done 2026-10-12; axe 0 on all Urdu pages; owner approved the translation, /ur/ published.
+- Redesign "Grid Gazette" (2026-10-13/14): owner chose direction D; pinned-feeder lead, power-line day strips, tower skyline, theme toggle, opening animation; axe 0 at 375 px light/dark en/ur; equity trace passes.
+- National context N1–N4 (2026-10-13/14, owner-approved sources): NEPRA reported load-shedding hours (130 company-years, FY2012-13…FY2024-25), news headlines (14 trimmed feeds, every 3 h), NEPRA order on K-Electric (620 feeders); export 1.3.0; dbt PASS=148.
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).
