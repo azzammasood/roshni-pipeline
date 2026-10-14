@@ -24,10 +24,22 @@ export interface NationalDocument {
   schema_version: string;
 }
 export interface National {
+  /**
+   * Karachi date of this build
+   */
+  as_of?: string | null;
   basis: string;
   caveat: string;
   events: PolicyEvent[];
   gaps: string[];
+  /**
+   * K-Electric's published schedule per month, from its effective date only
+   */
+  monthly_ke?: MonthlyKeSchedule[];
+  /**
+   * IESCO planned shutdowns per month (announced maintenance, not load shedding)
+   */
+  monthly_shutdowns?: MonthlyShutdowns[];
   reports: NepraReport[];
   series: ReportedHours[];
 }
@@ -37,6 +49,50 @@ export interface PolicyEvent {
   max_hours: number | null;
   source_url: string;
   summary: string;
+}
+export interface MonthlyKeSchedule {
+  /**
+   * Average scheduled hours a day across K-Electric's listed feeders
+   */
+  avg_scheduled_hours: number;
+  /**
+   * The schedule in force, effective from this date
+   */
+  effective_from: string;
+  feeders: number;
+  month: string;
+}
+export interface MonthlyShutdowns {
+  circles: CircleMonth[];
+  /**
+   * First outage date in the collected releases
+   */
+  first_date: string;
+  /**
+   * Last outage date in the collected releases
+   */
+  last_date: string;
+  /**
+   * YYYY-MM (Asia/Karachi outage dates as printed)
+   */
+  month: string;
+  releases: number;
+  /**
+   * Sum of window lengths, one per feeder window
+   */
+  window_hours: number;
+  /**
+   * Planned-shutdown windows announced for the month
+   */
+  windows: number;
+}
+export interface CircleMonth {
+  /**
+   * IESCO circle as printed in the press releases
+   */
+  circle: string;
+  window_hours: number;
+  windows: number;
 }
 export interface NepraReport {
   report_year: string;

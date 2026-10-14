@@ -375,3 +375,16 @@ models:
   - name: above_schedule
     data_tests:
     - not_null
+- name: mart_monthly_iesco_shutdowns
+  description: 'IESCO planned shutdowns announced in press releases, per month and circle: windows,
+    summed window hours, releases, and the first/last date covered (maintenance, not load shedding).
+
+    '
+  columns:
+  - name: month_circle_id
+    data_tests:
+    - unique
+    - not_null
+  - name: window_hours
+    data_tests:
+    - not_null
