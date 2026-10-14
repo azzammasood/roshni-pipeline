@@ -21,6 +21,12 @@ const BINS: [number, string, string][] = [
 ];
 const BIN_LABELS = ["< 1", "1–3", "3–6", "6–9", "9+"];
 
+/** "2024-25" -> "2025-26". */
+export function nextFiscalYear(fy: string): string {
+  const start = Number(fy.slice(0, 4)) + 1;
+  return `${start}-${String((start + 1) % 100).padStart(2, "0")}`;
+}
+
 function cellStyle(hours: number) {
   const [, background, color] = BINS.find(([max]) => hours < max)!;
   return { background, color };
@@ -48,6 +54,7 @@ export function NationalPanel({
   const hours = latestRows.map((s) => s.reported_hours_per_day);
   const top = latestRows.reduce((a, b) => (b.reported_hours_per_day > a.reported_hours_per_day ? b : a));
   const flagged = data.series.filter((s) => s.values_disagree);
+  const hasZero = data.series.some((s) => s.reported_hours_per_day === 0);
   const region = t.regions as Record<string, string>;
   const n = (v: number) => num(v, locale);
 
@@ -73,6 +80,7 @@ export function NationalPanel({
                 </th>
                 {years.map((y) => (
                   <th key={y} scope="col" className={y === latest ? "is-latest" : undefined}>
+                    <span className="block font-normal text-[0.6rem] leading-tight">{t.fyShort}</span>
                     {y}
                   </th>
                 ))}
@@ -124,6 +132,19 @@ export function NationalPanel({
             </span>
             <span className="text-muted hidden sm:inline">· {t.hoverHint}</span>
           </p>
+          {/* Fiscal years run July to June. The newest column is the newest year in NEPRA's
+              reports on file; the next year appears when NEPRA publishes it (checked daily). */}
+          <p className="max-w-prose">
+            {fill(
+              t.latestNote,
+              { year: latest, from: latest.slice(0, 4), to: `20${latest.slice(5)}`, next: nextFiscalYear(latest) },
+              locale,
+            )}{" "}
+            <a href="#monthly" className="link">
+              {fill(t.monthlyLink, { year: (data.as_of ?? "").slice(0, 4) }, locale)}
+            </a>
+          </p>
+          {hasZero && <p className="max-w-prose">{t.zeroNote}</p>}
           {flagged.length > 0 && (
             <ul className="space-y-1 text-muted">
               {flagged.map((s) => (

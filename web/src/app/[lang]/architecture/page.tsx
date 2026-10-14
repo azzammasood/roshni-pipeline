@@ -3,6 +3,7 @@ import { loadDocument } from "@/lib/data";
 import { num } from "@/lib/format";
 import { resolveLocale } from "@/lib/locale";
 import { Stamp } from "@/components/Clock";
+import { ToolLogo } from "@/components/ToolLogo";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/architecture">): Promise<Metadata> {
   return { title: (await resolveLocale(params)).dict.architecture.title };
@@ -16,7 +17,7 @@ const SITE_REPO = "https://github.com/azzammasood/roshni-site";
 const STAGES = [
   { key: "sources", tools: ["robots.txt", "httpx", "Beautiful Soup", "RSS"] },
   { key: "snapshot", tools: ["GitHub Actions", "SHA-256", "ETag / If-Modified-Since", "git"] },
-  { key: "parse", tools: ["Docker", "poppler pdftotext", "openpyxl", "pydantic", "Parquet", "Great Expectations"] },
+  { key: "parse", tools: ["Python", "Docker", "poppler pdftotext", "openpyxl", "pydantic", "Parquet", "Great Expectations"] },
   { key: "warehouse", tools: ["dbt", "DuckDB", "Databricks"] },
   { key: "resolve", tools: ["RapidFuzz", "OpenRouter", "Claude"] },
   { key: "publish", tools: ["JSON Schema", "Next.js", "React", "TypeScript", "Tailwind CSS", "GitHub Pages"] },
@@ -71,10 +72,11 @@ export default async function Architecture({ params }: PageProps<"/[lang]/archit
               <span className="arch-lamp" aria-hidden="true" />
               <h3 className="headline text-2xl pe-6">{stages[s.key].title}</h3>
               <p className="mt-1 text-sm">{stages[s.key].body}</p>
-              <ul className="mt-3 flex flex-wrap gap-1.5" aria-label={t.toolsLabel} dir="ltr">
+              <ul className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(4.25rem,1fr))] gap-x-2 gap-y-3" aria-label={t.toolsLabel} dir="ltr">
                 {s.tools.map((tool) => (
-                  <li key={tool} className="arch-tool">
-                    {tool}
+                  <li key={tool} className="tool-card">
+                    <ToolLogo name={tool} />
+                    <span>{tool}</span>
                   </li>
                 ))}
               </ul>
@@ -91,7 +93,8 @@ export default async function Architecture({ params }: PageProps<"/[lang]/archit
           <p className="text-sm max-w-prose">{t.runs}</p>
           <ul className="flex flex-wrap gap-1.5" aria-label={t.toolsLabel} dir="ltr">
             {RUNNERS.map((tool) => (
-              <li key={tool} className="arch-tool">
+              <li key={tool} className="arch-tool gap-1.5">
+                <ToolLogo name={tool} size="sm" />
                 {tool}
               </li>
             ))}
@@ -104,7 +107,8 @@ export default async function Architecture({ params }: PageProps<"/[lang]/archit
           <p className="text-sm max-w-prose">{t.checks}</p>
           <ul className="flex flex-wrap gap-1.5" aria-label={t.toolsLabel} dir="ltr">
             {CHECKS.map((tool) => (
-              <li key={tool} className="arch-tool">
+              <li key={tool} className="arch-tool gap-1.5">
+                <ToolLogo name={tool} size="sm" />
                 {tool}
               </li>
             ))}
@@ -146,6 +150,7 @@ export default async function Architecture({ params }: PageProps<"/[lang]/archit
             github.com/azzammasood/roshni-site
           </a>
         </p>
+        <p className="text-xs text-muted max-w-prose">{t.logosNote}</p>
       </section>
     </article>
   );

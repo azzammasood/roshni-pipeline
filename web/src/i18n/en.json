@@ -97,8 +97,12 @@
       "TESCO": "Tribal districts",
       "K-Electric": "Karachi"
     },
-    "hoverHint": "point at a cell to light it up",
-    "cellTitle": "{company}, FY {year}: {hours} hours a day reported to NEPRA"
+    "hoverHint": "point at a cell for its details",
+    "cellTitle": "{company}, FY {year}: {hours} hours a day reported to NEPRA",
+    "fyShort": "FY",
+    "latestNote": "Years are fiscal years, July to June. FY {year} (July {from} to June {to}) is the newest year in NEPRA's reports; FY {next} will appear once NEPRA publishes its report (Roshni checks NEPRA's list every day).",
+    "monthlyLink": "{year} so far: Roshni's own month-by-month records",
+    "zeroNote": "A 0 is the figure the company reported to NEPRA, not a measurement; NEPRA's caveat below says some companies under-report."
   },
   "monthly": {
     "kicker": "Month by month",
@@ -455,6 +459,7 @@
       "Times are shown in Pakistan time (UTC+5) and stored in UTC.",
       "Approximate matches always show their confidence and who accepted them."
     ],
-    "repo": "Source of the published site:"
+    "repo": "Source of the published site:",
+    "logosNote": "Logos are trademarks of their owners, shown only to name the tools used (icons from Simple Icons, CC0). Tools without a published icon are shown as lettered tiles."
   }
 }
