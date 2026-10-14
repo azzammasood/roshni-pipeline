@@ -269,7 +269,8 @@ html[lang="ur"] :is(input, select, button) {
 }
 
 /* Opening animation (first page of a session): pulse along the line, bulb flickers on, name
-   appears, curtain lifts. ~2.2 s; never shown with reduced motion or after the first page. */
+   appears while a loading line fills (motion.css), curtain lifts. ~3.6 s; a click or key skips
+   it (components/IntroSkip.tsx); never shown with reduced motion or after the first page. */
 .intro {
   position: fixed;
   inset: 0;
@@ -278,7 +279,7 @@ html[lang="ur"] :is(input, select, button) {
   place-items: center;
   background: var(--sky);
   color: var(--sky-ink);
-  animation: intro-out 0.5s ease-in 1.75s forwards;
+  animation: intro-out 0.5s ease-in 3.15s forwards;
 }
 .intro-stage {
   width: min(92vw, 34rem);

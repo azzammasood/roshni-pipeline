@@ -35,7 +35,11 @@ export function ThemeToggle({ label, names }: { label: string; names: Record<The
           aria-pressed={theme === value}
           aria-label={names[value]}
           title={names[value]}
-          onClick={() => setTheme(value)}
+          onClick={(e) => {
+            if (value === theme) return;
+            const r = e.currentTarget.getBoundingClientRect();
+            setTheme(value, { x: r.left + r.width / 2, y: r.top + r.height / 2 });
+          }}
           className={`px-1.5 py-1 ${theme === value ? "bg-dark text-bg" : "text-muted hover:text-ink"}`}
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 fill-none stroke-current" strokeWidth={1.4} aria-hidden="true">

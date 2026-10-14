@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HourBars } from "@/components/HourBars";
 import { PinButton } from "@/components/PinButton";
@@ -63,6 +64,17 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
   return (
     <article className="space-y-10">
       <header className="space-y-4">
+        <Link
+          prefetch={false}
+          href={`/${locale}/`}
+          transitionTypes={["nav-back"]}
+          className="link inline-flex items-center gap-1.5 text-sm"
+        >
+          <svg aria-hidden="true" viewBox="0 0 16 16" className="h-3.5 w-3.5 fill-none stroke-current rtl:-scale-x-100" strokeWidth={1.6}>
+            <path d="M10 3 5 8l5 5" />
+          </svg>
+          {dict.nav.home}
+        </Link>
         <p className="kicker flex flex-wrap gap-x-2">
           <span>{dict.sources[feeder.source]}</span>
           {area && (

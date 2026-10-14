@@ -160,8 +160,9 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
           ) : (
             <section className="space-y-3">
               <p className="kicker">{t.lead.kicker}</p>
-              <h1 className="headline text-[2.1rem] sm:text-5xl">{t.lead.findTitle}</h1>
+              <h1 id="lead" className="headline text-[2.1rem] sm:text-5xl">{t.lead.findTitle}</h1>
               <p className="text-muted">{state.status === "error" ? t.common.loadError : t.common.loading}</p>
+              {state.status !== "error" && <Skeleton lines={2} />}
             </section>
           )}
         </div>
@@ -227,12 +228,15 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
 
       {state.status === "error" && <p role="alert">{t.common.loadError}</p>}
       {(state.status === "loading" || !result) && state.status !== "error" && (
-        <p className="text-muted">{t.common.loading}</p>
+        <div className="space-y-3">
+          <p className="text-muted">{t.common.loading}</p>
+          <Skeleton lines={5} />
+        </div>
       )}
 
       {result && (
         <>
-          <p aria-live="polite" className="headline text-xl">
+          <p aria-live="polite" className="headline text-xl stagger-in" key={`${result.localDate}${result.minuteOfDay}${level}`}>
             {/* No grand total: IESCO rows are "if level N", not the published daily schedule. */}
             {fill(t.home.summary, { time: clock(result.minuteOfDay), date: result.localDate }, locale)}
           </p>
@@ -251,6 +255,17 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
         </>
       )}
       </section>
+    </div>
+  );
+}
+
+/** Placeholder rows while the schedules load (shimmer only when motion is welcome). */
+function Skeleton({ lines }: { lines: number }) {
+  return (
+    <div aria-hidden="true" className="space-y-2 max-w-xl">
+      {Array.from({ length: lines }, (_, i) => (
+        <div key={i} className="skeleton h-4" style={{ width: `${90 - ((i * 23) % 40)}%` }} />
+      ))}
     </div>
   );
 }

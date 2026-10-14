@@ -86,7 +86,11 @@ export function ShutdownNotices({ locale, t }: { locale: string; t: Pick<Diction
                 })}
               </ul>
               {rows.length > PER_DAY && (
-                <p className="text-sm text-muted pt-2">{fill(s.moreBelow, { n: rows.length - PER_DAY }, locale)}</p>
+                <p className="text-sm pt-2">
+                  <a href="#all-shutdowns" className="link">
+                    {fill(s.moreBelow, { n: rows.length - PER_DAY }, locale)}
+                  </a>
+                </p>
               )}
             </article>
           ))}

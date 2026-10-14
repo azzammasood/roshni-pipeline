@@ -17,14 +17,21 @@
       "system": "Match system theme",
       "light": "Light theme",
       "dark": "Dark theme"
-    }
+    },
+    "loading": {
+      "schedules": "Loading feeder schedules",
+      "reports": "Reading NEPRA reports",
+      "grid": "Drawing the grid"
+    },
+    "toTop": "Back to top"
   },
   "nav": {
     "label": "Main",
     "home": "Scheduled now",
     "shutdowns": "Planned shutdowns",
     "equity": "Karachi schedule hours",
-    "about": "About the data"
+    "about": "About the data",
+    "architecture": "How it's built"
   },
   "banner": {
     "scheduled": "Scheduled (published schedule data), not measured outages."
@@ -89,7 +96,9 @@
       "HESCO": "Hyderabad",
       "TESCO": "Tribal districts",
       "K-Electric": "Karachi"
-    }
+    },
+    "hoverHint": "point at a cell to light it up",
+    "cellTitle": "{company}, FY {year}: {hours} hours a day reported to NEPRA"
   },
   "monthly": {
     "kicker": "Month by month",
@@ -135,7 +144,12 @@
     "noteUnmatched": "{n} planned shutdowns name a feeder that could not be matched to the feeder list; they are shown as printed.",
     "date": "Date",
     "hour": "Hour",
-    "minute": "Minute"
+    "minute": "Minute",
+    "jumpLabel": "On this page",
+    "jumpNational": "Pakistan",
+    "jumpMonthly": "Month by month",
+    "jumpNews": "In the news",
+    "jumpFeeder": "Your feeder"
   },
   "lead": {
     "kicker": "Your feeder",
@@ -169,7 +183,8 @@
     "statPlanned": "IESCO planned shutdowns (press releases) scheduled at {time}",
     "statLevel": "IESCO feeders scheduled dark at {time} if level {n} is in force",
     "statLevelNone": "Choose an IESCO level to count IESCO feeders.",
-    "listingsKicker": "Every feeder, any time"
+    "listingsKicker": "Every feeder, any time",
+    "connecting": "Reading the schedule for"
   },
   "feeder": {
     "source": "Source",
@@ -388,5 +403,58 @@
     "title": "Page not found",
     "body": "This page does not exist. The schedule pages are listed below.",
     "home": "Go to the home page"
+  },
+  "architecture": {
+    "kicker": "Portfolio · how Roshni is built",
+    "title": "From a utility's PDF to this page, every day",
+    "intro": "Roshni is a small data platform. It collects published schedules and reports, checks and models them in a warehouse, matches names across sources and publishes this static site. Each step below is a command in one Python command-line tool, and GitHub Actions runs them in order every day.",
+    "flowTitle": "The pipeline",
+    "flowHint": "The lamps light in the order the data moves.",
+    "toolsLabel": "Tools",
+    "stages": {
+      "sources": {
+        "title": "Public sources",
+        "body": "Load-shedding schedules from IESCO and K-Electric, IESCO's planned-shutdown press releases, the PBS Census 2023, NEPRA's performance reports and approved news feeds. Only approved sources, and robots.txt is checked for every host."
+      },
+      "snapshot": {
+        "title": "Polite snapshots",
+        "body": "A daily job fetches each source at most once a second, asks only for files that changed, and stores every new file once, with its SHA-256 hash and fetch time, on a separate branch."
+      },
+      "parse": {
+        "title": "Parse and check",
+        "body": "One parser per source turns PDFs and spreadsheets into typed rows saved as Parquet. Rows that cannot be read go to quarantine with a reason, and expectation suites check every table."
+      },
+      "warehouse": {
+        "title": "Warehouse",
+        "body": "SQL models build staging views, joins and marts in DuckDB, with tests on every model. The same models run unchanged on Databricks."
+      },
+      "resolve": {
+        "title": "Match and analyse",
+        "body": "Feeder names are matched across sources by name similarity. Exact matches are accepted; the rest are decided by written rules, then by a language model choosing only among listed candidates, then by Claude, each with a stored confidence. Descriptive statistics and a weekly summary follow: the model writes prose only, and every number in it is checked."
+      },
+      "publish": {
+        "title": "Export and publish",
+        "body": "Tables are exported as versioned JSON, validated against a schema and typed into the site, which is built as static pages in English and Urdu and pushed to GitHub Pages."
+      }
+    },
+    "runsTitle": "What runs it",
+    "runs": "GitHub Actions is production: a daily snapshot job, then the publish job (parse, validate, build, match, report, export, site), and news feeds every three hours. A failure opens an issue. An Airflow DAG in Docker runs the same commands locally as a showcase.",
+    "checksTitle": "What keeps it honest",
+    "checks": "Golden tests on every parser, expectations on parsed tables and tests on every model. The site has its own gates: every number on the Karachi page is traced back to the export, translations are checked, pages are checked for accessibility in light and dark, and the browser's scheduled-dark logic is compared with Python's on the full export.",
+    "todayTitle": "In today's build",
+    "todayNote": "Counts from the published files. Last updated:",
+    "statSources": "schedule files in use",
+    "statFeeders": "feeders with a published schedule",
+    "statShutdowns": "planned shutdown windows",
+    "statNational": "company-years from NEPRA",
+    "statNews": "headlines on file",
+    "principlesTitle": "Rules it follows",
+    "principles": [
+      "Schedules are not measurements: a scheduled window is never called an actual outage.",
+      "Nothing is invented: unreadable rows are quarantined with a reason, and known anomalies are flagged.",
+      "Times are shown in Pakistan time (UTC+5) and stored in UTC.",
+      "Approximate matches always show their confidence and who accepted them."
+    ],
+    "repo": "Source of the published site:"
   }
 }
