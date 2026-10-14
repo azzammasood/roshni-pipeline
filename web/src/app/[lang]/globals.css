@@ -199,11 +199,11 @@ body {
 /* Urdu: Nastaliq throughout (no Latin display face), generous line height, no capitals or
    tracking. Form controls inherit the font. */
 html[lang="ur"] body {
-  font-family: var(--font-urdu), "Jameel Noori Nastaleeq", "Urdu Typesetting", system-ui, sans-serif;
+  font-family: var(--font-urdu), "Jameel Noori Nastaleeq", "Urdu Typesetting", var(--font-body), system-ui, sans-serif;
   line-height: 2.1;
 }
 html[lang="ur"] :is(.headline, .kicker, .font-display, .font-serif) {
-  font-family: var(--font-urdu), "Jameel Noori Nastaleeq", "Urdu Typesetting", system-ui, sans-serif;
+  font-family: var(--font-urdu), "Jameel Noori Nastaleeq", "Urdu Typesetting", var(--font-body), system-ui, sans-serif;
   letter-spacing: 0;
   text-transform: none;
 }
