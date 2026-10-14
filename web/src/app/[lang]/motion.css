@@ -1,0 +1,506 @@
+/* Motion layer (2026-10-14 review): hover, transitions, the opening loader, the feeder "connect"
+   reveal and the architecture diagram. Everything here is decorative: with reduced motion the
+   page is complete and static. Tokens come from globals.css. */
+
+/* National grid hover: the hovered cell lights up (a flicker and a spreading ring) while the rest
+   of the grid browns out; its row stays half lit and its row and column headers get a wire.
+   Colours and text never change, so the resting state is what contrast checks see. */
+.national-grid td:not(.is-empty) {
+  position: relative;
+  cursor: default;
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.25s ease,
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
+}
+.national-grid th {
+  transition: box-shadow 0.2s ease;
+}
+.national-grid td:not(.is-empty):hover {
+  z-index: 2;
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--wire);
+}
+.national-grid tr:has(td:not(.is-empty):hover) > th {
+  box-shadow: inset 4px 0 0 var(--wire);
+}
+html[dir="rtl"] .national-grid tr:has(td:not(.is-empty):hover) > th {
+  box-shadow: inset -4px 0 0 var(--wire);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .national-grid:has(td:not(.is-empty):hover) td:not(.is-empty) {
+    opacity: 0.35;
+    filter: saturate(0.4);
+  }
+  .national-grid:has(td:not(.is-empty):hover) tr:has(td:hover) td:not(.is-empty) {
+    opacity: 0.8;
+    filter: none;
+  }
+  .national-grid td:not(.is-empty):hover {
+    opacity: 1 !important;
+    filter: none;
+    transform: scale(1.22);
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 4px var(--wire),
+      0 10px 28px -6px rgb(245 197 24 / 0.75);
+    animation: cell-flicker 0.55s linear;
+  }
+  .national-grid td:not(.is-empty):hover::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--wire);
+    pointer-events: none;
+    animation: cell-ring 1.1s ease-out infinite;
+  }
+}
+@keyframes cell-flicker {
+  0% { filter: brightness(1.7); }
+  12% { filter: brightness(0.7); }
+  24% { filter: brightness(1.5); }
+  36% { filter: brightness(0.9); }
+  60% { filter: brightness(1.15); }
+  100% { filter: none; }
+}
+@keyframes cell-ring {
+  from { opacity: 0.9; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.45); }
+}
+
+/* Theme switch: the new theme spreads from the toggle as a circle (lib/theme.ts drives it with
+   the View Transitions API; without it, or with reduced motion, the switch is instant). */
+html.theme-swap::view-transition-old(root),
+html.theme-swap::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.theme-swap::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* Section changes (header tabs, components/PageTransition.tsx): the page slides toward the
+   reading direction on a forward tab and back on an earlier one; header and footer stay put. */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(.nav-forward),
+  ::view-transition-old(.nav-back) {
+    animation:
+      160ms ease-in both vt-fade reverse,
+      380ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide reverse;
+  }
+  ::view-transition-new(.nav-forward),
+  ::view-transition-new(.nav-back) {
+    animation:
+      240ms ease-out 140ms both vt-fade,
+      380ms cubic-bezier(0.4, 0, 0.2, 1) both vt-slide;
+  }
+  ::view-transition-old(.nav-forward) { --vt-offset: -48px; }
+  ::view-transition-new(.nav-forward) { --vt-offset: 48px; }
+  ::view-transition-old(.nav-back) { --vt-offset: 48px; }
+  ::view-transition-new(.nav-back) { --vt-offset: -48px; }
+  html[dir="rtl"]::view-transition-old(.nav-forward) { --vt-offset: 48px; }
+  html[dir="rtl"]::view-transition-new(.nav-forward) { --vt-offset: -48px; }
+  html[dir="rtl"]::view-transition-old(.nav-back) { --vt-offset: -48px; }
+  html[dir="rtl"]::view-transition-new(.nav-back) { --vt-offset: 48px; }
+  ::view-transition-group(nav-wire) {
+    animation-duration: 380ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+@keyframes vt-fade {
+  from { opacity: 0; filter: blur(2px); }
+  to { opacity: 1; filter: blur(0); }
+}
+@keyframes vt-slide {
+  from { translate: var(--vt-offset, 0); }
+  to { translate: 0; }
+}
+
+/* Opening animation: a loading line under the name that stalls and runs like a real download,
+   with a percentage and three status lines. */
+@property --pct {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+.intro-load {
+  width: min(78vw, 20rem);
+  margin: 1.25rem auto 0;
+  opacity: 0;
+  animation: word-in 0.3s ease-out 0.35s forwards;
+}
+.intro-bar {
+  position: relative;
+  height: 3px;
+  background: var(--sky-line);
+  overflow: hidden;
+}
+.intro-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--wire);
+  box-shadow: 0 0 10px var(--wire);
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: intro-fill 2.7s linear 0.35s forwards;
+}
+html[dir="rtl"] .intro-bar::before {
+  transform-origin: right center;
+}
+.intro-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  color: var(--sky-muted);
+}
+html[lang="ur"] .intro-meta {
+  font-family: var(--font-urdu), serif;
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  line-height: 2;
+}
+.intro-steps {
+  display: grid;
+  text-align: start;
+}
+.intro-steps > span {
+  grid-area: 1 / 1;
+  opacity: 0;
+}
+.intro-steps > span:nth-child(1) { animation: step-show 0.95s 0.35s both; }
+.intro-steps > span:nth-child(2) { animation: step-show 0.95s 1.3s both; }
+.intro-steps > span:nth-child(3) { animation: step-last 0.4s 2.25s forwards; }
+.intro-pct {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  animation: intro-pct 2.7s linear 0.35s forwards;
+  counter-reset: pct var(--pct);
+}
+.intro-pct::after {
+  content: counter(pct) "%";
+}
+@keyframes intro-fill {
+  0% { transform: scaleX(0); }
+  18% { transform: scaleX(0.22); }
+  30% { transform: scaleX(0.27); }
+  52% { transform: scaleX(0.58); }
+  64% { transform: scaleX(0.63); }
+  86% { transform: scaleX(0.94); }
+  100% { transform: scaleX(1); }
+}
+@keyframes intro-pct {
+  0% { --pct: 0; }
+  18% { --pct: 22; }
+  30% { --pct: 27; }
+  52% { --pct: 58; }
+  64% { --pct: 63; }
+  86% { --pct: 94; }
+  100% { --pct: 100; }
+}
+@keyframes step-show {
+  0% { opacity: 0; transform: translateY(4px); }
+  15%, 85% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-4px); }
+}
+@keyframes step-last {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Feeder finder -> pinned feeder: the chosen feeder "connects" (a spark runs the wire into a
+   bulb), then the lead story arrives line by line and its power line draws itself. */
+.connect-wire {
+  stroke-dasharray: 14 200;
+  stroke-dashoffset: 14;
+}
+.connect-bulb .bulb-glass {
+  fill-opacity: 0.1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .connect-wire { animation: spark-run 0.55s ease-in 0.05s forwards; }
+  .connect-bulb .bulb-glass { animation: bulb-on 0.55s linear 0.5s forwards; }
+  .connect-bulb .bulb-rays { animation: bulb-rays 0.6s ease-out 0.55s forwards; }
+  .connect-panel { animation: pop-in 0.18s ease-out; }
+  .lead-reveal > * {
+    animation: lead-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .lead-reveal > :nth-child(2) { animation-delay: 70ms; }
+  .lead-reveal > :nth-child(3) { animation-delay: 140ms; }
+  .lead-reveal > :nth-child(4) { animation-delay: 210ms; }
+  .lead-reveal > :nth-child(5) { animation-delay: 280ms; }
+  .lead-reveal > :nth-child(n + 6) { animation-delay: 350ms; }
+  .lead-reveal .line-draw svg {
+    clip-path: inset(0 100% 0 0);
+    animation: line-draw 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+  }
+}
+@keyframes spark-run {
+  to { stroke-dashoffset: -190; }
+}
+@keyframes lead-in {
+  from { opacity: 0; transform: translateY(10px); filter: blur(2px); }
+}
+@keyframes line-draw {
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* Architecture page: stages joined by wires that carry a pulse of data; the lamps light in turn.
+   Real HTML (an ordered list), so the diagram is its own text alternative. */
+.arch-flow {
+  display: grid;
+  gap: 2.5rem;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 64rem) {
+  .arch-flow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.75rem 3rem;
+  }
+}
+.arch-stage {
+  position: relative;
+  border: 1.5px solid var(--ink);
+  background: var(--surface);
+  padding: 1.1rem 1rem 1.1rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.arch-stage:hover,
+.arch-stage:focus-within {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 3px var(--wire), 0 14px 30px -14px rgb(0 0 0 / 0.45);
+}
+.arch-num {
+  position: absolute;
+  inset-block-start: -0.8rem;
+  inset-inline-start: 0.75rem;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.6;
+  padding: 0 0.45rem;
+}
+.arch-lamp {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-end: 0.75rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--wire);
+}
+.arch-tool {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  padding: 0.1rem 0.5rem;
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.arch-stage:hover .arch-tool {
+  border-color: var(--ink);
+}
+.arch-tool:hover {
+  transform: translateY(-2px);
+}
+/* The wire to the next stage. Phone: straight down. Wide screen: six stages snake through two
+   rows (1 2 3, then 6 5 4 under them), so each wire runs across, down at 3, then back. */
+.arch-stage:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(50% - 1.5px);
+  inset-block-start: calc(100% + 1.5px);
+  width: 3px;
+  height: 2.5rem;
+  background:
+    linear-gradient(to bottom, transparent 0 30%, var(--wire) 30% 70%, transparent 70%) 0 0 / 100% 200% no-repeat,
+    var(--line);
+}
+@media (min-width: 64rem) {
+  .arch-stage:nth-child(4) { grid-area: 2 / 3; }
+  .arch-stage:nth-child(5) { grid-area: 2 / 2; }
+  .arch-stage:nth-child(6) { grid-area: 2 / 1; }
+  .arch-stage:is(:nth-child(1), :nth-child(2), :nth-child(4), :nth-child(5))::after {
+    inset-block-start: calc(50% - 1.5px);
+    width: 3rem;
+    height: 3px;
+    background:
+      linear-gradient(to right, transparent 0 30%, var(--wire) 30% 70%, transparent 70%) 0 0 / 200% 100% no-repeat,
+      var(--line);
+  }
+  .arch-stage:is(:nth-child(1), :nth-child(2))::after {
+    inset-inline-start: calc(100% + 1.5px);
+  }
+  .arch-stage:is(:nth-child(4), :nth-child(5))::after {
+    inset-inline-start: auto;
+    inset-inline-end: calc(100% + 1.5px);
+  }
+  .arch-stage:nth-child(3)::after {
+    height: 2.75rem;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .arch-stage:not(:last-child)::after {
+    animation: wire-pulse-y 1.4s linear infinite;
+    animation-delay: calc(var(--i, 0) * 0.5s);
+  }
+  .arch-lamp {
+    background: transparent;
+    animation: lamp-cycle calc(var(--n, 6) * 0.5s) steps(1, end) infinite;
+    animation-delay: calc(var(--i, 0) * 0.5s);
+  }
+  .arch-reveal {
+    animation: lead-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+}
+/* Pulses travel in reading order on row 1 and against it on row 2 (mirrored for Urdu). */
+@media (prefers-reduced-motion: no-preference) and (min-width: 64rem) {
+  .arch-stage:is(:nth-child(1), :nth-child(2))::after,
+  html[dir="rtl"] .arch-stage:is(:nth-child(4), :nth-child(5))::after {
+    animation-name: wire-pulse-x;
+  }
+  .arch-stage:is(:nth-child(4), :nth-child(5))::after,
+  html[dir="rtl"] .arch-stage:is(:nth-child(1), :nth-child(2))::after {
+    animation-name: wire-pulse-x-rtl;
+  }
+}
+@keyframes wire-pulse-y {
+  from { background-position: 0 100%, 0 0; }
+  to { background-position: 0 -100%, 0 0; }
+}
+@keyframes wire-pulse-x {
+  from { background-position: 100% 0, 0 0; }
+  to { background-position: -100% 0, 0 0; }
+}
+@keyframes wire-pulse-x-rtl {
+  from { background-position: -100% 0, 0 0; }
+  to { background-position: 100% 0, 0 0; }
+}
+@keyframes lamp-cycle {
+  0% { background: var(--wire); box-shadow: 0 0 10px 2px var(--wire); }
+  18%, 100% { background: transparent; box-shadow: none; }
+}
+
+/* Sections fade up the first time they scroll into view (components/Reveal.tsx adds the class
+   only after hydration, so the static page and no-JS readers see everything). */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-pending {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .reveal-shown {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+}
+
+/* Header tabs: a hover wire grows from the start edge. */
+.nav-tab {
+  position: relative;
+}
+.nav-tab::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: -4px;
+  height: 4px;
+  background: var(--line);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+html[dir="rtl"] .nav-tab::after {
+  transform-origin: right;
+}
+.nav-tab:hover::after {
+  transform: scaleX(1);
+}
+.nav-tab[aria-current="page"]::after {
+  display: none;
+}
+
+/* Month-by-month bars grow up from the baseline when the section scrolls into view. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-pending .bar-grow {
+    transform: scaleY(0);
+  }
+  .reveal-shown .bar-grow {
+    transform-origin: bottom;
+    animation: bar-grow 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(0.15s + var(--i, 0) * 70ms);
+  }
+}
+@keyframes bar-grow {
+  from { transform: scaleY(0); }
+}
+
+/* Loading placeholders. */
+.skeleton {
+  background: var(--line);
+  opacity: 0.6;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton {
+    background: linear-gradient(90deg, var(--line) 0 40%, var(--surface) 50%, var(--line) 60% 100%) 0 0 / 250% 100%;
+    animation: shimmer 1.3s linear infinite;
+  }
+}
+@keyframes shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -150% 0; }
+}
+
+/* In-page links glide; anchored headings clear the top edge. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+:target,
+h1[id],
+h2[id] {
+  scroll-margin-top: 1rem;
+}
+
+/* Phone: the header tabs are one swipeable row (no scrollbar drawn). */
+.nav-row {
+  scrollbar-width: none;
+}
+.nav-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* Back-to-top button (components/ToTop.tsx). */
+.to-top {
+  position: fixed;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 30;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.to-top[data-shown="false"] {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  pointer-events: none;
+}

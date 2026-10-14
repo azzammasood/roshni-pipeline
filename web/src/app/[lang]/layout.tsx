@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { Intro } from "@/components/Bulb";
 import { ClockProvider, ClockToggle, NowStamp, Stamp } from "@/components/Clock";
 import { ExportText } from "@/components/ExportText";
+import { IntroSkip } from "@/components/IntroSkip";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Logo } from "@/components/Logo";
 import { NavLinks } from "@/components/NavLinks";
 import { Skyline } from "@/components/Pylon";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ToTop } from "@/components/ToTop";
 import { builtLocales, dirOf } from "@/i18n/config";
 import { fromExport, getDictionary } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
@@ -14,6 +16,7 @@ import { BOOT_SCRIPT } from "@/lib/boot";
 import { resolveLocale } from "@/lib/locale";
 import { fontVariables } from "../fonts";
 import "./globals.css";
+import "./motion.css";
 
 export const dynamicParams = false;
 export const generateStaticParams = () => builtLocales.map((lang) => ({ lang }));
@@ -37,16 +40,24 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     ["shutdowns/", dict.nav.shutdowns],
     ["karachi-equity/", dict.nav.equity],
     ["about/", dict.nav.about],
+    ["architecture/", dict.nav.architecture],
   ] as const;
 
   return (
     // suppressHydrationWarning: the boot script sets data-theme / intro-seen before React loads.
-    <html lang={locale} dir={dirOf(locale)} className={fontVariables} suppressHydrationWarning>
+    <html
+      lang={locale}
+      dir={dirOf(locale)}
+      className={fontVariables}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
       </head>
       <body className="min-h-dvh flex flex-col">
-        <Intro name={dict.site.name} other={otherName} />
+        <Intro name={dict.site.name} other={otherName} steps={dict.site.loading} />
+        <IntroSkip />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:start-2 focus:top-2 bg-surface px-3 py-2 z-10"
@@ -86,7 +97,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
               </div>
             </nav>
           </header>
-          <main id="main" className="flex-1 mx-auto w-full max-w-5xl px-4 py-6">
+          <main id="main" tabIndex={-1} className="flex-1 mx-auto w-full max-w-5xl px-4 py-6 focus:outline-none">
             {children}
           </main>
           <footer className="masthead text-sm">
@@ -102,6 +113,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
               </div>
             </div>
           </footer>
+          <ToTop label={dict.site.toTop} />
         </ClockProvider>
       </body>
     </html>

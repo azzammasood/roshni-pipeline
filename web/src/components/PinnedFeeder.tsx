@@ -16,6 +16,7 @@ import { hourWindows } from "@/lib/windows";
 import type { DarkProfile, Feeder } from "@/types/v1";
 import { useClock } from "@/components/Clock";
 import { PowerLine } from "@/components/PowerLine";
+import { BulbArt } from "@/components/Bulb";
 
 export type LeadStrings = Pick<Dictionary, "lead" | "common" | "sources">;
 
@@ -73,7 +74,7 @@ export function PinnedFeeder({
   if (finding) return <FeederFinder feeders={feeders} locale={locale} t={t} onDone={() => setFinding(false)} />;
 
   return (
-    <section aria-labelledby="lead" className="space-y-3">
+    <section aria-labelledby="lead" className="lead-reveal space-y-3">
       <p className="kicker flex flex-wrap gap-x-2">
         <span>{lead.kicker}</span>
         <span aria-hidden="true">·</span>
@@ -138,7 +139,9 @@ export function PinnedFeeder({
 
       {windows && !notYet && (
         <div className="pt-2">
-          <PowerLine windows={windows} now={minute} label={lead.strip} />
+          <div className="line-draw">
+            <PowerLine windows={windows} now={minute} label={lead.strip} />
+          </div>
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
             <h2 className="kicker">{lead.windows}</h2>
             {windows.length === 0 ? (
@@ -185,6 +188,7 @@ export function FeederFinder({
 }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const [picked, setPicked] = useState<Feeder | null>(null);
   const box = useRef<HTMLDivElement>(null);
   const listId = useId();
   const { lead } = t;
@@ -208,6 +212,18 @@ export function FeederFinder({
           ),
     [all, term],
   );
+  // Choosing a feeder "connects" it for a moment (a spark runs into the bulb) before the lead
+  // story replaces the finder; instant with reduced motion.
+  const choose = (f: Feeder) => {
+    setOpen(false);
+    const pin = () => {
+      setPin(f.feeder_id);
+      onDone?.();
+    };
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return pin();
+    setPicked(f);
+    window.setTimeout(pin, 950);
+  };
   const status = term.length < 2 ? "" : hits.length ? fill(lead.results, { n: hits.length }, locale) : lead.noResults;
   return (
     <section aria-labelledby="lead" className="space-y-3">
@@ -225,6 +241,7 @@ export function FeederFinder({
             className="field w-full text-lg"
             placeholder={t.common.searchPlaceholder}
             value={q}
+            disabled={picked !== null}
             onChange={(e) => {
               setQ(e.target.value);
               setOpen(true);
@@ -236,7 +253,32 @@ export function FeederFinder({
         <p aria-live="polite" className="sr-only">
           {status}
         </p>
-        {open && term.length >= 2 && (
+        {picked && (
+          <div
+            role="status"
+            className="connect-panel mt-2 flex items-center gap-3 border-[1.5px] border-ink bg-surface px-3 py-2"
+          >
+            <svg viewBox="0 0 124 50" className="h-11 w-28 shrink-0 overflow-visible" aria-hidden="true">
+              <path d="M2 34Q42 46 82 33" fill="none" className="stroke-line" strokeWidth={1.5} />
+              <path
+                d="M2 34Q42 46 82 33"
+                pathLength={200}
+                fill="none"
+                className="connect-wire stroke-wire"
+                strokeWidth={4}
+                strokeLinecap="round"
+              />
+              <g transform="translate(80 1)" className="connect-bulb text-ink">
+                <BulbArt />
+              </g>
+            </svg>
+            <p className="min-w-0">
+              <span className="kicker block">{lead.connecting}</span>
+              <bdi className="headline text-xl">{picked.name}</bdi>
+            </p>
+          </div>
+        )}
+        {open && !picked && term.length >= 2 && (
           <div
             id={listId}
             className="pop-in absolute inset-x-0 top-full z-20 mt-1 border-[1.5px] border-ink bg-surface shadow-[0_18px_40px_-18px_rgb(0_0_0/0.45)]"
@@ -252,11 +294,7 @@ export function FeederFinder({
                       type="button"
                       className="w-full text-start px-3 py-2 flex items-baseline gap-3 hover:bg-bg focus-visible:bg-bg"
                       onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
-                      onClick={() => {
-                        setPin(f.feeder_id);
-                        setOpen(false);
-                        onDone?.();
-                      }}
+                      onClick={() => choose(f)}
                     >
                       <span className="flex-1 min-w-0">
                         <bdi className="font-semibold">{f.name}</bdi>

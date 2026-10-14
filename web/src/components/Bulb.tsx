@@ -39,7 +39,15 @@ export function Bulb({ className }: { className?: string }) {
 /** First page of a browser session: a pulse runs along a power line into the bulb, the bulb
  *  flickers on, the name appears, and the curtain lifts. Pure CSS, so it plays before hydration;
  *  skipped on later pages (html.intro-seen) and for reduced motion. Decorative only. */
-export function Intro({ name, other }: { name: string; other: string }) {
+export function Intro({
+  name,
+  other,
+  steps,
+}: {
+  name: string;
+  other: string;
+  steps: { schedules: string; reports: string; grid: string };
+}) {
   const base = 190;
   const h = 110;
   const t1 = armTips(50, base, h);
@@ -64,6 +72,17 @@ export function Intro({ name, other }: { name: string; other: string }) {
           <span className="headline">{name}</span>
           <span className="intro-other">{other}</span>
         </p>
+        <div className="intro-load">
+          <div className="intro-bar" />
+          <p className="intro-meta">
+            <span className="intro-steps">
+              <span>{steps.schedules}</span>
+              <span>{steps.reports}</span>
+              <span>{steps.grid}</span>
+            </span>
+            <span className="intro-pct" dir="ltr" />
+          </p>
+        </div>
       </div>
     </div>
   );

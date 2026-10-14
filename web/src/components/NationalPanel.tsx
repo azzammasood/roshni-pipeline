@@ -62,7 +62,7 @@ export function NationalPanel({
         {fill(t.top, { company: top.company, region: region[top.company] ?? "", hours: n(top.reported_hours_per_day) }, locale)}
       </p>
 
-      <figure className="m-0 space-y-2">
+      <figure className="m-0 space-y-4 pt-2">
         <ScrollRegion label={t.tableLabel} dir="ltr">
           <table className="national-grid">
             <caption className="sr-only">{t.tableLabel}</caption>
@@ -93,11 +93,14 @@ export function NationalPanel({
                         key={y}
                         style={cellStyle(s.reported_hours_per_day)}
                         className={y === latest ? "is-latest" : undefined}
-                        title={
+                        title={[
+                          fill(t.cellTitle, { company: c, year: y, hours: n(s.reported_hours_per_day) }, locale),
                           s.values_disagree
                             ? fill(t.disagree, { min: n(s.min_reported), max: n(s.max_reported) }, locale)
-                            : undefined
-                        }
+                            : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
                       >
                         {n(s.reported_hours_per_day)}
                         {s.values_disagree && <sup aria-hidden="true">*</sup>}
@@ -109,8 +112,8 @@ export function NationalPanel({
             </tbody>
           </table>
         </ScrollRegion>
-        <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-          <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
+        <figcaption className="space-y-3 text-sm">
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span>{t.legend}</span>
             <span className="inline-flex" dir="ltr">
               {BINS.map(([max, background, color], i) => (
@@ -119,21 +122,26 @@ export function NationalPanel({
                 </span>
               ))}
             </span>
-          </span>
-          {flagged.map((s) => (
-            <span key={`${s.company}${s.fiscal_year}`}>
-              *{" "}
-              {fill(
-                t.flag,
-                { company: s.company, year: s.fiscal_year, min: n(s.min_reported), max: n(s.max_reported), used: s.chosen_report_year },
-                locale,
-              )}
-            </span>
-          ))}
+            <span className="text-muted hidden sm:inline">· {t.hoverHint}</span>
+          </p>
+          {flagged.length > 0 && (
+            <ul className="space-y-1 text-muted">
+              {flagged.map((s) => (
+                <li key={`${s.company}${s.fiscal_year}`}>
+                  *{" "}
+                  {fill(
+                    t.flag,
+                    { company: s.company, year: s.fiscal_year, min: n(s.min_reported), max: n(s.max_reported), used: s.chosen_report_year },
+                    locale,
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </figcaption>
       </figure>
 
-      <div className="grid gap-4 sm:grid-cols-2 text-sm max-w-5xl">
+      <div className="grid gap-6 sm:grid-cols-2 text-sm max-w-5xl rule-thin !mt-8 pt-6">
         <p className="border-s-4 border-wire ps-3">
           <strong className="kicker text-ink me-1">{t.caveatLabel}</strong>{" "}
           <ExportText value={fromExport(data.caveat, locale)} />
