@@ -1,8 +1,8 @@
 {
  "schema_id": "roshni/meta/v1",
- "schema_version": "1.1.0",
- "generated_at": "2026-10-11T16:51:23Z",
- "last_updated": "2026-10-11T15:43:58.563657Z",
+ "schema_version": "1.3.0",
+ "generated_at": "2026-10-14T05:35:19Z",
+ "last_updated": "2026-10-14T05:34:06.246733Z",
  "label": "Scheduled (published schedule data), not measured outages",
  "data": {
   "timezone_display": "Asia/Karachi",
@@ -13,7 +13,9 @@
    "dark_profiles",
    "planned_shutdowns",
    "areas",
-   "equity"
+   "equity",
+   "national",
+   "news"
   ],
   "sources": [
    {
@@ -76,8 +78,9 @@
   "attribution": [
    "Load-shedding schedules and press releases: Islamabad Electric Supply Company (IESCO), iesco.com.pk",
    "Feeder list and load-shed schedule: K-Electric, ke.com.pk",
-   "Census 2023 tables: Pakistan Bureau of Statistics"
+   "Census 2023 tables: Pakistan Bureau of Statistics",
+   "Load-shedding hours reported by distribution companies: National Electric Power Regulatory Authority (NEPRA), Performance Evaluation Reports, nepra.org.pk"
   ],
-  "disclaimer": "Not affiliated with IESCO, K-Electric or PBS. Schedules are published plans, not measured outages; IESCO schedules are a scenario playbook by interruption level."
+  "disclaimer": "Not affiliated with IESCO, K-Electric, NEPRA or PBS. Schedules are published plans, not measured outages; IESCO schedules are a scenario playbook by interruption level; NEPRA figures are what the companies reported."
  }
 }
