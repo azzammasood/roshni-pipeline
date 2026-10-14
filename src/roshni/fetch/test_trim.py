@@ -118,3 +118,21 @@ def test_headline_filter(title: str, keep: bool) -> None:
     from roshni.fetch.trim import is_load_shedding_headline
 
     assert is_load_shedding_headline(title) is keep
+
+
+def test_known_broken_link_is_a_gap_not_an_error(tmp_path: Path) -> None:
+    url = "https://example.pk/report-2023-24.pdf"
+    reg = Registry(
+        user_agent="roshni-pipeline/0.1 (+test)",
+        min_request_interval_seconds=0,
+        sources={"r": SourceConfig(discovery="fixed_url", url=url, known_broken=[url])},
+    )
+
+    def handler(req: httpx.Request) -> httpx.Response:
+        if req.url.path == "/robots.txt":
+            return httpx.Response(200, text="User-agent: *\nAllow: /\n")
+        return httpx.Response(404)
+
+    with PoliteClient(reg.user_agent, 0, transport=httpx.MockTransport(handler)) as c:
+        r = run_snapshot(c, SnapshotStore(tmp_path), reg)
+    assert r.ok and r.count("gap") == 1 and r.count("error") == 0

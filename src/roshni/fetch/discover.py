@@ -22,6 +22,7 @@ class Target:
     label: str = ""  # human context: listing-page date label, release title
     refetch: bool = True  # False: fetch once per URL, never re-check
     trim: str | None = None  # stored content is reduced by fetch.trim.TRIMMERS[trim]
+    known_broken: bool = False  # a 404/410 is a recorded gap, not an error
     warnings: tuple[str, ...] = field(default=())
 
 

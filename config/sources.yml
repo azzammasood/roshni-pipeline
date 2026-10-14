@@ -46,6 +46,8 @@ sources:
     link_pattern: "(?i)(disco|dsico|distribution)"   # NEPRA's own spelling varies (DSICOs)
     exclude_pattern: "(?i)(jul-dec|quarterly|hse|ntdc|transmission|generation)"
     refetch: false          # published reports do not change; fetched once per URL
+    known_broken:           # NEPRA's own link returns 404 (data-audit.md §10)
+      - https://nepra.org.pk/M&E/PER/Distribution/PER%20DISCOs%202023-24.pdf
 
   # News headlines (owner approval 2026-10-13): RSS feeds, filtered for load-shedding stories.
   # Stored trimmed (owner, 2026-10-13): load-shedding items only, headline + link + date, as JSON.

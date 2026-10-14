@@ -15,7 +15,7 @@ from roshni.fetch.store import SnapshotRecord, SnapshotStore
 from roshni.fetch.trim import TRIMMERS, TrimError
 from roshni.sources.registry import Registry
 
-Outcome = Literal["new", "changed", "unchanged", "known", "error"]
+Outcome = Literal["new", "changed", "unchanged", "known", "gap", "error"]
 
 
 @dataclass
@@ -40,7 +40,8 @@ class RunReport:
         return not self.errors and self.count("error") == 0
 
     def summary_line(self) -> str:
-        parts = [f"{o}={self.count(o)}" for o in ("new", "changed", "unchanged", "known", "error")]
+        outcomes = ("new", "changed", "unchanged", "known", "gap", "error")
+        parts = [f"{o}={self.count(o)}" for o in outcomes]
         return " ".join(parts) + f" discovery_errors={len(self.errors)}"
 
 
@@ -72,7 +73,10 @@ def discover(client: PoliteClient, registry: Registry, only: set[str] | None, re
             continue
         for t in found:
             report.warnings.extend(f"{name}/{t.item_key}: {w}" for w in t.warnings)
-        targets.extend(dataclasses.replace(t, trim=cfg.trim) if cfg.trim else t for t in found)
+        targets.extend(
+            dataclasses.replace(t, trim=cfg.trim, known_broken=t.url in cfg.known_broken)
+            for t in found
+        )
     return targets
 
 
@@ -117,6 +121,11 @@ def snapshot_target(
             )
         )
         return ItemResult(t.source, t.item_key, "unchanged", "304")
+    if resp.status_code in (404, 410) and t.known_broken:
+        store.append(SnapshotRecord(**base, **meta, note="known broken link (data-audit.md)"))
+        return ItemResult(
+            t.source, t.item_key, "gap", f"HTTP {resp.status_code}, known broken link"
+        )
     if resp.status_code != 200:
         store.append(SnapshotRecord(**base, **meta, note="unexpected status"))
         return ItemResult(t.source, t.item_key, "error", f"HTTP {resp.status_code}")
