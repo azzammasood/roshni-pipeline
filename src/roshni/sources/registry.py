@@ -32,6 +32,9 @@ class SourceConfig(BaseModel):
     exclude_pattern: str | None = None
     # Reduce the fetched file before storing it (news feeds: load-shedding headlines only).
     trim: Literal["news_headlines"] | None = None
+    # Links the publisher lists but that return 404/410 (recorded in data-audit.md): logged as a
+    # known gap, not a run failure. Still requested every run, so a fixed link is picked up.
+    known_broken: list[str] = []
 
 
 class Registry(BaseModel):
