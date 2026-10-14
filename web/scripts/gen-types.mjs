@@ -23,6 +23,11 @@ function stripPropertyTitles(node, keepTitle) {
       out[key] = Object.fromEntries(
         Object.entries(value).map(([name, def]) => [name, stripPropertyTitles(def, true)]),
       );
+    } else if (key === "properties") {
+      // Keys here are property names (a model may have a property called "title"): keep them all.
+      out[key] = Object.fromEntries(
+        Object.entries(value).map(([name, def]) => [name, stripPropertyTitles(def, false)]),
+      );
     } else {
       out[key] = stripPropertyTitles(value, false);
     }

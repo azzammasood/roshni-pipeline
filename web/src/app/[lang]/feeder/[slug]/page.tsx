@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HourBars } from "@/components/HourBars";
-import { LevelGrid } from "@/components/LevelGrid";
+import { PinButton } from "@/components/PinButton";
+import { HourAxis, PowerLine } from "@/components/PowerLine";
 import { builtLocales } from "@/i18n/config";
 import { fill, fromExport } from "@/i18n/dictionaries";
 import { loadDocument, loadFeederIndex } from "@/lib/data";
@@ -56,22 +57,40 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
     [t.effectiveFrom, profile?.effective_from ?? null],
   ];
   const dailyTotal = profile?.daily?.reduce((a, b) => a + b, 0) ?? 0;
-  const halves = { am: dict.site.clock.am, pm: dict.site.clock.pm };
+  const area = feeder.ibc ? ibcName(feeder.ibc) : circleName(feeder.circle);
   const matchStrings = { ...dict.match, confidence: dict.common.confidence, exact: dict.common.exact };
 
   return (
-    <article className="space-y-8">
-      <header className="space-y-3">
-        <h1 className="text-2xl font-semibold">
+    <article className="space-y-10">
+      <header className="space-y-4">
+        <p className="kicker flex flex-wrap gap-x-2">
+          <span>{dict.sources[feeder.source]}</span>
+          {area && (
+            <>
+              <span aria-hidden="true">·</span>
+              <bdi>{area}</bdi>
+            </>
+          )}
+          {feeder.grid && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>
+                {t.grid} <bdi>{feeder.grid}</bdi>
+              </span>
+            </>
+          )}
+        </p>
+        <h1 className="headline text-4xl sm:text-6xl break-words">
           <bdi>{feeder.name}</bdi>
         </h1>
-        <dl className="grid grid-cols-[fit-content(50%)_1fr] gap-x-6 gap-y-1">
+        <PinButton feederId={feeder.feeder_id} pin={t.pin} pinned={t.pinned} />
+        <dl className="rule grid grid-cols-2 sm:grid-cols-4 gap-x-6">
           {rows
             .filter(([, v]) => v)
             .map(([k, v]) => (
-              <div key={k} className="contents">
-                <dt className="text-muted">{k}</dt>
-                <dd>
+              <div key={k} className="py-2 border-b border-line min-w-0">
+                <dt className="kicker text-muted">{k}</dt>
+                <dd className="font-mono text-sm break-words">
                   <bdi>{v}</bdi>
                 </dd>
               </div>
@@ -83,66 +102,69 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
         </p>
       </header>
 
-      {!profile && <p>{t.noSchedule}</p>}
+      {!profile && <p className="headline text-2xl">{t.noSchedule}</p>}
 
       {profile?.daily && (
-        <section className="space-y-2">
-          <h2 className="text-lg font-semibold">{t.dailyTitle}</h2>
-          <p className="text-sm text-muted">{t.dailyIntro}</p>
-          <HourBars
-            minutes={profile.daily}
-            label={t.dailyIntro}
-            unit={(n) => fill(t.minutes, { n }, locale)}
-          />
-          <p className="font-medium">
+        <section className="rule pt-4 space-y-4">
+          <h2 className="headline text-3xl">{t.dailyTitle}</h2>
+          <p className="headline text-xl">
             {fill(t.minutesPerDay, { h: Math.floor(dailyTotal / 60), m: dailyTotal % 60 }, locale)}
           </p>
           {profile.daily_windows && (
             <>
-              <h3 className="font-semibold">{t.windows}</h3>
-              <ul className="tabular-nums" dir="ltr">
-                {profile.daily_windows.map((w) => (
-                  <li key={w.start_min} className="text-start">
-                    <ClockRange start={w.start_min} end={w.end_min} />
-                  </li>
-                ))}
-              </ul>
+              <PowerLine
+                windows={profile.daily_windows.map((w) => ({ start: w.start_min, end: w.end_min }))}
+                label={dict.lead.strip}
+              />
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <h3 className="kicker">{t.windows}</h3>
+                <ul className="flex flex-wrap gap-x-3 gap-y-1 tabular-nums">
+                  {profile.daily_windows.map((w) => (
+                    <li key={w.start_min}>
+                      <ClockRange start={w.start_min} end={w.end_min} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </>
           )}
+          <h3 className="kicker pt-2">{t.dailyIntro}</h3>
+          <HourBars minutes={profile.daily} label={t.dailyIntro} unit={(n) => fill(t.minutes, { n }, locale)} />
         </section>
       )}
 
       {profile?.scenario_levels && (
-        <section className="space-y-2">
-          <h2 className="text-lg font-semibold">{t.scenarioTitle}</h2>
-          <p className="text-sm text-muted max-w-prose">{t.scenarioIntro}</p>
-          <LevelGrid
-            levels={profile.scenario_levels}
-            caption={t.scenarioTitle}
-            levelLabel={(n) => fill(t.levelRow, { n }, locale)}
-            hourLabel={t.hour}
-            darkLabel={t.darkCell}
-            halves={halves}
-          />
-          <h3 className="font-semibold pt-2">{t.levelWindows}</h3>
-          <dl className="grid grid-cols-[fit-content(30%)_1fr] gap-x-4 gap-y-1 text-sm">
-            {Object.entries(profile.scenario_levels).map(([n, mins]) => (
-              <div key={n} className="contents">
-                <dt className="text-muted whitespace-nowrap">{fill(t.levelRow, { n }, locale)}</dt>
-                <dd className="flex flex-wrap gap-x-3">
-                  {hourWindows(mins).map((w) => (
-                    <ClockRange key={w.start} start={w.start} end={w.end} />
-                  ))}
-                </dd>
-              </div>
-            ))}
-          </dl>
+        <section className="rule pt-4 space-y-3">
+          <h2 className="headline text-3xl">{t.scenarioTitle}</h2>
+          <p className="max-w-prose">{t.scenarioIntro}</p>
+          <div className="grid gap-x-4 sm:grid-cols-[7rem_minmax(0,1fr)] sticky top-0 bg-bg z-[1]">
+            <span aria-hidden="true" className="hidden sm:block" />
+            <HourAxis wide />
+          </div>
+          <ul className="space-y-1">
+            {Object.entries(profile.scenario_levels).map(([n, mins]) => {
+              const windows = hourWindows(mins);
+              return (
+                <li key={n} className="grid gap-x-4 sm:grid-cols-[7rem_minmax(0,1fr)] items-center border-b border-line py-2">
+                  <h3 className="headline text-xl">{fill(t.levelRow, { n }, locale)}</h3>
+                  <div className="min-w-0">
+                    <PowerLine windows={windows} label={fill(t.levelStrip, { n }, locale)} compact />
+                    <p className="flex flex-wrap gap-x-3 text-sm">
+                      {windows.length === 0
+                        ? dict.common.none
+                        : windows.map((w) => <ClockRange key={w.start} start={w.start} end={w.end} />)}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </section>
       )}
 
       {feeder.localities.length > 0 && (
-        <section className="space-y-2">
-          <h2 className="text-lg font-semibold">{t.localitiesTitle}</h2>
+        <section className="rule pt-4 space-y-2">
+          <h2 className="headline text-3xl">{t.localitiesTitle}</h2>
           <p className="text-sm text-muted">{t.localitiesIntro}</p>
           <ul className="space-y-1">
             {feeder.localities.map((l) => (
@@ -163,10 +185,10 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
       )}
 
       {shutdowns.length > 0 && (
-        <section className="space-y-2">
-          <h2 className="text-lg font-semibold">
+        <section className="rule pt-4 space-y-2">
+          <h2 className="headline text-3xl">
             {t.shutdownsTitle}{" "}
-            <span className="font-normal text-muted">({num(shutdowns.length, locale)})</span>
+            <span className="font-mono text-base text-muted">({num(shutdowns.length, locale)})</span>
           </h2>
           <ScrollRegion label={t.shutdownsTitle}>
             <table className="data">

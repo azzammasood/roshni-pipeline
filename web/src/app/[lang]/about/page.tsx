@@ -6,6 +6,9 @@ import { ExportText } from "@/components/ExportText";
 import { fill, fromExport } from "@/i18n/dictionaries";
 import { IESCO_RELEASES } from "@/components/ReleaseLink";
 
+/** NEPRA's list of Performance Evaluation Reports (the `nepra_per_distribution` listing page). */
+const NEPRA_REPORTS = "https://nepra.org.pk/publications/Performance%20Reports.php";
+
 export async function generateMetadata({ params }: PageProps<"/[lang]/about">): Promise<Metadata> {
   return { title: (await resolveLocale(params)).dict.about.title };
 }
@@ -18,6 +21,9 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
   const releases = new Set(shutdowns.map((r) => `${r.release_period}#${r.release_no}`)).size;
   const dates = shutdowns.map((r) => r.outage_date).sort();
   const iesco = meta.sources.find((s) => s.source === "iesco_schedule_xlsx");
+  const national = (await loadDocument("national")).data;
+  const review = (await loadDocument("equity")).data.regulator_review;
+  const editions = national.reports.map((r) => r.report_year).sort();
   const prose: [string, string][] = [
     [t.whatTitle, t.what],
     [t.levelsTitle, t.levels],
@@ -25,20 +31,41 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
     [t.matchingTitle, t.matching],
   ];
   return (
-    <article className="space-y-6">
-      <h1 className="text-2xl font-semibold">{t.title}</h1>
-      {prose.map(([title, body]) => (
-        <section key={title} className="space-y-1">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <p className="max-w-prose">{body}</p>
-        </section>
-      ))}
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold">{t.sourcesTitle}</h2>
+    <article className="space-y-10">
+      <header className="space-y-3">
+        <p className="kicker">{t.kicker}</p>
+        <h1 className="headline text-4xl sm:text-6xl">{t.title}</h1>
+      </header>
+      <div className="rule pt-4 grid gap-8 lg:grid-cols-[minmax(0,1fr)_17rem]">
+        <div className="space-y-6">
+          {prose.map(([title, body], i) => (
+            <section key={title} className="space-y-1">
+              <h2 className="headline text-2xl">{title}</h2>
+              <p className={`max-w-prose text-lg leading-relaxed ${i === 0 ? "dropcap" : ""}`}>{body}</p>
+            </section>
+          ))}
+        </div>
+        <aside aria-labelledby="glossary" className="lg:border-s lg:border-line lg:ps-6 space-y-3">
+          <h2 id="glossary" className="kicker">
+            {t.glossaryTitle}
+          </h2>
+          <dl className="space-y-3">
+            {t.glossary.map(([term, text]) => (
+              <div key={term} className="border-t border-line pt-2">
+                <dt className="headline text-xl">{term}</dt>
+                <dd className="text-sm">{text}</dd>
+              </div>
+            ))}
+          </dl>
+        </aside>
+      </div>
+      <section className="rule pt-4 space-y-2">
+        <h2 className="headline text-3xl">{t.sourcesTitle}</h2>
         <ScrollRegion label={t.sourcesTitle}>
           <table className="data">
             <thead>
               <tr>
+                <th scope="col">{t.sourceName}</th>
                 <th scope="col">{t.sourceFile}</th>
                 <th scope="col">{dict.common.effectiveFrom}</th>
                 <th scope="col">{t.published}</th>
@@ -48,7 +75,10 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
             <tbody>
               {meta.sources.map((s) => (
                 <tr key={s.source_file}>
-                  <td>
+                  <th scope="row" className="font-normal">
+                    {(t.sourceNames as Record<string, string>)[s.source] ?? s.source}
+                  </th>
+                  <td className="font-mono text-xs break-all">
                     <bdi>{s.source_file}</bdi>
                   </td>
                   <td className="tabular-nums whitespace-nowrap">{s.effective_from}</td>
@@ -62,6 +92,9 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
               ))}
               {releases > 0 && (
                 <tr>
+                  <th scope="row" className="font-normal">
+                    {t.sourceNames.iesco_press_release}
+                  </th>
                   <td>
                     <a href={IESCO_RELEASES} className="link" rel="noopener noreferrer" target="_blank">
                       {fill(t.pressFile, { n: releases }, locale)}
@@ -74,6 +107,45 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
                   <td>{t.pressBasis}</td>
                 </tr>
               )}
+              {editions.length > 0 && (
+                <tr>
+                  <th scope="row" className="font-normal">
+                    {t.sourceNames.nepra_per}
+                  </th>
+                  <td>
+                    <a href={NEPRA_REPORTS} className="link" rel="noopener noreferrer" target="_blank">
+                      {fill(t.nepraFile, { n: editions.length, from: editions[0], to: editions.at(-1)! }, locale)}
+                    </a>
+                  </td>
+                  <td />
+                  <td />
+                  <td>{t.nepraBasis}</td>
+                </tr>
+              )}
+              {review && (
+                <tr>
+                  <th scope="row" className="font-normal">
+                    {t.sourceNames.nepra_ke_order}
+                  </th>
+                  <td>
+                    <a href={review.source_url} className="link" rel="noopener noreferrer" target="_blank">
+                      {fill(t.orderFile, { date: review.order_date }, locale)}
+                    </a>
+                  </td>
+                  <td className="tabular-nums whitespace-nowrap">{review.order_date}</td>
+                  <td />
+                  <td>{t.orderBasis}</td>
+                </tr>
+              )}
+              <tr>
+                <th scope="row" className="font-normal">
+                  {t.sourceNames.news}
+                </th>
+                <td>{t.newsFile}</td>
+                <td />
+                <td />
+                <td>{t.newsBasis}</td>
+              </tr>
             </tbody>
           </table>
         </ScrollRegion>
@@ -83,8 +155,8 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
           </p>
         )}
       </section>
-      <section className="space-y-1">
-        <h2 className="text-lg font-semibold">{t.attribution}</h2>
+      <section className="rule pt-4 space-y-1">
+        <h2 className="headline text-2xl">{t.attribution}</h2>
         <ul className="list-disc ps-5">
           {meta.attribution.map((a) => (
             <li key={a}>
@@ -93,8 +165,8 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
           ))}
         </ul>
       </section>
-      <section className="space-y-1">
-        <h2 className="text-lg font-semibold">{t.disclaimer}</h2>
+      <section className="rule pt-4 space-y-1">
+        <h2 className="headline text-2xl">{t.disclaimer}</h2>
         <ExportText as="p" className="max-w-prose" value={fromExport(meta.disclaimer, locale)} />
       </section>
     </article>

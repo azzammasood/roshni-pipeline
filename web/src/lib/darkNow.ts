@@ -138,3 +138,22 @@ export function darkNow(
   );
   return { minuteOfDay: minute, localDate: today, level, rows, notes };
 }
+
+export interface WindowStatus {
+  /** True when `minute` is inside a window; then start/end are that window. */
+  active: boolean;
+  start: number;
+  end: number;
+  /** Minutes to the window's end if active, else to its start (wrapping to the next day). */
+  minutesUntil: number;
+}
+
+/** The scheduled window covering `minute`, else the next one to start (same [start, end) and
+ *  midnight-wrap semantics as `windowActive`; an end of 1440 means midnight). Null if none. */
+export function windowStatus(windows: { start: number; end: number }[], minute: number): WindowStatus | null {
+  const until = (m: number) => (((m - minute) % 1440) + 1440) % 1440;
+  const current = windows.find((w) => windowActive(w.start, w.end % 1440, minute));
+  if (current) return { active: true, ...current, minutesUntil: until(current.end) || 1440 };
+  const next = [...windows].sort((a, b) => until(a.start) - until(b.start))[0];
+  return next ? { active: false, ...next, minutesUntil: until(next.start) } : null;
+}

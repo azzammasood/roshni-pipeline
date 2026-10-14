@@ -7,7 +7,7 @@ export interface EquityDocument {
    */
   generated_at: string;
   /**
-   * Reminder that the data are schedules, not measurements
+   * What the numbers are: schedules, or figures reported to the regulator; never measurements
    */
   label: string;
   /**
@@ -27,6 +27,10 @@ export interface Equity {
   anomalies: Anomaly[];
   correlations: Correlation[];
   ibc: IbcEquity[];
+  /**
+   * NEPRA's order on K-Electric: outage bands from K-Electric data
+   */
+  regulator_review?: RegulatorReview | null;
   report: Report | null;
   scope_note: string;
   subdivisions: SubdivisionEquity[];
@@ -54,6 +58,53 @@ export interface IbcEquity {
   mean_scheduled_hours: number | null;
   scheduled_feeders: number;
   share_12h_pct: number | null;
+}
+export interface RegulatorReview {
+  basis: string;
+  categories: ReviewCategory[];
+  order_date: string;
+  source_file: string;
+  /**
+   * The order on nepra.org.pk (from config/sources.yml)
+   */
+  source_url: string;
+}
+export interface ReviewCategory {
+  avg_atc_loss_pct: number;
+  bands: OutageBand[];
+  /**
+   * K-Electric loss category as printed (e.g. High Loss)
+   */
+  category: string;
+  consumers: number;
+  feeders: number;
+  /**
+   * Sum of NEPRA's printed band shares at or above the schedule
+   */
+  pct_feeders_above_schedule: number;
+  /**
+   * K-Electric's own schedule for the category
+   */
+  scheduled_hours_per_day: number;
+}
+export interface OutageBand {
+  /**
+   * Band starts at or above the category's schedule
+   */
+  above_schedule: boolean;
+  /**
+   * Average daily outage band as printed by NEPRA, e.g. 10:00-12:00
+   */
+  band: string;
+  consumers: number;
+  feeders: number;
+  lower_minutes: number;
+  pct_consumers: number;
+  /**
+   * As printed by NEPRA
+   */
+  pct_feeders: number;
+  upper_minutes: number | null;
 }
 export interface Report {
   engine: string;

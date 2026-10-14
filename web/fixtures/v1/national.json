@@ -1,0 +1,1355 @@
+{
+ "schema_id": "roshni/national/v1",
+ "schema_version": "1.3.0",
+ "generated_at": "2026-10-13T19:01:49Z",
+ "last_updated": "2026-10-13T19:01:24.201472Z",
+ "label": "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages",
+ "data": {
+  "basis": "Average daily load-shedding hours that each distribution company reported to NEPRA in its annual performance report, as compiled in NEPRA's Performance Evaluation Reports. One value per company and fiscal year (July to June), taken from the earliest report that lists the year.",
+  "caveat": "These are the companies' own figures, not measurements. NEPRA states that some companies under-report: for FY 2024-25 its monitoring found more than 8 to 10 hours a day in PESCO, QESCO, SEPCO and HESCO.",
+  "gaps": [
+   "NEPRA's FY 2023-24 report link returns an error, so FY 2023-24 comes from the FY 2024-25 report's five-year table."
+  ],
+  "series": [
+   {
+    "company": "FESCO",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 7.8,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 7.8,
+    "max_reported": 7.8,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 7.25,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 7.25,
+    "max_reported": 7.25,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 4.33,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 4.33,
+    "max_reported": 4.33,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 3.5,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 3.5,
+    "max_reported": 3.5,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 3.23,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 3.23,
+    "max_reported": 3.23,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 0.74,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 0.74,
+    "max_reported": 0.74,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 0.32,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 0.32,
+    "max_reported": 0.32,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 0,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 0,
+    "max_reported": 0,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 0,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 0,
+    "max_reported": 0,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 1,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 1,
+    "max_reported": 1,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 0.56,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 0.56,
+    "max_reported": 0.56,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 0,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 0,
+    "max_reported": 0,
+    "values_disagree": false
+   },
+   {
+    "company": "FESCO",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 0.02,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 0.02,
+    "max_reported": 0.02,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 3.2,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 3.2,
+    "max_reported": 3.2,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 3.2,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 3.2,
+    "max_reported": 3.2,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 4,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 4,
+    "max_reported": 4,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 4,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 4,
+    "max_reported": 4,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 3.25,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 3.25,
+    "max_reported": 3.25,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 11,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 11,
+    "max_reported": 11,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 0.5,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 0.5,
+    "max_reported": 0.5,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 0,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 0,
+    "max_reported": 0,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 0.33,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 0.33,
+    "max_reported": 0.33,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 0.4,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 0.4,
+    "max_reported": 0.4,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 0.85,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 0.85,
+    "max_reported": 0.85,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 0.22,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 0.22,
+    "max_reported": 0.22,
+    "values_disagree": false
+   },
+   {
+    "company": "GEPCO",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 0,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 0,
+    "max_reported": 0,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 7.3,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 7.3,
+    "max_reported": 7.3,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 3.75,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 3.75,
+    "max_reported": 3.75,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 4,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 4,
+    "max_reported": 4,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 3.33,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 3.33,
+    "max_reported": 3.33,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 4.5,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 4.5,
+    "max_reported": 4.5,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 3.75,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 3.75,
+    "max_reported": 3.75,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 5.5,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 5.5,
+    "max_reported": 5.5,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 5.67,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 5.67,
+    "max_reported": 5.67,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 6,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 6,
+    "max_reported": 6,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 8,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 8,
+    "max_reported": 8,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 8.66,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 8.66,
+    "max_reported": 8.66,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 10.6,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 10.6,
+    "max_reported": 10.6,
+    "values_disagree": false
+   },
+   {
+    "company": "HESCO",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 8,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 8,
+    "max_reported": 8,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 5.6,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 5.6,
+    "max_reported": 5.6,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 5,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 5,
+    "max_reported": 5,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 4,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 4,
+    "max_reported": 4,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 3.43,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 3.43,
+    "max_reported": 3.43,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 3.33,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 3.33,
+    "max_reported": 3.33,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 3.125,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 3.125,
+    "max_reported": 3.125,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 1.625,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 1.62,
+    "max_reported": 1.625,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 1.83,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 1.83,
+    "max_reported": 1.83,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 1,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 1,
+    "max_reported": 1,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 2.5,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 2.5,
+    "max_reported": 2.5,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 1.5,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 1.5,
+    "max_reported": 1.5,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 2.5,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 2.5,
+    "max_reported": 2.5,
+    "values_disagree": false
+   },
+   {
+    "company": "IESCO",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 0,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 0,
+    "max_reported": 0,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 2.4,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 2.4,
+    "max_reported": 2.4,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 2.3,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 2.3,
+    "max_reported": 2.3,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 1.1,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 1.1,
+    "max_reported": 1.1,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 1.33,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 1.33,
+    "max_reported": 1.33,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 2.5,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 2.5,
+    "max_reported": 2.5,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 1.26,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 1.26,
+    "max_reported": 1.26,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 1.77,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 1.77,
+    "max_reported": 1.77,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 2.73,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 2.73,
+    "max_reported": 2.73,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 1.94,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 1.94,
+    "max_reported": 1.94,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 3.4,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 2.6,
+    "max_reported": 3.4,
+    "values_disagree": true
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 5.21,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 5.21,
+    "max_reported": 5.21,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 8.52,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 8.52,
+    "max_reported": 8.52,
+    "values_disagree": false
+   },
+   {
+    "company": "K-Electric",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 5.2,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 5.2,
+    "max_reported": 5.2,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 0.66,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 0.66,
+    "max_reported": 0.66,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 3.5,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 3.5,
+    "max_reported": 3.5,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 2.33,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 2.33,
+    "max_reported": 2.33,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 1.67,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 1.67,
+    "max_reported": 1.67,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 2,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 2,
+    "max_reported": 2,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 1.7,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 1.7,
+    "max_reported": 1.7,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 2.4,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 2.4,
+    "max_reported": 2.4,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 3,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 3,
+    "max_reported": 3,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 3,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 3,
+    "max_reported": 3,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 0.5,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 0.5,
+    "max_reported": 0.5,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 0.5,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 0.5,
+    "max_reported": 0.5,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 0.5,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 0.5,
+    "max_reported": 0.5,
+    "values_disagree": false
+   },
+   {
+    "company": "LESCO",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 0.1,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 0.1,
+    "max_reported": 0.1,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 9,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 9,
+    "max_reported": 9,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 10,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 10,
+    "max_reported": 10,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 4.25,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 4.25,
+    "max_reported": 4.25,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 3.2,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 3.2,
+    "max_reported": 3.2,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 3.35,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 3.35,
+    "max_reported": 3.35,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 1.3,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 1.3,
+    "max_reported": 1.3,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 0.43,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 0.43,
+    "max_reported": 0.43,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 0.32,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 0.32,
+    "max_reported": 0.32,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 0.66,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 0.66,
+    "max_reported": 0.66,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 0.6,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 0.6,
+    "max_reported": 0.6,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 1.15,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 1.15,
+    "max_reported": 1.15,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 0.7,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 0.7,
+    "max_reported": 0.7,
+    "values_disagree": false
+   },
+   {
+    "company": "MEPCO",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 1.2,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 1.2,
+    "max_reported": 1.2,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 4.8,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 4.8,
+    "max_reported": 4.8,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 4.8,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 4.8,
+    "max_reported": 4.8,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 2.5,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 2.5,
+    "max_reported": 2.5,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 2.3,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 2.3,
+    "max_reported": 2.3,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 3.2,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 3.2,
+    "max_reported": 3.2,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 3.25,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 3.25,
+    "max_reported": 3.25,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 1.55,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 1.55,
+    "max_reported": 1.55,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 2.92,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 2.92,
+    "max_reported": 2.92,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 1.8,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 1.8,
+    "max_reported": 1.8,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 6,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 6,
+    "max_reported": 6,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 4.5,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 4.5,
+    "max_reported": 4.5,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 11,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 11,
+    "max_reported": 11,
+    "values_disagree": false
+   },
+   {
+    "company": "PESCO",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 5.5,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 5.5,
+    "max_reported": 5.5,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 11.13,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 11.13,
+    "max_reported": 11.13,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 10.5,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 10.5,
+    "max_reported": 10.5,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 3.4,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 3.4,
+    "max_reported": 3.4,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 2.83,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 2.83,
+    "max_reported": 2.83,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 3.875,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 3.875,
+    "max_reported": 3.875,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 5.8,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 5.8,
+    "max_reported": 5.8,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 7.33,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 7.33,
+    "max_reported": 7.33,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 6,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 6,
+    "max_reported": 6,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 8,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 8,
+    "max_reported": 8,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 11.3,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 11.3,
+    "max_reported": 11.3,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 10.25,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 10.25,
+    "max_reported": 10.25,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 10,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 10,
+    "max_reported": 10,
+    "values_disagree": false
+   },
+   {
+    "company": "QESCO",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 10.25,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 10.25,
+    "max_reported": 10.25,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2012-13",
+    "reported_hours_per_day": 2,
+    "chosen_report_year": "2016-17",
+    "reports": 1,
+    "min_reported": 2,
+    "max_reported": 2,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2013-14",
+    "reported_hours_per_day": 2,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 2,
+    "max_reported": 2,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2014-15",
+    "reported_hours_per_day": 1,
+    "chosen_report_year": "2016-17",
+    "reports": 2,
+    "min_reported": 1,
+    "max_reported": 1,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2015-16",
+    "reported_hours_per_day": 1,
+    "chosen_report_year": "2016-17",
+    "reports": 3,
+    "min_reported": 1,
+    "max_reported": 1,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2016-17",
+    "reported_hours_per_day": 2.25,
+    "chosen_report_year": "2016-17",
+    "reports": 4,
+    "min_reported": 2.25,
+    "max_reported": 2.25,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2017-18",
+    "reported_hours_per_day": 2.25,
+    "chosen_report_year": "2017-18",
+    "reports": 4,
+    "min_reported": 2.25,
+    "max_reported": 2.25,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2018-19",
+    "reported_hours_per_day": 2.25,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 2.25,
+    "max_reported": 2.25,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2019-20",
+    "reported_hours_per_day": 2.33,
+    "chosen_report_year": "2019-20",
+    "reports": 4,
+    "min_reported": 2.33,
+    "max_reported": 2.33,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2020-21",
+    "reported_hours_per_day": 7.3,
+    "chosen_report_year": "2020-21",
+    "reports": 4,
+    "min_reported": 7.3,
+    "max_reported": 7.3,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2021-22",
+    "reported_hours_per_day": 2.3,
+    "chosen_report_year": "2021-22",
+    "reports": 3,
+    "min_reported": 2.3,
+    "max_reported": 2.3,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2022-23",
+    "reported_hours_per_day": 2.33,
+    "chosen_report_year": "2022-23",
+    "reports": 2,
+    "min_reported": 2.33,
+    "max_reported": 2.33,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2023-24",
+    "reported_hours_per_day": 2.3,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 2.3,
+    "max_reported": 2.3,
+    "values_disagree": false
+   },
+   {
+    "company": "SEPCO",
+    "fiscal_year": "2024-25",
+    "reported_hours_per_day": 1.4,
+    "chosen_report_year": "2024-25",
+    "reports": 1,
+    "min_reported": 1.4,
+    "max_reported": 1.4,
+    "values_disagree": false
+   }
+  ],
+  "reports": [
+   {
+    "report_year": "2016-17",
+    "source_file": "20261013T170439Z_09b104358a68.pdf"
+   },
+   {
+    "report_year": "2017-18",
+    "source_file": "20261013T170438Z_ecdd9bc3ba26.pdf"
+   },
+   {
+    "report_year": "2019-20",
+    "source_file": "20261013T170436Z_67e37e8b948a.pdf"
+   },
+   {
+    "report_year": "2020-21",
+    "source_file": "20261013T170435Z_aa0abf2cbc3f.pdf"
+   },
+   {
+    "report_year": "2021-22",
+    "source_file": "20261013T170434Z_08fe1b4abb6d.pdf"
+   },
+   {
+    "report_year": "2022-23",
+    "source_file": "20261013T170433Z_309dc04c0be2.pdf"
+   },
+   {
+    "report_year": "2024-25",
+    "source_file": "20261013T170431Z_48f7a6cb35c9.pdf"
+   }
+  ],
+  "events": [
+   {
+    "id": "pm_max_2h_directive",
+    "date": "2026-09-11",
+    "summary": "Prime Minister ordered load shedding capped at a maximum of 2 hours.",
+    "max_hours": 2,
+    "source_url": "https://www.dawn.com/news/2029158"
+   }
+  ]
+ }
+}

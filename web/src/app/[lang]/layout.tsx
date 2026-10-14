@@ -1,24 +1,19 @@
 import type { Metadata } from "next";
-import { Noto_Nastaliq_Urdu } from "next/font/google";
-import Link from "next/link";
-import { ClockProvider, ClockToggle, Stamp } from "@/components/Clock";
+import { Intro } from "@/components/Bulb";
+import { ClockProvider, ClockToggle, NowStamp, Stamp } from "@/components/Clock";
 import { ExportText } from "@/components/ExportText";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { Logo } from "@/components/Logo";
+import { NavLinks } from "@/components/NavLinks";
+import { Skyline } from "@/components/Pylon";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { builtLocales, dirOf } from "@/i18n/config";
-import { fromExport } from "@/i18n/dictionaries";
+import { fromExport, getDictionary } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
+import { BOOT_SCRIPT } from "@/lib/boot";
 import { resolveLocale } from "@/lib/locale";
+import { fontVariables } from "../fonts";
 import "./globals.css";
-
-// Urdu is set in Nastaliq, self-hosted by next/font at build time. Not preloaded: only Urdu
-// pages use it, so English pages never download it.
-const nastaliq = Noto_Nastaliq_Urdu({
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  display: "swap",
-  preload: false,
-  variable: "--font-urdu",
-});
 
 export const dynamicParams = false;
 export const generateStaticParams = () => builtLocales.map((lang) => ({ lang }));
@@ -35,6 +30,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const { locale, dict } = await resolveLocale(params);
   const meta = await loadDocument("meta");
   const other = builtLocales.find((l) => l !== locale);
+  // The name in the other script under the opening animation (روشنی on English pages, Roshni on Urdu).
+  const otherName = (await getDictionary(locale === "en" ? "ur" : "en")).site.name;
   const nav = [
     ["", dict.nav.home],
     ["shutdowns/", dict.nav.shutdowns],
@@ -43,57 +40,66 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   ] as const;
 
   return (
-    <html lang={locale} dir={dirOf(locale)} className={nastaliq.variable}>
+    // suppressHydrationWarning: the boot script sets data-theme / intro-seen before React loads.
+    <html lang={locale} dir={dirOf(locale)} className={fontVariables} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
+      </head>
       <body className="min-h-dvh flex flex-col">
+        <Intro name={dict.site.name} other={otherName} />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:start-2 focus:top-2 bg-surface px-3 py-2"
+          className="sr-only focus:not-sr-only focus:absolute focus:start-2 focus:top-2 bg-surface px-3 py-2 z-10"
         >
           {dict.site.skip}
         </a>
-        <header className="border-b border-line">
-          {/* Brand and controls share the first row; the nav wraps under them on narrow screens. */}
-          <div className="mx-auto max-w-5xl px-4 py-3 flex flex-wrap items-center gap-x-6 gap-y-2">
-            <Link prefetch={false} href={`/${locale}/`} className="text-lg font-semibold">
-              {dict.site.name}
-            </Link>
-            <nav
-              aria-label={dict.nav.label}
-              className="order-last w-full sm:order-none sm:w-auto flex flex-wrap gap-x-4 gap-y-1 text-sm"
-            >
-              {nav.map(([href, label]) => (
-                <Link key={href} prefetch={false} href={`/${locale}/${href}`} className="hover:underline">
-                  {label}
-                </Link>
-              ))}
-            </nav>
-            <span className="ms-auto flex items-center gap-3 text-sm">
-              <ClockToggle label={dict.site.clock.label} h24={dict.site.clock.h24} h12={dict.site.clock.h12} />
-              {other && (
-                <LanguageSwitch
-                  from={locale}
-                  to={other}
-                  label={dict.site.otherLanguage}
-                  ariaLabel={dict.site.otherLanguageLabel}
-                />
-              )}
-            </span>
-          </div>
-          <p role="note" className="bg-notice text-notice-ink text-sm">
-            <span className="block mx-auto max-w-5xl px-4 py-1.5">{dict.banner.scheduled}</span>
-          </p>
-        </header>
         <ClockProvider halves={{ am: dict.site.clock.am, pm: dict.site.clock.pm }}>
+          <header>
+            <div className="masthead">
+              <div className="mx-auto max-w-5xl px-4 pt-4 flex flex-wrap items-end gap-x-4 gap-y-2">
+                <Logo href={`/${locale}/`} name={dict.site.name} />
+                <span className="ms-auto flex items-center gap-3 text-sm pb-1">
+                  <ThemeToggle label={dict.site.theme.label} names={dict.site.theme} />
+                  <ClockToggle label={dict.site.clock.label} h24={dict.site.clock.h24} h12={dict.site.clock.h12} />
+                  {other && (
+                    <LanguageSwitch
+                      from={locale}
+                      to={other}
+                      label={dict.site.otherLanguage}
+                      ariaLabel={dict.site.otherLanguageLabel}
+                    />
+                  )}
+                </span>
+                <div className="w-full border-y border-line py-1 flex flex-wrap gap-x-4 gap-y-0.5 font-mono text-[11px] text-muted">
+                  <NowStamp />
+                  <span dir="ltr">PKT · UTC+5</span>
+                  <p role="note" className="text-ink">
+                    {dict.banner.scheduled}
+                  </p>
+                </div>
+              </div>
+              <Skyline className="block w-full h-12 sm:h-16" />
+            </div>
+            <nav aria-label={dict.nav.label} className="rule-thin border-b-2 border-ink">
+              <div className="mx-auto max-w-5xl px-4 text-sm">
+                <NavLinks locale={locale} items={nav} />
+              </div>
+            </nav>
+          </header>
           <main id="main" className="flex-1 mx-auto w-full max-w-5xl px-4 py-6">
             {children}
           </main>
-          <footer className="border-t border-line text-sm text-muted">
-            <div className="mx-auto max-w-5xl px-4 py-4 space-y-1">
-              <p>
-                {dict.footer.lastUpdated}: <Stamp iso={meta.last_updated} />
-              </p>
-              <p>{dict.footer.timezone}</p>
-              <ExportText as="p" value={fromExport(meta.data.disclaimer, locale)} />
+          <footer className="masthead text-sm">
+            <Skyline className="block w-full h-10 opacity-70" />
+            <div className="mx-auto max-w-5xl px-4 py-5 grid gap-4 sm:grid-cols-[auto_1fr]">
+              <p className="headline text-2xl">{dict.site.name}</p>
+              <div className="space-y-1 text-muted">
+                <p>
+                  {dict.footer.lastUpdated}: <Stamp iso={meta.last_updated} />
+                </p>
+                <p>{dict.footer.timezone}</p>
+                <ExportText as="p" value={fromExport(meta.data.disclaimer, locale)} />
+              </div>
             </div>
           </footer>
         </ClockProvider>
