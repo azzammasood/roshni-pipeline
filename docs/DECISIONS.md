@@ -2,6 +2,20 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-15 (City pages, grid popup; owner's Islamabad sources)
+- **Owner's proposed Islamabad sources:**
+  - The attached `islamabad sep 2026 load management iesco.xlsx` is byte-identical (SHA-256 `f0336196…`) to `iesco-islamabad-sep26.xlsx`, which the daily snapshot has fetched from `iesco.com.pk/load-shedding` since January (HTTP 304 on every recent check). Nothing new to ingest.
+  - **IESCO's Facebook page is not added:** facebook.com's robots.txt has `User-agent: * / Disallow: /` and says automated collection is prohibited without written permission. The polite-client rule (robots.txt for every host) rules it out.
+  - The NEPRA 0 for IESCO stays as reported. The Islamabad page now sets it beside IESCO's own published schedule, which plans 2 to 12 hours a day per feeder depending on the level, without claiming which level is in force.
+- **Grid cells are buttons** that open a popup growing from the cell. It shows the reported value, the rank that year (ties share a rank), the change from the previous year, a sparkline of every year and a link to the city page. Escape, a click outside or a sideways scroll close it, and focus returns to the cell. Row headers link to city pages.
+- **Lead sentence:** when a company reported 0 in the newest year, it is named ("GEPCO and IESCO reported no load shedding to NEPRA; the other companies reported between 0.02 and 10.25 hours a day") instead of "between 0 and 10.25".
+- **City pages** (`/[lang]/city/`, `/[lang]/city/<slug>/`; new "Cities" tab). One page per company in NEPRA's tables, named by its main city.
+  - Every city page has stat tiles, a year-by-year line chart (the city emphasised, the other companies as grey hairlines, their median as a darker line; one axis; hover/arrow-key crosshair; table view) and "share of the day" rings (one ring per fiscal year, arc = reported hours out of 24).
+  - Islamabad adds IESCO's schedule as a 24-hour clock plus a grid-by-hour matrix, for any circle and interruption level. It also shows planned shutdowns for the Islamabad circle (press-release circles matched by name, "Rawalpindi" → Cantt and City).
+  - Karachi adds K-Electric's schedule clock and an IBC-by-hour matrix ("among listed feeders only").
+  - Shares count feeders with any scheduled minutes in the hour. The median across companies is descriptive context only. Charts use the site's ink/accent tokens: one emphasised series, one hue for magnitude, no categorical palette.
+- **Architecture page jitter:** the cards' blur fade-up and the tool tiles' staggered entrance ran on top of the page slide. Both are removed; the wire pulses and lamps stay.
+
 ## 2026-10-15 (Heatmap follow-up; tool logos)
 - **Heatmap hover toned down** (owner): the hovered cell lifts 6% with a wire outline and one soft brighten; other cells and rows no longer dim.
 - **IESCO and GEPCO show 0 for FY 2024-25 because NEPRA printed 0**, not a parser error. The FY 2024-25 report's section 3.6 table (report lines 2263-2264) gives IESCO `… 2.5 0` and GEPCO `… 0.22 0`, and its text says "IESCO, FESCO, GEPCO, and LESCO reported negligible load shedding". The parser only accepts a row with one number per year column, so a dash or blank is quarantined, never stored as 0. The value stays as reported; the grid now says what a 0 means and points at NEPRA's caveat.

@@ -37,6 +37,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const otherName = (await getDictionary(locale === "en" ? "ur" : "en")).site.name;
   const nav = [
     ["", dict.nav.home],
+    ["city/", dict.nav.cities],
     ["shutdowns/", dict.nav.shutdowns],
     ["karachi-equity/", dict.nav.equity],
     ["about/", dict.nav.about],
