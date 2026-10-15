@@ -8,28 +8,15 @@ import type { Locale } from "@/i18n/config";
 import { ExportText } from "@/components/ExportText";
 import { num } from "@/lib/format";
 import type { National } from "@/types/v1";
-import { ScrollRegion } from "@/components/ScrollRegion";
+import { NationalGrid } from "@/components/NationalGrid";
+import { BINS, BIN_LABELS } from "@/lib/nepraBins";
+import { joinList } from "@/lib/cities";
 
-// Stepped colours, day to night: each passes WCAG AA with its text colour (5.3:1 or better).
-// [upper bound in hours (exclusive), background, text]
-const BINS: [number, string, string][] = [
-  [1, "#f5c518", "#14213d"],
-  [3, "#f29a3a", "#14213d"],
-  [6, "#b03a3a", "#f4f1ea"],
-  [9, "#6b2d5c", "#f4f1ea"],
-  [Infinity, "#14213d", "#f4f1ea"],
-];
-const BIN_LABELS = ["< 1", "1–3", "3–6", "6–9", "9+"];
 
 /** "2024-25" -> "2025-26". */
 export function nextFiscalYear(fy: string): string {
   const start = Number(fy.slice(0, 4)) + 1;
   return `${start}-${String((start + 1) % 100).padStart(2, "0")}`;
-}
-
-function cellStyle(hours: number) {
-  const [, background, color] = BINS.find(([max]) => hours < max)!;
-  return { background, color };
 }
 
 export function NationalPanel({
@@ -52,6 +39,9 @@ export function NationalPanel({
         (cell.get(`${a}|${latest}`)?.reported_hours_per_day ?? -1) || (a < b ? -1 : 1),
   );
   const hours = latestRows.map((s) => s.reported_hours_per_day);
+  // A 0 is not a range end: name the companies that reported none (owner, 2026-10-15).
+  const zeros = latestRows.filter((s) => s.reported_hours_per_day === 0).map((s) => s.company).sort();
+  const nonZero = hours.filter((h) => h > 0);
   const top = latestRows.reduce((a, b) => (b.reported_hours_per_day > a.reported_hours_per_day ? b : a));
   const flagged = data.series.filter((s) => s.values_disagree);
   const hasZero = data.series.some((s) => s.reported_hours_per_day === 0);
@@ -65,61 +55,30 @@ export function NationalPanel({
         {t.title}
       </h2>
       <p className="headline text-xl sm:text-2xl max-w-3xl">
-        {fill(t.lead, { year: latest, min: n(Math.min(...hours)), max: n(Math.max(...hours)) }, locale)}{" "}
+        {zeros.length > 0 && nonZero.length > 0
+          ? fill(
+              t.leadZero,
+              {
+                year: latest,
+                zeros: joinList(zeros, t.and, t.listComma),
+                min: n(Math.min(...nonZero)),
+                max: n(Math.max(...nonZero)),
+              },
+              locale,
+            )
+          : fill(t.lead, { year: latest, min: n(Math.min(...hours)), max: n(Math.max(...hours)) }, locale)}{" "}
         {fill(t.top, { company: top.company, region: region[top.company] ?? "", hours: n(top.reported_hours_per_day) }, locale)}
       </p>
 
       <figure className="m-0 space-y-4 pt-2">
-        <ScrollRegion label={t.tableLabel} dir="ltr">
-          <table className="national-grid">
-            <caption className="sr-only">{t.tableLabel}</caption>
-            <thead>
-              <tr>
-                <th scope="col" className="sticky start-0 bg-bg z-[1]">
-                  {t.company}
-                </th>
-                {years.map((y) => (
-                  <th key={y} scope="col" className={y === latest ? "is-latest" : undefined}>
-                    <span className="block font-normal text-[0.6rem] leading-tight">{t.fyShort}</span>
-                    {y}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {companies.map((c) => (
-                <tr key={c}>
-                  <th scope="row" className="sticky start-0 bg-bg z-[1]">
-                    <span className="block font-semibold">{c}</span>
-                    <span className="block text-xs text-muted font-normal">{region[c]}</span>
-                  </th>
-                  {years.map((y) => {
-                    const s = cell.get(`${c}|${y}`);
-                    if (!s) return <td key={y} className="is-empty">–</td>;
-                    return (
-                      <td
-                        key={y}
-                        style={cellStyle(s.reported_hours_per_day)}
-                        className={y === latest ? "is-latest" : undefined}
-                        title={[
-                          fill(t.cellTitle, { company: c, year: y, hours: n(s.reported_hours_per_day) }, locale),
-                          s.values_disagree
-                            ? fill(t.disagree, { min: n(s.min_reported), max: n(s.max_reported) }, locale)
-                            : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      >
-                        {n(s.reported_hours_per_day)}
-                        {s.values_disagree && <sup aria-hidden="true">*</sup>}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </ScrollRegion>
+        <NationalGrid
+          series={data.series}
+          years={years}
+          companies={companies}
+          latest={latest}
+          locale={locale}
+          t={t}
+        />
         <figcaption className="space-y-3 text-sm">
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span>{t.legend}</span>

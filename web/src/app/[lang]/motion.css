@@ -335,10 +335,6 @@ html[lang="ur"] .intro-meta {
     animation: lamp-cycle calc(var(--n, 6) * 0.5s) steps(1, end) infinite;
     animation-delay: calc(var(--i, 0) * 0.5s);
   }
-  .arch-reveal {
-    animation: lead-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    animation-delay: calc(var(--i, 0) * 90ms);
-  }
 }
 /* Pulses travel in reading order on row 1 and against it on row 2 (mirrored for Urdu). */
 @media (prefers-reduced-motion: no-preference) and (min-width: 64rem) {
@@ -505,9 +501,152 @@ h2[id] {
   transform: translateY(-2px);
   box-shadow: 0 0 0 2px var(--wire), 0 6px 14px -6px rgb(245 197 24 / 0.7);
 }
+
+/* National grid cells are buttons (components/NationalGrid.tsx): they fill the cell and keep its
+   colours; the open cell keeps its outline while its popup is up. */
+.national-grid td:not(.is-empty) {
+  padding: 0;
+}
+.grid-cell {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 2.6rem;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.national-grid td.is-open {
+  z-index: 2;
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--ink);
+}
+.grid-city {
+  display: block;
+  text-decoration: none;
+}
+.grid-city:hover .font-semibold {
+  text-decoration: underline;
+  text-decoration-color: var(--wire);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
 @media (prefers-reduced-motion: no-preference) {
-  .arch-stage .tool-card {
-    animation: lead-in 0.45s ease-out both;
-    animation-delay: calc(var(--i, 0) * 90ms + 0.25s);
+  .grid-pop {
+    animation: grid-pop 0.24s cubic-bezier(0.2, 0.9, 0.3, 1.2);
   }
+}
+@keyframes grid-pop {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: none; }
+}
+
+/* City charts (components/city/*). Text stays in ink tokens; marks carry the colour. */
+.chart-tick {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 11px;
+}
+.chart-label {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+.chart-big {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 34px;
+}
+.chart-key {
+  display: inline-block;
+  width: 0.9rem;
+  height: 3px;
+  vertical-align: middle;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .chart-draw {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: chart-draw 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+  }
+  .clock-turn path {
+    transform-origin: 150px 150px;
+    animation: clock-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .bar-up {
+    transform-origin: bottom;
+    animation: bar-grow 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .city-card {
+    animation: lead-in 0.45s ease-out both;
+    animation-delay: calc(var(--i, 0) * 50ms);
+  }
+}
+@keyframes chart-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes clock-in {
+  from { opacity: 0; transform: scale(0.85) rotate(-8deg); }
+}
+
+/* Hour-by-hour matrix: one hue (the night/ink "dark" token), opacity by share. */
+.hour-matrix {
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: 0.75rem;
+}
+.hour-matrix th {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.65rem;
+  padding: 0 0.15rem;
+  white-space: nowrap;
+}
+.hour-matrix tbody th {
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding-inline-end: 0.5rem;
+}
+.hour-matrix td {
+  width: 1.05rem;
+  height: 1.05rem;
+  padding: 0;
+  background: color-mix(in srgb, var(--line) 45%, transparent);
+}
+.hour-matrix .is-hour {
+  outline: 1.5px solid var(--accent);
+}
+.hour-dot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--dark);
+}
+.hour-scale {
+  display: inline-block;
+  width: 6rem;
+  height: 0.6rem;
+  background: linear-gradient(to right, transparent, var(--dark));
+  border: 1px solid var(--line);
+}
+html[dir="rtl"] .hour-scale {
+  background: linear-gradient(to left, transparent, var(--dark));
+}
+
+.city-card {
+  border: 1.5px solid var(--ink);
+  background: var(--surface);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.city-card:hover,
+.city-card:focus-within {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 3px var(--wire), 0 14px 30px -14px rgb(0 0 0 / 0.45);
+}
+
+/* The matrix's screen-reader labels are absolutely positioned: anchor them to their cells so they
+   stay inside the scroll box instead of widening the page. */
+.hour-matrix td,
+.hour-matrix thead th:not(.sticky) {
+  position: relative;
 }

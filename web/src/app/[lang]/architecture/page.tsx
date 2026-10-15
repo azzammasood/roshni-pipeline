@@ -63,7 +63,7 @@ export default async function Architecture({ params }: PageProps<"/[lang]/archit
           {STAGES.map((s, i) => (
             <li
               key={s.key}
-              className="arch-stage arch-reveal"
+              className="arch-stage"
               style={{ "--i": i } as React.CSSProperties}
             >
               <span className="arch-num" dir="ltr">
