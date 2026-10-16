@@ -29,6 +29,7 @@ Attock:GBHP Colony-2,GBHP Colony-2,Attock,iesco:attock:018910,PM COLONY,1,72.7,f
 Attock:GBHP Power Channel,GBHP Power Channel,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Attock:GBHP power Channel,GBHP power Channel,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Attock:Gaggan,Gaggan,Attock,,,0,0,,no_candidate,,
+Attock:Garhi Afghana,Garhi Afghana,Attock,iesco:attock:014626,GHARI AFGHAN,1,88.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Extra trailing syllable (Afghana vs Afghan); not clearly same name
 Attock:Gharhi Afghan,Gharhi Afghan,Attock,iesco:attock:014626,GHARI AFGHAN,1,96.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Attock:Ghoree,Ghoree,Attock,iesco:attock:021219,GHOREE,1,100.0,exact,auto_exact,,
 Attock:Gulsha e Sehat,Gulsha e Sehat,Attock,iesco:attock:121806,GULSHAN E SEHAT,1,96.6,fuzzy,suggested,accepted,claude-review 2026-10-10: typo
@@ -68,6 +69,7 @@ Attock:Khan Abad,Khan Abad,Attock,iesco:attock:014619,KHANABAD,1,94.1,fuzzy,sugg
 Attock:Khan Abad,Khan Abad,Attock,iesco:attock:014627,HUSSAIN ABAD,2,76.2,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Attock:Khan Abad,Khan Abad,Attock,iesco:attock:103905,HAFIZ ABAD,3,73.7,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Attock:Kohistan Enclave,Kohistan Enclave,Attock,iesco:attock:112011,KOHISTAN ENCLAVE,1,100.0,exact,auto_exact,,
+Attock:Lala Rukh,Lala Rukh,Attock,iesco:attock:014622,LALA RUKH,1,100.0,exact,auto_exact,,
 Attock:Lala Zar,Lala Zar,Attock,iesco:attock:014622,LALA RUKH,1,70.6,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Attock:Lalarukh,Lalarukh,Attock,iesco:attock:014622,LALA RUKH,1,94.1,fuzzy,suggested,accepted,llm-review 2026-10-14 anthropic/claude-haiku-5.5: Spacing variant of LALA RUKH
 Attock:Lalazar,Lalazar,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
@@ -131,6 +133,9 @@ Chakwal:Anwar Abad,Anwar Abad,Chakwal,iesco:chakwal:029003,AHMAD ABAD,1,70.0,fuz
 Chakwal:Ara Bazar,Ara Bazar,Chakwal,iesco:chakwal:002218,ARA BAZAR,1,100.0,exact,auto_exact,,
 Chakwal:Ara Bazar,Ara Bazar,Chakwal,iesco:chakwal:102406,MAIN BAZAR,2,73.7,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Chakwal:Basharat,Basharat,Chakwal,iesco:chakwal:024603,BASHARAT,1,100.0,exact,auto_exact,,
+Chakwal:Bhar Pur,Bhar Pur,Chakwal,iesco:chakwal:002222,BHARPUR,1,93.3,fuzzy,suggested,accepted,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Same name with space variant: Bhar Pur = BHARPUR
+Chakwal:Bhar Pur,Bhar Pur,Chakwal,iesco:chakwal:130802,KHAIR PUR,2,82.4,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: another candidate accepted
+Chakwal:Bhar Pur,Bhar Pur,Chakwal,iesco:chakwal:102417,BHARPUR (KALO),3,70.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: another candidate accepted
 Chakwal:Bhoun,Bhoun,Chakwal,iesco:chakwal:002202,BHOUN,1,100.0,exact,auto_exact,,
 Chakwal:CWO,CWO,Chakwal,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Chakwal:D/Jalip,D/Jalip,Chakwal,iesco:chakwal:058205,DHRYALA JALIP,1,70.0,fuzzy,suggested,accepted,claude-review 2026-10-10: D/ abbreviates Dhryala
@@ -462,35 +467,134 @@ GSO:Zarkoon Heights,Zarkoon Heights,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no
 GSO:Zeeshan Colony,Zeeshan Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
 GSO:from,from,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
 GSO:from 06-30am to 10-30 am,from 06-30am to 10-30 am,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+Islamabad:A-Block,A-Block,Islamabad,,,0,0,,no_candidate,,
+Islamabad:A.P.H.S,A.P.H.S,Islamabad,,,0,0,,no_candidate,,
+Islamabad:AFOHS,AFOHS,Islamabad,iesco:islamabad:061120,FHS,1,75.0,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:Abdul Rehman,Abdul Rehman,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Abdullah Pur,Abdullah Pur,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Adiala,Adiala,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Adiala Jail,Adiala Jail,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Affandi Colony,Affandi Colony,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Ahmedal,Ahmedal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Airport,Airport,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Airport Society,Airport Society,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Akram Shaheed,Akram Shaheed,Islamabad,iesco:islamabad:105512,AZAD SHAHEED,1,80.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Different personal name; AZAD differs from AKRAM
+Islamabad:AkwaI,AkwaI,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Al-Noor Colony,Al-Noor Colony,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Ali Pur,Ali Pur,Islamabad,iesco:islamabad:014701,ALI PUR,1,100.0,exact,auto_exact,,
 Islamabad:Ali Pur,Ali Pur,Islamabad,iesco:islamabad:122510,SAID PUR,2,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Islamabad:Aman Pur,Aman Pur,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Ameen Town,Ameen Town,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Ameer Hamza,Ameer Hamza,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Amin Abad,Amin Abad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Amin Town,Amin Town,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Askari-14,Askari-14,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Askari-7,Askari-7,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Ayub Market,Ayub Market,Islamabad,iesco:islamabad:022318,AYUB MARKET,1,100.0,exact,auto_exact,,
 Islamabad:Ayub Market,Ayub Market,Islamabad,iesco:islamabad:075513,ABASSI MARKET,2,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Islamabad:Azharabad,Azharabad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,73.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: SHARIFABAD is a different name
+Islamabad:B.B.H,B.B.H,Islamabad,,,0,0,,no_candidate,,
+Islamabad:BBH,BBH,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Balawara,Balawara,Islamabad,iesco:islamabad:103703,BLAWRA,1,85.7,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:Balkassar,Balkassar,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Bank Road,Bank Road,Islamabad,iesco:islamabad:072723,BELA ROAD,1,77.8,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: No candidate named Bank Road; ROAD matches are different places
+Islamabad:Bank Road,Bank Road,Islamabad,iesco:islamabad:086404,PARBAT ROAD,2,70.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: No candidate named Bank Road; ROAD matches are different places
+Islamabad:Bank Road,Bank Road,Islamabad,iesco:islamabad:105504,SUDRAN ROAD,3,70.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: No candidate named Bank Road; ROAD matches are different places
+Islamabad:Banni,Banni,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Bari Imam,Bari Imam,Islamabad,iesco:islamabad:089212,BARI IMAM,1,100.0,exact,auto_exact,,
 Islamabad:Bari Imam,Bari Imam,Islamabad,iesco:islamabad:105502,BARMA,2,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Islamabad:Barrian,Barrian,Islamabad,iesco:islamabad:013706,BARIAN,1,92.3,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:Basali,Basali,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Berote,Berote,Islamabad,iesco:islamabad:079408,BEROT,1,90.9,fuzzy,suggested,accepted,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Vowel-ending variant of BEROT
+Islamabad:Bhall,Bhall,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Bhalote,Bhalote,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Bhar Pur; GSO Circle:,Bhar Pur; GSO Circle:,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Bhoi Gar,Bhoi Gar,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Bilal Town,Bilal Town,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Bilalabad,Bilalabad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Bostan Khan,Bostan Khan,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Brahma,Brahma,Islamabad,iesco:islamabad:105502,BARMA,1,72.7,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:Burhan,Burhan,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Burma,Burma,Islamabad,iesco:islamabad:105502,BARMA,1,80.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Islamabad:CDA Flat,CDA Flat,Islamabad,iesco:islamabad:017432,CDA FLATS,1,94.1,fuzzy,suggested,accepted,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Singular/plural variant: CDA FLATS
 Islamabad:CDA Pump,CDA Pump,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:CM Pak Zong,CM Pak Zong,Islamabad,iesco:islamabad:105509,CM PAK,1,70.6,fuzzy,suggested,accepted,claude-review 2026-10-10: CM Pak is the Zong operator
+Islamabad:CMH Jhelum,CMH Jhelum,Islamabad,,,0,0,,no_candidate,,
+Islamabad:CWO,CWO,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Cabinet Division,Cabinet Division,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Capital Steel,Capital Steel,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Car Chowk,Car Chowk,Islamabad,iesco:islamabad:086417,CHINA CHOWK,1,80.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: CHINA CHOWK differs in substance
 Islamabad:Carriage Factory,Carriage Factory,Islamabad,iesco:islamabad:043321,CARRIGE FACTORY,1,96.8,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
 Islamabad:Carriage Factory,Carriage Factory,Islamabad,iesco:islamabad:128603,CARRIGE FACTORY (I-11),2,83.3,fuzzy,suggested,rejected,auto-review: another candidate matched
+Islamabad:Cecil,Cecil,Islamabad,iesco:islamabad:013714,CECIL,1,100.0,exact,auto_exact,,
+Islamabad:Chairing Cross,Chairing Cross,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Chak Shehzad,Chak Shehzad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Chaklala,Chaklala,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Chakra,Chakra,Islamabad,iesco:islamabad:014704,CHARAH,1,83.3,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: CHARAH differs in consonant (k vs h)
+Islamabad:Chakral,Chakral,Islamabad,iesco:islamabad:014704,CHARAH,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: No clear match; CHARAH and GHARIAL differ
+Islamabad:Chakral,Chakral,Islamabad,iesco:islamabad:013711,GHARIAL,2,71.4,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: No clear match; CHARAH and GHARIAL differ
+Islamabad:Chapran,Chapran,Islamabad,iesco:islamabad:014704,CHARAH,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: CHARAH differs in substance
+Islamabad:Charing Cross,Charing Cross,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Chatta Bakhtawar,Chatta Bakhtawar,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:Chatta Bakhtwar,Chatta Bakhtwar,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Chattha,Chattha,Islamabad,iesco:islamabad:105507,CHATTA,1,92.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Chirah,Chirah,Islamabad,iesco:islamabad:014704,CHARAH,1,83.3,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:Chountra,Chountra,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Chungi No. 22,Chungi No. 22,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Cical,Cical,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Cobe Line,Cobe Line,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Company Bagh,Company Bagh,Islamabad,iesco:islamabad:013713,COMPANY BAGH,1,100.0,exact,auto_exact,,
+Islamabad:D.S. Bilawal,D.S. Bilawal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:DESTO,DESTO,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dalwal,Dalwal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dandot,Dandot,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Daroot,Daroot,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Daultala,Daultala,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Defence Road,Defence Road,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dehla,Dehla,Islamabad,iesco:islamabad:079411,DEHLA,1,100.0,exact,auto_exact,,
+Islamabad:Dhok Ghazan,Dhok Ghazan,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dhoke Farman,Dhoke Farman,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dhoke Hukamdad,Dhoke Hukamdad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dhoke Khabba,Dhoke Khabba,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dhoke Suleman,Dhoke Suleman,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dhraik,Dhraik,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dilawarabad,Dilawarabad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dina-4 (City),Dina-4 (City),Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dk Hukam Dad,Dk Hukam Dad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dk Niaza,Dk Niaza,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dk Noor,Dk Noor,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dk Sulaiman,Dk Sulaiman,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dk Suleman,Dk Suleman,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dk. Farman Ali,Dk. Farman Ali,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Dora Badhal,Dora Badhal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:E-Block,E-Block,Islamabad,,,0,0,,no_candidate,,
+Islamabad:E.C. Mill,E.C. Mill,Islamabad,,,0,0,,no_candidate,,
+Islamabad:E.C. Mill; Attock Circle:,E.C. Mill; Attock Circle:,Islamabad,,,0,0,,no_candidate,,
 Islamabad:F-10/2,F-10/2,Islamabad,iesco:islamabad:069210,F-10/2,1,100.0,exact,auto_exact,,
 Islamabad:F-10/2,F-10/2,Islamabad,iesco:islamabad:069221,F-10/4,2,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:F-10/2,F-10/2,Islamabad,iesco:islamabad:069216,F-11/2,3,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Islamabad:F-10/M,F-10/M,Islamabad,iesco:islamabad:069210,F-10/2,1,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
+Islamabad:F-10/M,F-10/M,Islamabad,iesco:islamabad:069221,F-10/4,2,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
 Islamabad:F-11/1,F-11/1,Islamabad,iesco:islamabad:069202,F-11/1,1,100.0,exact,auto_exact,,
 Islamabad:F-11/1,F-11/1,Islamabad,iesco:islamabad:069216,F-11/2,2,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:F-11/1,F-11/1,Islamabad,iesco:islamabad:069209,F-11/3,3,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:FBR,FBR,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:FHS,FHS,Islamabad,iesco:islamabad:061120,FHS,1,100.0,exact,auto_exact,,
 Islamabad:Faisal Masjid,Faisal Masjid,Islamabad,iesco:islamabad:022310,FAISAL MASJID,1,100.0,exact,auto_exact,,
 Islamabad:Faisal Masjid,Faisal Masjid,Islamabad,iesco:islamabad:022342,ZIA MASJID,2,78.3,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Islamabad:Faizabad,Faizabad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Fateh Jang (Double Circuit),Fateh Jang (Double Circuit),Islamabad,,,0,0,,no_candidate,,
+Islamabad:Fateh Pur,Fateh Pur,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Fazaia,Fazaia,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:Filtration Plant,Filtration Plant,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:Floor Mill- 1,Floor Mill- 1,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Floor Mill-2,Floor Mill-2,Islamabad,,,0,0,,no_candidate,,
 Islamabad:G- 9/2,G- 9/2,Islamabad,iesco:islamabad:122305,G-9/2,1,100.0,exact,auto_exact,,
 Islamabad:G- 9/2,G- 9/2,Islamabad,iesco:islamabad:122301,G-8/2,2,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Islamabad:G- 9/2,G- 9/2,Islamabad,iesco:islamabad:122304,G-9/1,3,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Islamabad:G-10/3,G-10/3,Islamabad,iesco:islamabad:122310,G-10/3,1,100.0,exact,auto_exact,,
+Islamabad:G-10/3,G-10/3,Islamabad,iesco:islamabad:122309,G-10 /2,2,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Islamabad:G-10/3,G-10/3,Islamabad,iesco:islamabad:122308,G-10/1,3,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:G-10/4,G-10/4,Islamabad,iesco:islamabad:122314,G-10/4,1,100.0,exact,auto_exact,,
 Islamabad:G-10/4,G-10/4,Islamabad,iesco:islamabad:069221,F-10/4,2,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:G-10/4,G-10/4,Islamabad,iesco:islamabad:122309,G-10 /2,3,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
@@ -509,6 +613,9 @@ Islamabad:G-11/3,G-11/3,Islamabad,iesco:islamabad:122310,G-10/3,3,83.3,fuzzy,sug
 Islamabad:G-11/4,G-11/4,Islamabad,iesco:islamabad:069214,G-11/4,1,100.0,exact,auto_exact,,
 Islamabad:G-11/4,G-11/4,Islamabad,iesco:islamabad:069218,F-11/4,2,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:G-11/4,G-11/4,Islamabad,iesco:islamabad:122314,G-10/4,3,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Islamabad:G-11/M,G-11/M,Islamabad,iesco:islamabad:069205,G-11/1,1,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
+Islamabad:G-11/M,G-11/M,Islamabad,iesco:islamabad:069206,G-11/2,2,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
+Islamabad:G-11/M,G-11/M,Islamabad,iesco:islamabad:069213,G-11/3,3,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
 Islamabad:G-8,G-8,Islamabad,iesco:islamabad:022326,G8,1,80.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:G-8,G-8,Islamabad,iesco:islamabad:022330,G-8/1,2,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:G-8,G-8,Islamabad,iesco:islamabad:122301,G-8/2,3,75.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
@@ -527,28 +634,88 @@ Islamabad:G-9/2,G-9/2,Islamabad,iesco:islamabad:122304,G-9/1,3,80.0,fuzzy,sugges
 Islamabad:G-9/4,G-9/4,Islamabad,iesco:islamabad:122312,G-9/4,1,100.0,exact,auto_exact,,
 Islamabad:G-9/4,G-9/4,Islamabad,iesco:islamabad:122304,G-9/1,2,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Islamabad:G-9/4,G-9/4,Islamabad,iesco:islamabad:122305,G-9/2,3,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Islamabad:GPO Chowk,GPO Chowk,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Gangal,Gangal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Ghari Afghana,Ghari Afghana,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Gharial,Gharial,Islamabad,iesco:islamabad:013711,GHARIAL,1,100.0,exact,auto_exact,,
+Islamabad:Gharibwal,Gharibwal,Islamabad,iesco:islamabad:013711,GHARIAL,1,87.5,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: GHARIAL differs in substance
 Islamabad:Ghauri Garden,Ghauri Garden,Islamabad,iesco:islamabad:105513,GHORI GRADEN,1,80.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Islamabad:Ghazan Khan,Ghazan Khan,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Ghori Garden,Ghori Garden,Islamabad,iesco:islamabad:105513,GHORI GRADEN,1,91.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Islamabad:Ghour Ghushti,Ghour Ghushti,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Ghouri Dhamaik,Ghouri Dhamaik,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Ghousia Cly,Ghousia Cly,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Ghumti,Ghumti,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Girja-I,Girja-I,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Golra,Golra,Islamabad,iesco:islamabad:069207,GOLRA II,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: GOLRA II is a numbered distinct feeder; GOR differs
+Islamabad:Golra,Golra,Islamabad,iesco:islamabad:061103,GOR,2,75.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: GOLRA II is a numbered distinct feeder; GOR differs
+Islamabad:Gondal,Gondal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Grace Line,Grace Line,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Gujjar Khan,Gujjar Khan,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Gujjar Khan City,Gujjar Khan City,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Gulshan Abad,Gulshan Abad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Gulyana,Gulyana,Islamabad,iesco:islamabad:013702,KULDANA,1,71.4,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: KULDANA differs in substance
+Islamabad:Gulzar Qaid,Gulzar Qaid,Islamabad,,,0,0,,no_candidate,,
 Islamabad:HC-I,HC-I,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:HC-II,HC-II,Islamabad,iesco:islamabad:069225,PHA II,1,72.7,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:HPT,HPT,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Hadri Chowk,Hadri Chowk,Islamabad,iesco:islamabad:086417,CHINA CHOWK,1,72.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: CHINA CHOWK differs in substance
+Islamabad:Hamad Jangi,Hamad Jangi,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Hamid Jhangi,Hamid Jhangi,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Hamyou-I,Hamyou-I,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Hasnote,Hasnote,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Hayat Sir Road,Hayat Sir Road,Islamabad,,,0,0,,no_candidate,,
 Islamabad:High Way,High Way,Islamabad,iesco:islamabad:022315,HIGHWAY,1,93.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Highway,Highway,Islamabad,iesco:islamabad:022315,HIGHWAY,1,100.0,exact,auto_exact,,
+Islamabad:I-10/1,I-10/1,Islamabad,iesco:islamabad:006432,I-10/1,1,100.0,exact,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Two identical I-10/1 candidates; cannot choose
+Islamabad:I-10/1,I-10/1,Islamabad,iesco:islamabad:128604,I-10/1,2,100.0,exact,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Two identical I-10/1 candidates; cannot choose
+Islamabad:I-10/1,I-10/1,Islamabad,iesco:islamabad:122308,G-10/1,3,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
+Islamabad:I-14/3,I-14/3,Islamabad,iesco:islamabad:106707,G-14/3,1,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
+Islamabad:I-14/3,I-14/3,Islamabad,iesco:islamabad:072717,I-11/3,2,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
+Islamabad:I-14/3,I-14/3,Islamabad,iesco:islamabad:022337,I-8/3,3,72.7,fuzzy,suggested,rejected,auto-review: numbers differ
+Islamabad:I-14/3; Rawalpindi Cantt Circle:,I-14/3; Rawalpindi Cantt Circle:,Islamabad,,,0,0,,no_candidate,,
 Islamabad:I-8/1,I-8/1,Islamabad,iesco:islamabad:061109,I-8/1,1,100.0,exact,auto_exact,,
 Islamabad:I-8/1,I-8/1,Islamabad,iesco:islamabad:122317,F-8/1,2,80.0,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:I-8/1,I-8/1,Islamabad,iesco:islamabad:022330,G-8/1,3,80.0,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:ISI,ISI,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:ISI (Independent),ISI (Independent),Islamabad,,,0,0,,no_candidate,,
 Islamabad:IT Park,IT Park,Islamabad,iesco:islamabad:122302,F9 PARK,1,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:IT-Park,IT-Park,Islamabad,iesco:islamabad:122302,F9 PARK,1,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Industrial,Industrial,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Inter School,Inter School,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Iqbal Town,Iqbal Town,Islamabad,iesco:islamabad:022314,IQBAL TOWN,1,100.0,exact,auto_exact,,
 Islamabad:Iqbat Town,Iqbat Town,Islamabad,iesco:islamabad:022314,IQBAL TOWN,1,80.0,fuzzy,suggested,accepted,claude-review 2026-10-10: typo
+Islamabad:Islam Pura,Islam Pura,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Islamabad Club-1,Islamabad Club-1,Islamabad,iesco:islamabad:017417,ISLAMABAD CLUB 1,1,100.0,exact,auto_exact,,
 Islamabad:Islamabad Club-1,Islamabad Club-1,Islamabad,iesco:islamabad:017428,ISLAMABAD CLUB 2,2,93.8,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Islamabad:Islamabad Club-2,Islamabad Club-2,Islamabad,iesco:islamabad:017428,ISLAMABAD CLUB 2,1,100.0,exact,auto_exact,,
 Islamabad:Islamabad Club-2,Islamabad Club-2,Islamabad,iesco:islamabad:017417,ISLAMABAD CLUB 1,2,93.8,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Islamabad:Islamabad Club-I,Islamabad Club-I,Islamabad,iesco:islamabad:017417,ISLAMABAD CLUB 1,1,93.8,fuzzy,suggested,accepted,claude-review 2026-10-10: roman I = 1
 Islamabad:Islamabad Club-I,Islamabad Club-I,Islamabad,iesco:islamabad:017428,ISLAMABAD CLUB 2,2,93.8,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Islamabad Feed Mill,Islamabad Feed Mill,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Islamia Chowk,Islamia Chowk,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Islampura,Islampura,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Isolation Hospital,Isolation Hospital,Islamabad,iesco:islamabad:105520,ISOLATION HOSPITAL,1,100.0,exact,auto_exact,,
+Islamabad:Jahangir Road,Jahangir Road,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Jail Park-1,Jail Park-1,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Jakkar,Jakkar,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Jamia Masjid,Jamia Masjid,Islamabad,iesco:islamabad:022342,ZIA MASJID,1,81.8,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: ZIA and FAISAL masjid candidates differ in substance
+Islamabad:Jamia Masjid,Jamia Masjid,Islamabad,iesco:islamabad:022310,FAISAL MASJID,2,80.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: ZIA and FAISAL masjid candidates differ in substance
+Islamabad:Jand Khanzada,Jand Khanzada,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Jhanda,Jhanda,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Jhangi,Jhangi,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Jhangir Road,Jhangir Road,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Jhatta Hathial,Jhatta Hathial,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Jinnah Road,Jinnah Road,Islamabad,,,0,0,,no_candidate,,
+Islamabad:K.T.M-2,K.T.M-2,Islamabad,,,0,0,,no_candidate,,
+Islamabad:KRL,KRL,Islamabad,iesco:islamabad:110905,KORAL,1,75.0,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:KRL Colony,KRL Colony,Islamabad,iesco:islamabad:022339,H8 GRID COLONY,1,73.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: H8 GRID COLONY differs in substance
+Islamabad:KTM Mills,KTM Mills,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Kahuta City,Kahuta City,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Kalyal,Kalyal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Kamrial,Kamrial,Islamabad,iesco:islamabad:013711,GHARIAL,1,71.4,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: GHARIAL differs in substance
+Islamabad:Kanggar Thathi,Kanggar Thathi,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Katchery 4/C,Katchery 4/C,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Khadhraper,Khadhraper,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:Khadhrapur,Khadhrapur,Islamabad,iesco:islamabad:089218,SHAHPUR,1,70.6,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Khadraper,Khadraper,Islamabad,iesco:islamabad:105523,KHADRE PARR,1,70.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
@@ -556,63 +723,182 @@ Islamabad:Khana Dak,Khana Dak,Islamabad,iesco:islamabad:105501,KHANA DAK,1,100.0
 Islamabad:Khana Dak,Khana Dak,Islamabad,iesco:islamabad:105510,KHANA EAST,2,73.7,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Islamabad:Khana East,Khana East,Islamabad,iesco:islamabad:105510,KHANA EAST,1,100.0,exact,auto_exact,,
 Islamabad:Khana East,Khana East,Islamabad,iesco:islamabad:105501,KHANA DAK,2,73.7,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Islamabad:Khana Road,Khana Road,Islamabad,iesco:islamabad:105501,KHANA DAK,1,73.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: KHANA DAK and KHANA EAST differ from KHANA ROAD
+Islamabad:Khana Road,Khana Road,Islamabad,iesco:islamabad:105510,KHANA EAST,2,70.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: KHANA DAK and KHANA EAST differ from KHANA ROAD
 Islamabad:Khanna Dak,Khanna Dak,Islamabad,iesco:islamabad:105501,KHANA DAK,1,94.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Khanna Dak,Khanna Dak,Islamabad,iesco:islamabad:105510,KHANA EAST,2,70.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Khanna East,Khanna East,Islamabad,iesco:islamabad:105510,KHANA EAST,1,95.2,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Khanna East,Khanna East,Islamabad,iesco:islamabad:105501,KHANA DAK,2,70.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Khanpur City,Khanpur City,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Khasala,Khasala,Islamabad,,,0,0,,no_candidate,,
+Islamabad:King Hamad University,King Hamad University,Islamabad,iesco:islamabad:105526,KING HAMMAD UNIVERISTY,1,93.0,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:King Hamad University,King Hamad University,Islamabad,iesco:islamabad:072710,ISLAMIC UNIVERSITY,2,71.8,fuzzy,suggested,rejected,auto-review: another candidate matched
 Islamabad:King Hammad,King Hammad,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:King Hammad University,King Hammad University,Islamabad,iesco:islamabad:105526,KING HAMMAD UNIVERISTY,1,95.5,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:King Hammad University,King Hammad University,Islamabad,iesco:islamabad:072710,ISLAMIC UNIVERSITY,2,70.0,fuzzy,suggested,rejected,auto-review: another candidate matched
+Islamabad:Kinger,Kinger,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Kohala,Kohala,Islamabad,iesco:islamabad:110905,KORAL,1,72.7,fuzzy,suggested,rejected,llm-review 2026-10-14 anthropic/claude-haiku-5.5: KORAL drops the H and A syllable
+Islamabad:Kohsar Colony,Kohsar Colony,Islamabad,iesco:islamabad:022339,H8 GRID COLONY,1,72.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: H8 GRID COLONY differs in substance
 Islamabad:Kotli Sattian,Kotli Sattian,Islamabad,iesco:islamabad:103702,KOTLI SATTIAN,1,100.0,exact,auto_exact,,
+Islamabad:Kountrilla,Kountrilla,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Kuldana,Kuldana,Islamabad,iesco:islamabad:013702,KULDANA,1,100.0,exact,auto_exact,,
 Islamabad:Kund Rajgan,Kund Rajgan,Islamabad,iesco:islamabad:105522,KUND RAJGAN,1,100.0,exact,auto_exact,,
+Islamabad:Kurnb Kaswal,Kurnb Kaswal,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Kurri,Kurri,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:L.T.C,L.T.C,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Lab-No. I,Lab-No. I,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Lab-No. II,Lab-No. II,Islamabad,iesco:islamabad:069207,GOLRA II,1,71.4,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: GOLRA II differs in substance
+Islamabad:Lakhoo Road,Lakhoo Road,Islamabad,iesco:islamabad:072723,BELA ROAD,1,70.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: BELA ROAD differs in substance
 Islamabad:Lehtrar,Lehtrar,Islamabad,iesco:islamabad:105517,LEHTRAR ROAD,1,73.7,fuzzy,suggested,accepted,claude-review 2026-10-10: only Lehtrar feeder in the circle
 Islamabad:Lehtrar Road,Lehtrar Road,Islamabad,iesco:islamabad:105517,LEHTRAR ROAD,1,100.0,exact,auto_exact,,
+Islamabad:Lora (PESCO),Lora (PESCO),Islamabad,iesco:islamabad:013703,LORA 1 (PESCO),1,90.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: LORA 1 and LORA 2 equally plausible; reject
+Islamabad:Lora (PESCO),Lora (PESCO),Islamabad,iesco:islamabad:013715,LORA 2 (PESCO),2,90.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: LORA 1 and LORA 2 equally plausible; reject
+Islamabad:Lora-2,Lora-2,Islamabad,,,0,0,,no_candidate,,
+Islamabad:M. Riaz Shaheed,M. Riaz Shaheed,Islamabad,iesco:islamabad:105512,AZAD SHAHEED,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: AZAD SHAHEED differs in name
+Islamabad:M. Steel Mill,M. Steel Mill,Islamabad,,,0,0,,no_candidate,,
+Islamabad:MCM,MCM,Islamabad,,,0,0,,no_candidate,,
+Islamabad:MES,MES,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Madu Kalas,Madu Kalas,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Mahfooz Shaheed / Shahzad Town,Mahfooz Shaheed / Shahzad Town,Islamabad,iesco:islamabad:017424,MEHFOOZ SHAHEED ( SHAHZAD TOWN),1,95.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Mahfooz Shaheed / Shehzad Town,Mahfooz Shaheed / Shehzad Town,Islamabad,iesco:islamabad:017424,MEHFOOZ SHAHEED ( SHAHZAD TOWN),1,91.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Mahfooz Shaheed/Shahzad Town,Mahfooz Shaheed/Shahzad Town,Islamabad,iesco:islamabad:017424,MEHFOOZ SHAHEED ( SHAHZAD TOWN),1,95.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Islamabad:Mal Awan,Mal Awan,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Malikwal,Malikwal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Mandi Bhalwal,Mandi Bhalwal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Mandra,Mandra,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Mandra-2,Mandra-2,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Mandra-II,Mandra-II,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Marvi,Marvi,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:Marvi Road,Marvi Road,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Matwa,Matwa,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Mehbob Shaheed,Mehbob Shaheed,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Mehfooz Shaheed / Shahzad Town,Mehfooz Shaheed / Shahzad Town,Islamabad,iesco:islamabad:017424,MEHFOOZ SHAHEED ( SHAHZAD TOWN),1,100.0,exact,auto_exact,,
+Islamabad:Mial,Mial,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Military College; Chakwal Circle:,Military College; Chakwal Circle:,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Misrial Road,Misrial Road,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Mohan Pura,Mohan Pura,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Mohra Noor,Mohra Noor,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:Mohra Noor Bani Gala,Mohra Noor Bani Gala,Islamabad,iesco:islamabad:122509,IMRAN KHAN (MOHRA NOOR BANI GALA),1,78.4,fuzzy,suggested,accepted,llm-review 2026-10-14 anthropic/claude-haiku-5.5: Place name matches bracketed part of candidate
+Islamabad:Moorat,Moorat,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Morgah,Morgah,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Muhammadi Chowk,Muhammadi Chowk,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Mumtaz Steel,Mumtaz Steel,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Munara,Munara,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Musa D/C,Musa D/C,Islamabad,,,0,0,,no_candidate,,
 Islamabad:NIH,NIH,Islamabad,iesco:islamabad:089210,NIH,1,100.0,exact,auto_exact,,
+Islamabad:Nartopa,Nartopa,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Nathwala,Nathwala,Islamabad,iesco:islamabad:089217,ATHAL,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: ATHAL differs in substance
 Islamabad:Navy-1,Navy-1,Islamabad,iesco:islamabad:090009,NAVY 1,1,100.0,exact,auto_exact,,
 Islamabad:Navy-1,Navy-1,Islamabad,iesco:islamabad:090010,NAVY 2,2,83.3,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Islamabad:Nawaz Colony,Nawaz Colony,Islamabad,iesco:islamabad:022304,WAPDA COLONY,1,75.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: WAPDA COLONY differs in substance
+Islamabad:New GHQ,New GHQ,Islamabad,,,0,0,,no_candidate,,
+Islamabad:New Mulpur,New Mulpur,Islamabad,,,0,0,,no_candidate,,
+Islamabad:New PTN,New PTN,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Noorpur,Noorpur,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Numble,Numble,Islamabad,iesco:islamabad:079405,NUMBAL,1,83.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Islamabad:Officer Colony,Officer Colony,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Orchard Scheme,Orchard Scheme,Islamabad,iesco:islamabad:017439,ORCHARD SCHEME,1,100.0,exact,auto_exact,,
+Islamabad:P.C,P.C,Islamabad,iesco:islamabad:013708,PC,1,80.0,fuzzy,suggested,accepted,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Punctuation variant: P.C = PC
+Islamabad:PAEC; Rawalpindi City Circle:,PAEC; Rawalpindi City Circle:,Islamabad,,,0,0,,no_candidate,,
+Islamabad:PAF,PAF,Islamabad,,,0,0,,no_candidate,,
 Islamabad:PC,PC,Islamabad,iesco:islamabad:013708,PC,1,100.0,exact,auto_exact,,
+Islamabad:PGHS,PGHS,Islamabad,,,0,0,,no_candidate,,
 Islamabad:PHA,PHA,Islamabad,iesco:islamabad:086408,PHA,1,100.0,exact,auto_exact,,
 Islamabad:PHA-1,PHA-1,Islamabad,iesco:islamabad:086408,PHA,1,75.0,fuzzy,suggested,accepted,claude-review 2026-10-10: unnumbered PHA is the first; PHA II exists separately
 Islamabad:PHA-1,PHA-1,Islamabad,iesco:islamabad:069225,PHA II,2,72.7,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:PHA-II,PHA-II,Islamabad,iesco:islamabad:069225,PHA II,1,100.0,exact,auto_exact,,
+Islamabad:PM Colony,PM Colony,Islamabad,iesco:islamabad:022339,H8 GRID COLONY,1,77.8,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Candidates differ in substance
+Islamabad:PM Colony,PM Colony,Islamabad,iesco:islamabad:022304,WAPDA COLONY,2,76.2,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Candidates differ in substance
 Islamabad:PTCL,PTCL,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:Pak China Center,Pak China Center,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Park Enclave-1,Park Enclave-1,Islamabad,iesco:islamabad:105518,PARK ENCLAVE,1,92.3,fuzzy,suggested,accepted,claude-review 2026-10-10: only Park Enclave feeder
 Islamabad:Park Enclave-1,Park Enclave-1,Islamabad,iesco:islamabad:105506,BAHRIA ENCLAVE,2,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Park View,Park View,Islamabad,iesco:islamabad:122511,PARK VIEW CITY-1,1,72.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: PARK VIEW CITY-1 adds distinct suffix; not same
 Islamabad:Patriata,Patriata,Islamabad,iesco:islamabad:013712,PATRIATA,1,100.0,exact,auto_exact,,
 Islamabad:Peer Mehar Ali Shah,Peer Mehar Ali Shah,Islamabad,iesco:islamabad:069227,PIR MEHAR ALI SHAH,1,91.9,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:Pehount,Pehount,Islamabad,,,0,0,,no_candidate,,
+Islamabad:People Colony,People Colony,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Peshawar Road,Peshawar Road,Islamabad,iesco:islamabad:105517,LEHTRAR ROAD,1,72.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: LEHTRAR ROAD differs in substance
+Islamabad:Pind Jhatla,Pind Jhatla,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Pind Mattay Khan,Pind Mattay Khan,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Pind Parian,Pind Parian,Islamabad,iesco:islamabad:017434,PINDORIAN,1,80.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: PINDORIAN and PINDI POINT differ in substance
+Islamabad:Pind Parian,Pind Parian,Islamabad,iesco:islamabad:013707,PINDI POINT,2,72.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: PINDORIAN and PINDI POINT differ in substance
+Islamabad:Pind Sultani,Pind Sultani,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Pindi Board,Pindi Board,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Pindi Point,Pindi Point,Islamabad,iesco:islamabad:013707,PINDI POINT,1,100.0,exact,auto_exact,,
+Islamabad:Pindi Point,Pindi Point,Islamabad,iesco:islamabad:017434,PINDORIAN,2,70.0,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:Pindorian,Pindorian,Islamabad,iesco:islamabad:017434,PINDORIAN,1,100.0,exact,auto_exact,,
 Islamabad:Pindorian,Pindorian,Islamabad,iesco:islamabad:013707,PINDI POINT,2,70.0,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Islamabad:Pindorian Scheme-2,Pindorian Scheme-2,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:Pir Sohawa,Pir Sohawa,Islamabad,iesco:islamabad:122503,PIR SOHAWA,1,100.0,exact,auto_exact,,
+Islamabad:Potohar Steel,Potohar Steel,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Public Health,Public Health,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Punjab House,Punjab House,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:Q.Azam Hospital,Q.Azam Hospital,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Qadeer Road,Qadeer Road,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Qayyumabad,Qayyumabad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Qazian,Qazian,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Quaid-e-Azam Hospital,Quaid-e-Azam Hospital,Islamabad,,,0,0,,no_candidate,,
+Islamabad:R.T. Mill,R.T. Mill,Islamabad,,,0,0,,no_candidate,,
+Islamabad:RCCI Express,RCCI Express,Islamabad,iesco:islamabad:122307,G9 EXPRESS,1,72.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: G9 EXPRESS differs in substance
+Islamabad:RIC,RIC,Islamabad,,,0,0,,no_candidate,,
+Islamabad:RTM Mills,RTM Mills,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Raheemabad,Raheemabad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,76.2,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: WAHEEDA BAD differs in substance
+Islamabad:Rahim Abad,Rahim Abad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Ramman,Ramman,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Range Road,Range Road,Islamabad,iesco:islamabad:105504,SUDRAN ROAD,1,76.2,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: SUDRAN ROAD differs in substance
+Islamabad:Rawal,Rawal,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Rehara,Rehara,Islamabad,iesco:islamabad:105511,REHARA,1,100.0,exact,auto_exact,,
 Islamabad:Rehman Enclave,Rehman Enclave,Islamabad,iesco:islamabad:075006,ROYAL ENCLAVE,1,74.1,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Rehman Enclave,Rehman Enclave,Islamabad,iesco:islamabad:105506,BAHRIA ENCLAVE,2,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Rehmatabad-I,Rehmatabad-I,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Reliance Weaving Mill,Reliance Weaving Mill,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Rest House,Rest House,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Rose Lane,Rose Lane,Islamabad,,,0,0,,no_candidate,,
+Islamabad:S.H. Steel,S.H. Steel,Islamabad,,,0,0,,no_candidate,,
+Islamabad:SPD-II,SPD-II,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Safdar Shaheed,Safdar Shaheed,Islamabad,iesco:islamabad:105512,AZAD SHAHEED,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: AZAD and TUFAIL SHAHEED differ in name
+Islamabad:Safdar Shaheed,Safdar Shaheed,Islamabad,iesco:islamabad:014716,TUFAIL SHAHEED,2,71.4,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: AZAD and TUFAIL SHAHEED differ in name
 Islamabad:Saidpur,Saidpur,Islamabad,iesco:islamabad:122510,SAID PUR,1,93.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Saidpur,Saidpur,Islamabad,iesco:islamabad:014701,ALI PUR,2,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Saidpur,Saidpur,Islamabad,iesco:islamabad:089218,SHAHPUR,3,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Salargah,Salargah,Islamabad,iesco:islamabad:069219,DARGAH,1,71.4,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: DARGAH differs in substance
+Islamabad:Samar Zar,Samar Zar,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Sana Ullah Shaheed,Sana Ullah Shaheed,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Sanghoi,Sanghoi,Islamabad,iesco:islamabad:089214,ANGORI,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: ANGORI differs in substance
+Islamabad:Sara-e-Kharboza,Sara-e-Kharboza,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Sarai A Gir,Sarai A Gir,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Saray Kharbouza Double Circuit,Saray Kharbouza Double Circuit,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Scheme-1,Scheme-1,Islamabad,iesco:islamabad:017430,SCHEME-2,1,87.5,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Scheme-1,Scheme-1,Islamabad,iesco:islamabad:105525,SCHEME-I,2,87.5,fuzzy,suggested,accepted,claude-review 2026-10-10: roman I = 1
 Islamabad:Scheme-2,Scheme-2,Islamabad,iesco:islamabad:017430,SCHEME-2,1,100.0,exact,auto_exact,,
 Islamabad:Scheme-2,Scheme-2,Islamabad,iesco:islamabad:105525,SCHEME-I,2,87.5,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Islamabad:Scheme-II,Scheme-II,Islamabad,iesco:islamabad:105525,SCHEME-I,1,94.1,fuzzy,suggested,rejected,claude-review 2026-10-10: audit of skeleton rule: different name (numeral or extra syllable)
 Islamabad:Scheme-II,Scheme-II,Islamabad,iesco:islamabad:017430,SCHEME-2,2,82.4,fuzzy,suggested,accepted,claude-review 2026-10-13: corrected; roman II = 2
+Islamabad:Sector 4,Sector 4,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Sector IV,Sector IV,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Seham,Seham,Islamabad,iesco:islamabad:086421,SHAMS,1,80.0,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: SHAMS differs in substance
+Islamabad:Sep Ibrar Hussain,Sep Ibrar Hussain,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Service Road,Service Road,Islamabad,iesco:islamabad:022333,SERVICE ROAD EAST,1,82.8,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Service Road East,Service Road East,Islamabad,iesco:islamabad:022333,SERVICE ROAD EAST,1,100.0,exact,auto_exact,,
 Islamabad:Service road,Service road,Islamabad,iesco:islamabad:022333,SERVICE ROAD EAST,1,82.8,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Shah Allah Ditta,Shah Allah Ditta,Islamabad,iesco:islamabad:104011,NEW SHAH ALLAHA DITA,1,83.3,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: NEW prefix and spelling make a different name
+Islamabad:Shah Allah Ditta Double Circuit,Shah Allah Ditta Double Circuit,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Shahpur,Shahpur,Islamabad,iesco:islamabad:089218,SHAHPUR,1,100.0,exact,auto_exact,,
+Islamabad:Shahpur,Shahpur,Islamabad,iesco:islamabad:089213,SHAHDRA,2,71.4,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Islamabad:Shahpur Syedan,Shahpur Syedan,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Shahzad Town,Shahzad Town,Islamabad,iesco:islamabad:089213,SHAHDRA,1,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Shakar Parian,Shakar Parian,Islamabad,iesco:islamabad:017411,SHAKAR PARIAN,1,100.0,exact,auto_exact,,
+Islamabad:Shakrial,Shakrial,Islamabad,iesco:islamabad:013711,GHARIAL,1,80.0,fuzzy,suggested,,
+Islamabad:Shamas Colony,Shamas Colony,Islamabad,iesco:islamabad:022339,H8 GRID COLONY,1,72.7,fuzzy,suggested,,
+Islamabad:Shamas Colony,Shamas Colony,Islamabad,iesco:islamabad:022304,WAPDA COLONY,2,72.0,fuzzy,suggested,,
+Islamabad:Shamasabad,Shamasabad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,70.0,fuzzy,suggested,,
+Islamabad:Shammas Colony,Shammas Colony,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Shareef Abad,Shareef Abad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,81.8,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Shareefabad,Shareefabad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,85.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Shazad Town,Shazad Town,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:Shehgan,Shehgan,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Shehzad Town,Shehzad Town,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Sohan,Sohan,Islamabad,iesco:islamabad:061134,SOHAN,1,100.0,exact,auto_exact,,
 Islamabad:Sowan Garden-I,Sowan Garden-I,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:Sowan Garden-II,Sowan Garden-II,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
@@ -620,17 +906,33 @@ Islamabad:Sudhran,Sudhran,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-1
 Islamabad:Sunny Bank,Sunny Bank,Islamabad,iesco:islamabad:013704,SUNNY BANK,1,100.0,exact,auto_exact,,
 Islamabad:Suparco,Suparco,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:T&T,T&T,Islamabad,iesco:islamabad:022319,T & T,1,100.0,exact,auto_exact,,
+Islamabad:T.H.Q,T.H.Q,Islamabad,,,0,0,,no_candidate,,
+Islamabad:TDCP,TDCP,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Takbeer-I,Takbeer-I,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Tamsababad,Tamsababad,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Taramari,Taramari,Islamabad,iesco:islamabad:105503,TRAMARI,1,93.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Taramri,Taramri,Islamabad,iesco:islamabad:105503,TRAMARI,1,85.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Islamabad:Tehmasma Abad,Tehmasma Abad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Thakra,Thakra,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Tipu Road,Tipu Road,Islamabad,iesco:islamabad:110908,UC ROAD,1,75.0,fuzzy,suggested,,
 Islamabad:Tramari,Tramari,Islamabad,iesco:islamabad:105503,TRAMARI,1,100.0,exact,auto_exact,,
 Islamabad:Tramri,Tramri,Islamabad,iesco:islamabad:105503,TRAMARI,1,92.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Tramri,Tramri,Islamabad,iesco:islamabad:122501,TRAIT,2,72.7,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Islamabad:Tret,Tret,Islamabad,,,0,0,,no_candidate,,
 Islamabad:UC-2,UC-2,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:Upper Topa,Upper Topa,Islamabad,iesco:islamabad:013705,UPPER TOPA,1,100.0,exact,auto_exact,,
+Islamabad:VVIP,VVIP,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Wahdat Colony (D/C),Wahdat Colony (D/C),Islamabad,iesco:islamabad:022304,WAPDA COLONY,1,88.0,fuzzy,suggested,,
+Islamabad:Wahdat Colony (D/C),Wahdat Colony (D/C),Islamabad,iesco:islamabad:022339,H8 GRID COLONY,2,72.7,fuzzy,suggested,,
 Islamabad:Waheed Abad,Waheed Abad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,90.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Waheed abad,Waheed abad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,90.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Waheedabad,Waheedabad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,95.2,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Islamabad:Wanhar,Wanhar,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Ward No. 8,Ward No. 8,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Warda Hamna,Warda Hamna,Islamabad,iesco:islamabad:069231,WARDA HAMNA,1,100.0,exact,auto_exact,,
 Islamabad:Waris Valley,Waris Valley,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
+Islamabad:Westridge,Westridge,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Zarkoon Heights,Zarkoon Heights,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Zia Masjid,Zia Masjid,Islamabad,iesco:islamabad:022342,ZIA MASJID,1,100.0,exact,auto_exact,,
 Islamabad:Zia Masjid,Zia Masjid,Islamabad,iesco:islamabad:022310,FAISAL MASJID,2,78.3,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Jhelum:08:00 AM to 12:00 PM,08:00 AM to 12:00 PM,Jhelum,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
