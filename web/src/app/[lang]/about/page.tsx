@@ -73,23 +73,44 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
               </tr>
             </thead>
             <tbody>
-              {meta.sources.map((s) => (
-                <tr key={s.source_file}>
-                  <th scope="row" className="font-normal">
-                    {(t.sourceNames as Record<string, string>)[s.source] ?? s.source}
-                  </th>
-                  <td className="font-mono text-xs break-all">
-                    <bdi>{s.source_file}</bdi>
-                  </td>
-                  <td className="tabular-nums whitespace-nowrap">{s.effective_from}</td>
-                  <td>
-                    <bdi>{s.published_label}</bdi>
-                  </td>
-                  <td>
-                    <ExportText value={fromExport(s.effective_basis, locale)} />
-                  </td>
-                </tr>
-              ))}
+              {/* One row per source: IESCO publishes one file per circle, all listed together. */}
+              {[...Map.groupBy(meta.sources, (s) => s.source)].map(([source, files]) => {
+                const once = <T,>(pick: (s: (typeof files)[number]) => T) => [...new Set(files.map(pick))];
+                return (
+                  <tr key={source}>
+                    <th scope="row" className="font-normal">
+                      {(t.sourceNames as Record<string, string>)[source] ?? source}
+                      {files.length > 1 && (
+                        <span className="block text-xs text-muted">{fill(t.filesCount, { n: files.length }, locale)}</span>
+                      )}
+                    </th>
+                    <td className="font-mono text-xs">
+                      <ul>
+                        {files.map((s) => (
+                          <li key={s.source_file} className="break-all">
+                            <bdi>{s.source_file}</bdi>
+                          </li>
+                        ))}
+                      </ul>
+                    </td>
+                    <td className="tabular-nums whitespace-nowrap">
+                      {once((s) => s.effective_from).map((v) => (
+                        <span key={v} className="block">{v}</span>
+                      ))}
+                    </td>
+                    <td>
+                      {once((s) => s.published_label).map((v) => (
+                        <bdi key={String(v)} className="block">{v}</bdi>
+                      ))}
+                    </td>
+                    <td>
+                      {once((s) => s.effective_basis).map((v) => (
+                        <ExportText key={String(v)} as="p" value={fromExport(v, locale)} />
+                      ))}
+                    </td>
+                  </tr>
+                );
+              })}
               {releases > 0 && (
                 <tr>
                   <th scope="row" className="font-normal">

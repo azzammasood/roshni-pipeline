@@ -1,4 +1,4 @@
-// Transmission tower and power-line primitives (SVG), shared by the masthead skyline, the feeder
+// Transmission tower and power-line primitives (SVG), shared by the masthead skyline (Skyline.tsx), the feeder
 // day strip and the equity skyline. Geometry only: colours come from the caller's classes.
 
 /** Half-widths of a tower of height h: base legs and waist. `width` fixes the leg half-width
@@ -64,36 +64,5 @@ export function Tower({
       vectorEffect="non-scaling-stroke"
       className={className}
     />
-  );
-}
-
-/** Decorative skyline of towers with live-looking wires (masthead, 404, footer). */
-export function Skyline({ className }: { className?: string }) {
-  const base = 80;
-  const towers = [40, 210, 380, 550, 720, 890, 1060].map((x, i) => ({ x, h: [58, 46, 62, 50, 60, 44, 56][i] }));
-  const spans = towers.slice(0, -1).map((t, i) => {
-    const n = towers[i + 1];
-    const a = armTips(t.x, base, t.h);
-    const b = armTips(n.x, base, n.h);
-    return [wirePath(a.right.x, a.right.y, b.left.x, b.left.y, 14), wirePath(a.left.x, a.left.y, b.right.x, b.right.y, 22)];
-  });
-  return (
-    <svg
-      viewBox="0 0 1100 84"
-      preserveAspectRatio="xMidYMax slice"
-      aria-hidden="true"
-      focusable="false"
-      className={className}
-    >
-      {spans.flat().map((d, i) => (
-        <g key={i}>
-          <path d={d} fill="none" className="stroke-wire" strokeWidth={1.3} vectorEffect="non-scaling-stroke" />
-          <path d={d} fill="none" className="stroke-wire current" strokeWidth={2.5} vectorEffect="non-scaling-stroke" />
-        </g>
-      ))}
-      {towers.map((t) => (
-        <Tower key={t.x} x={t.x} base={base} h={t.h} className="stroke-sky-muted" />
-      ))}
-    </svg>
   );
 }

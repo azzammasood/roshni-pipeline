@@ -6,7 +6,7 @@ import Link from "next/link";
 import { builtLocales, dirOf } from "@/i18n/config";
 import en from "@/i18n/en.json";
 import ur from "@/i18n/ur.json";
-import { Skyline } from "@/components/Pylon";
+import { Skyline } from "@/components/Skyline";
 import { fontVariables } from "./fonts";
 import { BOOT_SCRIPT } from "@/lib/boot";
 import "./[lang]/globals.css";
