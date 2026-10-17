@@ -1,4 +1,20 @@
 subject_id,subject_name,subject_group,candidate_id,candidate_name,rank,score,method,status,decision,note
+Ajmal Shaheed. Chakwal:AHMED ABAD,AHMED ABAD,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:Al-Qaim Mill,Al-Qaim Mill,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:DUFFER,DUFFER,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:Dharabi,Dharabi,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:Dhoke Pathan,Dhoke Pathan,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:K.S.M. UNIT-3,K.S.M. UNIT-3,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:K.S.MINES,K.S.MINES,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:KARYALA,KARYALA,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:KATCHERY,KATCHERY,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:Kot Sarang,Kot Sarang,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:LILLA TOWN,LILLA TOWN,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:P.D.KHAN,P.D.KHAN,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:PAF,PAF,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:TEHI,TEHI,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:TOBHA,TOBHA,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
+Ajmal Shaheed. Chakwal:Talagang City,Talagang City,Ajmal Shaheed. Chakwal,,,0,0,,out_of_scope,,circle 'Ajmal Shaheed. Chakwal' has no XLSX feeder list (1 windows)
 Attock:08:00 AM to 12:00 PM,08:00 AM to 12:00 PM,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Attock:6 am to 12 Noon,6 am to 12 Noon,Attock,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Attock:AWC Housing,AWC Housing,Attock,iesco:attock:014624,AWC HOUSING,1,100.0,exact,auto_exact,,
@@ -467,6 +483,41 @@ GSO:Zarkoon Heights,Zarkoon Heights,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no
 GSO:Zeeshan Colony,Zeeshan Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
 GSO:from,from,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (4 windows)
 GSO:from 06-30am to 10-30 am,from 06-30am to 10-30 am,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Ahmedabad,Ahmedabad,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Al Qaim Mills,Al Qaim Mills,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Ameen Town,Ameen Town,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Banni,Banni,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Capital Steel,Capital Steel,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Dhoke Pahtan,Dhoke Pahtan,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Doke Niazi,Doke Niazi,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Drahbi,Drahbi,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Duffer,Duffer,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Exchange,Exchange,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Floor Mill-1,Floor Mill-1,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Furnace,Furnace,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:I-10 Setor,I-10 Setor,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:I-10/1,I-10/1,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:ICI,ICI,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Inter School,Inter School,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:KSM,KSM,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Karyala,Karyala,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Kh S. Syed,Kh S. Syed,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Kot Sarang,Kot Sarang,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Lilla,Lilla,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:M.Steel Mill,M.Steel Mill,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Muhammadi Chowk,Muhammadi Chowk,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Mumtaz Steel,Mumtaz Steel,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Mureed,Mureed,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:New PTN,New PTN,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:P.D. Khan,P.D. Khan,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:PAF,PAF,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:PTN,PTN,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Potohar Steel,Potohar Steel,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:RCCI Express,RCCI Express,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:S.H Steel,S.H Steel,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Talagang City,Talagang City,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:Unit-3,Unit-3,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
+ICI. GSO:United Steel,United Steel,ICI. GSO,,,0,0,,out_of_scope,,circle 'ICI. GSO' has no XLSX feeder list (1 windows)
 Islamabad:A-Block,A-Block,Islamabad,,,0,0,,no_candidate,,
 Islamabad:A.P.H.S,A.P.H.S,Islamabad,,,0,0,,no_candidate,,
 Islamabad:AFOHS,AFOHS,Islamabad,iesco:islamabad:061120,FHS,1,75.0,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
@@ -488,6 +539,7 @@ Islamabad:Ameen Town,Ameen Town,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Ameer Hamza,Ameer Hamza,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Amin Abad,Amin Abad,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Amin Town,Amin Town,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Amin Town Feeders Rawalpindi Cantt Circle:,Amin Town Feeders Rawalpindi Cantt Circle:,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Askari-14,Askari-14,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Askari-7,Askari-7,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Ayub Market,Ayub Market,Islamabad,iesco:islamabad:022318,AYUB MARKET,1,100.0,exact,auto_exact,,
@@ -585,10 +637,12 @@ Islamabad:Faisal Masjid,Faisal Masjid,Islamabad,iesco:islamabad:022342,ZIA MASJI
 Islamabad:Faizabad,Faizabad,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Fateh Jang (Double Circuit),Fateh Jang (Double Circuit),Islamabad,,,0,0,,no_candidate,,
 Islamabad:Fateh Pur,Fateh Pur,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Fauji Foundation Hospital,Fauji Foundation Hospital,Islamabad,iesco:islamabad:105520,ISOLATION HOSPITAL,1,74.4,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: Candidate ISOLATION HOSPITAL differs in substance from Fauji Foundation Hospital.
 Islamabad:Fazaia,Fazaia,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:Filtration Plant,Filtration Plant,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:Floor Mill- 1,Floor Mill- 1,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Floor Mill-2,Floor Mill-2,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Furnace,Furnace,Islamabad,,,0,0,,no_candidate,,
 Islamabad:G- 9/2,G- 9/2,Islamabad,iesco:islamabad:122305,G-9/2,1,100.0,exact,auto_exact,,
 Islamabad:G- 9/2,G- 9/2,Islamabad,iesco:islamabad:122301,G-8/2,2,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Islamabad:G- 9/2,G- 9/2,Islamabad,iesco:islamabad:122304,G-9/1,3,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
@@ -670,6 +724,9 @@ Islamabad:Highway,Highway,Islamabad,iesco:islamabad:022315,HIGHWAY,1,100.0,exact
 Islamabad:I-10/1,I-10/1,Islamabad,iesco:islamabad:006432,I-10/1,1,100.0,exact,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Two identical I-10/1 candidates; cannot choose
 Islamabad:I-10/1,I-10/1,Islamabad,iesco:islamabad:128604,I-10/1,2,100.0,exact,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Two identical I-10/1 candidates; cannot choose
 Islamabad:I-10/1,I-10/1,Islamabad,iesco:islamabad:122308,G-10/1,3,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
+Islamabad:I-10/4,I-10/4,Islamabad,iesco:islamabad:006408,I-10/4,1,100.0,exact,auto_exact,,
+Islamabad:I-10/4,I-10/4,Islamabad,iesco:islamabad:069221,F-10/4,2,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Islamabad:I-10/4,I-10/4,Islamabad,iesco:islamabad:122314,G-10/4,3,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:I-14/3,I-14/3,Islamabad,iesco:islamabad:106707,G-14/3,1,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
 Islamabad:I-14/3,I-14/3,Islamabad,iesco:islamabad:072717,I-11/3,2,83.3,fuzzy,suggested,rejected,auto-review: numbers differ
 Islamabad:I-14/3,I-14/3,Islamabad,iesco:islamabad:022337,I-8/3,3,72.7,fuzzy,suggested,rejected,auto-review: numbers differ
@@ -677,6 +734,7 @@ Islamabad:I-14/3; Rawalpindi Cantt Circle:,I-14/3; Rawalpindi Cantt Circle:,Isla
 Islamabad:I-8/1,I-8/1,Islamabad,iesco:islamabad:061109,I-8/1,1,100.0,exact,auto_exact,,
 Islamabad:I-8/1,I-8/1,Islamabad,iesco:islamabad:122317,F-8/1,2,80.0,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Islamabad:I-8/1,I-8/1,Islamabad,iesco:islamabad:022330,G-8/1,3,80.0,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Islamabad:INT SCHOOL,INT SCHOOL,Islamabad,,,0,0,,no_candidate,,
 Islamabad:ISI,ISI,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:ISI (Independent),ISI (Independent),Islamabad,,,0,0,,no_candidate,,
 Islamabad:IT Park,IT Park,Islamabad,iesco:islamabad:122302,F9 PARK,1,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
@@ -707,6 +765,7 @@ Islamabad:Jhangi,Jhangi,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Jhangir Road,Jhangir Road,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Jhatta Hathial,Jhatta Hathial,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Jinnah Road,Jinnah Road,Islamabad,,,0,0,,no_candidate,,
+Islamabad:K.S.S,K.S.S,Islamabad,,,0,0,,no_candidate,,
 Islamabad:K.T.M-2,K.T.M-2,Islamabad,,,0,0,,no_candidate,,
 Islamabad:KRL,KRL,Islamabad,iesco:islamabad:110905,KORAL,1,75.0,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
 Islamabad:KRL Colony,KRL Colony,Islamabad,iesco:islamabad:022339,H8 GRID COLONY,1,73.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: H8 GRID COLONY differs in substance
@@ -756,6 +815,7 @@ Islamabad:Lora (PESCO),Lora (PESCO),Islamabad,iesco:islamabad:013715,LORA 2 (PES
 Islamabad:Lora-2,Lora-2,Islamabad,,,0,0,,no_candidate,,
 Islamabad:M. Riaz Shaheed,M. Riaz Shaheed,Islamabad,iesco:islamabad:105512,AZAD SHAHEED,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: AZAD SHAHEED differs in name
 Islamabad:M. Steel Mill,M. Steel Mill,Islamabad,,,0,0,,no_candidate,,
+Islamabad:M.Steel Mill,M.Steel Mill,Islamabad,,,0,0,,no_candidate,,
 Islamabad:MCM,MCM,Islamabad,,,0,0,,no_candidate,,
 Islamabad:MES,MES,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Madu Kalas,Madu Kalas,Islamabad,,,0,0,,no_candidate,,
@@ -796,9 +856,12 @@ Islamabad:New Mulpur,New Mulpur,Islamabad,,,0,0,,no_candidate,,
 Islamabad:New PTN,New PTN,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Noorpur,Noorpur,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Numble,Numble,Islamabad,iesco:islamabad:079405,NUMBAL,1,83.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Islamabad:OLD EXCHANGE,OLD EXCHANGE,Islamabad,iesco:islamabad:086413,STOCK EXCHANGE,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: STOCK EXCHANGE differs in substance from OLD EXCHANGE.
+Islamabad:OLD UNITED,OLD UNITED,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Officer Colony,Officer Colony,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Orchard Scheme,Orchard Scheme,Islamabad,iesco:islamabad:017439,ORCHARD SCHEME,1,100.0,exact,auto_exact,,
 Islamabad:P.C,P.C,Islamabad,iesco:islamabad:013708,PC,1,80.0,fuzzy,suggested,accepted,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Punctuation variant: P.C = PC
+Islamabad:P.T.N,P.T.N,Islamabad,,,0,0,,no_candidate,,
 Islamabad:PAEC; Rawalpindi City Circle:,PAEC; Rawalpindi City Circle:,Islamabad,,,0,0,,no_candidate,,
 Islamabad:PAF,PAF,Islamabad,,,0,0,,no_candidate,,
 Islamabad:PC,PC,Islamabad,iesco:islamabad:013708,PC,1,100.0,exact,auto_exact,,
@@ -841,6 +904,12 @@ Islamabad:Qazian,Qazian,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Quaid-e-Azam Hospital,Quaid-e-Azam Hospital,Islamabad,,,0,0,,no_candidate,,
 Islamabad:R.T. Mill,R.T. Mill,Islamabad,,,0,0,,no_candidate,,
 Islamabad:RCCI Express,RCCI Express,Islamabad,iesco:islamabad:122307,G9 EXPRESS,1,72.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: G9 EXPRESS differs in substance
+Islamabad:RCCI-IX,RCCI-IX,Islamabad,,,0,0,,no_candidate,,
+Islamabad:RCCI-VI,RCCI-VI,Islamabad,,,0,0,,no_candidate,,
+Islamabad:RCCI-VII,RCCI-VII,Islamabad,,,0,0,,no_candidate,,
+Islamabad:RCCI-VIII,RCCI-VIII,Islamabad,,,0,0,,no_candidate,,
+Islamabad:RCCI-X,RCCI-X,Islamabad,,,0,0,,no_candidate,,
+Islamabad:RCCI-XI,RCCI-XI,Islamabad,,,0,0,,no_candidate,,
 Islamabad:RIC,RIC,Islamabad,,,0,0,,no_candidate,,
 Islamabad:RTM Mills,RTM Mills,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Raheemabad,Raheemabad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,76.2,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: WAHEEDA BAD differs in substance
@@ -848,6 +917,7 @@ Islamabad:Rahim Abad,Rahim Abad,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Ramman,Ramman,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Range Road,Range Road,Islamabad,iesco:islamabad:105504,SUDRAN ROAD,1,76.2,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: SUDRAN ROAD differs in substance
 Islamabad:Rawal,Rawal,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Rawalpindi-III,Rawalpindi-III,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Rehara,Rehara,Islamabad,iesco:islamabad:105511,REHARA,1,100.0,exact,auto_exact,,
 Islamabad:Rehman Enclave,Rehman Enclave,Islamabad,iesco:islamabad:075006,ROYAL ENCLAVE,1,74.1,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Rehman Enclave,Rehman Enclave,Islamabad,iesco:islamabad:105506,BAHRIA ENCLAVE,2,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
@@ -855,6 +925,7 @@ Islamabad:Rehmatabad-I,Rehmatabad-I,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Reliance Weaving Mill,Reliance Weaving Mill,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Rest House,Rest House,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Rose Lane,Rose Lane,Islamabad,,,0,0,,no_candidate,,
+Islamabad:S.H Steel,S.H Steel,Islamabad,,,0,0,,no_candidate,,
 Islamabad:S.H. Steel,S.H. Steel,Islamabad,,,0,0,,no_candidate,,
 Islamabad:SPD-II,SPD-II,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Safdar Shaheed,Safdar Shaheed,Islamabad,iesco:islamabad:105512,AZAD SHAHEED,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: AZAD and TUFAIL SHAHEED differ in name
@@ -889,10 +960,10 @@ Islamabad:Shahpur,Shahpur,Islamabad,iesco:islamabad:089213,SHAHDRA,2,71.4,fuzzy,
 Islamabad:Shahpur Syedan,Shahpur Syedan,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Shahzad Town,Shahzad Town,Islamabad,iesco:islamabad:089213,SHAHDRA,1,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Shakar Parian,Shakar Parian,Islamabad,iesco:islamabad:017411,SHAKAR PARIAN,1,100.0,exact,auto_exact,,
-Islamabad:Shakrial,Shakrial,Islamabad,iesco:islamabad:013711,GHARIAL,1,80.0,fuzzy,suggested,,
-Islamabad:Shamas Colony,Shamas Colony,Islamabad,iesco:islamabad:022339,H8 GRID COLONY,1,72.7,fuzzy,suggested,,
-Islamabad:Shamas Colony,Shamas Colony,Islamabad,iesco:islamabad:022304,WAPDA COLONY,2,72.0,fuzzy,suggested,,
-Islamabad:Shamasabad,Shamasabad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,70.0,fuzzy,suggested,,
+Islamabad:Shakrial,Shakrial,Islamabad,iesco:islamabad:013711,GHARIAL,1,80.0,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: GHARIAL differs in substance from Shakrial.
+Islamabad:Shamas Colony,Shamas Colony,Islamabad,iesco:islamabad:022339,H8 GRID COLONY,1,72.7,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: Two candidates both plausible; neither clearly matches Shamas Colony.
+Islamabad:Shamas Colony,Shamas Colony,Islamabad,iesco:islamabad:022304,WAPDA COLONY,2,72.0,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: Two candidates both plausible; neither clearly matches Shamas Colony.
+Islamabad:Shamasabad,Shamasabad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,70.0,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: SHARIFABAD differs in substance from Shamasabad.
 Islamabad:Shammas Colony,Shammas Colony,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Shareef Abad,Shareef Abad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,81.8,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Shareefabad,Shareefabad,Islamabad,iesco:islamabad:105521,SHARIFABAD,1,85.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
@@ -914,16 +985,17 @@ Islamabad:Taramari,Taramari,Islamabad,iesco:islamabad:105503,TRAMARI,1,93.3,fuzz
 Islamabad:Taramri,Taramri,Islamabad,iesco:islamabad:105503,TRAMARI,1,85.7,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Tehmasma Abad,Tehmasma Abad,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Thakra,Thakra,Islamabad,,,0,0,,no_candidate,,
-Islamabad:Tipu Road,Tipu Road,Islamabad,iesco:islamabad:110908,UC ROAD,1,75.0,fuzzy,suggested,,
+Islamabad:Tipu Road,Tipu Road,Islamabad,iesco:islamabad:110908,UC ROAD,1,75.0,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: UC ROAD differs in substance from Tipu Road.
 Islamabad:Tramari,Tramari,Islamabad,iesco:islamabad:105503,TRAMARI,1,100.0,exact,auto_exact,,
 Islamabad:Tramri,Tramri,Islamabad,iesco:islamabad:105503,TRAMARI,1,92.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Tramri,Tramri,Islamabad,iesco:islamabad:122501,TRAIT,2,72.7,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Tret,Tret,Islamabad,,,0,0,,no_candidate,,
 Islamabad:UC-2,UC-2,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:Upper Topa,Upper Topa,Islamabad,iesco:islamabad:013705,UPPER TOPA,1,100.0,exact,auto_exact,,
+Islamabad:V.I.P,V.I.P,Islamabad,iesco:islamabad:022320,V I P,1,100.0,exact,auto_exact,,
 Islamabad:VVIP,VVIP,Islamabad,,,0,0,,no_candidate,,
-Islamabad:Wahdat Colony (D/C),Wahdat Colony (D/C),Islamabad,iesco:islamabad:022304,WAPDA COLONY,1,88.0,fuzzy,suggested,,
-Islamabad:Wahdat Colony (D/C),Wahdat Colony (D/C),Islamabad,iesco:islamabad:022339,H8 GRID COLONY,2,72.7,fuzzy,suggested,,
+Islamabad:Wahdat Colony (D/C),Wahdat Colony (D/C),Islamabad,iesco:islamabad:022304,WAPDA COLONY,1,88.0,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: WAPDA COLONY is not the same name as Wahdat Colony.
+Islamabad:Wahdat Colony (D/C),Wahdat Colony (D/C),Islamabad,iesco:islamabad:022339,H8 GRID COLONY,2,72.7,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: WAPDA COLONY is not the same name as Wahdat Colony.
 Islamabad:Waheed Abad,Waheed Abad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,90.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Waheed abad,Waheed abad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,90.9,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:Waheedabad,Waheedabad,Islamabad,iesco:islamabad:105516,WAHEEDA BAD,1,95.2,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
