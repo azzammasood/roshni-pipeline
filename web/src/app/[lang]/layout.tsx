@@ -6,7 +6,7 @@ import { IntroSkip } from "@/components/IntroSkip";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Logo } from "@/components/Logo";
 import { NavLinks } from "@/components/NavLinks";
-import { Skyline } from "@/components/Pylon";
+import { Skyline } from "@/components/Skyline";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ToTop } from "@/components/ToTop";
 import { builtLocales, dirOf } from "@/i18n/config";
