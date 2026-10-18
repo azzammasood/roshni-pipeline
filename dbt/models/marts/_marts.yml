@@ -8,10 +8,12 @@ models:
     '
   columns:
   - name: feeder_id
+    description: 'Stable key: ''iesco:<circle>:<6-digit code>'' or ''ke:<normalised name>''.'
     data_tests:
     - unique
     - not_null
   - name: source
+    description: 'Utility the feeder belongs to: iesco or kelectric.'
     data_tests:
     - not_null
     - accepted_values:
@@ -20,9 +22,22 @@ models:
           - iesco
           - kelectric
   - name: feeder_name
+    description: 'Feeder name as printed in the source (K-Electric: as in the feeder list where listed,
+      else the schedule).'
     data_tests:
     - not_null
+  - name: feeder_code
+    description: IESCO 6-digit zero-padded feeder code, the IESCO join key. Null for K-Electric (no codes
+      published).
+  - name: circle
+    description: IESCO circle the workbook sheet belongs to. Null for K-Electric.
+  - name: grid_name
+    description: Grid station as printed in the IESCO workbook or the K-Electric schedule PDF. Null for
+      K-Electric listed feeders without a matched schedule row.
+  - name: ibc
+    description: K-Electric IBC area from the feeder list. Null for IESCO and for schedule-only feeders.
   - name: category
+    description: K-Electric loss category from the feeder list (Medium, High, Very High). Null for IESCO.
     data_tests:
     - accepted_values:
         arguments:
@@ -30,12 +45,34 @@ models:
           - Medium
           - High
           - Very High
+  - name: atc_loss_pct
+    description: K-Electric ATC (aggregate technical and commercial) loss percent as published in the
+      feeder list; null when printed as '-'.
+  - name: in_feeder_list
+    description: True when the K-Electric feeder appears in the published feeder list. Null for IESCO
+      (no such list).
+  - name: has_schedule
+    description: True when a schedule exists for the feeder. K-Electric listed feeders without a matched
+      schedule row are false.
+  - name: schedule_match_method
+    description: 'How a K-Electric list name was joined to a schedule name: exact or truncated_name. Null
+      when not applicable.'
   - name: schedule_match_confidence
+    description: Confidence of that join, 0 to 1. Approximate matches always carry a stored value.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 1
+  - name: flags
+    description: Semicolon-separated data-quality flags kept from the parser, or 'no_schedule_row' / 'schedule_only_not_in_list'
+      for K-Electric. Anomalies are flagged, never fixed.
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
+  - name: fetched_at
+    description: When the source file was fetched (UTC).
 - name: fct_schedule_window
   description: 'Recurring daily windows from published schedules, never measured outages. Times are local
     Asia/Karachi minutes of day; K-Electric cycles may wrap midnight. IESCO rows are a scenario playbook
@@ -44,45 +81,68 @@ models:
     '
   columns:
   - name: window_id
+    description: 'Unique key: feeder_id, scenario level (or ''daily'') and window number.'
     data_tests:
     - unique
     - not_null
   - name: feeder_id
+    description: Feeder this scheduled window belongs to; joins to dim_feeder.
     data_tests:
     - not_null
     - relationships:
         arguments:
           to: ref('dim_feeder')
           field: feeder_id
+  - name: source
+    description: 'Utility: iesco or kelectric.'
   - name: schedule_kind
+    description: daily_cycle (K-Electric, four recurring cycles a day) or scenario_level (IESCO playbook
+      slot for one interruption level).
     data_tests:
     - accepted_values:
         arguments:
           values:
           - daily_cycle
           - scenario_level
+  - name: scenario_level_hours
+    description: 'IESCO only: interruption level in hours per day of the playbook scenario. The file never
+      says which level is active. Null for K-Electric.'
+  - name: window_no
+    description: Position of the window within its feeder and level (K-Electric cycle 1 to 4; IESCO slot
+      order).
   - name: start_minute_local
+    description: Window start as minutes after midnight, Asia/Karachi.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 1439
   - name: end_minute_local
+    description: Window end as minutes after midnight, Asia/Karachi (up to 1440). Smaller than the start
+      when the window wraps midnight.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 1440
+  - name: wraps_midnight
+    description: True when the window crosses midnight (K-Electric cycles only).
   - name: duration_minutes
+    description: Scheduled length of the window in minutes. A schedule, not a measured outage.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 1
           max_value: 720
   - name: effective_from
-    description: Effective date of the source document; null means an unreviewed new file.
+    description: Effective date of the source document, from the source_documents seed.
     data_tests:
     - not_null
+  - name: effective_basis
+    description: How effective_from was determined (for example the HTTP Last-Modified header, when the
+      file states no date).
+  - name: source_sha256
+    description: SHA-256 of the source schedule file.
 - name: fct_planned_shutdown
   description: 'Dated planned-shutdown windows from IESCO English press releases (announcements, not measurements).
     Start and end stored in UTC and as printed local time.
@@ -90,18 +150,43 @@ models:
     '
   columns:
   - name: shutdown_id
+    description: 'Unique key: first 12 characters of the release file''s SHA-256 plus the row sequence
+      number.'
     data_tests:
     - unique
     - not_null
+  - name: release_no
+    description: Press-release number as printed.
+  - name: release_period
+    description: Period the press release covers, as printed.
   - name: outage_date
+    description: Date of the announced shutdown (Asia/Karachi), as printed.
     data_tests:
     - not_null
+  - name: circle_as_printed
+    description: IESCO circle name exactly as printed in the release.
+  - name: feeder_name_as_printed
+    description: Feeder or asset name exactly as printed; matching to dim_feeder is in fct_planned_shutdown_feeder.
+  - name: start_local
+    description: Announced start time, local Asia/Karachi (HH:MM) as printed.
+  - name: end_local
+    description: Announced end time, local Asia/Karachi (HH:MM) as printed.
   - name: start_utc
+    description: Announced start converted to UTC.
     data_tests:
     - not_null
   - name: end_utc
+    description: Announced end converted to UTC.
     data_tests:
     - not_null
+  - name: flags
+    description: Semicolon-separated parser flags, such as transmission_asset, ends_next_day or weekday_mismatch:<day>.
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
+  - name: fetched_at
+    description: When the source file was fetched (UTC).
 - name: dim_area_indicators
   description: 'PBS Census 2023 indicators per urban or rural area: literacy, degree-and-above share,
     pacca housing share, electricity access share, household size. Shares are descriptive; gas is excluded
@@ -110,34 +195,74 @@ models:
     '
   columns:
   - name: area_id
+    description: 'Stable key: ''pbs_urban:<province>:<key>'' or ''pbs_rural:<province>:<key>''.'
     data_tests:
     - unique
     - not_null
   - name: area_type
+    description: urban or rural, from the PBS Census 2023 table family.
     data_tests:
     - accepted_values:
         arguments:
           values:
           - urban
           - rural
+  - name: province
+    description: Province as printed in the PBS tables.
+  - name: area_level
+    description: Level in the PBS hierarchy (for example district, tehsil, charge, circle, mauza).
+  - name: area_name
+    description: Area name as printed.
+  - name: district
+    description: Parent district name.
+  - name: subdivision
+    description: Parent tehsil name.
+  - name: urban_body
+    description: 'Urban only: local body the area sits under. Null for rural.'
+  - name: hadbast
+    description: 'Rural only: hadbast number as printed. Null for urban.'
+  - name: pop_total
+    description: Total population, PBS Census 2023.
+  - name: housing_units_total
+    description: Total housing units, PBS Census 2023.
   - name: literacy_pct
+    description: Literacy rate, percent, as published.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 100
+  - name: degree_share_pct
+    description: Persons with a degree or above as percent of total population; computed only where population
+      is positive.
   - name: pacca_share_pct
+    description: Housing units with pacca structure as percent of housing units; computed only where units
+      are positive.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 100
   - name: electricity_share_pct
+    description: Housing units using electricity as percent of housing units; computed only where units
+      are positive.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 100
+  - name: avg_household_size
+    description: Average household size, as published.
+  - name: housing_missing
+    description: True when no housing-table row joined; housing indicators are then null.
+  - name: population_flags
+    description: Parser flags from the population table (for example overflow_cells, duplicate_key, no_body_level).
+  - name: housing_flags
+    description: Parser flags from the housing table.
+  - name: population_source_sha256
+    description: SHA-256 of the population table source file.
+  - name: housing_source_sha256
+    description: SHA-256 of the housing table source file.
 - name: mart_ke_feeder_hours
   description: 'K-Electric listed feeders with scheduled hours per day (6 or 12) next to category, ATC
     loss, IBC and grid. Basis for the descriptive fairness analysis; shares are among listed feeders.
@@ -145,10 +270,34 @@ models:
     '
   columns:
   - name: feeder_id
+    description: K-Electric feeder; joins to dim_feeder.
     data_tests:
     - unique
     - not_null
+  - name: feeder_name
+    description: Feeder name as listed.
+  - name: ibc
+    description: K-Electric IBC area.
+  - name: grid_name
+    description: Grid station from the schedule.
+  - name: category
+    description: Published loss category (Medium, High, Very High).
+  - name: atc_loss_pct
+    description: Published ATC loss percent; null when not published.
+  - name: schedule_match_method
+    description: 'How list and schedule names were joined: exact or truncated_name.'
+  - name: schedule_match_confidence
+    description: Confidence of that join, 0 to 1.
+  - name: cycles
+    description: Number of daily scheduled cycles (4).
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - 4
+          quote: false
   - name: scheduled_hours_per_day
+    description: Scheduled hours per day summed over the cycles (6 or 12). A schedule, not a measurement.
     data_tests:
     - accepted_values:
         arguments:
@@ -156,17 +305,23 @@ models:
           - 6
           - 12
           quote: false
-  - name: cycles
-    data_tests:
-    - accepted_values:
-        arguments:
-          values:
-          - 4
-          quote: false
+  - name: effective_from
+    description: Effective date of the schedule document.
 - name: quarantine_feeder
   description: IESCO feeder rows held out of dim_feeder, each with a reason (anomalies flagged, not fixed).
   columns:
+  - name: source
+    description: Utility (iesco).
+  - name: circle
+    description: IESCO circle.
+  - name: sheet_row
+    description: Row number in the workbook sheet.
+  - name: feeder_name
+    description: Feeder name as printed.
+  - name: feeder_code_raw
+    description: Feeder code as printed, before normalisation.
   - name: reason
+    description: 'Why the row is held out: non_numeric_code, other_disco_feeder_sharing_code or duplicate_code_in_circle.'
     data_tests:
     - not_null
     - accepted_values:
@@ -175,23 +330,60 @@ models:
           - non_numeric_code
           - other_disco_feeder_sharing_code
           - duplicate_code_in_circle
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
 - name: quarantine_schedule_window
   description: IESCO scenario slots held out of fct_schedule_window, each with a reason.
   columns:
+  - name: source
+    description: Utility (iesco).
+  - name: circle
+    description: IESCO circle.
+  - name: sheet_row
+    description: Row number in the workbook sheet.
+  - name: feeder_name
+    description: Feeder name as printed.
+  - name: level_hours
+    description: Scenario level in hours per day.
+  - name: slot_start_hour
+    description: Slot start hour.
+  - name: slot_end_hour
+    description: Slot end hour.
   - name: reason
+    description: Why the slot is held out.
     data_tests:
     - not_null
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
 - name: quarantine_area
   description: Census area rows held out of dim_area_indicators because their key is ambiguous.
   columns:
+  - name: area_type
+    description: urban or rural.
+  - name: province
+    description: Province as printed.
+  - name: area_key
+    description: Hierarchical census key that was ambiguous.
+  - name: area_level
+    description: Level in the PBS hierarchy.
+  - name: area_name
+    description: Area name as printed.
+  - name: district
+    description: Parent district.
   - name: reason
+    description: Why the row is held out.
     data_tests:
     - not_null
+  - name: population_source_sha256
+    description: SHA-256 of the population table source file.
 - name: feeder_locality_match
   description: IESCO feeder to census locality matches that count (auto_exact or owner-accepted), with
     method and confidence. Name-based only; no coordinates exist.
   columns:
   - name: feeder_id
+    description: IESCO feeder; joins to dim_feeder.
     data_tests:
     - not_null
     - relationships:
@@ -199,33 +391,83 @@ models:
           to: ref('dim_feeder')
           field: feeder_id
   - name: area_id
+    description: Matched census locality; joins to dim_area_indicators.
     data_tests:
     - not_null
     - relationships:
         arguments:
           to: ref('dim_area_indicators')
           field: area_id
+  - name: area_name
+    description: Census locality name.
+  - name: circle
+    description: IESCO circle of the feeder.
+  - name: method
+    description: Matching method recorded in the review seed.
+  - name: match_status
+    description: auto_exact or accepted (reviewed).
   - name: match_confidence
+    description: Match score as 0 to 1. Name-based only, so approximate.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 1
+  - name: match_note
+    description: Note recorded with the decision.
 - name: fct_planned_shutdown_feeder
   description: fct_planned_shutdown plus the matched IESCO feeder (if any), match status and confidence,
     and why unmatched rows are unmatched.
   columns:
   - name: shutdown_id
+    description: 'Unique key: first 12 characters of the release file''s SHA-256 plus the row sequence
+      number.'
     data_tests:
     - unique
     - not_null
+  - name: release_no
+    description: Press-release number as printed.
+  - name: release_period
+    description: Period the press release covers, as printed.
+  - name: outage_date
+    description: Date of the announced shutdown (Asia/Karachi), as printed.
+  - name: circle_as_printed
+    description: IESCO circle name exactly as printed in the release.
+  - name: feeder_name_as_printed
+    description: Feeder or asset name exactly as printed; matching to dim_feeder is in fct_planned_shutdown_feeder.
+  - name: start_local
+    description: Announced start time, local Asia/Karachi (HH:MM) as printed.
+  - name: end_local
+    description: Announced end time, local Asia/Karachi (HH:MM) as printed.
+  - name: start_utc
+    description: Announced start converted to UTC.
+  - name: end_utc
+    description: Announced end converted to UTC.
+  - name: flags
+    description: Semicolon-separated parser flags, such as transmission_asset, ends_next_day or weekday_mismatch:<day>.
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
+  - name: fetched_at
+    description: When the source file was fetched (UTC).
   - name: feeder_id
+    description: Matched IESCO feeder (dim_feeder), or null when not matched.
     data_tests:
     - relationships:
         arguments:
           to: ref('dim_feeder')
           field: feeder_id
+  - name: match_status
+    description: auto_exact (exact name match) or accepted (reviewed decision); null when unmatched.
+  - name: match_confidence
+    description: Match score as 0 to 1. Approximate matches always carry a stored, displayed confidence.
+  - name: match_method
+    description: Method that produced the match, as recorded in the review seed.
+  - name: match_note
+    description: Note recorded with the decision (auto-review, llm-review or claude-review).
   - name: feeder_match_state
+    description: matched, pending_review, unmatched, or out_of_scope (transmission assets are never feeders).
     data_tests:
     - accepted_values:
         arguments:
@@ -239,90 +481,199 @@ models:
     coverage are listed as out_of_scope.
   columns:
   - name: ibc
+    description: K-Electric IBC area.
     data_tests:
     - not_null
   - name: subdivision_area_id
+    description: Accepted census sub-division (dim_area_indicators); null when out of scope.
     data_tests:
     - relationships:
         arguments:
           to: ref('dim_area_indicators')
           field: area_id
+  - name: subdivision_name
+    description: Census sub-division name.
+  - name: crosswalk_status
+    description: accepted or out_of_scope.
+  - name: name_similarity
+    description: Name similarity of the pair, 0 to 1; null when out of scope.
 - name: dim_area
   description: 'All areas: census areas, K-Electric IBC areas and IESCO circles. geometry_wkt stays null
     until an approved boundary source exists.'
   columns:
   - name: area_id
+    description: 'Stable key: census area_id, ''ke_ibc:<IBC>'' or ''iesco_circle:<circle>''.'
     data_tests:
     - unique
     - not_null
+  - name: name
+    description: Area name.
+  - name: level
+    description: 'Kind of area: census ''<urban|rural>_<level>'', kelectric_ibc or iesco_circle.'
   - name: source
+    description: 'Source the area comes from: pbs_census_2023, kelectric_feeder_list or iesco_schedule_xlsx.'
     data_tests:
     - not_null
+  - name: province
+    description: Province (lower case).
+  - name: parent_name
+    description: District for census areas, or the utility territory label.
+  - name: geometry_wkt
+    description: 'Always null: no approved boundary source exists, so there is no map.'
 - name: rpt_match_rates
   description: 'Match rates per resolution task and group: matched, pending review, unmatched, out of
     scope, and matched share in scope.'
   columns:
   - name: task
+    description: 'Resolution task: feeder_locality, press_feeder or ibc_subdivision.'
     data_tests:
     - not_null
+  - name: subject_group
+    description: 'Group of the subjects (as recorded in the review seed: circle or IBC group).'
+  - name: subjects
+    description: Distinct subjects in the group.
+  - name: matched
+    description: Subjects with an auto-accepted or accepted match.
+  - name: pending_review
+    description: Subjects with only undecided suggestions.
+  - name: unmatched
+    description: Subjects with no usable candidate or only rejected ones.
+  - name: out_of_scope
+    description: Subjects outside the data's coverage.
+  - name: matched_pct_in_scope
+    description: matched as percent of subjects not out of scope.
 - name: mart_build_info
   description: Timestamp (UTC) of the warehouse build; fallback last_updated for live outputs.
+  columns:
+  - name: built_at
+    description: UTC timestamp of the warehouse build.
 - name: mart_feeder_dark_hours
   description: Scheduled dark minutes per feeder per local hour of day (Asia/Karachi) for K-Electric daily
     cycles and each IESCO scenario level. Schedule data, not measured outages; basis for the static 'dark
     now' export.
   columns:
   - name: feeder_id
+    description: Feeder; joins to dim_feeder.
     data_tests:
     - not_null
     - relationships:
         arguments:
           to: ref('dim_feeder')
           field: feeder_id
+  - name: source
+    description: iesco or kelectric.
+  - name: schedule_kind
+    description: daily_cycle or scenario_level, as in fct_schedule_window.
+  - name: scenario_level_hours
+    description: IESCO scenario level in hours per day; null for K-Electric.
   - name: hour_of_day
+    description: Local hour of day (Asia/Karachi), 0 to 23.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 23
   - name: dark_minutes
+    description: Minutes of that hour that fall inside scheduled windows (1 to 60). Scheduled, not measured;
+      hours with zero minutes are omitted.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 1
           max_value: 60
+  - name: effective_from
+    description: Earliest effective date among the contributing windows.
 - name: mart_ke_ibc_equity
   description: 'Per K-Electric IBC: listed and scheduled feeders, feeders at 6 h and 12 h, share at 12
     h, mean scheduled hours, mean ATC loss (n with loss), category counts, census sub-division if crosswalked.
     Among listed feeders only; schedule data; descriptive.'
   columns:
   - name: ibc
+    description: K-Electric IBC area.
     data_tests:
     - unique
     - not_null
+  - name: listed_feeders
+    description: Feeders in the published list for this IBC (n). Feeders exempt from load shedding are
+      not listed.
+  - name: scheduled_feeders
+    description: Listed feeders with a matched schedule row.
+  - name: feeders_12h
+    description: Scheduled feeders at 12 hours a day.
+  - name: feeders_6h
+    description: Scheduled feeders at 6 hours a day.
   - name: share_12h_pct
+    description: feeders_12h as percent of scheduled feeders; among listed feeders only.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 100
+  - name: mean_scheduled_hours
+    description: Mean scheduled hours a day over scheduled feeders.
+  - name: feeders_with_loss
+    description: Listed feeders with a published ATC loss (n behind mean_atc_loss_pct).
+  - name: mean_atc_loss_pct
+    description: Mean published ATC loss percent over feeders_with_loss.
+  - name: medium_feeders
+    description: Listed feeders in category Medium.
+  - name: high_feeders
+    description: Listed feeders in category High.
+  - name: very_high_feeders
+    description: Listed feeders in category Very High.
+  - name: census_subdivision
+    description: Census sub-division from the accepted IBC crosswalk, if any.
+  - name: crosswalk_status
+    description: 'Crosswalk status: accepted, out_of_scope, or null when none.'
 - name: mart_ke_subdivision_equity
   description: Scheduled hours of listed K-Electric feeders aggregated to census sub-divisions via the
     accepted IBC crosswalk, with census indicators. Exploratory; extents of IBCs and sub-divisions are
     not verified.
   columns:
   - name: subdivision_area_id
+    description: Census sub-division (dim_area_indicators).
     data_tests:
     - unique
     - not_null
+  - name: subdivision_name
+    description: Sub-division name.
+  - name: ibcs
+    description: Number of crosswalked IBCs in the sub-division.
+  - name: scheduled_feeders
+    description: Scheduled listed feeders in those IBCs (n).
+  - name: share_12h_pct
+    description: Share of those feeders scheduled 12 hours a day; among listed feeders only.
+  - name: mean_scheduled_hours
+    description: Mean scheduled hours a day.
+  - name: mean_atc_loss_pct
+    description: Mean published ATC loss percent.
+  - name: literacy_pct
+    description: Census literacy rate, percent.
+  - name: degree_share_pct
+    description: Census degree-and-above share, percent.
+  - name: pacca_share_pct
+    description: Census pacca housing share, percent.
+  - name: avg_household_size
+    description: Census average household size.
+  - name: pop_total
+    description: Census total population.
 - name: rpt_spearman
   description: 'Exploratory Spearman rank correlations with n: sub-division share at 12 h vs census indicators
     and mean loss; feeder-level ATC loss vs scheduled hours. No significance or causal claims.'
   columns:
+  - name: unit
+    description: 'Unit of analysis: subdivision or feeder.'
+  - name: y_name
+    description: Variable ranked as y.
+  - name: x_name
+    description: Variable ranked as x.
   - name: n
+    description: Number of complete pairs. Always shown with the coefficient.
     data_tests:
     - not_null
   - name: spearman_rho
+    description: 'Spearman rank correlation (average ranks for ties), -1 to 1. Descriptive only: no significance
+      or causal reading.'
     data_tests:
     - accepted_range:
         arguments:
@@ -333,35 +684,71 @@ models:
     not findings of unfairness.
   columns:
   - name: rule
+    description: Identifier of the observation rule.
     data_tests:
     - unique
     - not_null
+  - name: description
+    description: What the rule counts, in words.
+  - name: feeders
+    description: Number of feeders matching the rule. An observation, not a finding of unfairness.
 - name: mart_nepra_load_shedding
-  description: 'Average daily load-shedding hours as reported to NEPRA, one value per company and
-    fiscal year (earliest report listing the year), with the spread across reports that restate it.
+  description: 'Average daily load-shedding hours as reported to NEPRA, one value per company and fiscal
+    year (earliest report listing the year), with the spread across reports that restate it.
 
     '
   columns:
   - name: company_year_id
+    description: 'Key: company and fiscal year.'
     data_tests:
     - unique
     - not_null
+  - name: company
+    description: Distribution company as named in the NEPRA report.
+  - name: fiscal_year
+    description: Fiscal year of the value.
   - name: reported_hours_per_day
+    description: Average daily load-shedding hours as reported to NEPRA by the company, from the earliest
+      report that lists the year. Reported, not measured.
     data_tests:
     - not_null
+  - name: chosen_report_year
+    description: Year of the NEPRA report the value was taken from.
+  - name: chosen_source_file
+    description: Source file of that report.
+  - name: chosen_source_sha256
+    description: SHA-256 of that source file.
+  - name: reports
+    description: Number of reports that list this company-year.
+  - name: min_reported
+    description: Smallest value across those reports.
+  - name: max_reported
+    description: Largest value across those reports.
   - name: values_disagree
+    description: True when reports restate the value by more than 0.01 hours. Flagged, never fixed.
     data_tests:
     - not_null
 - name: mart_news_headline
-  description: 'The 12 most recent load-shedding headlines, however old, shown with outlet, date and
-    link only.
+  description: 'The 12 most recent load-shedding headlines, however old, shown with outlet, date and link
+    only.
 
     '
   columns:
   - name: link
+    description: URL of the original story.
     data_tests:
     - unique
     - not_null
+  - name: outlet
+    description: News outlet.
+  - name: title
+    description: Headline as published; the outlet's words, not Roshni's reporting.
+  - name: published_at
+    description: Publication time from the feed; may be null.
+  - name: first_seen_at
+    description: When the pipeline first saw the story.
+  - name: recency
+    description: Rank, newest first (1 to 12).
 - name: mart_nepra_ke_order
   description: 'NEPRA order on K-Electric (2026-08-31): feeders by average daily outage band and loss
     category, with the category schedule; NEPRA''s figures from K-Electric data.
@@ -369,36 +756,92 @@ models:
     '
   columns:
   - name: band_id
+    description: 'Key: category and band.'
     data_tests:
     - unique
     - not_null
+  - name: order_date
+    description: Date of the NEPRA order.
+  - name: category
+    description: K-Electric loss category in the order.
+  - name: category_feeders
+    description: Feeders in the category, per the order.
+  - name: category_consumers
+    description: Consumers in the category, per the order.
+  - name: avg_atc_loss_pct
+    description: Average ATC loss percent of the category, per the order.
+  - name: scheduled_minutes_per_day
+    description: Daily scheduled minutes for the category, per the order.
+  - name: band
+    description: Average daily outage band label as printed.
+  - name: lower_minutes
+    description: Lower bound of the band in minutes a day.
+  - name: upper_minutes
+    description: Upper bound of the band in minutes a day.
+  - name: feeders
+    description: Feeders in the band, per NEPRA's analysis of K-Electric data.
+  - name: consumers
+    description: Consumers in the band.
+  - name: pct_feeders
+    description: Percent of the category's feeders in the band.
+  - name: pct_consumers
+    description: Percent of the category's consumers in the band.
   - name: above_schedule
+    description: True when the band's lower bound is at or over the category's scheduled minutes, as the
+      order counts them.
     data_tests:
     - not_null
+  - name: source_file
+    description: Source file of the order.
 - name: mart_monthly_iesco_shutdowns
-  description: 'IESCO planned shutdowns announced in press releases, per month and circle: windows,
-    summed window hours, releases, and the first/last date covered (maintenance, not load shedding).
+  description: 'IESCO planned shutdowns announced in press releases, per month and circle: windows, summed
+    window hours, releases, and the first/last date covered (maintenance, not load shedding).
 
     '
   columns:
   - name: month_circle_id
+    description: 'Key: month and circle.'
     data_tests:
     - unique
     - not_null
+  - name: month
+    description: Month (YYYY-MM) of the outage date as printed.
+  - name: circle
+    description: IESCO circle as printed.
+  - name: windows
+    description: Announced shutdown windows (one per feeder per window).
   - name: window_hours
+    description: Sum of window lengths in hours; each feeder's window counts once. Announced maintenance,
+      not load shedding.
     data_tests:
     - not_null
+  - name: releases
+    description: Distinct press releases covering the month and circle.
+  - name: first_date
+    description: Earliest outage date covered.
+  - name: last_date
+    description: Latest outage date covered; shows how much of the month the collected releases cover.
 - name: mart_ke_schedule_history
-  description: 'Every stored K-Electric schedule version with its effective date, feeders and mean
-    scheduled hours a day (schedule, not measurement).
+  description: 'Every stored K-Electric schedule version with its effective date, feeders and mean scheduled
+    hours a day (schedule, not measurement).
 
     '
   columns:
   - name: source_sha256
+    description: SHA-256 of the stored K-Electric schedule version.
     data_tests:
     - unique
     - not_null
+  - name: source_file
+    description: Name of that stored file.
   - name: effective_from
+    description: Effective date from source_documents.
     data_tests:
     - unique
     - not_null
+  - name: feeders
+    description: Feeders in that schedule version.
+  - name: avg_scheduled_minutes
+    description: Mean scheduled minutes a day per feeder.
+  - name: avg_scheduled_hours
+    description: Mean scheduled hours a day per feeder. A schedule, not a measurement.

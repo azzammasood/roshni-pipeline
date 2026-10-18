@@ -7,17 +7,22 @@ models:
     '
   columns:
   - name: list_name_norm
+    description: Normalised K-Electric feeder name from the feeder list.
     data_tests:
     - unique
     - not_null
   - name: schedule_name_norm
+    description: Normalised feeder name from the schedule.
     data_tests:
     - unique
     - not_null
   - name: match_method
+    description: exact, or truncated_name (the schedule name is a prefix of one listed name).
     data_tests:
     - accepted_values:
         arguments:
           values:
           - exact
           - truncated_name
+  - name: match_confidence
+    description: Confidence of the join, 0 to 1.
