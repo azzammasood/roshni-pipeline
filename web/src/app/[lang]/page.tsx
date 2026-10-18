@@ -5,6 +5,7 @@ import { NewsStrip } from "@/components/NewsStrip";
 import { Reveal } from "@/components/Reveal";
 import { fill } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
+import { schedulePlans } from "@/lib/plans";
 import { resolveLocale } from "@/lib/locale";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
@@ -13,6 +14,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const iesco = feeders.filter((f) => f.source === "iesco").length;
   const national = await loadDocument("national");
   const news = await loadDocument("news");
+  const plans = schedulePlans((await loadDocument("dark_profiles")).data, national.data, locale);
   const { home, common, matchState, sources, lead } = dict;
   const jump: [string, string][] = [
     ["#national", home.jumpNational],
@@ -31,7 +33,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         ))}
       </nav>
       {/* The national picture first (owner, 2026-10-13), then the visitor's own feeder. */}
-      <NationalPanel data={national.data} locale={locale} t={dict.national} />
+      <NationalPanel data={national.data} locale={locale} t={dict.national} plans={plans} />
       <Reveal>
         <MonthlyPanel data={national.data} locale={locale} t={dict.monthly} />
       </Reveal>

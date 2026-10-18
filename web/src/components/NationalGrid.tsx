@@ -25,6 +25,7 @@ export function NationalGrid({
   latest,
   locale,
   t,
+  plans = {},
 }: {
   series: Series;
   years: string[];
@@ -32,6 +33,8 @@ export function NationalGrid({
   latest: string;
   locale: string;
   t: Dictionary["national"];
+  /** Hours a day the company's own published schedule plans per feeder, as text ("2–12"). */
+  plans?: Record<string, string>;
 }) {
   const [open, setOpen] = useState<Open | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
@@ -70,7 +73,9 @@ export function NationalGrid({
     const left = Math.min(Math.max(open.x - width / 2, 0), Math.max(max - width, 0));
     el.style.left = `${left}px`;
     el.style.top = open.above ? `${open.y - el.offsetHeight - 8}px` : `${open.y + 8}px`;
-    el.style.transformOrigin = `${open.x - left}px ${open.above ? "100%" : "0"}`;
+    // Grow from the cell, but never from outside the popup (an off-screen cell would widen the page).
+    const origin = Math.min(Math.max(open.x - left, 0), width);
+    el.style.transformOrigin = `${origin}px ${open.above ? "100%" : "0"}`;
     el.focus();
   }, [open]);
 
@@ -121,6 +126,7 @@ export function NationalGrid({
                       <Link prefetch={false} href={href} transitionTypes={["nav-forward"]} className="grid-city">
                         <span className="block font-semibold">{c}</span>
                         <span className="block text-xs text-muted font-normal">{region[c]}</span>
+                        {plans[c] && <PlanBadge text={fill(t.planBadge, { hours: plans[c] }, locale)} />}
                       </Link>
                     ) : (
                       <>
@@ -137,7 +143,7 @@ export function NationalGrid({
                     return (
                       <td
                         key={y}
-                        style={cellStyle(s.reported_hours_per_day)}
+                        style={zeroStyle(s.reported_hours_per_day)}
                         className={`${y === latest ? "is-latest" : ""} ${isOpen ? "is-open" : ""}`.trim() || undefined}
                       >
                         <button
@@ -148,8 +154,11 @@ export function NationalGrid({
                           aria-controls={isOpen ? popId : undefined}
                           onClick={(e) => show(s, e.currentTarget)}
                         >
-                          {n(s.reported_hours_per_day)}
-                          {s.values_disagree && <sup aria-hidden="true">*</sup>}
+                          <span>
+                            {n(s.reported_hours_per_day)}
+                            {s.values_disagree && <sup aria-hidden="true">*</sup>}
+                            {s.reported_hours_per_day === 0 && <sup aria-hidden="true">†</sup>}
+                          </span>
                         </button>
                       </td>
                     );
@@ -169,6 +178,7 @@ export function NationalGrid({
           years={years}
           locale={locale}
           t={t}
+          plan={plans[open.cell.company]}
           onClose={() => close()}
         />
       )}
@@ -184,6 +194,7 @@ function CellPopup({
   years,
   locale,
   t,
+  plan,
   onClose,
 }: {
   ref: React.Ref<HTMLDivElement>;
@@ -193,6 +204,7 @@ function CellPopup({
   years: string[];
   locale: string;
   t: Dictionary["national"];
+  plan?: string;
   onClose: () => void;
 }) {
   const region = t.regions as Record<string, string>;
@@ -246,6 +258,8 @@ function CellPopup({
               : fill(delta > 0 ? t.popUp : t.popDown, { delta: n(Math.abs(delta)), prev: prev.fiscal_year }, locale)}
           </li>
         )}
+        {cell.reported_hours_per_day === 0 && <li>† {t.popZero}</li>}
+        {plan && <li>{fill(t.popPlan, { hours: plan }, locale)}</li>}
         {cell.values_disagree && (
           <li className="text-muted">
             * {fill(t.disagree, { min: n(cell.min_reported), max: n(cell.max_reported) }, locale)}
@@ -272,4 +286,20 @@ function CellPopup({
       )}
     </div>
   );
+}
+
+/** A reported 0 keeps its colour but gets a hatch, so it never reads as "no load shedding". */
+function zeroStyle(hours: number): React.CSSProperties {
+  const { background, color } = cellStyle(hours);
+  return hours === 0
+    ? {
+        backgroundColor: background,
+        color,
+        backgroundImage: "repeating-linear-gradient(135deg, rgb(20 33 61 / 0.28) 0 2px, transparent 2px 7px)",
+      }
+    : { background, color };
+}
+
+function PlanBadge({ text }: { text: string }) {
+  return <span className="plan-badge">{text}</span>;
 }
