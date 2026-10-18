@@ -1,5 +1,6 @@
-# Production scheduler: daily snapshot of source files onto the orphan branch `data-snapshots`.
-# Changed files and the raw_snapshots.csv log live there, never on main.
+# Production scheduler: daily snapshot of source files onto branch `data-snapshots` of the private
+# repo azzammasood/roshni-snapshots (owner, 2026-10-18: third-party documents stay out of this
+# public repo). Changed files and the raw_snapshots.csv log live there, never on main.
 name: snapshot
 
 on:
@@ -32,20 +33,10 @@ jobs:
       - run: uv python install
       - run: uv sync --frozen --no-dev
 
-      - name: Check out data-snapshots into ./store
-        run: |
-          if git ls-remote --exit-code --heads origin data-snapshots >/dev/null; then
-            git fetch --depth=1 origin data-snapshots:data-snapshots
-            git worktree add store data-snapshots
-          else
-            git worktree add --orphan -b data-snapshots store
-            printf '%s\n' \
-              "# data-snapshots" "" \
-              "Raw source snapshots written by the \`snapshot\` workflow on main." \
-              "\`raw_snapshots.csv\` logs every check; \`files/\` holds each distinct version." \
-              "Third-party documents, kept for change detection and reproducibility." \
-              > store/README.md
-          fi
+      - name: Check out the snapshot store (private repo) into ./store
+        uses: ./.github/actions/snapshot-store
+        with:
+          deploy-key: ${{ secrets.SNAPSHOTS_DEPLOY_KEY }}
 
       - name: Snapshot
         id: snap

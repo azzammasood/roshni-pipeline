@@ -1,6 +1,7 @@
 """Snapshot store: an append-only raw_snapshots.csv log plus content-addressed files.
 
-Layout (in the store root, which in production is a checkout of the `data-snapshots` branch):
+Layout (in the store root; in production a checkout of branch `data-snapshots` of the private
+repo roshni-snapshots):
     raw_snapshots.csv
     files/<source>/<item_key>/<YYYYMMDDTHHMMSSZ>_<sha12><ext>
 """

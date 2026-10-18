@@ -1,7 +1,7 @@
 # News feeds only, every 3 hours (owner, 2026-10-14): feeds list just their latest items, so a
 # daily fetch missed stories. Same store and trimming as `snapshot` (load-shedding headlines only,
 # never article text). Shares the `snapshot` concurrency group so the two never push to
-# data-snapshots at once. Not named `snapshot`, so it does not trigger `publish`: the site still
+# the snapshot store at once. Not named `snapshot`, so it does not trigger `publish`: the site still
 # publishes once a day, from every headline caught since.
 name: news
 
@@ -30,10 +30,10 @@ jobs:
       - run: uv python install
       - run: uv sync --frozen --no-dev
 
-      - name: Check out data-snapshots into ./store
-        run: |
-          git fetch --depth=1 origin data-snapshots:data-snapshots
-          git worktree add store data-snapshots
+      - name: Check out the snapshot store (private repo) into ./store
+        uses: ./.github/actions/snapshot-store
+        with:
+          deploy-key: ${{ secrets.SNAPSHOTS_DEPLOY_KEY }}
 
       - name: Snapshot news feeds
         id: snap

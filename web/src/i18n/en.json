@@ -406,7 +406,8 @@
     "orderFile": "Order dated {date} (PDF)",
     "orderBasis": "NEPRA's analysis of K-Electric's outage data for its listed feeders; period not stated",
     "newsFile": "RSS feeds, checked every 3 hours",
-    "newsBasis": "Load-shedding headlines only: headline, outlet, date and link"
+    "newsBasis": "Load-shedding headlines only: headline, outlet, date and link",
+    "filesCount": "{n} files"
   },
   "sources": {
     "iesco": "IESCO",

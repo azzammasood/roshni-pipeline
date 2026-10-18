@@ -11,6 +11,10 @@ Newest first. Format: date — decision — why.
 - **README rewritten for portfolio readers**, with screenshots (`docs/img/`, taken with headless Edge from a local build of the live data), a Mermaid architecture diagram, a "How this scales" section and `docs/case-study.md`. The old README's "AWS + Terraform reference deployment" claim is gone: no Terraform exists in the repo, so AWS appears only as a scaling design.
 - **Not done:** a video walkthrough (Claude cannot record one); the README's screenshots stand in.
 
+## 2026-10-17 (About sources grouped; skyline fits its box)
+- **About › Sources: one row per source.** IESCO publishes one schedule file per circle, so its name appeared six times. Its files are now listed together in one row ("6 files"); effective date, published label and basis are each shown once when the files agree.
+- **Masthead and footer skyline lay themselves out for the box they are drawn in** (`components/Skyline.tsx`, client). The old fixed 1100-unit drawing was cropped to the bar's shape (`slice`), which cut the outer towers in half on phones and wide screens. Towers are now spaced across the measured width, so the outer ones always stand whole (about 10 to 15 px from each edge), and the wires run on past both edges. Static HTML still uses the 1100 layout until the first measurement.
+
 ## 2026-10-15 (City pages, grid popup; owner's Islamabad sources)
 - **Owner's proposed Islamabad sources:**
   - The attached `islamabad sep 2026 load management iesco.xlsx` is byte-identical (SHA-256 `f0336196…`) to `iesco-islamabad-sep26.xlsx`, which the daily snapshot has fetched from `iesco.com.pk/load-shedding` since January (HTTP 304 on every recent check). Nothing new to ingest.
@@ -272,7 +276,7 @@ Newest first. Format: date — decision — why.
 - **HTML parsing with BeautifulSoup**; tests use small synthetic pages, not copies of third-party pages.
 
 ## 2026-10-06 (Phase 0)
-- **Remote over SSH alias `github-azzammasood`** (`git@github-azzammasood:azzammasood/roshni-pipeline.git`, key `id_ed25519`). The gh CLI is logged into azzamverse and is never used against this repo. The remote existed and was empty, so the first push was a plain push with no force.
+- **Remote over SSH alias `github-azzammasood`** (`git@github-azzammasood:azzammasood/roshni-pipeline.git`, key `id_ed25519`). The gh CLI was then logged into a different account and was not used against this repo. The remote existed and was empty, so the first push was a plain push with no force.
 - **Repo identity per repo only:** `user.name azzammasood`, `user.email ahmaduzzammasood@gmail.com`. The global config is untouched.
 - **Repo visibility: private.** If it ever goes public, add a scheduled-workflow keepalive (GitHub disables crons after about 60 days of inactivity).
 - **Owner shell: PowerShell.** All scripts stay cross-platform (Python + pathlib). `.gitattributes` forces LF.

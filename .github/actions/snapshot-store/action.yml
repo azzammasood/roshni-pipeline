@@ -1,0 +1,37 @@
+# Checks out the snapshot store (branch `data-snapshots` of the private repo
+# azzammasood/roshni-snapshots) into ./store over SSH with a deploy key. The raw third-party
+# documents live there, not in this public repo (owner, 2026-10-18). With `write: true` the
+# checkout can push (the deploy key must have write access); `git push` inside ./store goes to
+# the private repo.
+name: snapshot-store
+description: Check out the private snapshot store into ./store
+inputs:
+  deploy-key:
+    description: Private half of the roshni-snapshots deploy key (secret SNAPSHOTS_DEPLOY_KEY)
+    required: true
+  depth:
+    description: Clone depth (1 is enough to read the newest files and append a commit)
+    required: false
+    default: "1"
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        KEY: ${{ inputs.deploy-key }}
+        DEPTH: ${{ inputs.depth }}
+      run: |
+        if [ -z "$KEY" ]; then
+          echo "::error::SNAPSHOTS_DEPLOY_KEY is not set (see README, Operations)"
+          exit 1
+        fi
+        install -m 700 -d ~/.ssh
+        printf '%s\n' "$KEY" > ~/.ssh/snapshots_deploy
+        chmod 600 ~/.ssh/snapshots_deploy
+        # GitHub's published ed25519 host key (pinned instead of trusting ssh-keyscan).
+        grep -q "^github.com ssh-ed25519" ~/.ssh/known_hosts 2>/dev/null ||
+          echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> ~/.ssh/known_hosts
+        ssh_cmd="ssh -i $HOME/.ssh/snapshots_deploy -o IdentitiesOnly=yes"
+        GIT_SSH_COMMAND="$ssh_cmd" git clone -q --depth "$DEPTH" --branch data-snapshots \
+          git@github.com:azzammasood/roshni-snapshots.git store
+        git -C store config core.sshCommand "$ssh_cmd"

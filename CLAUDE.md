@@ -20,7 +20,7 @@ Long facts: `docs/data-audit.md` (oracles, file inventory). Decisions: `docs/DEC
 - Section-7 numbers are regression tests: if one changes, surface it; don't edit the test.
 
 ## Repo and git safety
-- Remote: `git@github-azzammasood:azzammasood/roshni-pipeline.git`. `gh` is allowed (owner, 2026-10-12) **only after `gh api user --jq .login` prints `azzammasood`**; the keyring also holds azzamverse, so check before every session's first use and stop if it differs. Never force-push without asking.
+- Remote: `git@github-azzammasood:azzammasood/roshni-pipeline.git`. `gh` is allowed (owner, 2026-10-12) **only after `gh api user --jq .login` prints `azzammasood`**; the keyring also holds another account, so check before every session's first use and stop if it differs. Never force-push without asking.
 - Commit identity is set per repo (azzammasood). Don't touch the global git config.
 - `data-sources/` is git-ignored and guarded by a pre-commit hook. **Never read images/screenshots there**, nor files not in the inventory. Never commit full third-party documents without asking; CI uses trimmed fixtures in `tests/fixtures/`.
 - Ask before installing system packages, Docker changes, or anything destructive.
@@ -65,7 +65,9 @@ src/roshni/fetch/      http.py (PoliteClient), discover.py, store.py, snapshot.p
 src/roshni/parsers/    pdftext.py (poppler only), one module per source, run.py
 src/roshni/quality/    suites.py (GE suites per parsed table)
 src/roshni/export/     models.py (pydantic, source of schemas/v1), build.py; airflow/ = showcase DAG
-branch data-snapshots  raw_snapshots.csv + files/ (written only by .github/workflows/snapshot.yml)
+roshni-snapshots       private repo, branch data-snapshots: raw_snapshots.csv + files/ (written
+                       only by snapshot.yml/news.yml via .github/actions/snapshot-store; secret
+                       SNAPSHOTS_DEPLOY_KEY). Third-party documents never go in this public repo.
 config/                sources.yml, policy.yml
 dbt/                   staging views, int_ke_feeder_join, marts + quarantine_* tables, seeds/source_documents.csv
 tests/                 cross-cutting tests, fixtures/
@@ -94,7 +96,7 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 
 ## Phase status
 - Phase 0 (repo, tooling, CI, docs): done 2026-10-06 (CI green, Docker image builds).
-- Phase 1 (snapshot job): done 2026-10-06 (run 1: new=73; run 2: unchanged=8 known=65). Snapshots on branch `data-snapshots`.
+- Phase 1 (snapshot job): done 2026-10-06 (run 1: new=73; run 2: unchanged=8 known=65). Snapshots on branch `data-snapshots` (moved to the private repo `roshni-snapshots` 2026-10-18).
 - Phase 2 (parsers): done 2026-10-09; 20 golden tests, 10 GE suites pass; audit mismatches explained and approved (data-audit.md §8).
 - Phase 3 (warehouse): built 2026-10-09; dbt build PASS=78; warehouse golden tests pass.
 - Phase 3b (Databricks smoke run): done 2026-10-10; PASS=78 on Databricks Free Edition, no dialect fixes.
