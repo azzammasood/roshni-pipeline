@@ -9,9 +9,49 @@ models:
       - name: item
         description: Listing-page row the workbook came from (a circle, gso or construction).
         data_tests: [not_null]
+      - name: sheet
+        description: Name of the sheet the row was read from (the first sheet of the workbook).
+      - name: sheet_row
+        description: 1-based row number in that sheet.
+      - name: serial
+        description: Serial number as printed, if any.
+      - name: circle_as_printed
+        description: Circle as printed in the row (e.g. ISLAMABAD, or ISLAMABAD/PESCO, flagged).
+      - name: division
+        description: Division as printed (often blank in the Islamabad file).
+      - name: subdivision
+        description: Sub-division as printed.
+      - name: grid
+        description: 132 kV grid station as printed.
+      - name: feeder_name
+        description: Feeder name as printed.
+      - name: feeder_code_raw
+        description: Feeder code exactly as the cell holds it.
+      - name: feeder_code
+        description: Feeder code as 6-digit zero-padded text; null when the cell is not numeric.
       - name: outage_date
         description: Date of the window as printed (Asia/Karachi).
         data_tests: [not_null]
+      - name: start_local
+        description: Start time from the From column, HH:MM Asia/Karachi.
+      - name: end_local
+        description: End time from the To column, HH:MM Asia/Karachi (24:00 is midnight at the end).
+      - name: start_utc
+        description: Start as a UTC timestamp (Asia/Karachi is UTC+5, no daylight saving).
+      - name: end_utc
+        description: End as a UTC timestamp.
+      - name: purpose
+        description: Purpose as printed (Annual Maintenance, Construction/Development Work, ...).
+      - name: area_affected
+        description: Area affected as printed, when the file gives one.
+      - name: flags
+        description: Parser flags (multi_date_cell, circle_shared, feeder_code_not_numeric, date_cell_time_HHMM).
+      - name: source_file
+        description: Stored file the row came from.
+      - name: source_sha256
+        description: SHA-256 of that file.
+      - name: fetched_at
+        description: When the snapshot job fetched that file (UTC).
 
   - name: fct_maintenance_window
     description: >
@@ -35,15 +75,35 @@ models:
               arguments:
                 to: ref('dim_feeder')
                 field: feeder_id
-      - name: window_minutes
-        description: Length of the window in minutes (end after start is checked by the parser).
-        data_tests: [not_null]
+      - name: feeder_code
+        description: 6-digit feeder code, when printed and numeric.
+      - name: feeder_name_as_printed
+        description: Feeder name as printed.
+      - name: circle_as_printed
+        description: Circle as printed in the row.
+      - name: division
+        description: Division as printed.
+      - name: subdivision
+        description: Sub-division as printed.
+      - name: grid_as_printed
+        description: Grid station as printed.
+      - name: outage_date
+        description: Date of the window (Asia/Karachi).
       - name: start_local
         description: Start time printed, HH:MM Asia/Karachi.
       - name: end_local
         description: End time printed, HH:MM Asia/Karachi (24:00 is midnight at the end).
+      - name: start_utc
+        description: Start as a UTC timestamp.
+      - name: end_utc
+        description: End as a UTC timestamp.
+      - name: window_minutes
+        description: Length of the window in minutes (end after start is checked by the parser).
+        data_tests: [not_null]
       - name: purpose
         description: Purpose as printed, e.g. Annual Maintenance, Construction/Development Work.
+      - name: area_affected
+        description: Area affected as printed, when given.
       - name: repeats_circle_window
         description: >
           True for a GSO row whose feeder, date and times a circle's file also prints (the same
@@ -51,6 +111,12 @@ models:
         data_tests: [not_null]
       - name: flags
         description: Parser flags (multi_date_cell, circle_shared, date_cell_time_HHMM, ...).
+      - name: source_file
+        description: Newest stored file that prints this window.
+      - name: source_sha256
+        description: SHA-256 of that file.
+      - name: fetched_at
+        description: When that file was fetched (UTC).
 
   - name: mart_monthly_maintenance
     description: >
@@ -58,10 +124,57 @@ models:
       hours added up. Announcements, not load shedding and not measurements.
     columns:
       - name: month_item_id
+        description: Month and listing-page row, e.g. 2026-11:islamabad.
         data_tests: [not_null, unique]
+      - name: month
+        description: YYYY-MM of the outage dates (Asia/Karachi, as printed).
+      - name: item
+        description: Listing-page row (circle, gso or construction).
+      - name: windows
+        description: Windows the row's file announces for the month.
+      - name: feeders
+        description: Distinct feeders (code, else printed name) with at least one window.
       - name: window_hours
         description: Sum of window lengths in hours (one feeder's window counts once).
         data_tests: [not_null]
+      - name: unique_windows
+        description: windows without GSO rows that repeat a circle's window; adds up across rows.
       - name: unique_window_hours
         description: window_hours without GSO rows that repeat a circle's window; adds up across rows.
         data_tests: [not_null]
+      - name: first_date
+        description: First outage date in the month for this row.
+      - name: last_date
+        description: Last outage date in the month for this row.
+
+  - name: mart_social_notices
+    description: >
+      Notices IESCO posted on Facebook, recorded by hand (seed iesco_social_notices). Each row
+      links to the post; summaries are Roshni's words. Notices, not measurements.
+    columns:
+      - name: notice_id
+        description: Stable id, e.g. fb-2026-10-18-1.
+      - name: platform
+        description: Always facebook.
+      - name: posted_on
+        description: Date IESCO posted the notice.
+      - name: url
+        description: Link to the post.
+      - name: kind
+        description: maintenance, load_shedding, restoration or other.
+      - name: circle
+        description: Circle the notice names, if any.
+      - name: areas
+        description: Areas the notice names, if any.
+      - name: window_date
+        description: Date of the outage window the notice gives, if any.
+      - name: start_local
+        description: Start of that window, HH:MM Asia/Karachi.
+      - name: end_local
+        description: End of that window, HH:MM Asia/Karachi.
+      - name: summary
+        description: Short summary in Roshni's words (at most 280 characters), never the post's text.
+      - name: added_by
+        description: Who recorded the notice.
+      - name: added_on
+        description: Date it was recorded.
