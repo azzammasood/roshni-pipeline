@@ -15,7 +15,7 @@
 | | |
 |---|---|
 | **Runs** | Daily on GitHub Actions (05:30 Pakistan time), plus a news run every 3 hours. A failure opens an issue and the site keeps its last good version. |
-| **Sources** | IESCO schedules (6 circles, 6 interruption levels) and press releases · K-Electric feeder list and schedule · NEPRA performance reports (13 fiscal years) · PBS Census 2023 · 14 news feeds |
+| **Sources** | IESCO schedules (6 circles, 6 interruption levels), press releases and monthly maintenance schedules (8 workbooks, about 18,700 windows) · K-Electric feeder list and schedule · NEPRA performance reports (13 fiscal years) · PBS Census 2023 · 14 news feeds |
 | **Warehouse** | dbt on DuckDB: 35 models, 117 tests, 15 sources, 5 seeds, one incremental model. The same models run on Databricks. |
 | **Quality** | 225 Python tests, Great Expectations suites on every parsed table, quarantine with reasons for unreadable rows, 184 web tests, accessibility (axe) checks, and a check that traces every number on the Karachi page back to the export |
 | **Serves** | 1,719 feeders with a published schedule (1,101 IESCO, 618 K-Electric) · 130 company-years of NEPRA figures · 2,675 planned-shutdown windows · about 3,500 static pages in English and Urdu |
