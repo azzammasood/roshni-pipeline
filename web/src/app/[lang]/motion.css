@@ -922,3 +922,73 @@ html[dir="rtl"] .maker-link:hover .maker-arrow {
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+/* Plan badge on heatmap rows with a published schedule (NationalGrid). */
+.plan-badge {
+  display: block;
+  width: fit-content;
+  margin-top: 0.15rem;
+  padding: 0 0.3rem;
+  background: var(--wire);
+  color: #14213d;
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+html[lang="ur"] .plan-badge {
+  font-family: var(--font-urdu), serif;
+  font-size: 0.75rem;
+}
+
+/* IESCO maintenance by circle and month (MaintenancePanel): value text, size as a bottom bar. */
+.maint-grid {
+  border-collapse: separate;
+  border-spacing: 3px;
+  font-size: 0.8rem;
+}
+.maint-grid th {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 0.2rem 0.4rem;
+  white-space: nowrap;
+}
+.maint-grid tbody th {
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.8rem;
+}
+.maint-grid td {
+  position: relative;
+  min-width: 4.2rem;
+  padding: 0.35rem 0.4rem 0.6rem;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.maint-grid td.is-empty {
+  color: var(--muted);
+  background: transparent;
+  border-color: transparent;
+}
+.maint-fill {
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--dark);
+}
+.maint-grid tr.is-focus th,
+.maint-grid tr.is-focus td {
+  border-color: var(--ink);
+}
+.maint-grid tr.is-focus th {
+  box-shadow: inset 4px 0 0 var(--wire);
+  font-weight: 600;
+}
+html[dir="rtl"] .maint-grid tr.is-focus th {
+  box-shadow: inset -4px 0 0 var(--wire);
+}

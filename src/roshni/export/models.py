@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 # 1.1.0: DarkProfile.daily_windows; 1.2.0: match review, release month; 1.3.0: national and news
 # documents; 1.4.0: national month-by-month series; 1.5.0: K-Electric months from every schedule
 # version (MonthlyKeSchedule.changed_in_month)
-SCHEMA_VERSION = "1.5.0"
+SCHEMA_VERSION = "1.6.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -303,6 +303,63 @@ class MonthlyKeSchedule(Strict):
     )
 
 
+class MaintenanceMonth(Strict):
+    month: str = Field(description="YYYY-MM (Asia/Karachi dates as printed)")
+    item: str = Field(description="Listing-page row: a circle, gso or construction")
+    windows: int
+    feeders: int = Field(description="Distinct feeders (code, else printed name)")
+    window_hours: float = Field(description="Sum of window lengths, one per feeder window")
+    unique_windows: int = Field(
+        description="Windows not already printed in a circle's file (GSO repeats removed)"
+    )
+    unique_window_hours: float = Field(description="Hours of unique_windows; adds up across rows")
+    first_date: date
+    last_date: date
+
+
+class MaintenanceWindow(Strict):
+    """One announced IESCO maintenance window (since 1.6.0). Not load shedding."""
+
+    window_id: str
+    item: str
+    feeder_id: str | None = Field(description="dim_feeder id when the printed code matches")
+    feeder_code: str | None
+    feeder_name_as_printed: str | None
+    grid_as_printed: str | None
+    outage_date: date
+    start_local: str
+    end_local: str
+    start_utc: datetime
+    end_utc: datetime
+    purpose: str | None
+    area_affected: str | None
+    repeats_circle_window: bool = Field(
+        description="A GSO row repeating a window that a circle's file also prints"
+    )
+    flags: str
+
+
+class SocialNotice(Strict):
+    """A notice IESCO posted on social media, recorded by hand (since 1.6.0).
+
+    Never collected automatically (facebook.com forbids it). The summary is written in our own
+    words; the link is the source."""
+
+    notice_id: str
+    platform: Literal["facebook"]
+    posted_on: date
+    url: str
+    kind: Literal["maintenance", "load_shedding", "restoration", "other"]
+    circle: str | None
+    areas: str | None
+    window_date: date | None
+    start_local: str | None
+    end_local: str | None
+    summary: str = Field(description="Short summary in Roshni's words, not the post's text")
+    added_by: str
+    added_on: date
+
+
 class National(Strict):
     basis: str
     caveat: str
@@ -318,9 +375,17 @@ class National(Strict):
         default_factory=list,
         description="K-Electric's published schedule per month, from its effective date only",
     )
+    monthly_maintenance: list[MaintenanceMonth] = Field(
+        default_factory=list,
+        description="IESCO announced maintenance per month and listing row (since 1.6.0)",
+    )
     as_of: date | None = Field(default=None, description="Karachi date of this build")
 
 
+NOTICES_LABEL = (
+    "Notices IESCO posted on social media, recorded by hand with a link to each post; "
+    "summaries are Roshni's, not IESCO's words"
+)
 NEWS_LABEL = "Headlines as published by each outlet, linked to the original; not Roshni's reporting"
 
 
@@ -341,4 +406,6 @@ DOCUMENTS: dict[str, type] = {
     "equity": Envelope[Equity],
     "national": Envelope[National],
     "news": Envelope[list[NewsHeadline]],
+    "maintenance": Envelope[list[MaintenanceWindow]],
+    "notices": Envelope[list[SocialNotice]],
 }

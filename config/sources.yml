@@ -17,6 +17,22 @@ sources:
       "Chakwal": chakwal
       "AJK": ajk
 
+  # Owner approval 2026-10-18: monthly planned-maintenance schedules (one workbook per circle,
+  # plus construction shutdowns). Dated feeder windows with a purpose: announcements, not load
+  # shedding and not measurements. Same table layout as the load-shedding page.
+  iesco_maintenance_xlsx:
+    discovery: iesco_xlsx_table
+    listing_url: https://iesco.com.pk/maintenance-schedule
+    circles:
+      "Islamabad": islamabad
+      "Rawalpindi City": rawalpindi_city
+      "Rawalpindi Cantt": rawalpindi_cantt
+      "Attock": attock
+      "Jhelum": jhelum
+      "Chakwal": chakwal
+      "GSO": gso
+      "Shutdown For Construction Work": construction
+
   iesco_press_release:
     discovery: iesco_press_release_tab
     listing_url: https://iesco.com.pk/press-release

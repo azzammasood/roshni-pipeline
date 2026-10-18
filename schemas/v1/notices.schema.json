@@ -1,0 +1,173 @@
+{
+  "$defs": {
+    "SocialNotice": {
+      "additionalProperties": false,
+      "description": "A notice IESCO posted on social media, recorded by hand (since 1.6.0).\n\nNever collected automatically (facebook.com forbids it). The summary is written in our own\nwords; the link is the source.",
+      "properties": {
+        "added_by": {
+          "title": "Added By",
+          "type": "string"
+        },
+        "added_on": {
+          "format": "date",
+          "title": "Added On",
+          "type": "string"
+        },
+        "areas": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Areas"
+        },
+        "circle": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Circle"
+        },
+        "end_local": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "End Local"
+        },
+        "kind": {
+          "enum": [
+            "maintenance",
+            "load_shedding",
+            "restoration",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "notice_id": {
+          "title": "Notice Id",
+          "type": "string"
+        },
+        "platform": {
+          "const": "facebook",
+          "title": "Platform",
+          "type": "string"
+        },
+        "posted_on": {
+          "format": "date",
+          "title": "Posted On",
+          "type": "string"
+        },
+        "start_local": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Start Local"
+        },
+        "summary": {
+          "description": "Short summary in Roshni's words, not the post's text",
+          "title": "Summary",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "window_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Window Date"
+        }
+      },
+      "required": [
+        "notice_id",
+        "platform",
+        "posted_on",
+        "url",
+        "kind",
+        "circle",
+        "areas",
+        "window_date",
+        "start_local",
+        "end_local",
+        "summary",
+        "added_by",
+        "added_on"
+      ],
+      "title": "SocialNotice",
+      "type": "object"
+    }
+  },
+  "$id": "https://github.com/azzammasood/roshni-pipeline/schemas/v1/notices.json",
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "items": {
+        "$ref": "#/$defs/SocialNotice"
+      },
+      "title": "Data",
+      "type": "array"
+    },
+    "generated_at": {
+      "description": "When this export was produced (UTC)",
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "label": {
+      "description": "What the numbers are: schedules, or figures reported to the regulator; never measurements",
+      "title": "Label",
+      "type": "string"
+    },
+    "last_updated": {
+      "description": "Latest source fetch or warehouse build (UTC)",
+      "format": "date-time",
+      "title": "Last Updated",
+      "type": "string"
+    },
+    "schema_id": {
+      "description": "Document type and major version, e.g. roshni/feeders/v1",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Semantic version of the document schema",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_id",
+    "schema_version",
+    "generated_at",
+    "last_updated",
+    "label",
+    "data"
+  ],
+  "title": "roshni/notices/v1",
+  "type": "object"
+}

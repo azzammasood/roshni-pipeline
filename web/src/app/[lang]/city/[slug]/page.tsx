@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DayRings } from "@/components/city/DayRings";
+import { MaintenancePanel } from "@/components/MaintenancePanel";
+import { NoticesList } from "@/components/NoticesList";
 import { ScheduleClock } from "@/components/city/ScheduleClock";
 import { YearLines } from "@/components/city/YearLines";
 import { builtLocales } from "@/i18n/config";
@@ -53,6 +55,7 @@ export default async function City({ params }: PageProps<"/[lang]/city/[slug]">)
   const fy = dict.national.fyShort;
 
   const iesco = company === "IESCO";
+  const notices = iesco ? (await loadDocument("notices")).data : [];
   const ke = company === "K-Electric";
   const needSchedules = iesco || ke;
   const feeders = needSchedules ? (await loadDocument("feeders")).data : [];
@@ -207,6 +210,13 @@ export default async function City({ params }: PageProps<"/[lang]/city/[slug]">)
           </ol>
         </section>
       )}
+
+      {iesco && (
+        <div className="rule pt-4">
+          <MaintenancePanel data={national} focus="islamabad" locale={locale} t={dict.maintenance} />
+        </div>
+      )}
+      {iesco && <NoticesList notices={notices} circle="Islamabad" t={dict.notices} />}
 
       {!needSchedules && <p className="rule pt-4 text-muted max-w-prose">{fill(t.noSchedule, { company }, locale)}</p>}
     </article>

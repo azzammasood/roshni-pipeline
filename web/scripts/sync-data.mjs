@@ -9,7 +9,7 @@ const args = process.argv.slice(2);
 const fromArg = args.includes("--from") ? args[args.indexOf("--from") + 1] : null;
 const from = path.resolve(webDir, fromArg ?? path.join("..", "data", "export", "v1"));
 const to = path.join(webDir, "public", "data", "v1");
-const DOCS = ["meta", "feeders", "dark_profiles", "planned_shutdowns", "areas", "equity", "national", "news"];
+const DOCS = ["meta", "feeders", "dark_profiles", "planned_shutdowns", "areas", "equity", "national", "news", "maintenance", "notices"];
 
 await rm(to, { recursive: true, force: true });
 await mkdir(to, { recursive: true });

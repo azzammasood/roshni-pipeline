@@ -28,10 +28,13 @@ def test_repo_registry_loads_and_is_safe() -> None:
         "news_app_tag_loadshedding",
         # Owner approval 2026-10-13 (N4): NEPRA's 2026-08-31 order on K-Electric.
         "nepra_ke_order",
+        # Owner approval 2026-10-18: IESCO monthly maintenance schedules.
+        "iesco_maintenance_xlsx",
     }
     assert reg.min_request_interval_seconds >= 1.0
     assert reg.user_agent.startswith("roshni-pipeline/0.1 (+")
     assert len(reg.sources["iesco_schedule_xlsx"].circles or {}) == 6
+    assert len(reg.sources["iesco_maintenance_xlsx"].circles or {}) == 8
     for s in reg.sources.values():
         for url in (s.url, s.listing_url):
             assert url is None or not is_denied_host(url)

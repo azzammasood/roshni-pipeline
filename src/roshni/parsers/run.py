@@ -9,6 +9,7 @@ from pathlib import Path
 
 from roshni.parsers import (
     census,
+    iesco_maintenance,
     iesco_press,
     iesco_xlsx,
     kelectric,
@@ -142,6 +143,14 @@ def _run_all(
             versions.rows.extend(kelectric.summarize_version(older))
             seen.add(sha)
     results.append((versions, kelectric.KeScheduleVersion))
+
+    # IESCO maintenance schedules (snapshot store only): every stored version of every
+    # circle's workbook. Later files repeat earlier windows; dbt keeps one row per window.
+    maint = ParseResult("iesco_maintenance_window")
+    for _, (path, _, source) in sorted(snaps.items(), key=lambda kv: kv[1][0].name):
+        if source == "iesco_maintenance_xlsx":
+            maint.extend(iesco_maintenance.parse_workbook(path, path.parent.name))
+    results.append((maint, iesco_maintenance.MaintenanceWindow))
 
     # NEPRA annual reports come only from the snapshot store (no hand-downloaded copies).
     nepra = ParseResult("nepra_load_shedding")

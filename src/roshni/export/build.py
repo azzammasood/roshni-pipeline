@@ -277,8 +277,13 @@ def _national(con) -> m.National:
     versions = _rows(con, "select effective_from, avg_scheduled_hours, feeders "
                           "from mart_ke_schedule_history order by effective_from")  # fmt: skip
     monthly_ke = ke_months(versions, today)
+    maintenance = [
+        m.MaintenanceMonth(**{k: r[k] for k in m.MaintenanceMonth.model_fields})
+        for r in _rows(con, "select * from mart_monthly_maintenance order by month, item")
+    ]
     return m.National(
-        monthly_shutdowns=monthly, monthly_ke=monthly_ke, as_of=today,
+        monthly_shutdowns=monthly, monthly_ke=monthly_ke, monthly_maintenance=maintenance,
+        as_of=today,
         basis="Average daily load-shedding hours that each distribution company reported to "
         "NEPRA in its annual performance report, as compiled in NEPRA's Performance Evaluation "
         "Reports. One value per company and fiscal year (July to June), taken from the earliest "
@@ -306,6 +311,7 @@ def _meta(con, docs: list[str]) -> m.Meta:
             "(IESCO), iesco.com.pk",
             "Feeder list and load-shed schedule: K-Electric, ke.com.pk",
             "Census 2023 tables: Pakistan Bureau of Statistics",
+            "Planned-maintenance schedules: IESCO, iesco.com.pk/maintenance-schedule",
             "Load-shedding hours reported by distribution companies: National Electric Power "
             "Regulatory Authority (NEPRA), Performance Evaluation Reports, nepra.org.pk",
         ],
@@ -336,6 +342,16 @@ def build_export(
         "areas": _areas(con),
         "equity": _equity(con, report_json),
         "national": _national(con),
+        "maintenance": [
+            m.MaintenanceWindow(**{k: r[k] for k in m.MaintenanceWindow.model_fields})
+            for r in _rows(
+                con, "select * from fct_maintenance_window order by outage_date, window_id"
+            )
+        ],
+        "notices": [
+            m.SocialNotice(**{k: r[k] for k in m.SocialNotice.model_fields})
+            for r in _rows(con, "select * from mart_social_notices order by posted_on desc")
+        ],
         "news": [
             m.NewsHeadline(**{k: r[k] for k in m.NewsHeadline.model_fields})
             for r in _rows(con, "select * from mart_news_headline order by recency")
@@ -348,7 +364,8 @@ def build_export(
         env = m.DOCUMENTS[name](
             schema_id=f"roshni/{name}/v1", schema_version=m.SCHEMA_VERSION, generated_at=now,
             last_updated=last,
-            label={"national": m.NATIONAL_LABEL, "news": m.NEWS_LABEL}.get(name, m.LABEL),
+            label={"national": m.NATIONAL_LABEL, "news": m.NEWS_LABEL,
+                   "notices": m.NOTICES_LABEL}.get(name, m.LABEL),
             data=data,
         )  # fmt: skip
         (out / f"{name}.json").write_text(env.model_dump_json(), encoding="utf-8")
