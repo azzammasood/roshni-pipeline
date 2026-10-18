@@ -4,15 +4,42 @@ models:
   description: IESCO feeders as parsed (one row per workbook row), codes normalised to 6 digits.
   columns:
   - name: circle
+    description: IESCO circle (workbook sheet).
     data_tests:
     - not_null
   - name: sheet_row
+    description: Row number in the sheet.
     data_tests:
     - not_null
+  - name: serial
+    description: Serial number as printed.
+  - name: grid_name
+    description: Grid station as printed.
+  - name: feeder_name
+    description: Feeder name as printed.
+  - name: feeder_code_raw
+    description: Feeder code as printed.
+  - name: feeder_code
+    description: Feeder code normalised to 6 digits (the join key).
+  - name: flags
+    description: Parser flags, such as non_numeric_code, slot_count_mismatch or duplicate_slot.
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
+  - name: fetched_at
+    description: When the source file was fetched (UTC).
 - name: stg_iesco_schedule_slot
   description: IESCO scenario slots, one row per feeder x level x one-hour slot.
   columns:
+  - name: circle
+    description: IESCO circle.
+  - name: sheet_row
+    description: Row in the sheet; joins to stg_iesco_feeder.
+  - name: feeder_code
+    description: Feeder code.
   - name: level_hours
+    description: Scenario interruption level, hours per day.
     data_tests:
     - accepted_values:
         arguments:
@@ -24,20 +51,61 @@ models:
           - 10
           - 12
           quote: false
+  - name: slot_start_hour
+    description: Slot start hour (local).
+  - name: slot_end_hour
+    description: Slot end hour (local).
 - name: stg_iesco_press_release_window
   description: IESCO press-release shutdown windows as parsed (names as printed).
   columns:
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
+  - name: seq
+    description: Row sequence within the release file.
+  - name: release_no
+    description: Press-release number as printed.
+  - name: release_period
+    description: Period covered, as printed.
   - name: outage_date
+    description: Announced outage date.
     data_tests:
     - not_null
+  - name: circle
+    description: Circle as printed.
+  - name: feeder_name
+    description: Feeder name as printed.
+  - name: start_local
+    description: Start, local time as printed.
+  - name: end_local
+    description: End, local time as printed.
+  - name: start_utc
+    description: Start in UTC.
+  - name: end_utc
+    description: End in UTC.
+  - name: flags
+    description: Parser flags.
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: fetched_at
+    description: When the source file was fetched (UTC).
 - name: stg_ke_feeder_list
   description: K-Electric listed feeders (category, ATC loss, IBC area).
   columns:
+  - name: serial
+    description: Serial number in the list.
+  - name: feeder_name
+    description: Feeder name as printed.
   - name: feeder_name_norm
+    description: Normalised name (join key).
     data_tests:
     - unique
     - not_null
+  - name: ibc
+    description: IBC area as printed.
+  - name: atc_loss_pct
+    description: ATC loss percent; null when printed as '-'.
   - name: category
+    description: 'Loss category: Medium, High or Very High.'
     data_tests:
     - accepted_values:
         arguments:
@@ -45,14 +113,28 @@ models:
           - Medium
           - High
           - Very High
+  - name: page
+    description: PDF page of the row.
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
+  - name: fetched_at
+    description: When the source file was fetched (UTC).
 - name: stg_ke_schedule
   description: K-Electric schedule rows, one per feeder, with total daily scheduled minutes.
   columns:
+  - name: feeder_name
+    description: Feeder name as printed.
   - name: feeder_name_norm
+    description: Normalised name (join key).
     data_tests:
     - unique
     - not_null
+  - name: grid
+    description: Grid station as printed.
   - name: total_minutes
+    description: Total scheduled minutes a day (360 or 720).
     data_tests:
     - accepted_values:
         arguments:
@@ -60,16 +142,42 @@ models:
           - 360
           - 720
           quote: false
+  - name: flags
+    description: Parser flags, such as glued_line.
+  - name: page
+    description: PDF page of the row.
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
+  - name: fetched_at
+    description: When the source file was fetched (UTC).
 - name: stg_ke_schedule_cycle
   description: K-Electric schedule cycles with start and end as local minutes of day.
   columns:
+  - name: feeder_name_norm
+    description: Normalised feeder name.
+  - name: grid
+    description: Grid station.
+  - name: cycle_no
+    description: Cycle number, 1 to 4.
+  - name: start_hhmm
+    description: Start as HHMM, as printed.
+  - name: end_hhmm
+    description: End as HHMM, as printed.
+  - name: wraps_midnight
+    description: True when the cycle crosses midnight.
+  - name: minutes
+    description: Cycle length in minutes.
   - name: start_minute_local
+    description: Start as minutes after midnight.
     data_tests:
     - accepted_range:
         arguments:
           min_value: 0
           max_value: 1439
   - name: end_minute_local
+    description: End as minutes after midnight.
     data_tests:
     - accepted_range:
         arguments:
@@ -80,27 +188,151 @@ models:
     on both sides; ambiguous keys keep population only and are flagged.
 
     '
+  columns:
+  - name: province
+    description: Province.
+  - name: area_key
+    description: Hierarchical census key within the province.
+  - name: level
+    description: Level in the PBS hierarchy.
+  - name: name
+    description: Area name as printed.
+  - name: district
+    description: District.
+  - name: tehsil
+    description: Tehsil.
+  - name: body
+    description: Local body.
+  - name: charge
+    description: Charge.
+  - name: circle
+    description: Census circle.
+  - name: pop_total
+    description: Total population.
+  - name: literacy_pct_total
+    description: Literacy rate, percent.
+  - name: degree_above_total
+    description: Persons with degree or above.
+  - name: housing_units_total
+    description: Total housing units.
+  - name: structure_pacca
+    description: Housing units with pacca structure.
+  - name: electricity
+    description: Housing units using electricity.
+  - name: avg_household_size
+    description: Average household size.
+  - name: population_key_ambiguous
+    description: True when the key is not unique on both sides of the join (population only kept; excluded
+      from dim_area_indicators).
+  - name: housing_missing
+    description: True when no housing row joined.
+  - name: population_flags
+    description: Parser flags from the population table.
+  - name: housing_flags
+    description: Parser flags from the housing table.
+  - name: population_source_file
+    description: Population table source file.
+  - name: population_source_sha256
+    description: SHA-256 of the population table source file.
+  - name: housing_source_sha256
+    description: SHA-256 of the housing table source file.
 - name: stg_pbs_rural
   description: PBS rural tables 31 and 32 joined on the hierarchical key.
   columns:
+  - name: province
+    description: Province.
   - name: area_key
+    description: Hierarchical census key within the province.
     data_tests:
     - unique
     - not_null
+  - name: level
+    description: Level in the PBS hierarchy.
+  - name: name
+    description: Area name as printed.
+  - name: hadbast
+    description: Hadbast number.
+  - name: district
+    description: District.
+  - name: tehsil
+    description: Tehsil.
+  - name: qh
+    description: Qanungo halqa.
+  - name: pc
+    description: Patwar circle.
+  - name: pop_total
+    description: Total population.
+  - name: literacy_pct_total
+    description: Literacy rate, percent.
+  - name: degree_above_total
+    description: Persons with degree or above.
+  - name: area_acres
+    description: Area in acres.
+  - name: housing_units_total
+    description: Total housing units.
+  - name: structure_pacca
+    description: Housing units with pacca structure.
+  - name: electricity
+    description: Housing units using electricity.
+  - name: avg_household_size
+    description: Average household size.
+  - name: housing_missing
+    description: True when no housing row joined.
+  - name: population_flags
+    description: Parser flags from the population table.
+  - name: housing_flags
+    description: Parser flags from the housing table.
+  - name: population_source_file
+    description: Population table source file.
+  - name: population_source_sha256
+    description: SHA-256 of the population table source file.
+  - name: housing_source_sha256
+    description: SHA-256 of the housing table source file.
 - name: stg_nepra_load_shedding
   description: Load-shedding hours reported to NEPRA, one row per report x fiscal year x company.
   columns:
   - name: observation_id
+    description: Unique key per report, fiscal year and company.
     data_tests:
     - unique
     - not_null
+  - name: company
+    description: Company as named.
+  - name: fiscal_year
+    description: Fiscal year of the value.
+  - name: report_year
+    description: Year of the NEPRA report that lists it.
   - name: reported_hours_per_day
+    description: Average daily load-shedding hours as reported to NEPRA.
     data_tests:
     - not_null
+  - name: line
+    description: Line number in the extracted report text.
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
+  - name: fetched_at
+    description: When the source file was fetched (UTC).
 - name: stg_news_headline
   description: Load-shedding headlines, one row per story link.
   columns:
   - name: link
+    description: Story URL.
     data_tests:
     - unique
     - not_null
+  - name: outlet
+    description: Outlet.
+  - name: title
+    description: Headline as published.
+  - name: published_at
+    description: Feed publication time; may be null.
+  - name: first_seen_at
+    description: When first seen by the pipeline.
+  - name: sort_at
+    description: published_at, else first_seen_at.
+  - name: source_file
+    description: Name of the stored source file this row was parsed from.
+  - name: source_sha256
+    description: SHA-256 of the source file; joins to the source_documents seed for the effective date.
