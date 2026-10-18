@@ -2,6 +2,15 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-18 (Portfolio round: maker page, dbt docs, incremental model, README, public repo)
+- **The maker page** (`/[lang]/maker/`, new last tab) and a footer credit on every page (owner). The story is in the owner's own framing ("load shedding in my area of Islamabad"); it names no feeder as his. His details come only from his public portfolio (`azzammasood.github.io/about`) and GitHub profile. LinkedIn shows a sign-in wall and was not used beyond the link. Urdu by Claude (delegation in force), in `docs/urdu-review.md`.
+- **Freshness badge** in the masthead: the time since `meta.last_updated`, computed in the browser. Past 30 hours (the daily run plus slack) it says the data may be out of date, in text, not colour alone.
+- **dbt docs and lineage graph** are published at `<site>/dbt-docs/` by the publish job (`roshni dbt-docs`, i.e. `dbt docs generate --static`: one self-contained page about 3 MB in size). `dbt/models/overview.md` is the landing page. Column descriptions are still sparse (1 of 74 documented columns); every model has a description.
+- **`fct_planned_shutdown` is incremental** (unique key `shutdown_id`; DuckDB `delete+insert`, Databricks `merge`; new source files only). A full run and a second, incremental run both give 1,930 unique rows; dbt build PASS=157. CI still builds a fresh DuckDB file, so production runs are full builds. The incremental path matters on a persistent warehouse.
+- **Raw snapshots moved to a private repo** (owner): `azzammasood/roshni-snapshots`, branch `data-snapshots`, copied with full history (same head commit). The workflows clone it over SSH through `.github/actions/snapshot-store` with secret `SNAPSHOTS_DEPLOY_KEY`. The old branch is deleted from this repo before it goes public. A full-history scan found no secrets, and main's history never contained a PDF or XLSX. The second account's name was removed from the notes (owner).
+- **README rewritten for portfolio readers**, with screenshots (`docs/img/`, taken with headless Edge from a local build of the live data), a Mermaid architecture diagram, a "How this scales" section and `docs/case-study.md`. The old README's "AWS + Terraform reference deployment" claim is gone: no Terraform exists in the repo, so AWS appears only as a scaling design.
+- **Not done:** a video walkthrough (Claude cannot record one); the README's screenshots stand in.
+
 ## 2026-10-15 (City pages, grid popup; owner's Islamabad sources)
 - **Owner's proposed Islamabad sources:**
   - The attached `islamabad sep 2026 load management iesco.xlsx` is byte-identical (SHA-256 `f0336196…`) to `iesco-islamabad-sep26.xlsx`, which the daily snapshot has fetched from `iesco.com.pk/load-shedding` since January (HTTP 304 on every recent check). Nothing new to ingest.

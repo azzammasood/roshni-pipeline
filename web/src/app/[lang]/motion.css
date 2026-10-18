@@ -913,3 +913,12 @@ html[dir="rtl"] .maker-link:hover .maker-arrow {
 .arch-explore .maker-arrow {
   color: var(--accent);
 }
+
+/* The maker card never grows past the page on phones: one shrinkable column, long links wrap. */
+.maker-card {
+  grid-template-columns: minmax(0, 1fr);
+}
+.maker-link > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
