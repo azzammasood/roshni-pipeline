@@ -263,7 +263,7 @@ Newest first. Format: date — decision — why.
 - **HTML parsing with BeautifulSoup**; tests use small synthetic pages, not copies of third-party pages.
 
 ## 2026-10-06 (Phase 0)
-- **Remote over SSH alias `github-azzammasood`** (`git@github-azzammasood:azzammasood/roshni-pipeline.git`, key `id_ed25519`). The gh CLI is logged into azzamverse and is never used against this repo. The remote existed and was empty, so the first push was a plain push with no force.
+- **Remote over SSH alias `github-azzammasood`** (`git@github-azzammasood:azzammasood/roshni-pipeline.git`, key `id_ed25519`). The gh CLI was then logged into a different account and was not used against this repo. The remote existed and was empty, so the first push was a plain push with no force.
 - **Repo identity per repo only:** `user.name azzammasood`, `user.email ahmaduzzammasood@gmail.com`. The global config is untouched.
 - **Repo visibility: private.** If it ever goes public, add a scheduled-workflow keepalive (GitHub disables crons after about 60 days of inactivity).
 - **Owner shell: PowerShell.** All scripts stay cross-platform (Python + pathlib). `.gitattributes` forces LF.

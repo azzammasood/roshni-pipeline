@@ -1,7 +1,7 @@
 # Production pipeline after the daily snapshot: parse -> validate -> build -> report -> export ->
 # static site -> push to the public site repo (azzammasood/roshni-site, served by GitHub Pages).
-# This repo stays private; the site repo holds only the built site and is replaced on every run.
-# Inputs: schedule files and press releases from the data-snapshots branch, census tables from
+# The site repo holds only the built site and is replaced on every run.
+# Inputs: schedule files and press releases from the private snapshot store (roshni-snapshots), census tables from
 # census/ (committed, DECISIONS 2026-10-12). A failing step (e.g. a new schedule file without an
 # effective_from seed row) stops the run and the site keeps its last good version.
 name: publish
@@ -34,10 +34,10 @@ jobs:
         with:
           fetch-depth: 0 # the review commit is rebased onto main before pushing
 
-      - name: Check out data-snapshots into ./store
-        run: |
-          git fetch --depth=1 origin data-snapshots:data-snapshots
-          git worktree add store data-snapshots
+      - name: Check out the snapshot store (private repo) into ./store
+        uses: ./.github/actions/snapshot-store
+        with:
+          deploy-key: ${{ secrets.SNAPSHOTS_DEPLOY_KEY }}
 
       - uses: astral-sh/setup-uv@v6
         with:
