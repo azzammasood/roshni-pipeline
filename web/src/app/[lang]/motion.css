@@ -650,3 +650,256 @@ html[dir="rtl"] .hour-scale {
 .hour-matrix thead th:not(.sticky) {
   position: relative;
 }
+
+/* Freshness badge in the masthead strip (components/Freshness.tsx). */
+.freshness {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.freshness-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--wire);
+  box-shadow: 0 0 6px var(--wire);
+}
+.freshness.is-stale {
+  color: #ffb4ab;
+}
+.freshness.is-stale .freshness-dot {
+  background: transparent;
+  border: 1.5px solid #ffb4ab;
+  box-shadow: none;
+}
+
+/* Maker page (app/[lang]/maker): a night-edition panel in both themes. */
+.maker-night {
+  --bg: var(--sky);
+  --ink: var(--sky-ink);
+  --muted: var(--sky-muted);
+  --line: var(--sky-line);
+  --accent: var(--wire);
+  position: relative;
+  overflow: hidden;
+  background: var(--sky);
+  color: var(--sky-ink);
+  padding: 2.5rem 1.25rem 3rem;
+}
+@media (min-width: 40rem) {
+  .maker-night {
+    padding: 3.5rem 3rem 4rem;
+  }
+}
+.maker-sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.maker-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 999px;
+  background: #ece7dc;
+  opacity: 0.55;
+}
+.maker-bulb .bulb-glass {
+  fill-opacity: 0.95;
+}
+.maker-bulb .bulb-rays {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .maker-star {
+    animation: twinkle 3.2s ease-in-out infinite;
+    animation-delay: calc(var(--s) * -0.37s);
+  }
+  .maker-bulb .bulb-glass {
+    animation: bulb-flicker 2.6s linear infinite;
+  }
+  .maker-bulb .bulb-rays {
+    animation: bulb-rays 2.6s ease-out infinite;
+  }
+}
+@keyframes twinkle {
+  50% { opacity: 0.1; }
+}
+
+/* The story hangs on a wire down the inline-start edge; current fills it as chapters light. */
+.story-line {
+  position: relative;
+  margin-top: 3rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 3.5rem;
+  max-width: 44rem;
+}
+.story-line::before,
+.story-line::after {
+  content: "";
+  position: absolute;
+  inset-block: 1.5rem 2rem;
+  inset-inline-start: 1.1rem;
+  width: 2px;
+  background: var(--sky-line);
+}
+.story-line::after {
+  background: var(--wire);
+  box-shadow: 0 0 8px var(--wire);
+  transform-origin: top;
+  transform: scaleY(var(--progress, 1));
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.story-chapter {
+  position: relative;
+  padding-inline-start: 3.5rem;
+  opacity: 0.45;
+  transition: opacity 0.6s ease;
+}
+.story-chapter.is-lit {
+  opacity: 1;
+}
+.story-lamp {
+  position: absolute;
+  inset-inline-start: 0;
+  top: -0.2rem;
+  width: 2.3rem;
+  height: 2.75rem;
+  color: var(--sky-muted);
+}
+.story-lamp svg {
+  width: 100%;
+  height: 100%;
+}
+.story-lamp .bulb-glass {
+  fill-opacity: 0.08;
+  transition: fill-opacity 0.4s ease;
+}
+.story-chapter.is-lit .story-lamp {
+  color: var(--sky-ink);
+}
+.story-chapter.is-lit .story-lamp .bulb-glass {
+  fill-opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .story-chapter.is-lit .story-lamp .bulb-glass {
+    animation: bulb-on 0.9s linear;
+  }
+  .story-chapter.is-lit .story-lamp .bulb-rays {
+    animation: bulb-rays 0.9s ease-out;
+  }
+  .story-chapter.is-lit .story-title {
+    animation: word-glow 1.1s ease-out;
+  }
+}
+.story-kicker {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--wire);
+}
+html[lang="ur"] .story-kicker {
+  font-family: var(--font-urdu), serif;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+}
+.story-title {
+  font-size: clamp(1.7rem, 4.5vw, 2.6rem);
+  margin-top: 0.25rem;
+}
+.story-body {
+  margin-top: 0.6rem;
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: var(--sky-ink);
+  max-width: 38rem;
+}
+html[lang="ur"] .story-body {
+  line-height: 2.2;
+}
+.story-finale .story-title {
+  color: var(--wire);
+}
+
+/* The maker's schedule card: a feeder card turned business card. */
+.maker-card {
+  border: 2px solid var(--ink);
+  background: var(--surface);
+  display: grid;
+  gap: 0;
+}
+.maker-card > * {
+  padding: 1.25rem;
+}
+@media (min-width: 40rem) {
+  .maker-card > * {
+    padding: 1.5rem 2rem;
+  }
+}
+.maker-card-head {
+  border-block-end: 2px solid var(--ink);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 22px, color-mix(in srgb, var(--line) 60%, transparent) 22px 23px),
+    var(--surface);
+}
+.maker-quote {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+  line-height: 1.3;
+  border-block-end: 1px solid var(--line);
+  text-align: start;
+}
+.maker-rows {
+  display: grid;
+}
+.maker-row {
+  display: grid;
+  gap: 0.25rem 1.5rem;
+  padding-block: 0.75rem;
+  border-block-end: 1px dashed var(--line);
+}
+@media (min-width: 40rem) {
+  .maker-row {
+    grid-template-columns: 10rem minmax(0, 1fr);
+    align-items: baseline;
+  }
+}
+.maker-links {
+  display: grid;
+  gap: 0.75rem;
+  background: var(--sky);
+  color: var(--sky-ink);
+  --ink: var(--sky-ink);
+  --muted: var(--sky-muted);
+  --accent: var(--wire);
+  --line: var(--sky-line);
+}
+.maker-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1.5px solid var(--sky-line);
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.maker-link:hover,
+.maker-link:focus-visible {
+  border-color: var(--wire);
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--wire), 0 10px 24px -14px var(--wire);
+}
+.maker-arrow {
+  margin-inline-start: auto;
+  color: var(--wire);
+  transition: translate 0.2s ease;
+}
+.maker-link:hover .maker-arrow {
+  translate: 4px 0;
+}
+html[dir="rtl"] .maker-link:hover .maker-arrow {
+  translate: -4px 0;
+}

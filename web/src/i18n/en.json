@@ -23,7 +23,14 @@
       "reports": "Reading NEPRA reports",
       "grid": "Drawing the grid"
     },
-    "toTop": "Back to top"
+    "toTop": "Back to top",
+    "freshness": {
+      "fresh": "Data updated {ago}",
+      "stale": "Data may be out of date: last updated {ago}",
+      "minutes": "{n} min ago",
+      "hours": "{n} h ago",
+      "days": "{n} days ago"
+    }
   },
   "nav": {
     "label": "Main",
@@ -32,14 +39,17 @@
     "equity": "Karachi schedule hours",
     "about": "About the data",
     "architecture": "How it's built",
-    "cities": "Cities"
+    "cities": "Cities",
+    "maker": "The maker"
   },
   "banner": {
     "scheduled": "Scheduled (published schedule data), not measured outages."
   },
   "footer": {
     "lastUpdated": "Data last updated",
-    "timezone": "All times are Pakistan Standard Time (Asia/Karachi, UTC+5)."
+    "timezone": "All times are Pakistan Standard Time (Asia/Karachi, UTC+5).",
+    "credit": "Built by {name}.",
+    "story": "The story behind Roshni"
   },
   "common": {
     "loading": "Loading schedule data…",
@@ -524,5 +534,53 @@
     "shutTitle": "Planned shutdowns announced for the Islamabad circle",
     "shutNote": "Maintenance shutdowns announced in IESCO's press releases, window hours added up by month. Announcements, not load shedding and not measurements.",
     "noSchedule": "Roshni has no published load-shedding schedule for {company}, so only the figures it reported to NEPRA are shown."
+  },
+  "maker": {
+    "kicker": "The maker · the story behind Roshni",
+    "title": "The night it started",
+    "intro": "Roshni began the way so many evenings do in Pakistan: in the dark.",
+    "chapters": [
+      {
+        "kicker": "I · The fan slows down",
+        "title": "The lights went out again",
+        "body": "Load shedding is part of life in my area of Islamabad. The fan slows, the Wi-Fi drops, the street goes quiet, and everyone asks the same two questions: was this planned, and when is it coming back?"
+      },
+      {
+        "kicker": "II · Scattered answers",
+        "title": "The answers were all over the place",
+        "body": "The power companies do publish schedules, but as a spreadsheet of six alternative plans, as PDFs and as press releases on different pages, while NEPRA's yearly reports say how many hours each company reported. Nothing put them side by side, and nothing kept the history."
+      },
+      {
+        "kicker": "III · Treat it like production",
+        "title": "So I built a pipeline",
+        "body": "I'm a data engineer, so I treated it like any production data problem: collect politely every morning, parse and test every file, model it in a warehouse, match messy names across sources, and publish something anyone can read on a phone, in English and Urdu."
+      },
+      {
+        "kicker": "IV · Honest about what it knows",
+        "title": "Plans, reports and the gap between them",
+        "body": "Roshni shows schedules and reported figures, not measurements. It cannot tell you whether your feeder actually went dark. It can show what was planned, what was reported, and where the two disagree."
+      }
+    ],
+    "finale": "This page is the last lamp on the line.",
+    "cardKicker": "Schedule card · the maker",
+    "title2": "Data engineer, and the person behind Roshni",
+    "rowRole": "Role",
+    "role": "Data engineer: lakehouses, streaming pipelines and production orchestration on {clouds}",
+    "rowBased": "Based in",
+    "based": "Islamabad, Pakistan",
+    "rowExperience": "Experience",
+    "experience": "4+ years",
+    "rowRecent": "Most recently",
+    "recent": "Principal data engineer at {company}, until June 2026",
+    "rowStudied": "Studied",
+    "studied": "BS in computer engineering, {university}, 2022",
+    "rowTools": "Works with",
+    "rowOff": "Off schedule",
+    "off": "Reading about data engineering, entering competitions and, once in a blue moon, making music on {platform}",
+    "ctaTitle": "Say hello",
+    "linkPortfolio": "Portfolio",
+    "linkGithub": "GitHub",
+    "linkLinkedin": "LinkedIn",
+    "linkCode": "Roshni's code"
   }
 }
