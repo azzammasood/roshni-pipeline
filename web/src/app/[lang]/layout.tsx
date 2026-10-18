@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Intro } from "@/components/Bulb";
 import { ClockProvider, ClockToggle, NowStamp, Stamp } from "@/components/Clock";
 import { ExportText } from "@/components/ExportText";
+import { Freshness } from "@/components/Freshness";
 import { IntroSkip } from "@/components/IntroSkip";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { Logo } from "@/components/Logo";
@@ -10,8 +12,9 @@ import { Skyline } from "@/components/Skyline";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ToTop } from "@/components/ToTop";
 import { builtLocales, dirOf } from "@/i18n/config";
-import { fromExport, getDictionary } from "@/i18n/dictionaries";
+import { fill, fromExport, getDictionary } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
+import { makerName } from "@/lib/maker";
 import { BOOT_SCRIPT } from "@/lib/boot";
 import { resolveLocale } from "@/lib/locale";
 import { fontVariables } from "../fonts";
@@ -42,6 +45,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     ["karachi-equity/", dict.nav.equity],
     ["about/", dict.nav.about],
     ["architecture/", dict.nav.architecture],
+    ["maker/", dict.nav.maker],
   ] as const;
 
   return (
@@ -84,6 +88,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
                 </span>
                 <div className="w-full border-y border-line py-1 flex flex-wrap gap-x-4 gap-y-0.5 font-mono text-[11px] text-muted">
                   <NowStamp />
+                  <Freshness iso={meta.last_updated} locale={locale} t={dict.site.freshness} />
                   <span dir="ltr">PKT · UTC+5</span>
                   <p role="note" className="text-ink">
                     {dict.banner.scheduled}
@@ -111,6 +116,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
                 </p>
                 <p>{dict.footer.timezone}</p>
                 <ExportText as="p" value={fromExport(meta.data.disclaimer, locale)} />
+                <p className="pt-2 text-sky-ink">
+                  {fill(dict.footer.credit, { name: makerName(locale) }, locale)}{" "}
+                  <Link prefetch={false} href={`/${locale}/maker/`} className="link">
+                    {dict.footer.story}
+                  </Link>
+                </p>
               </div>
             </div>
           </footer>

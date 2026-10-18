@@ -11,6 +11,10 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/architectu
 
 /** Public repository the daily publish job writes the site to. */
 const SITE_REPO = "https://github.com/azzammasood/roshni-site";
+/** The pipeline's source (public from 2026-10-18). */
+const CODE_REPO = "https://github.com/azzammasood/roshni-pipeline";
+/** dbt docs page the publish job writes next to the site (a static file, not a Next.js route). */
+const DBT_DOCS = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/dbt-docs/`;
 
 // Tool names are proper nouns and stay in Latin script in every language; the words around them
 // come from the dictionaries. Order follows the data: sources -> page.
@@ -131,6 +135,30 @@ export default async function Architecture({ params }: PageProps<"/[lang]/archit
         <p className="text-sm text-muted">
           {t.todayNote} <Stamp iso={meta.last_updated} />
         </p>
+      </section>
+
+      <section aria-labelledby="explore" className="rule pt-4 space-y-3">
+        <h2 id="explore" className="headline text-2xl">
+          {t.exploreTitle}
+        </h2>
+        <ul className="grid gap-3 sm:grid-cols-2 max-w-4xl">
+          {[
+            [t.docsLink, t.docsBody, DBT_DOCS],
+            [t.codeLink, t.codeBody, CODE_REPO],
+          ].map(([label, body, href]) => (
+            <li key={href}>
+              <a href={href} className="maker-link arch-explore" rel="noopener noreferrer" target={href === DBT_DOCS ? undefined : "_blank"}>
+                <span>
+                  <span className="block headline text-xl">{label}</span>
+                  <span className="block text-sm text-muted">{body}</span>
+                </span>
+                <span aria-hidden="true" className="maker-arrow rtl:-scale-x-100">
+                  →
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section aria-labelledby="principles" className="rule pt-4 space-y-3">

@@ -35,6 +35,8 @@ dbt/dbt_packages/
 *.xlsx
 *.png
 *.jpg
+# ...except Roshni's own README screenshots.
+!docs/img/*.png
 dbt/.user.yml
 
 # Local Claude Code preview config
