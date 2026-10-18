@@ -903,3 +903,13 @@ html[lang="ur"] .story-body {
 html[dir="rtl"] .maker-link:hover .maker-arrow {
   translate: -4px 0;
 }
+
+/* Architecture page: links to the dbt docs and the code (styled like the maker's link cards). */
+.arch-explore {
+  border-color: var(--ink);
+  background: var(--surface);
+}
+.arch-explore:hover .maker-arrow,
+.arch-explore .maker-arrow {
+  color: var(--accent);
+}

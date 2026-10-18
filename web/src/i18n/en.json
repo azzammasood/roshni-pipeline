@@ -482,7 +482,12 @@
       "Approximate matches always show their confidence and who accepted them."
     ],
     "repo": "Source of the published site:",
-    "logosNote": "Logos are trademarks of their owners, shown only to name the tools used (icons from Simple Icons, CC0). Tools without a published icon are shown as lettered tiles."
+    "logosNote": "Logos are trademarks of their owners, shown only to name the tools used (icons from Simple Icons, CC0). Tools without a published icon are shown as lettered tiles.",
+    "exploreTitle": "Look under the hood",
+    "docsLink": "dbt docs and lineage graph",
+    "docsBody": "Every model, column test and source, and the graph of how each table is built from the others.",
+    "codeLink": "The code on GitHub",
+    "codeBody": "The pipeline, the warehouse models, the tests and this site, with the decisions behind them."
   },
   "city": {
     "indexKicker": "Pakistan · eleven distribution companies",

@@ -163,6 +163,45 @@ def build(
         raise typer.Exit(1)
 
 
+@app.command("dbt-docs")
+def dbt_docs(
+    out: Path = typer.Option(None, help="Folder for index.html (default: data/dbt-docs)."),
+    db: Path = typer.Option(
+        None, help="DuckDB file for the catalog (default: data/roshni.duckdb)."
+    ),
+) -> None:
+    """dbt docs (models, columns, tests, lineage graph) as one self-contained index.html.
+
+    Run after `roshni build`: the catalog (column types, row counts) is read from the built
+    warehouse. The publish job puts the page at <site>/dbt-docs/.
+    """
+    import os
+    import shutil
+
+    from dbt.cli.main import dbtRunner
+
+    from roshni.paths import DATA_DIR, REPO_ROOT
+
+    project = REPO_ROOT / "dbt"
+    os.environ.setdefault("ROSHNI_PARSED_DIR", (DATA_DIR / "parsed").resolve().as_posix())
+    os.environ["ROSHNI_DUCKDB_PATH"] = (db or DATA_DIR / "roshni.duckdb").resolve().as_posix()
+    args = [
+        "docs",
+        "generate",
+        "--static",
+        "--project-dir",
+        str(project),
+        "--profiles-dir",
+        str(project),
+    ]
+    if not dbtRunner().invoke(args).success:
+        raise typer.Exit(1)
+    target = out or DATA_DIR / "dbt-docs"
+    target.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(project / "target" / "static_index.html", target / "index.html")
+    typer.echo(f"dbt docs -> {target / 'index.html'}")
+
+
 @app.command()
 def resolve(
     db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),

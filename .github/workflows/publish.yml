@@ -95,6 +95,8 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           ROSHNI_NARRATOR_SPEND_CAP_USD: "0.01"
       - run: uv run roshni export
+      # dbt docs (models, tests, lineage graph) as one static page, served at <site>/dbt-docs/.
+      - run: uv run roshni dbt-docs --out data/dbt-docs
 
       - uses: actions/setup-node@v4
         with:
@@ -124,6 +126,7 @@ jobs:
           # GitHub's published ed25519 host key (pinned instead of trusting ssh-keyscan).
           echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> ~/.ssh/known_hosts
           cp -r web/out site
+          mkdir -p site/dbt-docs && cp data/dbt-docs/index.html site/dbt-docs/index.html
           touch site/.nojekyll # Pages must serve _next/ (Jekyll drops underscore folders)
           printf '%s\n' "# roshni-site" "" \
             "Built static site of roshni (published load-shedding schedules, not measured outages)." \
