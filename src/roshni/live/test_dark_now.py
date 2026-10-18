@@ -3,7 +3,14 @@ from datetime import UTC, date, datetime, timedelta, timezone
 import duckdb
 import pytest
 
-from roshni.live.dark_now import LABEL, dark_now, minute_of_day, to_pkt, window_active
+from roshni.live.dark_now import (
+    LABEL,
+    MAINTENANCE_LABEL,
+    dark_now,
+    minute_of_day,
+    to_pkt,
+    window_active,
+)
 
 
 def m(hhmm: str) -> int:
@@ -73,6 +80,20 @@ def con():
         ) t(feeder_id, feeder_name_as_printed, circle_as_printed, start_utc, end_utc,
             start_local, end_local, outage_date, fetched_at, feeder_match_state)
     """)
+    c.execute("""
+        create table fct_maintenance_window as select * from (values
+          ('iesco:islamabad:000001', '000001', 'SCENARIO FEEDER', 'islamabad',
+           timestamptz '2026-10-20 04:00:00+00', timestamptz '2026-10-20 08:00:00+00', '09:00', '13:00',
+           date '2026-10-20', false, null::timestamptz),
+          ('iesco:islamabad:000001', '000001', 'SCENARIO FEEDER', 'gso',
+           timestamptz '2026-10-20 04:00:00+00', timestamptz '2026-10-20 08:00:00+00', '09:00', '13:00',
+           date '2026-10-20', true, null::timestamptz),
+          (null, null, 'NEW COLONY', 'construction',
+           timestamptz '2026-10-20 05:00:00+00', timestamptz '2026-10-20 07:00:00+00', '10:00', '12:00',
+           date '2026-10-20', false, null::timestamptz)
+        ) t(feeder_id, feeder_code, feeder_name_as_printed, item, start_utc, end_utc,
+            start_local, end_local, outage_date, repeats_circle_window, fetched_at)
+    """)
     yield c
     c.close()
 
@@ -112,3 +133,23 @@ def test_schedule_not_applied_before_effective_date(con) -> None:
     r = dark_now(con, datetime(2026, 7, 1, 23, 0))
     assert r.counts().get("daily_cycle") is None
     assert any("effective from 2026-08-05" in n for n in r.notes)
+
+
+def test_maintenance_counts_a_gso_repeat_once(con) -> None:
+    r = dark_now(con, datetime(2026, 10, 20, 11, 0))
+    maint = [x for x in r.rows if x.kind == "maintenance"]
+    assert [(x.feeder_name, x.area, x.window_local) for x in maint] == [
+        ("NEW COLONY", "construction", "10:00-12:00"),
+        ("SCENARIO FEEDER", "islamabad", "09:00-13:00"),  # the GSO repeat is left out
+    ]
+    assert all(
+        x.label == MAINTENANCE_LABEL and x.effective_from == date(2026, 10, 20) for x in maint
+    )
+    assert any("1 announced maintenance window(s)" in n for n in r.notes)
+
+
+def test_maintenance_uses_utc_bounds(con) -> None:
+    assert dark_now(con, datetime(2026, 10, 20, 8, 59)).counts().get("maintenance") is None
+    assert dark_now(con, datetime(2026, 10, 20, 9, 0)).counts().get("maintenance") == 1
+    assert dark_now(con, datetime(2026, 10, 20, 12, 59)).counts().get("maintenance") == 1
+    assert dark_now(con, datetime(2026, 10, 20, 13, 0)).counts().get("maintenance") is None

@@ -4,7 +4,12 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import type { DarkProfilesDocument, FeedersDocument, PlannedShutdownsDocument } from "@/types/v1";
+import type {
+  DarkProfilesDocument,
+  FeedersDocument,
+  MaintenanceDocument,
+  PlannedShutdownsDocument,
+} from "@/types/v1";
 import { darkNow, type IescoLevel } from "./darkNow";
 
 const ORACLE = path.join(__dirname, "..", "..", "..", "data", "oracle", "dark_now.json");
@@ -16,6 +21,7 @@ interface Case {
   rows: [string, string | null, string, string, string | null, string | null][];
   not_yet: number;
   unmatched: number;
+  unlinked: number;
 }
 
 const read = <T,>(file: string): T => JSON.parse(readFileSync(file, "utf8"));
@@ -32,6 +38,7 @@ describe.skipIf(!ready)("darkNow matches the Python oracle", () => {
     feeders: load<FeedersDocument>("feeders")?.data ?? [],
     profiles,
     shutdowns: load<PlannedShutdownsDocument>("planned_shutdowns")?.data ?? [],
+    maintenance: load<MaintenanceDocument>("maintenance")?.data ?? [],
   };
 
   it.each(cases.map((c) => [c.at_utc, c.level ?? "none", c] as const))(
@@ -45,6 +52,8 @@ describe.skipIf(!ready)("darkNow matches the Python oracle", () => {
       expect(r.notes.filter((n) => n.kind === "not_yet_effective").length).toBe(c.not_yet);
       const unmatched = r.notes.find((n) => n.kind === "unmatched_shutdowns");
       expect(unmatched?.count ?? 0).toBe(c.unmatched);
+      const unlinked = r.notes.find((n) => n.kind === "unlinked_maintenance");
+      expect(unlinked?.count ?? 0).toBe(c.unlinked);
     },
   );
 });

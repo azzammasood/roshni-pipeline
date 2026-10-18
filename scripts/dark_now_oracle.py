@@ -16,6 +16,7 @@ from roshni.paths import DATA_DIR
 
 EDGES = ("00:00", "02:04", "02:05", "05:30", "12:00", "13:59", "14:00", "22:34", "22:35", "23:59")
 TIMES = ("06:17", "09:45", "11:00", "15:30")
+MAINT_TIMES = ("08:59", "09:00", "11:30", "14:00", "16:59")
 
 
 def instants() -> list[datetime]:
@@ -25,7 +26,15 @@ def instants() -> list[datetime]:
     while d <= date(2026, 10, 8):  # planned-shutdown period
         out += [datetime.fromisoformat(f"{d}T{t}") for t in TIMES]
         d += timedelta(days=6)
+    d = date(2026, 9, 28)
+    while d <= date(2027, 3, 31):  # announced-maintenance period
+        out += [datetime.fromisoformat(f"{d}T{t}") for t in MAINT_TIMES]
+        d += timedelta(days=5)
     return out
+
+
+def _count(notes: list[str], pattern: str) -> int:
+    return next((int(m[1]) for n in notes if (m := re.match(pattern, n))), 0)
 
 
 def main() -> None:
@@ -34,9 +43,6 @@ def main() -> None:
     for i, at in enumerate(instants()):
         for level in (None, IESCO_LEVELS[i % len(IESCO_LEVELS)]):
             r = dark_now(con, at, iesco_level=level)
-            unmatched = next(
-                (int(m[1]) for n in r.notes if (m := re.match(r"(\d+) planned shutdown", n))), 0
-            )
             cases.append({
                 "at_utc": r.at_local.astimezone(UTC).isoformat().replace("+00:00", "Z"),
                 "level": level,
@@ -46,7 +52,8 @@ def main() -> None:
                     for x in r.rows
                 ],
                 "not_yet": sum(n.startswith("not applicable") for n in r.notes),
-                "unmatched": unmatched,
+                "unmatched": _count(r.notes, r"(\d+) planned shutdown"),
+                "unlinked": _count(r.notes, r"(\d+) announced maintenance"),
             })  # fmt: skip
     out = DATA_DIR / "oracle" / "dark_now.json"
     out.parent.mkdir(parents=True, exist_ok=True)

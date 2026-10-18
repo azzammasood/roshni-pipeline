@@ -1,6 +1,6 @@
 // Mirrors src/roshni/live/test_dark_now.py on the same synthetic feeders.
 import { describe, expect, it } from "vitest";
-import type { DarkProfile, Feeder, PlannedShutdown } from "@/types/v1";
+import type { DarkProfile, Feeder, MaintenanceWindow, PlannedShutdown } from "@/types/v1";
 import { darkNow, windowActive, type DarkNowData, type IescoLevel } from "./darkNow";
 
 const m = (s: string) => Number(s.slice(0, 2)) * 60 + Number(s.slice(2));
@@ -38,6 +38,12 @@ const shutdown = (s: Partial<PlannedShutdown>): PlannedShutdown => ({
   start_local: "", end_local: "", circle_as_printed: "", feeder_name_as_printed: "", feeder_id: null,
   feeder_match_state: "matched", match_confidence: null, flags: "", ...s,
 });
+const maint = (w: Partial<MaintenanceWindow>): MaintenanceWindow => ({
+  window_id: "x", item: "islamabad", feeder_id: null, feeder_code: null, feeder_name_as_printed: null,
+  grid_as_printed: null, outage_date: "2026-10-20", start_local: "09:00", end_local: "13:00",
+  start_utc: "2026-10-20T04:00:00Z", end_utc: "2026-10-20T08:00:00Z", purpose: null,
+  area_affected: null, repeats_circle_window: false, flags: "", ...w,
+});
 
 const data: DarkNowData = {
   feeders: [
@@ -53,6 +59,11 @@ const data: DarkNowData = {
   shutdowns: [
     shutdown({ feeder_id: "iesco:islamabad:000001", feeder_name_as_printed: "Scenario Feeder", circle_as_printed: "Islamabad", start_utc: "2026-10-05T03:00:00Z", end_utc: "2026-10-05T09:00:00Z", start_local: "08:00", end_local: "14:00" }),
     shutdown({ feeder_name_as_printed: "KRL", circle_as_printed: "Rawalpindi City", start_utc: "2026-10-05T02:00:00Z", end_utc: "2026-10-05T09:00:00Z", start_local: "07:00", end_local: "14:00", feeder_match_state: "unmatched" }),
+  ],
+  maintenance: [
+    maint({ feeder_id: "iesco:islamabad:000001", feeder_code: "000001", feeder_name_as_printed: "SCENARIO FEEDER" }),
+    maint({ feeder_id: "iesco:islamabad:000001", feeder_code: "000001", feeder_name_as_printed: "SCENARIO FEEDER", item: "gso", repeats_circle_window: true }),
+    maint({ feeder_name_as_printed: "NEW COLONY", item: "construction", start_utc: "2026-10-20T05:00:00Z", end_utc: "2026-10-20T07:00:00Z", start_local: "10:00", end_local: "12:00" }),
   ],
 };
 const counts = (level: IescoLevel | null, at: string) =>
@@ -84,6 +95,22 @@ describe("darkNow", () => {
     expect(r.notes).toContainEqual({ kind: "unmatched_shutdowns", count: 1 });
     expect(counts(null, "2026-10-05T13:59").planned_shutdown).toBe(2);
     expect(counts(null, "2026-10-05T14:00").planned_shutdown).toBeUndefined();
+  });
+
+  it("counts a GSO repeat of a maintenance window once", () => {
+    const r = darkNow(data, pkt("2026-10-20T11:00"));
+    expect(r.rows.filter((x) => x.kind === "maintenance").map((x) => [x.feederName, x.area, x.windowLocal])).toEqual([
+      ["NEW COLONY", "construction", "10:00-12:00"],
+      ["SCENARIO FEEDER", "islamabad", "09:00-13:00"],
+    ]);
+    expect(r.notes).toContainEqual({ kind: "unlinked_maintenance", count: 1 });
+  });
+
+  it("uses UTC bounds for maintenance", () => {
+    expect(counts(null, "2026-10-20T08:59").maintenance).toBeUndefined();
+    expect(counts(null, "2026-10-20T09:00").maintenance).toBe(1);
+    expect(counts(null, "2026-10-20T12:59").maintenance).toBe(1);
+    expect(counts(null, "2026-10-20T13:00").maintenance).toBeUndefined();
   });
 
   it("does not apply a schedule before its effective date", () => {
