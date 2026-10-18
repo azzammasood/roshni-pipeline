@@ -23,8 +23,11 @@ export function NationalPanel({
   data,
   locale,
   t,
+  plans,
 }: {
   data: National;
+  /** Hours a day each company's own published schedule plans per feeder (home page). */
+  plans?: Record<string, string>;
   locale: Locale;
   t: Dictionary["national"];
 }) {
@@ -72,6 +75,7 @@ export function NationalPanel({
 
       <figure className="m-0 space-y-4 pt-2">
         <NationalGrid
+          plans={plans}
           series={data.series}
           years={years}
           companies={companies}
@@ -103,7 +107,8 @@ export function NationalPanel({
               {fill(t.monthlyLink, { year: (data.as_of ?? "").slice(0, 4) }, locale)}
             </a>
           </p>
-          {hasZero && <p className="max-w-prose">{t.zeroNote}</p>}
+          {hasZero && <p className="max-w-prose">† {t.zeroNote}</p>}
+          {plans && Object.keys(plans).length > 0 && <p className="max-w-prose">{t.planNote}</p>}
           {flagged.length > 0 && (
             <ul className="space-y-1 text-muted">
               {flagged.map((s) => (
