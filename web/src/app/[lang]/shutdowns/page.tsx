@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { MaintenancePanel } from "@/components/MaintenancePanel";
+import { NoticesList } from "@/components/NoticesList";
 import { ShutdownNotices } from "@/components/ShutdownNotices";
 import { ShutdownTable } from "@/components/ShutdownTable";
 import { fill } from "@/i18n/dictionaries";
@@ -16,6 +18,8 @@ export default async function Shutdowns({ params }: PageProps<"/[lang]/shutdowns
   const rows = (await loadDocument("planned_shutdowns")).data;
   const dates = rows.map((r) => r.outage_date).sort();
   const { shutdowns, common, matchState, feeder, match } = dict;
+  const national = (await loadDocument("national")).data;
+  const notices = (await loadDocument("notices")).data;
   return (
     <div className="space-y-10">
       <section className="space-y-3">
@@ -29,6 +33,10 @@ export default async function Shutdowns({ params }: PageProps<"/[lang]/shutdowns
         )}
       </section>
       <ShutdownNotices locale={locale} t={{ shutdowns, matchState }} />
+      <div className="rule pt-4">
+        <MaintenancePanel data={national} locale={locale} t={dict.maintenance} />
+      </div>
+      <NoticesList notices={notices} t={dict.notices} />
       <section aria-labelledby="all-shutdowns" className="rule pt-4 space-y-4">
         <h2 id="all-shutdowns" className="headline text-3xl">
           {shutdowns.tableTitle}

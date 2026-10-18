@@ -1,0 +1,184 @@
+{
+  "$defs": {
+    "MaintenanceWindow": {
+      "additionalProperties": false,
+      "description": "One announced IESCO maintenance window (since 1.6.0). Not load shedding.",
+      "properties": {
+        "area_affected": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Area Affected"
+        },
+        "end_local": {
+          "title": "End Local",
+          "type": "string"
+        },
+        "end_utc": {
+          "format": "date-time",
+          "title": "End Utc",
+          "type": "string"
+        },
+        "feeder_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Feeder Code"
+        },
+        "feeder_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "dim_feeder id when the printed code matches",
+          "title": "Feeder Id"
+        },
+        "feeder_name_as_printed": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Feeder Name As Printed"
+        },
+        "flags": {
+          "title": "Flags",
+          "type": "string"
+        },
+        "grid_as_printed": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Grid As Printed"
+        },
+        "item": {
+          "title": "Item",
+          "type": "string"
+        },
+        "outage_date": {
+          "format": "date",
+          "title": "Outage Date",
+          "type": "string"
+        },
+        "purpose": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Purpose"
+        },
+        "repeats_circle_window": {
+          "description": "A GSO row repeating a window that a circle's file also prints",
+          "title": "Repeats Circle Window",
+          "type": "boolean"
+        },
+        "start_local": {
+          "title": "Start Local",
+          "type": "string"
+        },
+        "start_utc": {
+          "format": "date-time",
+          "title": "Start Utc",
+          "type": "string"
+        },
+        "window_id": {
+          "title": "Window Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "window_id",
+        "item",
+        "feeder_id",
+        "feeder_code",
+        "feeder_name_as_printed",
+        "grid_as_printed",
+        "outage_date",
+        "start_local",
+        "end_local",
+        "start_utc",
+        "end_utc",
+        "purpose",
+        "area_affected",
+        "repeats_circle_window",
+        "flags"
+      ],
+      "title": "MaintenanceWindow",
+      "type": "object"
+    }
+  },
+  "$id": "https://github.com/azzammasood/roshni-pipeline/schemas/v1/maintenance.json",
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "items": {
+        "$ref": "#/$defs/MaintenanceWindow"
+      },
+      "title": "Data",
+      "type": "array"
+    },
+    "generated_at": {
+      "description": "When this export was produced (UTC)",
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "label": {
+      "description": "What the numbers are: schedules, or figures reported to the regulator; never measurements",
+      "title": "Label",
+      "type": "string"
+    },
+    "last_updated": {
+      "description": "Latest source fetch or warehouse build (UTC)",
+      "format": "date-time",
+      "title": "Last Updated",
+      "type": "string"
+    },
+    "schema_id": {
+      "description": "Document type and major version, e.g. roshni/feeders/v1",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Semantic version of the document schema",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_id",
+    "schema_version",
+    "generated_at",
+    "last_updated",
+    "label",
+    "data"
+  ],
+  "title": "roshni/maintenance/v1",
+  "type": "object"
+}

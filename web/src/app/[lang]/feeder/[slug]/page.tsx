@@ -46,6 +46,7 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
   const index = await loadFeederIndex();
   const profile = index.profiles.get(feeder.feeder_id);
   const shutdowns = index.shutdowns.get(feeder.feeder_id) ?? [];
+  const maintenance = index.maintenance.get(feeder.feeder_id) ?? [];
 
   const rows: [string, string | null][] = [
     [t.source, dict.sources[feeder.source]],
@@ -234,6 +235,43 @@ export default async function FeederPage({ params }: PageProps<"/[lang]/feeder/[
                     </td>
                     <td>
                       <ReleaseLink no={s.release_no} period={s.release_period} locale={locale} t={dict.common} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollRegion>
+        </section>
+      )}
+      {maintenance.length > 0 && (
+        <section className="rule pt-4 space-y-2">
+          <h2 className="headline text-3xl">
+            {dict.maintenance.feederTitle}{" "}
+            <span className="font-mono text-base text-muted">({num(maintenance.length, locale)})</span>
+          </h2>
+          <p className="text-sm text-muted max-w-prose">{dict.maintenance.feederNote}</p>
+          <ScrollRegion label={dict.maintenance.feederTitle}>
+            <table className="data">
+              <thead>
+                <tr>
+                  <th scope="col">{dict.common.date}</th>
+                  <th scope="col">{dict.common.window}</th>
+                  <th scope="col">{dict.maintenance.purpose}</th>
+                  <th scope="col" className="hidden sm:table-cell">{dict.maintenance.area}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {maintenance.map((w) => (
+                  <tr key={w.window_id}>
+                    <td className="tabular-nums whitespace-nowrap">{w.outage_date}</td>
+                    <td>
+                      <ClockRange start={w.start_local} end={w.end_local} />
+                    </td>
+                    <td>
+                      <bdi>{w.purpose ?? "–"}</bdi>
+                    </td>
+                    <td className="hidden sm:table-cell">
+                      <bdi>{w.area_affected ?? "–"}</bdi>
                     </td>
                   </tr>
                 ))}

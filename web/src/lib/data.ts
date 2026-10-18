@@ -11,9 +11,12 @@ import type {
   DarkProfilesDocument,
   EquityDocument,
   FeedersDocument,
+  MaintenanceDocument,
+  MaintenanceWindow,
   MetaDocument,
   NationalDocument,
   NewsDocument,
+  NoticesDocument,
   PlannedShutdownsDocument,
 } from "@/types/v1";
 
@@ -26,6 +29,8 @@ type Documents = {
   equity: EquityDocument;
   national: NationalDocument;
   news: NewsDocument;
+  maintenance: MaintenanceDocument;
+  notices: NoticesDocument;
 };
 
 const DATA_DIR = path.join(process.cwd(), "public", "data", "v1");
@@ -53,16 +58,32 @@ type FeederIndex = {
   bySlug: Map<string, Feeder>;
   profiles: Map<string, DarkProfile>;
   shutdowns: Map<string, PlannedShutdown[]>;
+  /** Announced IESCO maintenance windows per feeder, in date order (since export 1.6.0). */
+  maintenance: Map<string, MaintenanceWindow[]>;
 };
 
 /** Per-feeder lookups for the ~1,700 feeder pages, built once per worker. */
 export function loadFeederIndex(): Promise<FeederIndex> {
   feederIndex ??= (async () => {
-    const [feeders, profiles, shutdowns] = await Promise.all([
+    const [feeders, profiles, shutdowns, maintenance] = await Promise.all([
       loadDocument("feeders"),
       loadDocument("dark_profiles"),
       loadDocument("planned_shutdowns"),
+      loadDocument("maintenance"),
     ]);
+    const windows = new Map<string, MaintenanceWindow[]>();
+    // A window printed in two files (GSO repeating a circle) is shown once, keeping the row
+    // that names the area affected.
+    for (const w of maintenance.data) {
+      if (!w.feeder_id) continue;
+      const list = windows.get(w.feeder_id) ?? [];
+      const same = list.findIndex(
+        (o) => o.outage_date === w.outage_date && o.start_local === w.start_local && o.end_local === w.end_local,
+      );
+      if (same < 0) list.push(w);
+      else if (!list[same].area_affected && w.area_affected) list[same] = w;
+      windows.set(w.feeder_id, list);
+    }
     const byFeeder = new Map<string, PlannedShutdown[]>();
     for (const s of shutdowns.data) {
       if (!s.feeder_id || s.feeder_match_state !== "matched") continue;
@@ -73,6 +94,7 @@ export function loadFeederIndex(): Promise<FeederIndex> {
       bySlug: slugIndex(feeders.data),
       profiles: new Map(profiles.data.map((p) => [p.feeder_id, p])),
       shutdowns: byFeeder,
+      maintenance: windows,
     };
   })();
   return feederIndex;

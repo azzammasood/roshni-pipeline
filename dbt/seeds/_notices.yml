@@ -1,0 +1,38 @@
+version: 2
+
+seeds:
+  - name: iesco_social_notices
+    description: >
+      Notices IESCO posted on its Facebook page, recorded by hand (owner, 2026-10-18).
+      facebook.com forbids automated collection, so nothing here is scraped. A person reads a post
+      and adds one row: the post's link, its date, the kind of notice, the circle and areas named,
+      the window if one is given, and a short summary in our own words (never the post's text).
+      Rules are enforced by src/roshni/export/test_notices.py.
+    config:
+      column_types:
+        notice_id: varchar
+        platform: varchar
+        posted_on: date
+        url: varchar
+        kind: varchar
+        circle: varchar
+        areas: varchar
+        window_date: date
+        start_local: varchar
+        end_local: varchar
+        summary: varchar
+        added_by: varchar
+        added_on: date
+    columns:
+      - name: notice_id
+        description: Stable id, e.g. fb-2026-10-18-1.
+        data_tests: [unique, not_null]
+      - name: url
+        description: Link to the post on facebook.com.
+        data_tests: [not_null]
+      - name: kind
+        description: maintenance, load_shedding, restoration or other.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [maintenance, load_shedding, restoration, other]

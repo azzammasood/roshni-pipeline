@@ -37,6 +37,10 @@ export interface National {
    */
   monthly_ke?: MonthlyKeSchedule[];
   /**
+   * IESCO announced maintenance per month and listing row (since 1.6.0)
+   */
+  monthly_maintenance?: MaintenanceMonth[];
+  /**
    * IESCO planned shutdowns per month (announced maintenance, not load shedding)
    */
   monthly_shutdowns?: MonthlyShutdowns[];
@@ -65,6 +69,35 @@ export interface MonthlyKeSchedule {
   effective_from: string;
   feeders: number;
   month: string;
+}
+export interface MaintenanceMonth {
+  /**
+   * Distinct feeders (code, else printed name)
+   */
+  feeders: number;
+  first_date: string;
+  /**
+   * Listing-page row: a circle, gso or construction
+   */
+  item: string;
+  last_date: string;
+  /**
+   * YYYY-MM (Asia/Karachi dates as printed)
+   */
+  month: string;
+  /**
+   * Hours of unique_windows; adds up across rows
+   */
+  unique_window_hours: number;
+  /**
+   * Windows not already printed in a circle's file (GSO repeats removed)
+   */
+  unique_windows: number;
+  /**
+   * Sum of window lengths, one per feeder window
+   */
+  window_hours: number;
+  windows: number;
 }
 export interface MonthlyShutdowns {
   circles: CircleMonth[];

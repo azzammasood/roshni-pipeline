@@ -70,6 +70,19 @@ SUITES: dict[str, list[gxe.Expectation]] = {
         gxe.ExpectColumnPairValuesAToBeGreaterThanB(column_A="end_utc", column_B="start_utc"),
         gxe.ExpectCompoundColumnsToBeUnique(column_list=["source_sha256", "seq"]),
     ],
+    "iesco_maintenance_window": [
+        *PROVENANCE,
+        gxe.ExpectColumnValuesToNotBeNull(column="outage_date"),
+        gxe.ExpectColumnValuesToNotBeNull(column="item"),
+        gxe.ExpectColumnValuesToMatchRegex(column="start_local", regex=r"^\d{2}:\d{2}$"),
+        gxe.ExpectColumnValuesToMatchRegex(column="end_local", regex=r"^\d{2}:\d{2}$"),
+        gxe.ExpectColumnPairValuesAToBeGreaterThanB(column_A="end_utc", column_B="start_utc"),
+        gxe.ExpectColumnValuesToMatchRegex(column="feeder_code", regex=r"^\d{6}$"),
+        # One row per (file, sheet row, date): a multi-date cell gives one row per date.
+        gxe.ExpectCompoundColumnsToBeUnique(
+            column_list=["source_sha256", "sheet_row", "outage_date"]
+        ),
+    ],
     "kelectric_feeder_list": [
         *PROVENANCE,
         gxe.ExpectColumnValuesToBeUnique(column="serial"),

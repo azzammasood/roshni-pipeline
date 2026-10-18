@@ -8,6 +8,8 @@ import { IESCO_RELEASES } from "@/components/ReleaseLink";
 
 /** NEPRA's list of Performance Evaluation Reports (the `nepra_per_distribution` listing page). */
 const NEPRA_REPORTS = "https://nepra.org.pk/publications/Performance%20Reports.php";
+/** IESCO's monthly maintenance-schedule listing (owner approval 2026-10-18). */
+const IESCO_MAINTENANCE = "https://iesco.com.pk/maintenance-schedule";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/about">): Promise<Metadata> {
   return { title: (await resolveLocale(params)).dict.about.title };
@@ -24,6 +26,8 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
   const national = (await loadDocument("national")).data;
   const review = (await loadDocument("equity")).data.regulator_review;
   const editions = national.reports.map((r) => r.report_year).sort();
+  const maintenanceWindows = (await loadDocument("maintenance")).data.length;
+  const noticeCount = (await loadDocument("notices")).data.length;
   const prose: [string, string][] = [
     [t.whatTitle, t.what],
     [t.levelsTitle, t.levels],
@@ -158,6 +162,30 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
                   <td>{t.orderBasis}</td>
                 </tr>
               )}
+              {maintenanceWindows > 0 && (
+                <tr>
+                  <th scope="row" className="font-normal">
+                    {t.sourceNames.iesco_maintenance}
+                  </th>
+                  <td>
+                    <a href={IESCO_MAINTENANCE} className="link" rel="noopener noreferrer" target="_blank">
+                      {fill(t.maintFile, { n: maintenanceWindows }, locale)}
+                    </a>
+                  </td>
+                  <td />
+                  <td />
+                  <td>{t.maintBasis}</td>
+                </tr>
+              )}
+              <tr>
+                <th scope="row" className="font-normal">
+                  {t.sourceNames.iesco_facebook}
+                </th>
+                <td>{fill(t.noticesFile, { n: noticeCount }, locale)}</td>
+                <td />
+                <td />
+                <td>{t.noticesBasis}</td>
+              </tr>
               <tr>
                 <th scope="row" className="font-normal">
                   {t.sourceNames.news}

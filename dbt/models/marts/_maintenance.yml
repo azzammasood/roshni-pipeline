@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: stg_iesco_maintenance_window
+    description: >
+      IESCO monthly maintenance schedules as printed, every stored version of every workbook
+      (owner approval 2026-10-18). Announced maintenance, not load shedding and not measurements.
+    columns:
+      - name: item
+        description: Listing-page row the workbook came from (a circle, gso or construction).
+        data_tests: [not_null]
+      - name: outage_date
+        description: Date of the window as printed (Asia/Karachi).
+        data_tests: [not_null]
+
+  - name: fct_maintenance_window
+    description: >
+      One row per announced IESCO maintenance window (feeder, date, time), kept from the newest
+      file that prints it, linked to dim_feeder by 6-digit code where the code is known.
+      Announcements, not load shedding and not measurements.
+    columns:
+      - name: window_id
+        description: item, feeder code (or printed name), date and local times.
+        data_tests: [not_null, unique]
+      - name: item
+        description: Listing-page row (circle, gso or construction).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [islamabad, rawalpindi_city, rawalpindi_cantt, attock, jhelum, chakwal, gso, construction]
+      - name: feeder_id
+        description: dim_feeder id when the printed code matches an IESCO feeder; null otherwise.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_feeder')
+                field: feeder_id
+      - name: window_minutes
+        description: Length of the window in minutes (end after start is checked by the parser).
+        data_tests: [not_null]
+      - name: start_local
+        description: Start time printed, HH:MM Asia/Karachi.
+      - name: end_local
+        description: End time printed, HH:MM Asia/Karachi (24:00 is midnight at the end).
+      - name: purpose
+        description: Purpose as printed, e.g. Annual Maintenance, Construction/Development Work.
+      - name: repeats_circle_window
+        description: >
+          True for a GSO row whose feeder, date and times a circle's file also prints (the same
+          window announced twice). Kept so each file's figures stay as printed.
+        data_tests: [not_null]
+      - name: flags
+        description: Parser flags (multi_date_cell, circle_shared, date_cell_time_HHMM, ...).
+
+  - name: mart_monthly_maintenance
+    description: >
+      IESCO's announced maintenance per month and listing-page row: windows, feeders and window
+      hours added up. Announcements, not load shedding and not measurements.
+    columns:
+      - name: month_item_id
+        data_tests: [not_null, unique]
+      - name: window_hours
+        description: Sum of window lengths in hours (one feeder's window counts once).
+        data_tests: [not_null]
+      - name: unique_window_hours
+        description: window_hours without GSO rows that repeat a circle's window; adds up across rows.
+        data_tests: [not_null]

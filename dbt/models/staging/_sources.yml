@@ -17,6 +17,10 @@ sources:
         description: One row per IESCO feeder x scenario level x one-hour slot.
       - name: iesco_press_release_window
         description: One row per feeder named in an IESCO planned-shutdown press release.
+      - name: iesco_maintenance_window
+        description: >
+          IESCO monthly maintenance schedules (owner approval 2026-10-18): one row per printed
+          window per stored workbook version. Announced maintenance, not load shedding.
       - name: kelectric_feeder_list
         description: K-Electric list of feeders under load shed (category, loss, IBC).
       - name: kelectric_schedule

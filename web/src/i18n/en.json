@@ -113,7 +113,7 @@
     "fyShort": "FY",
     "latestNote": "Years are fiscal years, July to June. FY {year} (July {from} to June {to}) is the newest year in NEPRA's reports; FY {next} will appear once NEPRA publishes its report (Roshni checks NEPRA's list every day).",
     "monthlyLink": "{year} so far: Roshni's own month-by-month records",
-    "zeroNote": "A 0 is the figure the company reported to NEPRA, not a measurement; NEPRA's caveat below says some companies under-report.",
+    "zeroNote": "A hatched cell marked † is a 0 the company reported to NEPRA: its own figure, not a measurement and not proof that the power stayed on. NEPRA's caveat below says some companies under-report.",
     "leadZero": "In FY {year}, {zeros} reported no load shedding to NEPRA; the other companies reported between {min} and {max} hours a day.",
     "and": "and",
     "listComma": ", ",
@@ -124,7 +124,11 @@
     "popDown": "Down {delta} h from FY {prev}",
     "popSame": "Same as FY {prev}",
     "popOpen": "Open {city} in detail",
-    "popClose": "Close"
+    "popClose": "Close",
+    "planBadge": "own schedule: {hours} h a day",
+    "planNote": "Where Roshni has a company's own published schedule, its row also shows how many hours a day that schedule plans per feeder. These are plans, not measurements. IESCO's depends on the interruption level, which it does not publish, so it is a range.",
+    "popZero": "Reported as 0 to NEPRA: the company's own figure, not a measurement.",
+    "popPlan": "Its own published schedule plans {hours} hours a day per feeder."
   },
   "monthly": {
     "kicker": "Month by month",
@@ -399,7 +403,9 @@
       "iesco_press_release": "Islamabad Electric Supply Company (IESCO): planned shutdown press releases",
       "nepra_per": "National Electric Power Regulatory Authority (NEPRA): Performance Evaluation Reports of the distribution companies",
       "nepra_ke_order": "National Electric Power Regulatory Authority (NEPRA): order on K-Electric under section 27C",
-      "news": "News headlines: Dawn, Business Recorder, The Express Tribune, Associated Press of Pakistan"
+      "news": "News headlines: Dawn, Business Recorder, The Express Tribune, Associated Press of Pakistan",
+      "iesco_maintenance": "Islamabad Electric Supply Company (IESCO): monthly maintenance schedules",
+      "iesco_facebook": "IESCO's Facebook page (notices recorded by hand)"
     },
     "nepraFile": "{n} annual reports (editions {from} to {to})",
     "nepraBasis": "Section 3.6 tables: load-shedding hours each company reported to NEPRA",
@@ -407,7 +413,11 @@
     "orderBasis": "NEPRA's analysis of K-Electric's outage data for its listed feeders; period not stated",
     "newsFile": "RSS feeds, checked every 3 hours",
     "newsBasis": "Load-shedding headlines only: headline, outlet, date and link",
-    "filesCount": "{n} files"
+    "filesCount": "{n} files",
+    "maintFile": "{n} announced windows, one workbook per circle",
+    "maintBasis": "The dates and times printed in each workbook",
+    "noticesFile": "{n} notices recorded",
+    "noticesBasis": "Read and recorded by hand with a link to each post (Facebook forbids automated collection)"
   },
   "sources": {
     "iesco": "IESCO",
@@ -588,5 +598,44 @@
     "linkGithub": "GitHub",
     "linkLinkedin": "LinkedIn",
     "linkCode": "Roshni's code"
+  },
+  "maintenance": {
+    "kicker": "IESCO · monthly maintenance schedules",
+    "title": "Announced maintenance shutdowns",
+    "titleFor": "Announced maintenance: {circle}",
+    "lead": "{windows} shutdown windows announced, {hours} feeder-hours in all, from {from} to {to}.",
+    "note": "From IESCO's monthly maintenance schedules: each row is a feeder switched off for maintenance or construction on a date and time. These are announced plans, not load shedding and not measurements. Hours add up each feeder's window.",
+    "tableLabel": "IESCO announced maintenance, window hours by circle and month",
+    "item": "Circle",
+    "cellTitle": "{windows} windows on {feeders} feeders",
+    "hours": "{h} h",
+    "source": "Source: IESCO maintenance schedules (iesco.com.pk/maintenance-schedule), checked daily. Files cover the dates they print, which can run past the month in their title.",
+    "items": {
+      "islamabad": "Islamabad",
+      "rawalpindi_city": "Rawalpindi City",
+      "rawalpindi_cantt": "Rawalpindi Cantt",
+      "attock": "Attock",
+      "jhelum": "Jhelum",
+      "chakwal": "Chakwal",
+      "gso": "Grid stations (GSO)",
+      "construction": "Construction shutdowns"
+    },
+    "feederTitle": "Announced maintenance",
+    "feederNote": "Windows when IESCO's monthly maintenance schedule plans to switch this feeder off. A plan, not a measurement.",
+    "purpose": "Purpose",
+    "area": "Area affected",
+    "repeats": "The grid-station (GSO) file repeats {n} windows that circle files also list; totals across all rows count each once."
+  },
+  "notices": {
+    "kicker": "IESCO on Facebook · recorded by hand",
+    "title": "Notices IESCO posted",
+    "note": "Facebook does not allow automated collection, so these notices are read and recorded by hand. Each links to IESCO's post; the summary is Roshni's, not IESCO's words.",
+    "open": "Open the post",
+    "kinds": {
+      "maintenance": "Maintenance",
+      "load_shedding": "Load shedding",
+      "restoration": "Power restored",
+      "other": "Notice"
+    }
   }
 }

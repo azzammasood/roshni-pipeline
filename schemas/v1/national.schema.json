@@ -25,6 +25,68 @@
       "title": "CircleMonth",
       "type": "object"
     },
+    "MaintenanceMonth": {
+      "additionalProperties": false,
+      "properties": {
+        "feeders": {
+          "description": "Distinct feeders (code, else printed name)",
+          "title": "Feeders",
+          "type": "integer"
+        },
+        "first_date": {
+          "format": "date",
+          "title": "First Date",
+          "type": "string"
+        },
+        "item": {
+          "description": "Listing-page row: a circle, gso or construction",
+          "title": "Item",
+          "type": "string"
+        },
+        "last_date": {
+          "format": "date",
+          "title": "Last Date",
+          "type": "string"
+        },
+        "month": {
+          "description": "YYYY-MM (Asia/Karachi dates as printed)",
+          "title": "Month",
+          "type": "string"
+        },
+        "unique_window_hours": {
+          "description": "Hours of unique_windows; adds up across rows",
+          "title": "Unique Window Hours",
+          "type": "number"
+        },
+        "unique_windows": {
+          "description": "Windows not already printed in a circle's file (GSO repeats removed)",
+          "title": "Unique Windows",
+          "type": "integer"
+        },
+        "window_hours": {
+          "description": "Sum of window lengths, one per feeder window",
+          "title": "Window Hours",
+          "type": "number"
+        },
+        "windows": {
+          "title": "Windows",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "month",
+        "item",
+        "windows",
+        "feeders",
+        "window_hours",
+        "unique_windows",
+        "unique_window_hours",
+        "first_date",
+        "last_date"
+      ],
+      "title": "MaintenanceMonth",
+      "type": "object"
+    },
     "MonthlyKeSchedule": {
       "additionalProperties": false,
       "properties": {
@@ -162,6 +224,14 @@
             "$ref": "#/$defs/MonthlyKeSchedule"
           },
           "title": "Monthly Ke",
+          "type": "array"
+        },
+        "monthly_maintenance": {
+          "description": "IESCO announced maintenance per month and listing row (since 1.6.0)",
+          "items": {
+            "$ref": "#/$defs/MaintenanceMonth"
+          },
+          "title": "Monthly Maintenance",
           "type": "array"
         },
         "monthly_shutdowns": {
