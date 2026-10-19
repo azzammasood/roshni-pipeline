@@ -10,8 +10,8 @@ const dst = path.join(webDir, "fixtures", "v1");
 const load = async (d) => JSON.parse(await readFile(path.join(src, `${d}.json`), "utf8"));
 const save = (d, env) => writeFile(path.join(dst, `${d}.json`), JSON.stringify(env, null, 1) + "\n");
 
-const [meta, feeders, profiles, shutdowns, areas, equity, national, news, maintenance, notices] = await Promise.all(
-  ["meta", "feeders", "dark_profiles", "planned_shutdowns", "areas", "equity", "national", "news", "maintenance", "notices"].map(load),
+const [meta, feeders, profiles, shutdowns, areas, equity, national, news, maintenance] = await Promise.all(
+  ["meta", "feeders", "dark_profiles", "planned_shutdowns", "areas", "equity", "national", "news", "maintenance"].map(load),
 );
 const matched = shutdowns.data.filter((s) => s.feeder_match_state === "matched");
 const iescoIds = [...new Set(matched.map((s) => s.feeder_id))].sort().slice(0, 3);
@@ -44,5 +44,4 @@ await save("maintenance", {
   ...maintenance,
   data: [...maintenance.data.filter((w) => ids.has(w.feeder_id)).slice(0, 12), ...maintenance.data.filter((w) => !w.feeder_id).slice(0, 3)],
 });
-await save("notices", { ...notices, data: notices.data.slice(0, 5) });
 console.log(`fixtures: ${keepFeeders.length} feeders, ${keepShutdowns.length} shutdowns, ${keepAreas.length} areas`);

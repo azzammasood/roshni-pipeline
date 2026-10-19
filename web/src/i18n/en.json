@@ -408,8 +408,7 @@
       "nepra_per": "National Electric Power Regulatory Authority (NEPRA): Performance Evaluation Reports of the distribution companies",
       "nepra_ke_order": "National Electric Power Regulatory Authority (NEPRA): order on K-Electric under section 27C",
       "news": "News headlines: Dawn, Business Recorder, The Express Tribune, Associated Press of Pakistan",
-      "iesco_maintenance": "Islamabad Electric Supply Company (IESCO): monthly maintenance schedules",
-      "iesco_facebook": "IESCO's Facebook page (notices recorded by hand)"
+      "iesco_maintenance": "Islamabad Electric Supply Company (IESCO): monthly maintenance schedules"
     },
     "nepraFile": "{n} annual reports (editions {from} to {to})",
     "nepraBasis": "Section 3.6 tables: load-shedding hours each company reported to NEPRA",
@@ -419,9 +418,7 @@
     "newsBasis": "Load-shedding headlines only: headline, outlet, date and link",
     "filesCount": "{n} files",
     "maintFile": "{n} announced windows, one workbook per circle",
-    "maintBasis": "The dates and times printed in each workbook",
-    "noticesFile": "{n} notices recorded",
-    "noticesBasis": "Read and recorded by hand with a link to each post (Facebook forbids automated collection)"
+    "maintBasis": "The dates and times printed in each workbook"
   },
   "sources": {
     "iesco": "IESCO",
@@ -629,17 +626,5 @@
     "purpose": "Purpose",
     "area": "Area affected",
     "repeats": "The grid-station (GSO) file repeats {n} windows that circle files also list; totals across all rows count each once."
-  },
-  "notices": {
-    "kicker": "IESCO on Facebook · recorded by hand",
-    "title": "Notices IESCO posted",
-    "note": "Facebook does not allow automated collection, so these notices are read and recorded by hand. Each links to IESCO's post; the summary is Roshni's, not IESCO's words.",
-    "open": "Open the post",
-    "kinds": {
-      "maintenance": "Maintenance",
-      "load_shedding": "Load shedding",
-      "restoration": "Power restored",
-      "other": "Notice"
-    }
   }
 }

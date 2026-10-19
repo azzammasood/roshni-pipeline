@@ -8,8 +8,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 # 1.1.0: DarkProfile.daily_windows; 1.2.0: match review, release month; 1.3.0: national and news
 # documents; 1.4.0: national month-by-month series; 1.5.0: K-Electric months from every schedule
-# version (MonthlyKeSchedule.changed_in_month)
-SCHEMA_VERSION = "1.6.0"
+# version (MonthlyKeSchedule.changed_in_month); 1.6.0: maintenance (and notices) documents;
+# 1.7.0: notices document removed (the pipeline only keeps fully automated sources)
+SCHEMA_VERSION = "1.7.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -339,27 +340,6 @@ class MaintenanceWindow(Strict):
     flags: str
 
 
-class SocialNotice(Strict):
-    """A notice IESCO posted on social media, recorded by hand (since 1.6.0).
-
-    Never collected automatically (facebook.com forbids it). The summary is written in our own
-    words; the link is the source."""
-
-    notice_id: str
-    platform: Literal["facebook"]
-    posted_on: date
-    url: str
-    kind: Literal["maintenance", "load_shedding", "restoration", "other"]
-    circle: str | None
-    areas: str | None
-    window_date: date | None
-    start_local: str | None
-    end_local: str | None
-    summary: str = Field(description="Short summary in Roshni's words, not the post's text")
-    added_by: str
-    added_on: date
-
-
 class National(Strict):
     basis: str
     caveat: str
@@ -382,10 +362,6 @@ class National(Strict):
     as_of: date | None = Field(default=None, description="Karachi date of this build")
 
 
-NOTICES_LABEL = (
-    "Notices IESCO posted on social media, recorded by hand with a link to each post; "
-    "summaries are Roshni's, not IESCO's words"
-)
 NEWS_LABEL = "Headlines as published by each outlet, linked to the original; not Roshni's reporting"
 
 
@@ -407,5 +383,4 @@ DOCUMENTS: dict[str, type] = {
     "national": Envelope[National],
     "news": Envelope[list[NewsHeadline]],
     "maintenance": Envelope[list[MaintenanceWindow]],
-    "notices": Envelope[list[SocialNotice]],
 }

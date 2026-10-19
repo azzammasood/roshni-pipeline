@@ -2,6 +2,9 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-19 (Facebook notices removed: the pipeline is fully automated)
+- **The hand-recorded Facebook notices are removed** (owner: "I want the pipeline to be entirely automated"). Gone: seed `iesco_social_notices`, `mart_social_notices`, `test_notices.py`, the export document `notices` (schema 1.7.0), and the site's notices sections and About row. The seed never had a row. Options not taken: scraping facebook.com (logged-out pages are mostly behind a login wall, an account's cookies would break Meta's terms, and it contradicts the polite-client rule) and a paid scraping service. Meta's official API (Page Public Content Access, app review and business verification) stays possible later as an owner-approved source. IESCO's shutdown notices still arrive automatically through its press releases and maintenance schedules. dbt PASS=172.
+
 ## 2026-10-19 (Announced maintenance in "Scheduled now")
 - **IESCO's announced maintenance windows join dark-now** as their own kind, `maintenance`, next to the press-release planned shutdowns, in both engines (Python `roshni.live.dark_now`, browser `web/src/lib/darkNow.ts`). They are matched on UTC bounds, the outage date is the effective date, and the area is the schedule file's listing row (circle, grid stations or construction). Each row is labelled "Announced maintenance (IESCO schedule), not a measured outage". Why: the windows are dated feeder schedules, the same kind of evidence as planned shutdowns.
 - **A GSO row repeating a circle's window counts once** (`repeats_circle_window` rows are skipped). Other repeats across files stay, as printed. Windows whose feeder code is not in the feeder list are shown with the printed name, and a note gives their number.

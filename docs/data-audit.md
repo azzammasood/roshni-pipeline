@@ -152,6 +152,8 @@ Planned-shutdown windows: 1,006 matched to a feeder, 512 unmatched, 335 out of s
 
 **Overlap:** 1,174 windows appear in both the GSO file and a circle's file (same feeder code, date and times). Each file's figures stay as printed; `repeats_circle_window` marks the GSO copy, and totals across rows count each window once.
 
-## 12. IESCO Facebook notices (owner, 2026-10-18): hand-recorded only
+## 12. IESCO Facebook notices (owner, 2026-10-18; removed 2026-10-19)
+
+Removed 2026-10-19 so the pipeline has no manual inputs (DECISIONS 2026-10-19); the seed never had a row. Kept for the record:
 
 `facebook.com/robots.txt`: `User-agent: * / Disallow: /`, and it states that automated collection is prohibited without written permission. So nothing is fetched. Notices are read by a person and recorded in `dbt/seeds/iesco_social_notices.csv` (link, date, kind, circle, areas, window, a summary in our words); `src/roshni/export/test_notices.py` enforces the rules. The seed starts empty.

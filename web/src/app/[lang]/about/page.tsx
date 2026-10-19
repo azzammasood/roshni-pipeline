@@ -27,7 +27,6 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
   const review = (await loadDocument("equity")).data.regulator_review;
   const editions = national.reports.map((r) => r.report_year).sort();
   const maintenanceWindows = (await loadDocument("maintenance")).data.length;
-  const noticeCount = (await loadDocument("notices")).data.length;
   const prose: [string, string][] = [
     [t.whatTitle, t.what],
     [t.levelsTitle, t.levels],
@@ -177,15 +176,6 @@ export default async function About({ params }: PageProps<"/[lang]/about">) {
                   <td>{t.maintBasis}</td>
                 </tr>
               )}
-              <tr>
-                <th scope="row" className="font-normal">
-                  {t.sourceNames.iesco_facebook}
-                </th>
-                <td>{fill(t.noticesFile, { n: noticeCount }, locale)}</td>
-                <td />
-                <td />
-                <td>{t.noticesBasis}</td>
-              </tr>
               <tr>
                 <th scope="row" className="font-normal">
                   {t.sourceNames.news}
