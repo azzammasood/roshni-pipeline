@@ -18,6 +18,19 @@ export default async function Shutdowns({ params }: PageProps<"/[lang]/shutdowns
   const dates = rows.map((r) => r.outage_date).sort();
   const { shutdowns, common, matchState, feeder, match } = dict;
   const national = (await loadDocument("national")).data;
+  // Announced maintenance per date (GSO repeats of a circle's window once), so "today" can point to
+  // it when the press releases list nothing. Small: one entry per date.
+  const maintDays: Record<string, { windows: number; feeders: number }> = {};
+  const seen = new Map<string, Set<string>>();
+  for (const w of (await loadDocument("maintenance")).data) {
+    if (w.repeats_circle_window) continue;
+    const d = (maintDays[w.outage_date] ??= { windows: 0, feeders: 0 });
+    d.windows += 1;
+    const f = seen.get(w.outage_date) ?? new Set<string>();
+    f.add(w.feeder_code ?? w.feeder_name_as_printed ?? "");
+    seen.set(w.outage_date, f);
+    d.feeders = f.size;
+  }
   return (
     <div className="space-y-10">
       <section className="space-y-3">
@@ -30,7 +43,7 @@ export default async function Shutdowns({ params }: PageProps<"/[lang]/shutdowns
           </p>
         )}
       </section>
-      <ShutdownNotices locale={locale} t={{ shutdowns, matchState }} />
+      <ShutdownNotices locale={locale} maintDays={maintDays} t={{ shutdowns, matchState }} />
       <div className="rule pt-4">
         <MaintenancePanel data={national} locale={locale} t={dict.maintenance} />
       </div>

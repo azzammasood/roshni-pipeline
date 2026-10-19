@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { BulbArt } from "@/components/Bulb";
 import { StoryLine } from "@/components/maker/StoryLine";
-import { fill } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/lib/locale";
 import { MAKER, makerName } from "@/lib/maker";
 
@@ -14,24 +13,6 @@ export default async function Maker({ params }: PageProps<"/[lang]/maker">) {
   const { locale, dict } = await resolveLocale(params);
   const t = dict.maker;
   const name = makerName(locale);
-  const rows: [string, React.ReactNode][] = [
-    [t.rowRole, fill(t.role, { clouds: MAKER.clouds }, locale)],
-    [t.rowBased, t.based],
-    [t.rowExperience, t.experience],
-    [t.rowRecent, fill(t.recent, { company: MAKER.company }, locale)],
-    [t.rowStudied, fill(t.studied, { university: MAKER.university }, locale)],
-    [
-      t.rowTools,
-      <ul key="tools" className="flex flex-wrap gap-1.5" dir="ltr">
-        {MAKER.skills.map((s) => (
-          <li key={s} className="chip">
-            {s}
-          </li>
-        ))}
-      </ul>,
-    ],
-    [t.rowOff, fill(t.off, { platform: MAKER.platform }, locale)],
-  ];
   const links: [string, string, string][] = [
     [t.linkPortfolio, MAKER.links.portfolio, "azzammasood.github.io"],
     [t.linkGithub, MAKER.links.github, "github.com/azzammasood"],
@@ -75,14 +56,6 @@ export default async function Maker({ params }: PageProps<"/[lang]/maker">) {
         <blockquote className="maker-quote" lang="en" dir="ltr">
           “{MAKER.quote}”
         </blockquote>
-        <dl className="maker-rows">
-          {rows.map(([label, value]) => (
-            <div key={label} className="maker-row">
-              <dt className="kicker">{label}</dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
-        </dl>
         <div className="maker-links">
           <p className="headline text-2xl">{t.ctaTitle}</p>
           <ul className="grid gap-2 sm:grid-cols-2">

@@ -93,6 +93,7 @@ export function NationalPanel({
                 </span>
               ))}
             </span>
+            {hasZero && <span className="national-swatch is-nil">{t.nilCell}</span>}
             <span className="text-muted hidden sm:inline">· {t.hoverHint}</span>
           </p>
           {/* Fiscal years run July to June. The newest column is the newest year in NEPRA's
@@ -107,7 +108,7 @@ export function NationalPanel({
               {fill(t.monthlyLink, { year: (data.as_of ?? "").slice(0, 4) }, locale)}
             </a>
           </p>
-          {hasZero && <p className="max-w-prose">† {t.zeroNote}</p>}
+          {hasZero && <p className="max-w-prose">{t.zeroNote}</p>}
           {plans && Object.keys(plans).length > 0 && <p className="max-w-prose">{t.planNote}</p>}
           {flagged.length > 0 && (
             <ul className="space-y-1 text-muted">

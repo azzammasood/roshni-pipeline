@@ -13,7 +13,16 @@ import { ClockRange } from "@/components/Clock";
 const DAYS = 3;
 const PER_DAY = 6;
 
-export function ShutdownNotices({ locale, t }: { locale: string; t: Pick<Dictionary, "shutdowns" | "matchState"> }) {
+export function ShutdownNotices({
+  locale,
+  maintDays,
+  t,
+}: {
+  locale: string;
+  /** Announced maintenance windows and feeders per date (IESCO's maintenance schedules). */
+  maintDays: Record<string, { windows: number; feeders: number }>;
+  t: Pick<Dictionary, "shutdowns" | "matchState">;
+}) {
   const state = useExport(["feeders", "planned_shutdowns"] as const);
   const [today, setToday] = useState<string | null>(null);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- the clock is read in the browser only
@@ -44,6 +53,14 @@ export function ShutdownNotices({ locale, t }: { locale: string; t: Pick<Diction
       <h2 id="notices" className="headline text-3xl">
         {s.noticesTitle}
       </h2>
+      {today && maintDays[today] && (
+        <p className="max-w-prose">
+          {fill(s.maintToday, { windows: maintDays[today].windows, feeders: maintDays[today].feeders }, locale)}{" "}
+          <a href="#maintenance" className="link">
+            {s.maintTodayLink}
+          </a>
+        </p>
+      )}
       {days.length === 0 ? (
         <p>{s.noticesNone}</p>
       ) : (

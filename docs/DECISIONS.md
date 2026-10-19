@@ -2,6 +2,14 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-19 (Reported 0 as "nil reported"; pinned home nav; maker card trimmed; QA fixes)
+- **A reported 0 reads "nil reported" and sits off the colour scale** (owner chose this over showing the company's plan in the cell or a blank cell). The cell is grey and hatched with the words "nil reported", the legend has a matching swatch, and the popup still gives NEPRA's printed 0 and the plan badge. The Islamabad city page's stat tile and day ring use the same words. Why: a 0 coloured like "< 1" read as the best result on the scale, while it is the company's own claim, not a measurement.
+- **Home "On this page" bar is pinned** (`components/PageNav.tsx`): it sticks to the top while the page scrolls, marks the section in view (`aria-current`) and adds "Dark now". Headings it links to stop below it. On phones the label is hidden and the links scroll sideways. The page order is unchanged (owner).
+- **The maker card keeps only the name, quote and links** (owner: career details belong on the linked portfolio). The role, base, experience, employer, studies, tools and hobbies rows are removed.
+- **Viewer QA fixes:** the shutdowns page's "Today" section said nothing was planned when only the press releases were empty. It now gives today's announced maintenance (windows and feeders, GSO repeats once) and links to it. Unlit maker chapters were dimmed below AA (3.9:1) and are now 0.55 opacity (AA).
+- **QA notes not acted on:** "Your feeder" and "Who is dark now" are at the bottom of the page (owner kept the order). The news strip's newest headline is from 2026-07-13, and nearly all of them come from APP. A pinned IESCO feeder shows nothing until a level is chosen.
+- **Gate evidence:** axe 0 at 375 px on home, city/islamabad, shutdowns and maker, en/ur, light/dark, no horizontal scroll; vitest 556; check:i18n; check:equity en+ur; build.
+
 ## 2026-10-19 (Facebook notices removed: the pipeline is fully automated)
 - **The hand-recorded Facebook notices are removed** (owner: "I want the pipeline to be entirely automated"). Gone: seed `iesco_social_notices`, `mart_social_notices`, `test_notices.py`, the export document `notices` (schema 1.7.0), and the site's notices sections and About row. The seed never had a row. Options not taken: scraping facebook.com (logged-out pages are mostly behind a login wall, an account's cookies would break Meta's terms, and it contradicts the polite-client rule) and a paid scraping service. Meta's official API (Page Public Content Access, app review and business verification) stays possible later as an owner-approved source. IESCO's shutdown notices still arrive automatically through its press releases and maintenance schedules. dbt PASS=172.
 

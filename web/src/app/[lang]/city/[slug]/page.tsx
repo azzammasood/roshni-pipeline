@@ -99,14 +99,15 @@ export default async function City({ params }: PageProps<"/[lang]/city/[slug]">)
         </p>
         <dl className="rule grid grid-cols-2 sm:grid-cols-4 gap-x-6">
           {[
-            [n(latestRow.reported_hours_per_day), fill(t.statLatest, { year: latest }, locale)],
+            // A reported 0 reads "nil reported", as on the home grid (owner, 2026-10-19).
+            [latestRow.reported_hours_per_day === 0 ? dict.national.nilCell : n(latestRow.reported_hours_per_day), fill(t.statLatest, { year: latest }, locale)],
             [rank ? n(rank.rank) : "–", fill(t.statRank, { of: rank?.of ?? "–", year: latest }, locale)],
             [n(peak.reported_hours_per_day), fill(t.statPeak, { year: peak.fiscal_year }, locale)],
             [n(own.length), t.statYears],
           ].map(([v, label]) => (
             <div key={label} className="flex flex-col-reverse border-b border-line py-3">
               <dt className="text-sm">{label}</dt>
-              <dd className="headline text-5xl tabular-nums">{v}</dd>
+              <dd className={`headline tabular-nums ${v === dict.national.nilCell ? "text-3xl leading-tight" : "text-5xl"}`}>{v}</dd>
             </div>
           ))}
         </dl>
@@ -165,7 +166,7 @@ export default async function City({ params }: PageProps<"/[lang]/city/[slug]">)
           <DayRings
             rings={own.sort((a, b) => (a.fiscal_year < b.fiscal_year ? -1 : 1)).map((s) => ({ year: s.fiscal_year, hours: s.reported_hours_per_day }))}
             locale={locale}
-            t={{ center: t.ringsCenter, fy, hours: t.unit }}
+            t={{ center: t.ringsCenter, fy, hours: t.unit, nil: dict.national.nilCell }}
           />
         </section>
       </div>
