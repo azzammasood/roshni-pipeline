@@ -1,8 +1,9 @@
 """'Dark now': which feeders are scheduled to be without power at a given instant.
 
-Everything here is SCHEDULE data (published schedules, scenario playbooks and planned-shutdown
-announcements), never measured outages. Times: input in Asia/Karachi (UTC+5, no DST) or any
-aware datetime; recurring windows are local minutes of day; planned shutdowns are stored in UTC.
+Everything here is SCHEDULE data (published schedules, scenario playbooks, planned-shutdown
+announcements and IESCO's announced maintenance windows), never measured outages. Times: input
+in Asia/Karachi (UTC+5, no DST) or any aware datetime; recurring windows are local minutes of
+day; planned shutdowns and maintenance windows are stored in UTC.
 """
 
 from dataclasses import asdict, dataclass
@@ -12,6 +13,7 @@ import duckdb
 
 PKT = timezone(timedelta(hours=5), "Asia/Karachi")
 LABEL = "Scheduled (published schedule data), not a measured outage"
+MAINTENANCE_LABEL = "Announced maintenance (IESCO schedule), not a measured outage"
 IESCO_LEVELS = (2, 4, 6, 8, 10, 12)
 
 
@@ -45,10 +47,12 @@ class DarkRow:
     feeder_id: str | None
     feeder_name: str
     source: str  # iesco | kelectric
-    kind: str  # daily_cycle | scenario_level_N | planned_shutdown
-    area: str | None  # K-Electric IBC or IESCO circle (as printed for unmatched shutdowns)
+    kind: str  # daily_cycle | scenario_level_N | planned_shutdown | maintenance
+    # K-Electric IBC or IESCO circle (as printed for shutdowns; the schedule file's listing row,
+    # a circle, gso or construction, for maintenance)
+    area: str | None
     window_local: str  # "22:35-02:05" (Asia/Karachi)
-    effective_from: date | None
+    effective_from: date | None  # outage date for planned shutdowns and maintenance
     last_updated: datetime | None  # when the underlying source was fetched (UTC)
     label: str = LABEL
 
@@ -71,6 +75,7 @@ class DarkNow:
             "at_local": self.at_local.isoformat(),
             "iesco_level": self.iesco_level,
             "label": LABEL,
+            "labels": {"maintenance": MAINTENANCE_LABEL},
             "counts": self.counts(),
             "notes": self.notes,
             "rows": [asdict(r) for r in self.rows],
@@ -157,6 +162,39 @@ def dark_now(
     if unmatched:
         notes.append(
             f"{unmatched} planned shutdown(s) name a feeder not matched to the feeder list"
+        )
+
+    # Announced maintenance: a GSO row repeating a circle file's window counts once (the circle's).
+    unlinked = 0
+    for fid, name, item, s_loc, e_loc, d, fetched in con.sql(
+        """
+        select m.feeder_id,
+               coalesce(f.feeder_name, m.feeder_name_as_printed, m.feeder_code, ''),
+               m.item, m.start_local, m.end_local, m.outage_date, m.fetched_at
+        from fct_maintenance_window as m
+        left join dim_feeder as f on f.feeder_id = m.feeder_id
+        where m.start_utc <= $at and $at < m.end_utc and not m.repeats_circle_window
+        """,
+        params={"at": at_utc},
+    ).fetchall():
+        rows.append(
+            DarkRow(
+                feeder_id=fid,
+                feeder_name=name,
+                source="iesco",
+                kind="maintenance",
+                area=item,
+                window_local=f"{s_loc}-{e_loc}",
+                effective_from=d,
+                last_updated=fetched or built,
+                label=MAINTENANCE_LABEL,
+            )
+        )
+        unlinked += fid is None
+    if unlinked:
+        notes.append(
+            f"{unlinked} announced maintenance window(s) name a feeder "
+            "not linked to the feeder list"
         )
     rows.sort(
         key=lambda r: (

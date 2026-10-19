@@ -1,6 +1,6 @@
 import { feederSlug } from "./slug";
 
-type Doc = "meta" | "feeders" | "dark_profiles" | "planned_shutdowns" | "areas" | "equity";
+type Doc = "meta" | "feeders" | "dark_profiles" | "planned_shutdowns" | "areas" | "equity" | "maintenance";
 
 /** Public URL of an export document for client-side fetches (fetch() does not add basePath). */
 export const documentUrl = (doc: Doc) =>

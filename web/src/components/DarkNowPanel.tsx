@@ -14,7 +14,7 @@ import { useClock, useClockMode } from "@/components/Clock";
 import { FeederFinder, PinnedFeeder } from "@/components/PinnedFeeder";
 import { usePin } from "@/lib/pin";
 
-type Strings = Pick<Dictionary, "home" | "common" | "matchState" | "sources" | "lead"> & {
+type Strings = Pick<Dictionary, "home" | "common" | "matchState" | "sources" | "lead" | "maintenance"> & {
   halves: { am: string; pm: string };
 };
 const PREVIEW_ROWS = 25;
@@ -27,8 +27,14 @@ const fromInput = (v: string) => new Date(`${v}:00+05:00`);
 const VALUE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** Area column: the IBC without its "IBC - " prefix, or the IESCO circle's name. */
-const areaText = (a: string | null) => (a ? (circleName(ibcName(a)) ?? a) : "");
+/** Area column: the IBC without its "IBC - " prefix, or the IESCO circle's name; for maintenance,
+ *  the schedule file's listing row (a circle, grid stations or construction). */
+const areaText = (r: DarkRow, t: Strings) =>
+  r.kind === "maintenance"
+    ? ((t.maintenance.items as Record<string, string>)[r.area ?? ""] ?? r.area ?? "")
+    : r.area
+      ? (circleName(ibcName(r.area)) ?? r.area)
+      : "";
 
 /** Time, level and search live in the URL (?at=2026-10-13T17:40&level=12&q=...), so a view can be
  *  bookmarked or shared. Read once after mount (static export: no server-side search params). */
@@ -54,6 +60,8 @@ function writeUrl(at: string | null, level: IescoLevel | null, q: string) {
 
 export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings; counts: string }) {
   const state = useExport(["feeders", "dark_profiles", "planned_shutdowns"] as const);
+  // Large; loaded on its own so the schedules above never wait for it.
+  const maint = useExport(["maintenance"] as const);
   const [chosen, setChosen] = useState<string | null>(null); // null = follow the clock
   const [now, setNow] = useState<Date | null>(null);
   const [level, setLevel] = useState<IescoLevel | null>(null);
@@ -88,13 +96,18 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
     if (state.status !== "ready" || !instant || Number.isNaN(instant.getTime())) return null;
     const { feeders, dark_profiles, planned_shutdowns } = state.data;
     return darkNow(
-      { feeders: feeders.data, profiles: dark_profiles.data, shutdowns: planned_shutdowns.data },
+      {
+        feeders: feeders.data,
+        profiles: dark_profiles.data,
+        shutdowns: planned_shutdowns.data,
+        maintenance: maint.status === "ready" ? maint.data.maintenance.data : undefined,
+      },
       instant,
       level,
     );
     // Recompute per minute, not per render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, instant && Math.floor(instant.getTime() / 60000), level]);
+  }, [state, maint, instant && Math.floor(instant.getTime() / 60000), level]);
 
   const grids = useMemo(
     () =>
@@ -107,7 +120,7 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
   const rows = (result?.rows ?? []).filter(
     (r) =>
       !q ||
-      [r.feederName, r.feederId ?? "", r.area ?? "", areaText(r.area), grids.get(r.feederId ?? "") ?? ""]
+      [r.feederName, r.feederId ?? "", r.area ?? "", areaText(r, t), grids.get(r.feederId ?? "") ?? ""]
         .join(" ")
         .toLowerCase()
         .includes(q),
@@ -115,6 +128,7 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
   const daily = rows.filter((r) => r.kind === "daily_cycle");
   const scenario = rows.filter((r) => r.kind.startsWith("scenario_level_"));
   const planned = rows.filter((r) => r.kind === "planned_shutdown");
+  const maintenance = rows.filter((r) => r.kind === "maintenance");
 
   const ready = state.status === "ready" ? state.data : null;
   const scheduled = useMemo(() => ready?.feeders.data.filter((f) => f.has_schedule) ?? [], [ready]);
@@ -133,6 +147,7 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
       ke: unique((k) => k === "daily_cycle", "kelectric"),
       keTotal,
       planned: result.rows.filter((r) => r.kind === "planned_shutdown").length,
+      maintenance: result.rows.filter((r) => r.kind === "maintenance").length,
       scenario: unique((k) => k.startsWith("scenario_level_")),
     };
   }, [result, profiles]);
@@ -172,6 +187,10 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
         >
           <Stat value={stats ? num(stats.ke, locale) : "–"} text={fill(t.lead.statKe, { total: stats ? stats.keTotal : "–", time }, locale)} />
           <Stat value={stats ? num(stats.planned, locale) : "–"} text={fill(t.lead.statPlanned, { time }, locale)} />
+          <Stat
+            value={stats && maint.status === "ready" ? num(stats.maintenance, locale) : "–"}
+            text={fill(t.lead.statMaintenance, { time }, locale)}
+          />
           {level !== null ? (
             <Stat
               value={stats ? num(stats.scenario, locale) : "–"}
@@ -252,6 +271,14 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
             <Group title={fill(t.home.groupScenario, { n: level }, locale)} rows={scenario} locale={locale} t={t} />
           )}
           <Group title={t.home.groupPlanned} rows={planned} locale={locale} t={t} />
+          <Group
+            title={t.home.groupMaintenance}
+            note={t.home.groupMaintenanceNote}
+            rows={maintenance}
+            status={maint.status}
+            locale={locale}
+            t={t}
+          />
         </>
       )}
       </section>
@@ -287,6 +314,8 @@ function noteText(n: DarkNote, t: Strings, locale: string): string {
       return t.home.noteLevel;
     case "unmatched_shutdowns":
       return fill(t.home.noteUnmatched, { n: n.count }, locale);
+    case "unlinked_maintenance":
+      return fill(t.home.noteUnlinkedMaintenance, { n: n.count }, locale);
   }
 }
 
@@ -375,15 +404,36 @@ function WhenField({
   );
 }
 
-function Group({ title, rows, locale, t }: { title: string; rows: DarkRow[]; locale: string; t: Strings }) {
+function Group({
+  title,
+  note,
+  rows,
+  status = "ready",
+  locale,
+  t,
+}: {
+  title: string;
+  note?: string;
+  rows: DarkRow[];
+  /** Load state of a document fetched apart from the schedules (maintenance). */
+  status?: "loading" | "error" | "ready";
+  locale: string;
+  t: Strings;
+}) {
   const [all, setAll] = useState(false);
   const shown = all ? rows : rows.slice(0, PREVIEW_ROWS);
   return (
     <section className="space-y-2">
       <h3 className="headline text-2xl">
-        {title} <span className="font-mono text-base text-muted">({num(rows.length, locale)})</span>
+        {title}{" "}
+        {status === "ready" && <span className="font-mono text-base text-muted">({num(rows.length, locale)})</span>}
       </h3>
-      {rows.length === 0 ? (
+      {note && <p className="text-sm text-muted max-w-prose">{note}</p>}
+      {status === "loading" ? (
+        <p className="text-muted">{t.common.loading}</p>
+      ) : status === "error" ? (
+        <p role="alert">{t.common.loadError}</p>
+      ) : rows.length === 0 ? (
         <p className="text-muted">{t.common.none}</p>
       ) : (
         <ScrollRegion label={title}>
@@ -416,7 +466,7 @@ function Group({ title, rows, locale, t }: { title: string; rows: DarkRow[]; loc
                     )}
                   </td>
                   <td>
-                    <bdi>{areaText(r.area)}</bdi>
+                    <bdi>{areaText(r, t)}</bdi>
                   </td>
                   <td className="tabular-nums whitespace-nowrap">
                     <WindowText value={r.windowLocal} />

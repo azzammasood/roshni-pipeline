@@ -1,25 +1,26 @@
 // "Scheduled dark now", computed in the browser from the static export. Port of
 // src/roshni/live/dark_now.py: same window semantics, kinds, labels and ordering, and the gate
 // test (darkNow.oracle.test.ts) checks it row for row against the Python function.
-// Everything here is SCHEDULE data, never measured outages.
-import type { DarkProfile, Feeder, PlannedShutdown } from "@/types/v1";
+// Everything here is SCHEDULE data (including IESCO's announced maintenance), never measured outages.
+import type { DarkProfile, Feeder, MaintenanceWindow, PlannedShutdown } from "@/types/v1";
 import { hhmm, karachiDate, karachiMinuteOfDay } from "./time";
 
 export const IESCO_LEVELS = [2, 4, 6, 8, 10, 12] as const;
 export type IescoLevel = (typeof IESCO_LEVELS)[number];
 
-export type DarkKind = "daily_cycle" | `scenario_level_${IescoLevel}` | "planned_shutdown";
+export type DarkKind = "daily_cycle" | "maintenance" | `scenario_level_${IescoLevel}` | "planned_shutdown";
 
 export interface DarkRow {
   feederId: string | null;
   feederName: string;
   source: "iesco" | "kelectric";
   kind: DarkKind;
-  /** K-Electric IBC or IESCO circle (as printed for planned shutdowns). */
+  /** K-Electric IBC or IESCO circle (as printed for planned shutdowns); for maintenance, the
+   *  schedule file's listing row (a circle id, gso or construction). */
   area: string | null;
   /** Local window, e.g. "22:35-02:05" (Asia/Karachi). */
   windowLocal: string;
-  /** Schedule effective date, or the outage date for a planned shutdown. */
+  /** Schedule effective date, or the outage date for a planned shutdown or maintenance. */
   effectiveFrom: string;
   matchState?: PlannedShutdown["feeder_match_state"];
 }
@@ -27,7 +28,8 @@ export interface DarkRow {
 export type DarkNote =
   | { kind: "not_yet_effective"; source: string; effectiveFrom: string }
   | { kind: "iesco_level_not_chosen" }
-  | { kind: "unmatched_shutdowns"; count: number };
+  | { kind: "unmatched_shutdowns"; count: number }
+  | { kind: "unlinked_maintenance"; count: number };
 
 export interface DarkNowResult {
   minuteOfDay: number;
@@ -41,6 +43,8 @@ export interface DarkNowData {
   feeders: Feeder[];
   profiles: DarkProfile[];
   shutdowns: PlannedShutdown[];
+  /** Announced maintenance windows (export 1.6.0); omitted while that document loads. */
+  maintenance?: MaintenanceWindow[];
 }
 
 /** Is `minute` (0..1439) inside [start, end)? end <= start wraps midnight. */
@@ -126,6 +130,25 @@ export function darkNow(
     if (s.feeder_match_state !== "matched") unmatched += 1;
   }
   if (unmatched) notes.push({ kind: "unmatched_shutdowns", count: unmatched });
+
+  // Announced maintenance: a GSO row repeating a circle file's window counts once (the circle's).
+  let unlinked = 0;
+  for (const m of data.maintenance ?? []) {
+    if (m.repeats_circle_window) continue;
+    if (!(Date.parse(m.start_utc) <= at && at < Date.parse(m.end_utc))) continue;
+    const feeder = m.feeder_id ? byId.get(m.feeder_id) : undefined;
+    rows.push({
+      feederId: m.feeder_id,
+      feederName: feeder?.name ?? m.feeder_name_as_printed ?? m.feeder_code ?? "",
+      source: "iesco",
+      kind: "maintenance",
+      area: m.item,
+      windowLocal: `${m.start_local}-${m.end_local}`,
+      effectiveFrom: m.outage_date,
+    });
+    if (!m.feeder_id) unlinked += 1;
+  }
+  if (unlinked) notes.push({ kind: "unlinked_maintenance", count: unlinked });
 
   rows.sort(
     (a, b) =>

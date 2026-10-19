@@ -44,7 +44,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <DarkNowPanel
           locale={locale}
           counts={fill(home.counts, { feeders: feeders.length, iesco, ke: feeders.length - iesco }, locale)}
-          t={{ home, common, matchState, sources, lead, halves: { am: dict.site.clock.am, pm: dict.site.clock.pm } }}
+          t={{ home, common, matchState, sources, lead, maintenance: dict.maintenance, halves: { am: dict.site.clock.am, pm: dict.site.clock.pm } }}
         />
       </div>
     </div>

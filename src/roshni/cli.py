@@ -265,7 +265,7 @@ def dark_now_cmd(
 
     import duckdb
 
-    from roshni.live.dark_now import LABEL, dark_now
+    from roshni.live.dark_now import LABEL, MAINTENANCE_LABEL, dark_now
     from roshni.paths import DATA_DIR
 
     when = datetime.fromisoformat(at) if at else datetime.now().astimezone()
@@ -280,6 +280,8 @@ def dark_now_cmd(
         typer.echo(json.dumps(result.to_dict(), default=str, indent=2))
         return
     typer.echo(f"{LABEL}\nAt {result.at_local:%Y-%m-%d %H:%M} Asia/Karachi")
+    if "maintenance" in result.counts():
+        typer.echo(f"maintenance rows: {MAINTENANCE_LABEL}")
     for kind, n in sorted(result.counts().items()):
         typer.echo(f"  {kind:22} {n:5} feeders")
     for note in result.notes:

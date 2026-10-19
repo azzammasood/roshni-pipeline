@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import type {
   DarkProfilesDocument,
   FeedersDocument,
+  MaintenanceDocument,
   PlannedShutdownsDocument,
 } from "@/types/v1";
 import { documentUrl } from "./urls";
@@ -11,6 +12,7 @@ type ClientDocs = {
   feeders: FeedersDocument;
   dark_profiles: DarkProfilesDocument;
   planned_shutdowns: PlannedShutdownsDocument;
+  maintenance: MaintenanceDocument;
 };
 
 const pending = new Map<string, Promise<unknown>>();
