@@ -138,13 +138,14 @@ export function NationalGrid({
                   {years.map((y) => {
                     const s = cell.get(`${c}|${y}`);
                     if (!s) return <td key={y} className="is-empty">–</td>;
-                    const label = fill(t.cellTitle, { company: c, year: y, hours: n(s.reported_hours_per_day) }, locale);
+                    const nil = s.reported_hours_per_day === 0;
+                    const label = fill(nil ? t.cellTitleNil : t.cellTitle, { company: c, year: y, hours: n(s.reported_hours_per_day) }, locale);
                     const isOpen = open?.cell === s;
                     return (
                       <td
                         key={y}
-                        style={zeroStyle(s.reported_hours_per_day)}
-                        className={`${y === latest ? "is-latest" : ""} ${isOpen ? "is-open" : ""}`.trim() || undefined}
+                        style={nil ? undefined : cellStyle(s.reported_hours_per_day)}
+                        className={`${y === latest ? "is-latest" : ""} ${isOpen ? "is-open" : ""} ${nil ? "is-nil" : ""}`.trim() || undefined}
                       >
                         <button
                           type="button"
@@ -154,11 +155,14 @@ export function NationalGrid({
                           aria-controls={isOpen ? popId : undefined}
                           onClick={(e) => show(s, e.currentTarget)}
                         >
-                          <span>
-                            {n(s.reported_hours_per_day)}
-                            {s.values_disagree && <sup aria-hidden="true">*</sup>}
-                            {s.reported_hours_per_day === 0 && <sup aria-hidden="true">†</sup>}
-                          </span>
+                          {nil ? (
+                            <span className="nil-label">{t.nilCell}</span>
+                          ) : (
+                            <span>
+                              {n(s.reported_hours_per_day)}
+                              {s.values_disagree && <sup aria-hidden="true">*</sup>}
+                            </span>
+                          )}
                         </button>
                       </td>
                     );
@@ -258,7 +262,7 @@ function CellPopup({
               : fill(delta > 0 ? t.popUp : t.popDown, { delta: n(Math.abs(delta)), prev: prev.fiscal_year }, locale)}
           </li>
         )}
-        {cell.reported_hours_per_day === 0 && <li>† {t.popZero}</li>}
+        {cell.reported_hours_per_day === 0 && <li>{t.popZero}</li>}
         {plan && <li>{fill(t.popPlan, { hours: plan }, locale)}</li>}
         {cell.values_disagree && (
           <li className="text-muted">
@@ -286,18 +290,6 @@ function CellPopup({
       )}
     </div>
   );
-}
-
-/** A reported 0 keeps its colour but gets a hatch, so it never reads as "no load shedding". */
-function zeroStyle(hours: number): React.CSSProperties {
-  const { background, color } = cellStyle(hours);
-  return hours === 0
-    ? {
-        backgroundColor: background,
-        color,
-        backgroundImage: "repeating-linear-gradient(135deg, rgb(20 33 61 / 0.28) 0 2px, transparent 2px 7px)",
-      }
-    : { background, color };
 }
 
 function PlanBadge({ text }: { text: string }) {

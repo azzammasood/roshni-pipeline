@@ -2,6 +2,7 @@ import { DarkNowPanel } from "@/components/DarkNowPanel";
 import { NationalPanel } from "@/components/NationalPanel";
 import { MonthlyPanel } from "@/components/MonthlyPanel";
 import { NewsStrip } from "@/components/NewsStrip";
+import { PageNav } from "@/components/PageNav";
 import { Reveal } from "@/components/Reveal";
 import { fill } from "@/i18n/dictionaries";
 import { loadDocument } from "@/lib/data";
@@ -21,17 +22,11 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     ["#monthly", home.jumpMonthly],
     ["#news", home.jumpNews],
     ["#lead", home.jumpFeeder],
+    ["#listings", home.jumpNow],
   ];
   return (
     <div className="space-y-12">
-      <nav aria-label={home.jumpLabel} className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm border-b border-line pb-2">
-        <span className="kicker text-muted">{home.jumpLabel}</span>
-        {jump.map(([href, label]) => (
-          <a key={href} href={href} className="link">
-            {label}
-          </a>
-        ))}
-      </nav>
+      <PageNav label={home.jumpLabel} links={jump} />
       {/* The national picture first (owner, 2026-10-13), then the visitor's own feeder. */}
       <NationalPanel data={national.data} locale={locale} t={dict.national} plans={plans} />
       <Reveal>

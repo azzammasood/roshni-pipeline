@@ -387,6 +387,24 @@ html.intro-seen .intro {
   box-shadow: inset 0 0 0 2px var(--ink);
   font-weight: 600;
 }
+/* A reported 0 sits off the colour scale (owner, 2026-10-19): grey hatching and the words
+   "nil reported", so it never reads as the best cell on the scale. */
+.national-grid td.is-nil,
+.national-swatch.is-nil {
+  background-color: var(--surface);
+  color: var(--muted);
+  background-image: repeating-linear-gradient(135deg, color-mix(in srgb, var(--muted) 30%, transparent) 0 2px, transparent 2px 7px);
+  outline: 1px dashed var(--line);
+  outline-offset: -1px;
+}
+.nil-label {
+  font-size: 0.65rem;
+  line-height: 1.1;
+  padding: 0.05rem 0.15rem;
+  background: var(--surface);
+  max-width: 3.2rem;
+  white-space: normal;
+}
 .national-swatch {
   display: inline-block;
   min-width: 2.6rem;
@@ -399,4 +417,59 @@ html.intro-seen .intro {
 /* Month by month: a month only partly covered by the collected records is hatched. */
 .month-partial {
   background: repeating-linear-gradient(135deg, var(--dark) 0 4px, transparent 4px 8px);
+}
+
+/* Home "On this page" bar (components/PageNav.tsx): pinned to the top while the page scrolls,
+   full-bleed once stuck, the section in view underlined in wire yellow. */
+.page-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin-inline: -1rem;
+  padding-inline: 1rem;
+  background: var(--bg);
+  border-block-end: 1px solid var(--line);
+  transition: box-shadow 0.2s ease;
+}
+.page-nav[data-stuck="true"] {
+  box-shadow: 0 8px 18px -14px rgb(0 0 0 / 0.55);
+}
+.page-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.page-nav-links {
+  display: flex;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+}
+.page-nav-links a {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 0.55rem 0.5rem;
+  border-block-end: 3px solid transparent;
+  text-decoration: none;
+}
+.page-nav-links a:hover {
+  border-block-end-color: var(--line);
+}
+.page-nav-links a[aria-current] {
+  font-weight: 600;
+  border-block-end-color: var(--wire);
+}
+.page-nav-links a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+/* On a phone the nav's aria-label names the bar; the visible label would push links off screen. */
+@media (max-width: 40rem) {
+  .page-nav-label { display: none; }
+}
+/* Headings the bar links to stop below it, not under it. */
+#national, #monthly, #news, #lead, #listings {
+  scroll-margin-top: 5.5rem; /* bar plus the kicker above each heading */
 }

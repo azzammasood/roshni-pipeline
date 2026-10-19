@@ -1,14 +1,8 @@
-// The maker's details, from his own public pages (portfolio azzammasood.github.io/about and the
-// GitHub profile, read 2026-10-18; owner asked for them on the site). Proper nouns stay Latin in
-// both languages; the words around them live in the dictionaries.
+// The maker's name, quote and links. Career details live on the linked portfolio, not here
+// (owner, 2026-10-19). The name has an Urdu form; the quote stays in English.
 export const MAKER = {
   name: { en: "Ahmad Uzzam Masood", ur: "احمد عزام مسعود" } as Record<string, string>,
-  clouds: "AWS · Azure · GCP",
-  company: "Nayatel",
-  university: "COMSATS University Islamabad",
-  platform: "Spotify",
   quote: "I design data systems that stay fast, governed, and cost-efficient at scale.",
-  skills: ["Python", "SQL", "PySpark", "dbt", "Airflow", "Kafka", "Apache Iceberg", "AWS", "Redshift", "Terraform", "Docker", "Kubernetes"],
   links: {
     portfolio: "https://azzammasood.github.io/",
     github: "https://github.com/azzammasood",

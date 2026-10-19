@@ -25,7 +25,7 @@ export function DayRings({
 }: {
   rings: { year: string; hours: number }[];
   locale: string;
-  t: { center: string; fy: string; hours: string };
+  t: { center: string; fy: string; hours: string; nil: string };
 }) {
   const [at, setAt] = useState<number | null>(null);
   const show = at ?? rings.length - 1;
@@ -74,12 +74,20 @@ export function DayRings({
         })}
         {cur && (
           <>
-            <text x={C} y={C - 10} textAnchor="middle" className="fill-ink chart-big">
-              {num(cur.hours, locale)}
-            </text>
-            <text x={C} y={C + 10} textAnchor="middle" className="fill-muted chart-tick">
-              {t.center}
-            </text>
+            {cur.hours === 0 ? (
+              <text x={C} y={C + 2} textAnchor="middle" className="fill-ink chart-tick">
+                {t.nil}
+              </text>
+            ) : (
+              <>
+                <text x={C} y={C - 10} textAnchor="middle" className="fill-ink chart-big">
+                  {num(cur.hours, locale)}
+                </text>
+                <text x={C} y={C + 10} textAnchor="middle" className="fill-muted chart-tick">
+                  {t.center}
+                </text>
+              </>
+            )}
             <text x={C} y={C + 26} textAnchor="middle" className="fill-muted chart-tick">
               {t.fy} {cur.year}
             </text>
