@@ -348,10 +348,6 @@ def build_export(
                 con, "select * from fct_maintenance_window order by outage_date, window_id"
             )
         ],
-        "notices": [
-            m.SocialNotice(**{k: r[k] for k in m.SocialNotice.model_fields})
-            for r in _rows(con, "select * from mart_social_notices order by posted_on desc")
-        ],
         "news": [
             m.NewsHeadline(**{k: r[k] for k in m.NewsHeadline.model_fields})
             for r in _rows(con, "select * from mart_news_headline order by recency")
@@ -364,8 +360,7 @@ def build_export(
         env = m.DOCUMENTS[name](
             schema_id=f"roshni/{name}/v1", schema_version=m.SCHEMA_VERSION, generated_at=now,
             last_updated=last,
-            label={"national": m.NATIONAL_LABEL, "news": m.NEWS_LABEL,
-                   "notices": m.NOTICES_LABEL}.get(name, m.LABEL),
+            label={"national": m.NATIONAL_LABEL, "news": m.NEWS_LABEL}.get(name, m.LABEL),
             data=data,
         )  # fmt: skip
         (out / f"{name}.json").write_text(env.model_dump_json(), encoding="utf-8")

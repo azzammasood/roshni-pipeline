@@ -16,7 +16,6 @@ import type {
   MetaDocument,
   NationalDocument,
   NewsDocument,
-  NoticesDocument,
   PlannedShutdownsDocument,
 } from "@/types/v1";
 
@@ -30,7 +29,6 @@ type Documents = {
   national: NationalDocument;
   news: NewsDocument;
   maintenance: MaintenanceDocument;
-  notices: NoticesDocument;
 };
 
 const DATA_DIR = path.join(process.cwd(), "public", "data", "v1");
