@@ -2,10 +2,28 @@
 // outlet, date and a link to the original only; the words are the outlet's, never Roshni's, and
 // headlines stay in the language the outlet published them in.
 import type { Dictionary } from "@/i18n/dictionaries";
+import { fill } from "@/i18n/fill";
 import { karachiDate } from "@/lib/time";
 import type { NewsHeadline } from "@/types/v1";
 
-export function NewsStrip({ items, t }: { items: NewsHeadline[]; t: Dictionary["news"] }) {
+/** A newest headline older than this reads "nothing new since", so old items never pass for fresh. */
+const QUIET_DAYS = 30;
+
+export function NewsStrip({
+  items,
+  builtAt,
+  locale,
+  t,
+}: {
+  items: NewsHeadline[];
+  /** When the export was built (UTC ISO), the reference for "how old is the newest headline". */
+  builtAt: string;
+  locale: string;
+  t: Dictionary["news"];
+}) {
+  const times = items.map((h) => h.published_at ?? h.first_seen_at).filter((w): w is string => !!w).sort();
+  const newest = times.at(-1);
+  const quiet = newest && (Date.parse(builtAt) - Date.parse(newest)) / 86_400_000 > QUIET_DAYS;
   return (
     <section aria-labelledby="news" className="space-y-3">
       <p className="kicker">{t.kicker}</p>
@@ -44,6 +62,10 @@ export function NewsStrip({ items, t }: { items: NewsHeadline[]; t: Dictionary["
           })}
         </ol>
       )}
+      <p className="text-sm max-w-prose">
+        {quiet && <strong className="font-semibold">{fill(t.quiet, { date: karachiDate(new Date(newest)) }, locale)} </strong>}
+        {t.cadence}
+      </p>
       <p className="text-sm text-muted max-w-prose">{t.note}</p>
     </section>
   );

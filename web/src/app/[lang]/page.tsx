@@ -21,7 +21,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     ["#national", home.jumpNational],
     ["#monthly", home.jumpMonthly],
     ["#news", home.jumpNews],
-    ["#lead", home.jumpFeeder],
     ["#listings", home.jumpNow],
   ];
   return (
@@ -33,7 +32,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <MonthlyPanel data={national.data} locale={locale} t={dict.monthly} />
       </Reveal>
       <Reveal>
-        <NewsStrip items={news.data} t={dict.news} />
+        <NewsStrip items={news.data} builtAt={news.generated_at} locale={locale} t={dict.news} />
       </Reveal>
       <div className="rule pt-6 scroll-mt-4">
         <DarkNowPanel

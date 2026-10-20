@@ -117,4 +117,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Maintenance + zero flag (2026-10-18, owner): new source IESCO monthly maintenance schedules (8 workbooks, 18,737 windows; export 1.6.0 maintenance + notices); reported-0 cells hatched with plan badges. Facebook notices (hand-recorded seed) removed 2026-10-19: no manual inputs, export 1.7.0.
 - Dark-now maintenance (2026-10-19): IESCO announced maintenance windows in both dark-now engines (kind `maintenance`, GSO repeats once) + home group/stat en/ur; oracle 514/514; axe 0 at 375 px. PR #21.
 - Nil + nav (2026-10-19, owner): reported 0 shown as "nil reported" off the colour scale; pinned home "On this page" bar; maker card trimmed to name, quote, links; axe 0 at 375 px.
+- My feeder tab (2026-10-20, owner): search + pin on /my-feeder/, one-feeder analysis; IESCO without a level leads with announced maintenance; news strip freshness line.
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).
