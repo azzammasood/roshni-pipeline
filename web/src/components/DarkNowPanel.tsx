@@ -11,7 +11,6 @@ import { feederHref } from "@/lib/urls";
 import { useExport } from "@/lib/useExport";
 import { ScrollRegion } from "@/components/ScrollRegion";
 import { useClock, useClockMode } from "@/components/Clock";
-import { FeederFinder, PinnedFeeder } from "@/components/PinnedFeeder";
 import { usePin } from "@/lib/pin";
 
 type Strings = Pick<Dictionary, "home" | "common" | "matchState" | "sources" | "lead" | "maintenance"> & {
@@ -156,34 +155,20 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
 
   return (
     <div className="space-y-10">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_15rem]">
-        <div className="min-w-0">
-          {pinned && result ? (
-            <PinnedFeeder
-              feeders={scheduled}
-              feeder={pinned}
-              profile={profiles.get(pinned.feeder_id)}
-              minute={result.minuteOfDay}
-              today={result.localDate}
-              level={level}
-              onLevel={setLevel}
-              locale={locale}
-              t={t}
-            />
-          ) : ready && (!pin || result) ? (
-            <FeederFinder feeders={scheduled} locale={locale} t={t} />
-          ) : (
-            <section className="space-y-3">
-              <p className="kicker">{t.lead.kicker}</p>
-              <h1 id="lead" className="headline text-[2.1rem] sm:text-5xl">{t.lead.findTitle}</h1>
-              <p className="text-muted">{state.status === "error" ? t.common.loadError : t.common.loading}</p>
-              {state.status !== "error" && <Skeleton lines={2} />}
-            </section>
-          )}
-        </div>
+      <div className="space-y-4">
+        {/* The visitor's own feeder lives on its own tab (owner, 2026-10-20); here only a pointer. */}
+        <p className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <span className="kicker">{t.lead.kicker}</span>
+          <span className="headline text-xl sm:text-2xl">
+            {pinned ? fill(t.home.yourFeederPinned, { name: pinned.name }, locale) : t.home.yourFeederNone}
+          </span>
+          <Link prefetch={false} href={`/${locale}/my-feeder/`} transitionTypes={["nav-forward"]} className="link">
+            {t.home.yourFeederOpen}
+          </Link>
+        </p>
         <aside
           aria-label={t.lead.statsLabel}
-          className="rule grid grid-cols-2 gap-x-4 lg:grid-cols-1 lg:border-t-0 lg:border-s lg:border-line lg:ps-6 content-start"
+          className="rule grid grid-cols-2 sm:grid-cols-4 gap-x-6"
         >
           <Stat value={stats ? num(stats.ke, locale) : "–"} text={fill(t.lead.statKe, { total: stats ? stats.keTotal : "–", time }, locale)} />
           <Stat value={stats ? num(stats.planned, locale) : "–"} text={fill(t.lead.statPlanned, { time }, locale)} />
@@ -197,7 +182,7 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
               text={fill(t.lead.statLevel, { n: level, time }, locale)}
             />
           ) : (
-            <p className="col-span-2 lg:col-span-1 py-3 text-sm text-muted rule-thin">{t.lead.statLevelNone}</p>
+            <p className="col-span-2 sm:col-span-1 py-3 text-sm text-muted rule-thin">{t.lead.statLevelNone}</p>
           )}
         </aside>
       </div>

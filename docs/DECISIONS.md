@@ -2,6 +2,18 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-10-20 (My feeder tab; maintenance lead for IESCO without a level; news freshness)
+- **"My feeder" is its own tab** (`/[lang]/my-feeder/`, second in the nav; owner). It has a search box and a pin (kept in this browser, as before). With a pin, the page covers that one feeder:
+  - the lead: now or next scheduled window, power line, level chips;
+  - "Coming up for this feeder": announced maintenance and matched press-release shutdowns from today on, up to 12 rows;
+  - hours a day in its schedule: per IESCO level, or K-Electric's daily total;
+  - a link to the full feeder page.
+
+  The home page keeps a one-line pointer ("Your feeder: …, Open My feeder") above the dark-now stats, now laid out as a row. The national headline becomes the home page's h1, and "Your feeder" leaves the home "On this page" bar.
+- **An IESCO feeder with no level chosen leads with its announced maintenance** (owner). The lead gives the window it is in now ("in an announced maintenance window until 14:00"), or else its next one (today or a date), or else says there is none from today on. A line says it comes from IESCO's monthly schedule, is a plan and not a measurement, and that a level shows the load-shedding schedule. GSO repeats count once. Choosing a level shows that level's schedule, as before.
+- **News freshness, findings:** the feeds are fetched on schedule. `news.yml` (every 3 h) ran 4 times on 2026-10-19 because GitHub delays and drops scheduled runs. Every fetch returned valid feeds. The outlets' general feeds simply had no load-shedding headline between 2026-10-14 (when collection began) and 2026-10-20, and the older headlines come only from the topic feeds' archives. The 2026-10-20 headlines (Dawn, Business Recorder) were published after that night's fetch; a manual news run picked them up before the morning publish.
+- **News strip says how fresh it is:** a line says the feeds are checked several times a day and the site is rebuilt every morning. When the newest headline is more than 30 days older than the build, it says "No new load-shedding headline has appeared in these outlets' feeds since {date}", so old items never pass for fresh. Options not taken: widening the filter beyond load-shedding words (a probe found mostly off-topic matches, such as "unannounced visit"), new outlets (they need owner approval) and rebuilding the site after every news run.
+
 ## 2026-10-19 (Reported 0 as "nil reported"; pinned home nav; maker card trimmed; QA fixes)
 - **A reported 0 reads "nil reported" and sits off the colour scale** (owner chose this over showing the company's plan in the cell or a blank cell). The cell is grey and hatched with the words "nil reported", the legend has a matching swatch, and the popup still gives NEPRA's printed 0 and the plan badge. The Islamabad city page's stat tile and day ring use the same words. Why: a 0 coloured like "< 1" read as the best result on the scale, while it is the company's own claim, not a measurement.
 - **Home "On this page" bar is pinned** (`components/PageNav.tsx`): it sticks to the top while the page scrolls, marks the section in view (`aria-current`) and adds "Dark now". Headings it links to stop below it. On phones the label is hidden and the links scroll sideways. The page order is unchanged (owner).

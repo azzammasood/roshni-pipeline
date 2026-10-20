@@ -1,7 +1,8 @@
 "use client";
-// Home page lead story: the visitor's pinned feeder (kept in this browser), its scheduled-dark
-// window now or next, and its day as a power line. Without a pin, the lead is a feeder finder.
+// "My feeder" lead story: the visitor's pinned feeder (kept in this browser), its scheduled-dark
+// window now or next, and its day as a power line. Without a pin, the page is a feeder finder.
 // IESCO is a scenario playbook: the lead never says which level is in force; the visitor picks one.
+// Until they do, an IESCO feeder's lead is its announced maintenance (IESCO's dated schedule).
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionaries";
@@ -12,8 +13,9 @@ import { num } from "@/lib/format";
 import { circleName, ibcName } from "@/lib/names";
 import { setPin } from "@/lib/pin";
 import { feederHref } from "@/lib/urls";
+import { parseHhmm } from "@/lib/time";
 import { hourWindows } from "@/lib/windows";
-import type { DarkProfile, Feeder } from "@/types/v1";
+import type { DarkProfile, Feeder, MaintenanceWindow } from "@/types/v1";
 import { useClock } from "@/components/Clock";
 import { PowerLine } from "@/components/PowerLine";
 import { BulbArt } from "@/components/Bulb";
@@ -36,6 +38,7 @@ export function PinnedFeeder({
   today,
   level,
   onLevel,
+  maintenance,
   locale,
   t,
 }: {
@@ -46,6 +49,8 @@ export function PinnedFeeder({
   today: string;
   level: IescoLevel | null;
   onLevel: (n: IescoLevel) => void;
+  /** This feeder's announced maintenance from today on, sorted; undefined while it loads. */
+  maintenance?: MaintenanceWindow[];
   locale: string;
   t: LeadStrings;
 }) {
@@ -61,6 +66,16 @@ export function PinnedFeeder({
   const notYet = profile && profile.effective_from > today;
   const status = windows && !notYet ? windowStatus(windows, minute) : null;
   const name = <bdi>{feeder.name}</bdi>;
+  // No level chosen for an IESCO feeder: lead with its announced maintenance instead.
+  const maintLead = iesco && level === null && !notYet && maintenance !== undefined;
+  const maintNow = maintLead
+    ? maintenance.find(
+        (w) => w.outage_date === today && parseHhmm(w.start_local) <= minute && minute < parseHhmm(w.end_local),
+      )
+    : undefined;
+  const maintNext = maintLead
+    ? maintenance.find((w) => w.outage_date > today || (w.outage_date === today && parseHhmm(w.start_local) > minute))
+    : undefined;
   const time = (m: number) => (
     <span dir="ltr" className="mark tabular-nums whitespace-nowrap">
       {clock(m % 1440)}
@@ -118,14 +133,26 @@ export function PinnedFeeder({
         )}
         {notYet
           ? rich(lead.notYet, { name, date: <span dir="ltr">{profile!.effective_from}</span> })
-          : iesco && level === null
-            ? rich(lead.pickLevel, { name })
+          : maintNow
+            ? rich(lead.maintNow, { name, end: time(parseHhmm(maintNow.end_local)) })
+            : maintNext
+              ? rich(maintNext.outage_date === today ? lead.maintNextToday : lead.maintNext, {
+                  name,
+                  date: <span dir="ltr" className="mark tabular-nums whitespace-nowrap">{maintNext.outage_date}</span>,
+                  start: time(parseHhmm(maintNext.start_local)),
+                  end: time(parseHhmm(maintNext.end_local)),
+                })
+              : maintLead
+                ? rich(lead.maintNone, { name })
+                : iesco && level === null
+                  ? rich(lead.pickLevel, { name })
             : !status
               ? rich(lead.none, { name })
               : status.active
                 ? rich(lead.darkNow, { name, end: time(status.end) })
                 : rich(lead.next, { name, start: time(status.start) })}
       </h1>
+      {maintLead && <p className="text-sm text-muted max-w-prose">{lead.maintNote}</p>}
       {status && (
         <p className="text-lg text-muted">
           {status.active
