@@ -115,6 +115,35 @@ def test_multi_date_cell_is_one_window_per_listed_date(tmp_path: Path) -> None:
     assert {w.feeder_code for w in res.rows} == {"008616"}
 
 
+def test_pd_gsc_layout(tmp_path: Path) -> None:
+    """PD GSC (listed from November 2026): two title rows, a blank row, the header on row 4 with
+    "Timing" over From/To on row 5, a column-numbering row, HHMM times and grid-only rows."""
+    rows = [
+        ["IESCO  GSC  CIRCLE  ISLAMABAD"],
+        ["SCHEDULE  OF  SHUT DOWN"],
+        [],
+        ["Sr: No.", "Name of DISCO", "Name of Circle", "Name of Divisions", "Name of Sub Divisions",
+         "Name of Grid Stations/", "Name of Feeders", "Feeders Code", "Status", "Dates (Schedule)",
+         "Timing", None, "Purpose of Shut Down", "Effected Area", "Remarks"],
+        [None] * 10 + ["From", "To"] + [None] * 3,
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        [1, "IESCO", "GSO Isd", "SS&TL Rwp", "AET", "132KV New Wah", "Wah 1", 105511, None,
+         "10-10-2026", "0800 Hrs", "1600 Hrs", "Safety", "Wah", None],
+        [2, "IESCO", "GSO Isd", "SS&TL Rwp", "AET", "132KV New Wah", None, None, None,
+         "11-10-2026", "08:00 Hrs", "17:00 Hrs", "Safety", "Wah", None],
+    ]  # fmt: skip
+    res = parse_workbook(save(tmp_path, rows), "pd_gsc")
+    (w,) = res.rows
+    assert (w.feeder_code, w.outage_date, w.start_local, w.end_local, w.grid) == (
+        "105511",
+        date(2026, 10, 10),
+        "08:00",
+        "16:00",
+        "132KV New Wah",
+    )
+    assert [q.reason for q in res.quarantine] == ["no feeder name or code"]
+
+
 def test_no_header_is_one_quarantined_sheet(tmp_path: Path) -> None:
     res = parse_workbook(save(tmp_path, [["just", "a", "table"], [1, 2, 3]]), "gso")
     assert res.rows == [] and len(res.quarantine) == 1
@@ -148,7 +177,8 @@ def test_parse_dates_refuses_mixed_text() -> None:
 @pytest.mark.parametrize(
     "cell,expected",
     [("09:00", "09:00"), (" 14:00:00", "14:00"), ("14:00 h", "14:00"), ("9.30", "09:30"),
-     ("24:00", "24:00"), ("24:30", None), ("noon", None), (None, None)],
+     ("24:00", "24:00"), ("24:30", None), ("noon", None), (None, None),
+     ("0800 Hrs", "08:00"), ("1730", "17:30"), ("800", None)],
 )  # fmt: skip
 def test_parse_time(cell, expected) -> None:
     assert parse_time(cell) == expected

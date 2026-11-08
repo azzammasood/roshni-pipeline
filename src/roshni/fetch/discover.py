@@ -1,5 +1,6 @@
 """Discover file URLs from listing pages. Each function returns Targets or raises DiscoveryError."""
 
+import dataclasses
 import re
 from dataclasses import dataclass, field
 from pathlib import PurePosixPath
@@ -34,11 +35,24 @@ def _file_stem(url: str) -> str:
     return PurePosixPath(urlsplit(url).path).stem
 
 
+def item_key_for(label: str) -> str:
+    """Item key for a listing row the config does not name yet: the label as a slug
+    ("PD GSC" -> "pd_gsc"), so a new row is fetched the day it appears."""
+    return re.sub(r"[^a-z0-9]+", "_", label.lower()).strip("_") or "unnamed"
+
+
 def iesco_xlsx_table(source: str, cfg: SourceConfig, html: str) -> list[Target]:
-    """Rows of (circle label, date label, .xlsx link). Every configured circle appears once."""
+    """Rows of (circle label, date label, .xlsx link), configured circles first.
+
+    The pipeline runs unattended (owner, 2026-11-08): a row the config does not name is fetched
+    under a key derived from its label, and a configured row that disappears is skipped, each
+    with a warning (the snapshot job turns warnings into a notice issue). Only a page with no
+    XLSX rows at all, which means the layout changed, is an error.
+    """
     circles = cfg.circles or {}
     soup = BeautifulSoup(html, "html.parser")
     found: dict[str, Target] = {}
+    warnings: list[str] = []
     for tr in soup.find_all("tr"):
         link = tr.find("a", href=re.compile(r"\.xlsx($|\?)", re.I))
         if not link:
@@ -47,19 +61,27 @@ def iesco_xlsx_table(source: str, cfg: SourceConfig, html: str) -> list[Target]:
         if not cells:
             continue
         label = cells[0]
+        circle = circles.get(label) or item_key_for(label)
         if label not in circles:
-            raise DiscoveryError(f"unknown IESCO circle label {label!r}; update config/sources.yml")
-        circle = circles[label]
+            warnings.append(f"new listing row {label!r} fetched as item {circle!r}")
         if circle in found:
-            raise DiscoveryError(f"IESCO circle {circle!r} listed twice")
+            warnings.append(f"item {circle!r} listed twice; the first row is kept")
+            continue
         date_label = cells[1] if len(cells) > 1 else ""
         found[circle] = Target(
             source, circle, urljoin(cfg.listing_url or "", link["href"]), date_label
         )
+    if not found:
+        raise DiscoveryError("no XLSX rows on the listing page (layout changed?)")
     missing = sorted(set(circles.values()) - set(found))
     if missing:
-        raise DiscoveryError(f"IESCO XLSX links missing for circles: {missing}")
-    return [found[c] for c in circles.values()]
+        warnings.append(f"configured rows not listed today, skipped: {missing}")
+    order = [c for c in circles.values() if c in found] + [
+        c for c in found if c not in circles.values()
+    ]
+    first, *rest = (found[c] for c in order)
+    # Warnings ride on the first target (the run report collects them per source).
+    return [dataclasses.replace(first, warnings=tuple(warnings)), *rest]
 
 
 def iesco_press_release_tab(source: str, cfg: SourceConfig, html: str) -> list[Target]:

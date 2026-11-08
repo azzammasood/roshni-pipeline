@@ -79,8 +79,20 @@ def snapshot(
     if summary := os.environ.get("GITHUB_STEP_SUMMARY"):
         with Path(summary).open("a", encoding="utf-8") as f:
             f.write("## Snapshot\n" + text + "\n")
+    if report.warnings:
+        _notice("snapshot", [f"- {w}" for w in report.warnings])
     if not report.ok:
         raise typer.Exit(1)
+
+
+def _notice(name: str, lines: list[str]) -> None:
+    """Something changed that the pipeline handled on its own: written to data/notices/ for the
+    workflow to post as a notice issue (the run still succeeds)."""
+    from roshni.paths import DATA_DIR
+
+    folder = DATA_DIR / "notices"
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / f"{name}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 @app.command()
@@ -104,6 +116,28 @@ def parse(
     for s in run_all(sources or DATA_SOURCES_DIR, out, snapshots, census_from):
         typer.echo(f"{s.table:30} rows={s.rows:6} quarantined={s.quarantined}")
     typer.echo(f"written to {out}")
+
+
+@app.command("effective-dates")
+def effective_dates(
+    snapshots: Path = typer.Option(..., help="Snapshot store (data-snapshots checkout)."),
+    seed: Path = typer.Option(
+        None, help="Seed to extend (default: dbt/seeds/source_documents.csv)."
+    ),
+) -> None:
+    """Add effective_from rows for new schedule file versions (automatic; never edits a row)."""
+    from roshni.parsers.effective import fill_seed
+    from roshni.paths import REPO_ROOT
+
+    added = fill_seed(snapshots, seed or REPO_ROOT / "dbt" / "seeds" / "source_documents.csv")
+    lines = [
+        f"- `{r['source']}` {r['source_file']} (`{r['source_sha256'][:12]}`): effective from "
+        f"**{r['effective_from']}**, {r['effective_basis']}"
+        for r in added
+    ]
+    typer.echo("\n".join(lines) or "no new schedule versions")
+    if lines:
+        _notice("effective-dates", ["New schedule versions, dated automatically:", *lines])
 
 
 @app.command("census-freeze")
