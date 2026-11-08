@@ -22,8 +22,8 @@ const UPCOMING = 12;
 
 export function MyFeederPanel({ locale, t }: { locale: string; t: Strings }) {
   const state = useExport(["feeders", "dark_profiles", "planned_shutdowns"] as const);
-  // About 9 MB: loaded on its own so the lead never waits for it.
-  const maint = useExport(["maintenance"] as const);
+  // Several MB: loaded on its own so the lead never waits for it.
+  const maint = useExport(["maintenance_upcoming"] as const);
   const pin = usePin();
   const [now, setNow] = useState<Date | null>(null);
   const [level, setLevel] = useState<IescoLevel | null>(null);
@@ -46,7 +46,7 @@ export function MyFeederPanel({ locale, t }: { locale: string; t: Strings }) {
   const maintenance = useMemo(
     () =>
       feeder && today && maint.status === "ready"
-        ? maint.data.maintenance.data
+        ? maint.data.maintenance_upcoming.data
             .filter((w) => w.feeder_id === feeder.feeder_id && !w.repeats_circle_window && w.outage_date >= today)
             .sort((a, b) => (a.outage_date + a.start_local).localeCompare(b.outage_date + b.start_local))
         : undefined,

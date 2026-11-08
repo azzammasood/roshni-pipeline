@@ -31,6 +31,10 @@ def utc_session(con: duckdb.DuckDBPyConnection) -> None:
     con.execute("set TimeZone = 'UTC'")
 
 
+# The browser's maintenance copy starts this many days before the build (Asia/Karachi date).
+UPCOMING_LOOKBACK_DAYS = 7
+
+
 def _rows(con, sql: str, **params) -> list[dict]:
     cur = con.execute(sql, params or None)
     cols = [d[0] for d in cur.description]
@@ -346,6 +350,16 @@ def build_export(
             m.MaintenanceWindow(**{k: r[k] for k in m.MaintenanceWindow.model_fields})
             for r in _rows(
                 con, "select * from fct_maintenance_window order by outage_date, window_id"
+            )
+        ],
+        "maintenance_upcoming": [
+            m.MaintenanceSlot(**{k: r[k] for k in m.MaintenanceSlot.model_fields})
+            for r in _rows(
+                con,
+                "select * from fct_maintenance_window where outage_date >= $since "
+                "and not repeats_circle_window "
+                "order by outage_date, window_id",
+                since=(now + timedelta(hours=5)).date() - timedelta(days=UPCOMING_LOOKBACK_DAYS),
             )
         ],
         "news": [

@@ -9,8 +9,9 @@ from pydantic import BaseModel, ConfigDict, Field
 # 1.1.0: DarkProfile.daily_windows; 1.2.0: match review, release month; 1.3.0: national and news
 # documents; 1.4.0: national month-by-month series; 1.5.0: K-Electric months from every schedule
 # version (MonthlyKeSchedule.changed_in_month); 1.6.0: maintenance (and notices) documents;
-# 1.7.0: notices document removed (the pipeline only keeps fully automated sources)
-SCHEMA_VERSION = "1.7.0"
+# 1.7.0: notices document removed (the pipeline only keeps fully automated sources);
+# 1.8.0: maintenance_upcoming, the browser's slim copy of the windows from a week back on
+SCHEMA_VERSION = "1.8.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -340,6 +341,27 @@ class MaintenanceWindow(Strict):
     flags: str
 
 
+class MaintenanceSlot(Strict):
+    """The browser's copy of an announced maintenance window (since 1.8.0): only the fields the
+    dark-now view and My feeder use, from a week before the build on, without GSO rows that
+    repeat a circle's window (the browser skips those anyway). The full document
+    `maintenance` grows with every monthly file; this one stays about the size of what is
+    announced ahead. Not load shedding."""
+
+    window_id: str
+    item: str
+    feeder_id: str | None
+    feeder_code: str | None
+    feeder_name_as_printed: str | None
+    outage_date: date
+    start_local: str
+    end_local: str
+    start_utc: datetime
+    end_utc: datetime
+    purpose: str | None
+    repeats_circle_window: bool
+
+
 class National(Strict):
     basis: str
     caveat: str
@@ -383,4 +405,5 @@ DOCUMENTS: dict[str, type] = {
     "national": Envelope[National],
     "news": Envelope[list[NewsHeadline]],
     "maintenance": Envelope[list[MaintenanceWindow]],
+    "maintenance_upcoming": Envelope[list[MaintenanceSlot]],
 }

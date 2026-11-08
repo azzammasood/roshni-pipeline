@@ -60,7 +60,7 @@ function writeUrl(at: string | null, level: IescoLevel | null, q: string) {
 export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings; counts: string }) {
   const state = useExport(["feeders", "dark_profiles", "planned_shutdowns"] as const);
   // Large; loaded on its own so the schedules above never wait for it.
-  const maint = useExport(["maintenance"] as const);
+  const maint = useExport(["maintenance_upcoming"] as const);
   const [chosen, setChosen] = useState<string | null>(null); // null = follow the clock
   const [now, setNow] = useState<Date | null>(null);
   const [level, setLevel] = useState<IescoLevel | null>(null);
@@ -99,7 +99,7 @@ export function DarkNowPanel({ locale, t, counts }: { locale: string; t: Strings
         feeders: feeders.data,
         profiles: dark_profiles.data,
         shutdowns: planned_shutdowns.data,
-        maintenance: maint.status === "ready" ? maint.data.maintenance.data : undefined,
+        maintenance: maint.status === "ready" ? maint.data.maintenance_upcoming.data : undefined,
       },
       instant,
       level,

@@ -15,7 +15,7 @@ import { setPin } from "@/lib/pin";
 import { feederHref } from "@/lib/urls";
 import { parseHhmm } from "@/lib/time";
 import { hourWindows } from "@/lib/windows";
-import type { DarkProfile, Feeder, MaintenanceWindow } from "@/types/v1";
+import type { DarkProfile, Feeder, MaintenanceSlot } from "@/types/v1";
 import { useClock } from "@/components/Clock";
 import { PowerLine } from "@/components/PowerLine";
 import { BulbArt } from "@/components/Bulb";
@@ -50,7 +50,7 @@ export function PinnedFeeder({
   level: IescoLevel | null;
   onLevel: (n: IescoLevel) => void;
   /** This feeder's announced maintenance from today on, sorted; undefined while it loads. */
-  maintenance?: MaintenanceWindow[];
+  maintenance?: MaintenanceSlot[];
   locale: string;
   t: LeadStrings;
 }) {

@@ -134,16 +134,16 @@ models:
   - name: grid
     description: Grid station as printed.
   - name: total_minutes
-    description: Total scheduled minutes a day (360 or 720).
+    description: >
+      Total scheduled minutes a day. 360 or 720 in every file so far; another total is kept and
+      flagged total_not_6_or_12_h (owner, 2026-11-08).
     data_tests:
-    - accepted_values:
+    - accepted_range:
         arguments:
-          values:
-          - 360
-          - 720
-          quote: false
+          min_value: 1
+          max_value: 1440
   - name: flags
-    description: Parser flags, such as glued_line.
+    description: Parser flags, such as glued_line or total_not_6_or_12_h.
   - name: page
     description: PDF page of the row.
   - name: source_file

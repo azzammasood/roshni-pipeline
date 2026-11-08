@@ -133,7 +133,7 @@ models:
     - accepted_range:
         arguments:
           min_value: 1
-          max_value: 720
+          max_value: 1440
   - name: effective_from
     description: Effective date of the source document, from the source_documents seed.
     data_tests:

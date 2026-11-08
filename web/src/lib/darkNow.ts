@@ -2,7 +2,7 @@
 // src/roshni/live/dark_now.py: same window semantics, kinds, labels and ordering, and the gate
 // test (darkNow.oracle.test.ts) checks it row for row against the Python function.
 // Everything here is SCHEDULE data (including IESCO's announced maintenance), never measured outages.
-import type { DarkProfile, Feeder, MaintenanceWindow, PlannedShutdown } from "@/types/v1";
+import type { DarkProfile, Feeder, MaintenanceSlot, PlannedShutdown } from "@/types/v1";
 import { hhmm, karachiDate, karachiMinuteOfDay } from "./time";
 
 export const IESCO_LEVELS = [2, 4, 6, 8, 10, 12] as const;
@@ -44,7 +44,7 @@ export interface DarkNowData {
   profiles: DarkProfile[];
   shutdowns: PlannedShutdown[];
   /** Announced maintenance windows (export 1.6.0); omitted while that document loads. */
-  maintenance?: MaintenanceWindow[];
+  maintenance?: MaintenanceSlot[];
 }
 
 /** Is `minute` (0..1439) inside [start, end)? end <= start wraps midnight. */

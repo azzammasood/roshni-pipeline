@@ -2,6 +2,20 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-08 (Resilience: one failed fetch or a changed schedule no longer freezes the site)
+- **Publish also runs after a failed snapshot** (owner). A fetch error in any one source used to skip publish entirely, so the whole site froze. The snapshot store keeps every last good file, so publish now runs unless the snapshot was cancelled. The snapshot's failure issue still reports the fetch error.
+- **K-Electric checks use physical bounds, not the hours seen so far.** The parser used to quarantine any feeder whose day did not total exactly 6 or 12 hours. Such feeders are now kept and flagged `total_not_6_or_12_h`, because a schedule with other hours would otherwise have emptied Karachi with no error. Matching bounds:
+  - GE `kelectric_schedule.total_minutes`: 0–1440 (was {360, 720});
+  - cycle number: 1–12 (was 1–4);
+  - cycle minutes: 1–1440;
+  - version average: 0–1440 (was 360–720);
+  - dbt `stg_kelectric_schedule.total_minutes`: 1–1440;
+  - dbt `fct_schedule_window.duration_minutes`: up to 1440.
+
+  Lines with other than four cycles per feeder are still quarantined: the line pattern is built for four.
+- **The browser gets a slim copy of the maintenance windows** (export 1.8.0, `maintenance_upcoming`). It has the 12 fields dark-now and My feeder use, windows from 7 days before the build on, and no GSO repeats. Today that is 14,994 rows and 5.6 MB, against 19,337 rows and 9.4 MB for the full document. The full `maintenance` document (used at build time for feeder and city pages) grows with every monthly file; the slim one stays about the size of what is announced ahead. Choosing a date more than a week back in "Scheduled now" no longer shows that day's maintenance.
+- **Gate evidence:** pytest 257 passed; GE validate passes; dbt PASS=172; vitest 556, including the oracle (514 cases, regenerated on the 2026-11-08 export); typecheck, lint, check:i18n, build and check:equity pass. Home and My feeder load `maintenance_upcoming.json` in the browser with no console errors.
+
 ## 2026-11-08 (Review gates automated: the site was 17 days out of date)
 - **What happened:** publish failed every day from 2026-10-23. K-Electric published a new schedule (`LSM-Oct-2028.pdf`, SHA-256 `df753bc6…`), and its version had no `source_documents` row, so `not_null_fct_schedule_window_effective_from` failed on 2,500 rows. From 2026-11-06 the snapshot also failed: IESCO added a ninth row, "PD GSC", to its maintenance listing, and discovery stopped on the unknown label. The site kept its 2026-10-22 build ("last updated 17 days ago"). The failure issues (#25, #28) were the only signal.
 - **New schedule versions are dated automatically** (owner: "automate both"). After parse, `roshni effective-dates` adds a seed row for every stored version of an IESCO schedule, K-Electric schedule or K-Electric feeder list that has no row. The date is the one the file states (K-Electric: "applicable from 23rd October, 2026", first page, canonical pdftotext). Otherwise it is the HTTP Last-Modified date in Asia/Karachi, the same basis as every hand-made row. Each such row says `automatic: …` in `effective_basis`. Existing rows are never changed. The publish job commits the seed with the review decisions. The not_null test stays: it now fails only if dating itself fails.
