@@ -22,7 +22,10 @@ concurrency:
 
 jobs:
   publish:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    # Also after a failed snapshot (owner, 2026-11-08): one source failing to fetch must not
+    # freeze the site; the store keeps every last good file, and the snapshot's own failure issue
+    # still reports the fetch error. Only a cancelled snapshot is skipped.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion != 'cancelled'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:

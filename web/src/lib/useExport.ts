@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type {
   DarkProfilesDocument,
   FeedersDocument,
-  MaintenanceDocument,
+  MaintenanceUpcomingDocument,
   PlannedShutdownsDocument,
 } from "@/types/v1";
 import { documentUrl } from "./urls";
@@ -12,7 +12,8 @@ type ClientDocs = {
   feeders: FeedersDocument;
   dark_profiles: DarkProfilesDocument;
   planned_shutdowns: PlannedShutdownsDocument;
-  maintenance: MaintenanceDocument;
+  // The slim copy (export 1.8.0): windows from a week before the build on.
+  maintenance_upcoming: MaintenanceUpcomingDocument;
 };
 
 const pending = new Map<string, Promise<unknown>>();

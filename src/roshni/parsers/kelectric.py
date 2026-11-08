@@ -128,16 +128,23 @@ def parse_schedule(path: Path) -> tuple[ParseResult, ParseResult]:
                     feeders.reject(prov, f"page {pno} line {lno}", line, str(e))
                     continue
                 total = sum(p[0] for p in parts)
-                if total not in (360, 720):
+                if not 0 < total <= 1440:
                     feeders.reject(
                         prov,
                         f"page {pno} line {lno}",
                         line,
-                        f"total {total} min is not 6 h or 12 h",
+                        f"total {total} min is not within a day",
                     )
                     continue
                 norm = normalise_name(name)
-                flags = "glued_line" if len(matches) > 1 else ""
+                # Every feeder so far totals 6 h or 12 h. Another total is kept and flagged
+                # (owner, 2026-11-08): dropping rows would empty Karachi if its hours change.
+                flags = ";".join(
+                    f
+                    for f in ("glued_line" if len(matches) > 1 else "",
+                              "" if total in (360, 720) else "total_not_6_or_12_h")
+                    if f
+                )  # fmt: skip
                 feeders.rows.append(
                     KeScheduleRow(
                         **prov.model_dump(),

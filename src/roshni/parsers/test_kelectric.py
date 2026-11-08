@@ -52,7 +52,9 @@ def test_schedule_glued_rows_and_validation(fake_pdf) -> None:
         "TANGA STAND": ("AIRPORT", 360, ""),
         "FOO": ("ELENDER RD", 720, "glued_line"),
         "IQBAL CENTER": ("ELENDER RD", 720, "glued_line"),
+        # Another daily total is kept and flagged, not quarantined (owner, 2026-11-08).
+        "SEVEN HOURS": ("AIRPORT", 420, "total_not_6_or_12_h"),
     }
-    assert [q.reason for q in feeders.quarantine] == ["total 420 min is not 6 h or 12 h"]
+    assert feeders.quarantine == []
     wraps = [c for c in cycles.rows if c.wraps_midnight]
     assert [(c.feeder_name_norm, c.cycle_no, c.minutes) for c in wraps] == [("BLOCK5RMU", 4, 210)]

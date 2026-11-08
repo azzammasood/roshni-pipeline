@@ -99,13 +99,15 @@ SUITES: dict[str, list[gxe.Expectation]] = {
         *PROVENANCE,
         gxe.ExpectColumnValuesToBeUnique(column="feeder_name_norm"),
         gxe.ExpectColumnValuesToNotBeNull(column="grid"),
-        gxe.ExpectColumnValuesToBeInSet(column="total_minutes", value_set=[360, 720]),
+        # Physical bounds only (owner, 2026-11-08): K-Electric changes its hours between
+        # schedules, and a new schedule must never stop the site (the 2026-08 file had 360 and 720).
+        gxe.ExpectColumnValuesToBeBetween(column="total_minutes", min_value=0, max_value=1440),
     ],
     "kelectric_schedule_cycle": [
-        gxe.ExpectColumnValuesToBeInSet(column="cycle_no", value_set=[1, 2, 3, 4]),
+        gxe.ExpectColumnValuesToBeBetween(column="cycle_no", min_value=1, max_value=12),
         gxe.ExpectColumnValuesToMatchRegex(column="start_hhmm", regex=r"^\d{4}$"),
         gxe.ExpectColumnValuesToMatchRegex(column="end_hhmm", regex=r"^\d{4}$"),
-        gxe.ExpectColumnValuesToBeBetween(column="minutes", min_value=1, max_value=720),
+        gxe.ExpectColumnValuesToBeBetween(column="minutes", min_value=1, max_value=1440),
         gxe.ExpectCompoundColumnsToBeUnique(column_list=["feeder_name_norm", "cycle_no"]),
     ],
     "nepra_load_shedding": [
@@ -141,7 +143,7 @@ SUITES: dict[str, list[gxe.Expectation]] = {
         gxe.ExpectColumnValuesToBeUnique(column="source_sha256"),
         gxe.ExpectColumnValuesToBeBetween(column="feeders", min_value=1),
         gxe.ExpectColumnValuesToBeBetween(
-            column="avg_scheduled_minutes", min_value=360, max_value=720
+            column="avg_scheduled_minutes", min_value=0, max_value=1440
         ),
     ],
     "nepra_ke_order_category": [
