@@ -621,6 +621,7 @@
       "jhelum": "Jhelum",
       "chakwal": "Chakwal",
       "gso": "Grid stations (GSO)",
+      "pd_gsc": "Grid construction (PD GSC)",
       "construction": "Construction shutdowns"
     },
     "feederTitle": "Announced maintenance",

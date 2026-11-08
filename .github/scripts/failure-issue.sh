@@ -28,9 +28,9 @@ if [ "$mode" = fail ]; then
 The **${workflow}** run failed: $run_url
 
 The live site keeps its last good version until a run succeeds. Usual causes:
-- a publisher released a new schedule file: its SHA-256 has no \`effective_from\` row in
-  \`dbt/seeds/source_documents.csv\`, so the build stops for review (by design);
-- a source site was down or changed its page layout (snapshot);
+- a source site was down or changed its page layout so much that no file could be found;
+- a data test failed (new schedule versions and new listing rows are handled automatically and
+  reported in the "Pipeline notices" issue, so a failure here is something unexpected);
 - a GitHub or network hiccup: re-run the workflow.
 
 This issue closes itself when the workflow next succeeds.

@@ -31,6 +31,7 @@ sources:
       "Jhelum": jhelum
       "Chakwal": chakwal
       "GSO": gso
+      "PD GSC": pd_gsc   # Project Director, Grid System Construction; listed from Nov 2026
       "Shutdown For Construction Work": construction
 
   iesco_press_release:

@@ -36,6 +36,7 @@ uv run roshni --help
 uv run python scripts/inventory.py   # data-sources sizes + SHA-256
 uv run roshni snapshot [--store DIR] [--only SOURCE]   # polite fetch; default store data/snapshots; --only takes patterns (news_*)
 uv run roshni parse [--snapshots data/snapshots-branch] [--census-from census]  # -> data/parsed/*.parquet + quarantine/
+uv run roshni effective-dates --snapshots STORE   # seed rows for new schedule versions (automatic)
 uv run roshni census-freeze                             # parsed census -> census/ (committed; after census-parser changes only)
 uv run roshni validate                                   # Great Expectations on data/parsed
 uv run roshni build [--command build|parse|test] [--select X]  # dbt -> data/roshni.duckdb
@@ -118,4 +119,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Dark-now maintenance (2026-10-19): IESCO announced maintenance windows in both dark-now engines (kind `maintenance`, GSO repeats once) + home group/stat en/ur; oracle 514/514; axe 0 at 375 px. PR #21.
 - Nil + nav (2026-10-19, owner): reported 0 shown as "nil reported" off the colour scale; pinned home "On this page" bar; maker card trimmed to name, quote, links; axe 0 at 375 px.
 - My feeder tab (2026-10-20, owner): search + pin on /my-feeder/, one-feeder analysis; IESCO without a level leads with announced maintenance; news strip freshness line.
+- Gates automated (2026-11-08, owner): new schedule versions dated automatically (`roshni effective-dates`, basis `automatic: …`), new IESCO listing rows fetched under a derived key; both posted to the "Pipeline notices" issue instead of stopping the run. PD GSC maintenance workbook added.
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).

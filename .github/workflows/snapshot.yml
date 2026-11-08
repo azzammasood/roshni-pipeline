@@ -15,7 +15,7 @@ on:
 
 permissions:
   contents: write
-  issues: write # failure-issue.sh
+  issues: write # failure-issue.sh, notice-issue.sh
 
 concurrency:
   group: snapshot
@@ -62,6 +62,12 @@ jobs:
               -c user.email="41898283+github-actions[bot]@users.noreply.github.com" \
               commit -q -m "snapshot: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push origin data-snapshots
+
+      - name: Post notices (new listing rows and other automatic decisions)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/notice-issue.sh "snapshot" data/notices/snapshot.md
 
       - name: Fail if the snapshot reported errors
         if: steps.snap.outputs.status != '0'

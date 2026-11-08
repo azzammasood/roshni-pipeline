@@ -9,7 +9,9 @@ import { monthLabel } from "@/lib/time";
 import type { National } from "@/types/v1";
 import { ScrollRegion } from "@/components/ScrollRegion";
 
-const ORDER = ["islamabad", "rawalpindi_city", "rawalpindi_cantt", "attock", "jhelum", "chakwal", "gso", "construction"];
+const ORDER = ["islamabad", "rawalpindi_city", "rawalpindi_cantt", "attock", "jhelum", "chakwal", "gso", "pd_gsc", "construction"];
+// A row IESCO adds later (key derived from its label) sorts after the known ones.
+const rank = (item: string) => (ORDER.includes(item) ? ORDER.indexOf(item) : ORDER.length);
 
 export function MaintenancePanel({
   data,
@@ -27,7 +29,7 @@ export function MaintenancePanel({
   const rows = data.monthly_maintenance ?? [];
   if (rows.length === 0) return null;
   const months = [...new Set(rows.map((r) => r.month))].sort();
-  const items = [...new Set(rows.map((r) => r.item))].sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b));
+  const items = [...new Set(rows.map((r) => r.item))].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
   const at = new Map(rows.map((r) => [`${r.item}|${r.month}`, r]));
   const max = Math.max(...rows.map((r) => r.window_hours), 1);
   const names = t.items as Record<string, string>;

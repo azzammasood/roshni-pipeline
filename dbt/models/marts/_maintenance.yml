@@ -63,11 +63,10 @@ models:
         description: item, feeder code (or printed name), date and local times.
         data_tests: [not_null, unique]
       - name: item
-        description: Listing-page row (circle, gso or construction).
-        data_tests:
-          - accepted_values:
-              arguments:
-                values: [islamabad, rawalpindi_city, rawalpindi_cantt, attock, jhelum, chakwal, gso, construction]
+        description: >
+          Listing-page row (circle, gso, pd_gsc or construction). A row IESCO adds later is fetched
+          under a key derived from its label (owner, 2026-11-08), so the values are not fixed.
+        data_tests: [not_null]
       - name: feeder_id
         description: dim_feeder id when the printed code matches an IESCO feeder; null otherwise.
         data_tests:

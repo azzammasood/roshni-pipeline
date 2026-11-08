@@ -2,8 +2,9 @@ version: 2
 seeds:
 - name: source_documents
   description: 'One row per known source document version (by SHA-256) with its effective date and the
-    basis for that date. A new file version without a row here fails the effective_from tests, which is
-    the signal to review a republished schedule.
+    basis for that date. Rows for new versions are added by the publish job (roshni effective-dates,
+    owner 2026-11-08): the date the file states, else its HTTP Last-Modified, with an "automatic:" basis.
+    Rows already here are never changed.
 
     '
   config:

@@ -13,8 +13,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # commits review decisions (dbt/seeds) back to main
-  issues: write # failure-issue.sh
+  contents: write # commits review decisions and effective dates (dbt/seeds) back to main
+  issues: write # failure-issue.sh, notice-issue.sh
 
 concurrency:
   group: publish
@@ -61,6 +61,13 @@ jobs:
           restore-keys: pdftext-
 
       - run: uv run roshni parse --snapshots store --census-from census
+      # A new schedule version gets its effective_from row automatically (owner, 2026-11-08):
+      # the date the file states, else its HTTP Last-Modified. Committed with the review seeds.
+      - run: uv run roshni effective-dates --snapshots store
+      - name: Post notices (new schedule versions dated automatically)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/notice-issue.sh "publish" data/notices/effective-dates.md
       - run: uv run roshni validate
       - run: uv run roshni build
       # New press-release names get candidates; exact matches and the written rules
@@ -71,11 +78,11 @@ jobs:
           ROSHNI_NARRATOR_SPEND_CAP_USD: "0.01"
       - run: uv run roshni build
       # Persist the decisions so each name is decided once (an LLM must not re-decide daily).
-      - name: Commit review decisions
+      - name: Commit review decisions and effective dates
         run: |
           if git diff --quiet -- dbt/seeds; then echo "no new review decisions"; exit 0; fi
-          git add dbt/seeds/review_*.csv
-          git -c user.name="github-actions[bot]"               -c user.email="41898283+github-actions[bot]@users.noreply.github.com"               commit -q -m "chore(review): automatic review of new press-release names [skip ci]"
+          git add dbt/seeds/review_*.csv dbt/seeds/source_documents.csv
+          git -c user.name="github-actions[bot]"               -c user.email="41898283+github-actions[bot]@users.noreply.github.com"               commit -q -m "chore(review): automatic review decisions and effective dates [skip ci]"
           for attempt in 1 2 3; do
             if git pull -q --rebase origin main && git push -q origin HEAD:main; then exit 0; fi
             sleep 5

@@ -38,17 +38,24 @@ def test_iesco_xlsx_maps_labels_to_circles() -> None:
     ]
 
 
-def test_iesco_xlsx_unknown_label_fails() -> None:
+def test_iesco_xlsx_new_label_is_fetched_with_a_warning() -> None:
     html = xlsx_page(
-        [("Islamabad", "a.xlsx"), ("Rawalpindi City & Cantt", "b.xlsx"), ("Mars", "c.xlsx")]
+        [("Islamabad", "a.xlsx"), ("Rawalpindi City & Cantt", "b.xlsx"), ("PD GSC", "c.xlsx")]
     )
-    with pytest.raises(DiscoveryError, match="unknown IESCO circle"):
-        iesco_xlsx_table("s", XLSX_CFG, html)
+    ts = iesco_xlsx_table("s", XLSX_CFG, html)
+    assert [t.item_key for t in ts] == ["islamabad", "rawalpindi", "pd_gsc"]
+    assert ts[0].warnings == ("new listing row 'PD GSC' fetched as item 'pd_gsc'",)
 
 
-def test_iesco_xlsx_missing_circle_fails() -> None:
-    with pytest.raises(DiscoveryError, match="missing"):
-        iesco_xlsx_table("s", XLSX_CFG, xlsx_page([("Islamabad", "a.xlsx")]))
+def test_iesco_xlsx_missing_circle_is_skipped_with_a_warning() -> None:
+    ts = iesco_xlsx_table("s", XLSX_CFG, xlsx_page([("Islamabad", "a.xlsx")]))
+    assert [t.item_key for t in ts] == ["islamabad"]
+    assert "not listed today" in ts[0].warnings[0] and "rawalpindi" in ts[0].warnings[0]
+
+
+def test_iesco_xlsx_page_without_rows_fails() -> None:
+    with pytest.raises(DiscoveryError, match="no XLSX rows"):
+        iesco_xlsx_table("s", XLSX_CFG, "<table><tr><td>nothing</td></tr></table>")
 
 
 PR_CFG = SourceConfig(

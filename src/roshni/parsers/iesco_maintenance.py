@@ -27,11 +27,11 @@ HEADERS: list[tuple[str, re.Pattern[str]]] = [
     ("circle", re.compile(r"^circle", re.I)),
     ("subdivision", re.compile(r"^(s/|sub)\s*div", re.I)),
     ("division", re.compile(r"^division", re.I)),
-    ("feeder_code", re.compile(r"feeder\s*cod", re.I)),
+    ("feeder_code", re.compile(r"feeders?\s*cod", re.I)),
     ("feeder_name", re.compile(r"name of feed|^feeder name|name of fe", re.I)),
     ("grid", re.compile(r"grid", re.I)),
     ("date", re.compile(r"^date|efe?ctive date", re.I)),
-    ("start", re.compile(r"^(time\s*)?from$|^time$", re.I)),
+    ("start", re.compile(r"^(time\s*)?from$|^time$|^timing$", re.I)),
     ("end", re.compile(r"^(time\s*)?to$", re.I)),
     ("purpose", re.compile(r"^purpose", re.I)),
     ("area", re.compile(r"area|effective area", re.I)),
@@ -42,7 +42,8 @@ DATE_RES = [
     (re.compile(r"^(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})$"), "dmy"),
     (re.compile(r"^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T]\d{1,2}:\d{2}(?::\d{2})?)?$"), "ymd"),
 ]
-TIME_RE = re.compile(r"^(\d{1,2})[:.](\d{2})(?::\d{2})?\s*(h|hrs?)?$", re.I)
+# "08:00", "8.00 Hrs" and, in the PD GSC workbook, "0800 Hrs" (four digits, no separator).
+TIME_RE = re.compile(r"^(\d{1,2})[:.]?(\d{2})(?::\d{2})?\s*(h|hrs?)?$", re.I)
 
 
 class MaintenanceWindow(Provenance):
@@ -123,8 +124,8 @@ def parse_time(v: object) -> str | None:
     if not s:
         return None
     m = TIME_RE.match(s)
-    if not m:
-        return None
+    if not m or (len(m[1]) + len(m[2]) == 3 and not re.search(r"[:.]", s)):
+        return None  # "800" is ambiguous: only HH:MM, H.MM or HHMM
     h, mi = int(m[1]), int(m[2])
     if not (0 <= h <= 24 and 0 <= mi < 60) or (h == 24 and mi):
         return None
@@ -142,26 +143,37 @@ def _utc(d: date, hhmm: str) -> datetime:
 
 
 def _header(rows: list[tuple]) -> tuple[int, dict[str, int]] | None:
-    """(row index, field -> column) for the first of rows 1-3 that names the required columns.
+    """(row index, field -> column) for the first of rows 1-8 that names the required columns.
 
-    A lone "TIME" header spanning two columns (From/To underneath) maps start to it and end to
-    the next column.
+    Titles sit above the header in some files (the PD GSC workbook starts its header on row 4).
+    A lone "TIME" or "Timing" header spanning two columns maps start to it and end to the next
+    column; From/To on the row underneath are read too.
     """
-    for i, row in enumerate(rows[:3]):
+    for i, row in enumerate(rows[:8]):
         cols: dict[str, int] = {}
-        for j, cell in enumerate(row):
-            text = _clean(cell)
-            if not text:
-                continue
-            for name, rx in HEADERS:
-                if name not in cols and rx.search(text):
-                    cols[name] = j
-                    break
-        if "start" in cols and "end" not in cols and _clean(rows[i][cols["start"]]) == "TIME":
+        below = rows[i + 1] if i + 1 < len(rows) else ()
+        for line in (row, below):
+            for j, cell in enumerate(line):
+                text = _clean(cell)
+                if not text or (line is below and j in cols.values()):
+                    continue
+                for name, rx in HEADERS:
+                    # The row underneath only adds From/To; every other field is on the header row.
+                    usable = name in ("start", "end") or line is row
+                    if usable and name not in cols and rx.search(text):
+                        cols[name] = j
+                        break
+        lone = _clean(row[cols["start"]]) if "start" in cols and cols["start"] < len(row) else None
+        if "start" in cols and "end" not in cols and lone and lone.upper() in ("TIME", "TIMING"):
             cols["end"] = cols["start"] + 1
         if all(k in cols for k in REQUIRED) and ("feeder_name" in cols or "feeder_code" in cols):
             return i, cols
     return None
+
+
+def _numbering_row(texts: list[str]) -> bool:
+    """A row that only numbers the columns (1, 2, 3, ...) under the header: no data."""
+    return all(t.isdigit() and int(t) < 100 for t in texts)
 
 
 def _unmerged(ws) -> list[list[object]]:
@@ -201,7 +213,12 @@ def parse_workbook(path: Path, item: str) -> ParseResult[MaintenanceWindow]:
     for i in range(first, len(rows)):
         row = rows[i]
         texts = [_clean(c) for c in row if _clean(c)]
-        if not texts:
+        # Blank rows, column-numbering rows and a header repeated further down carry no data.
+        if (
+            not texts
+            or _numbering_row(texts)
+            or _header([tuple(row), tuple(rows[i + 1]) if i + 1 < len(rows) else ()])
+        ):
             continue
         loc = f"sheet {ws.title!r} row {i + 1}"
         raw = " | ".join(texts)
