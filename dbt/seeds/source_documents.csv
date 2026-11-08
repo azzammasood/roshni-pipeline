@@ -7,3 +7,4 @@ iesco_schedule_xlsx,iesco-chakwal-sep26.xlsx,bdec3947102255082fd363d3914274d6407
 iesco_schedule_xlsx,iesco-ajk-sep26.xlsx,82bb6206dc3d4c57faa43da9efc28849e1cb59615029e5f1591858258fd54cbe,2026-01-14,HTTP Last-Modified (file states no date),Sep-2026
 kelectric_feeder_list,kelectric-feeder-list.pdf,a23cf501a14dbb2df618994d340aa4988bb797c5754517095cd234a35fe6e3b2,2026-07-06,HTTP Last-Modified (file states no date),
 kelectric_schedule,kelectric-load-shed-schedule.pdf,0dc6ea8cbbe9fb7e213d3d26bc262d80700644191943e97409294925b4068248,2026-08-05,"Applies from 2026-08-05 (file name and HTTP Last-Modified); tentative per K-Electric disclaimer; published before the 2026-09-11 load-shedding directive, so it may not reflect it",LSMnew-PDF-Aug-5th
+kelectric_schedule,kelectric-load-shed-schedule.pdf,df753bc67bb1fab6bd47e03666950de449456746b9fb018b7820e81a9b4eb213,2026-10-23,automatic: the PDF says it is applicable from 2026-10-23,LSM-Oct-2028
