@@ -33,7 +33,7 @@ jobs:
       SITE_REPO: git@github.com:azzammasood/roshni-site.git
       SITE_BASE_PATH: /roshni-site
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # the review commit is rebased onto main before pushing
 
@@ -42,7 +42,7 @@ jobs:
         with:
           deploy-key: ${{ secrets.SNAPSHOTS_DEPLOY_KEY }}
 
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v10.3.3 # exact: no major tags since v8
         with:
           enable-cache: true
       - run: uv python install
@@ -57,7 +57,7 @@ jobs:
           case "$v" in *" 25.03."*) ;; *) echo "unexpected poppler: $v"; exit 1 ;; esac
 
       - name: Restore PDF text cache (keyed by file SHA-256)
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: data/cache/pdftext
           key: pdftext-${{ github.run_id }}
@@ -93,7 +93,7 @@ jobs:
           echo "::warning::could not push review decisions; they will be re-made next run"
       # Accepted drafts are cached by (model, prompt): unchanged facts cost nothing on later runs.
       - name: Restore narrator cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: data/cache/narrate
           key: narrate-${{ github.run_id }}
@@ -108,7 +108,7 @@ jobs:
       # dbt docs (models, tests, lineage graph) as one static page, served at <site>/dbt-docs/.
       - run: uv run roshni dbt-docs --out data/dbt-docs
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
