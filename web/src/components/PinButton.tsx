@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { readPin, setPin, usePin } from "@/lib/pin";
 
-/** Pin this feeder to the home page lead. Opening a feeder pins it when nothing is pinned yet. */
+/** Pin this feeder for the My feeder tab. Opening a feeder pins it when nothing is pinned yet. */
 export function PinButton({ feederId, pin, pinned }: { feederId: string; pin: string; pinned: string }) {
   const current = usePin();
   useEffect(() => {

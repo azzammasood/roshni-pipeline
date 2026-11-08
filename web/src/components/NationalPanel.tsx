@@ -54,9 +54,9 @@ export function NationalPanel({
   return (
     <section aria-labelledby="national" className="space-y-4">
       <p className="kicker">{t.kicker}</p>
-      <h2 id="national" className="headline text-3xl sm:text-5xl max-w-4xl">
+      <h1 id="national" className="headline text-3xl sm:text-5xl max-w-4xl">
         {t.title}
-      </h2>
+      </h1>
       <p className="headline text-xl sm:text-2xl max-w-3xl">
         {zeros.length > 0 && nonZero.length > 0
           ? fill(

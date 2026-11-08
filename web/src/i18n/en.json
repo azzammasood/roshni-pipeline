@@ -40,7 +40,8 @@
     "about": "About the data",
     "architecture": "How it's built",
     "cities": "Cities",
-    "maker": "The maker"
+    "maker": "The maker",
+    "myFeeder": "My feeder"
   },
   "banner": {
     "scheduled": "Scheduled (published schedule data), not measured outages."
@@ -156,7 +157,9 @@
     "title": "Load-shedding headlines",
     "empty": "No load-shedding headlines yet from the approved outlets' feeds.",
     "note": "Headlines from Dawn, Business Recorder, The Express Tribune and the Associated Press of Pakistan, as each outlet published them and linked to the original. They are the outlets' words, not Roshni's reporting.",
-    "external": "opens the outlet's site in a new tab"
+    "external": "opens the outlet's site in a new tab",
+    "quiet": "No new load-shedding headline has appeared in these outlets' feeds since {date}.",
+    "cadence": "Roshni checks the feeds for load-shedding headlines several times a day, and the site is rebuilt every morning."
   },
   "home": {
     "title": "Who is scheduled to be dark now?",
@@ -184,13 +187,15 @@
     "jumpNational": "Pakistan",
     "jumpMonthly": "Month by month",
     "jumpNews": "In the news",
-    "jumpFeeder": "Your feeder",
-    "jumpNow": "Dark now"
+    "jumpNow": "Dark now",
+    "yourFeederPinned": "Your feeder: {name}",
+    "yourFeederOpen": "Open My feeder",
+    "yourFeederNone": "Find and pin your feeder on the My feeder tab"
   },
   "lead": {
     "kicker": "Your feeder",
     "findTitle": "Find your feeder",
-    "findIntro": "Search by feeder name, code, grid, IBC or circle, then pin it here. The pin is kept in this browser only.",
+    "findIntro": "Search by feeder name, code, grid, IBC or circle, then pin it. The pin is kept in this browser only, and this page then shows that feeder.",
     "results": "{n} matching feeders",
     "noResults": "No feeder matches that search.",
     "more": "{n} more: type more of the name to narrow the list.",
@@ -221,7 +226,12 @@
     "statLevel": "IESCO feeders scheduled dark at {time} if level {n} is in force",
     "statLevelNone": "Choose an IESCO level to count IESCO feeders.",
     "listingsKicker": "Every feeder, any time",
-    "connecting": "Reading the schedule for"
+    "connecting": "Reading the schedule for",
+    "maintNow": "{name} is in an announced maintenance window until {end}",
+    "maintNextToday": "{name}'s next announced maintenance is today, {start} to {end}",
+    "maintNext": "{name}'s next announced maintenance is on {date}, {start} to {end}",
+    "maintNone": "{name} has no announced maintenance from today on",
+    "maintNote": "From IESCO's monthly maintenance schedule: a plan to switch the feeder off, not a measured outage. Choose a level above to see its load-shedding schedule."
   },
   "feeder": {
     "source": "Source",
@@ -618,5 +628,21 @@
     "purpose": "Purpose",
     "area": "Area affected",
     "repeats": "The grid-station (GSO) file repeats {n} windows that circle files also list; totals across all rows count each once."
+  },
+  "myFeeder": {
+    "upcomingTitle": "Coming up for this feeder",
+    "upcomingNote": "Announced maintenance (IESCO's monthly schedules) and planned shutdowns (IESCO press releases) from today on. Plans, not measured outages.",
+    "upcomingNone": "Nothing is announced for this feeder from today on.",
+    "upcomingMore": "{n} more on the full schedule page.",
+    "kind": "Kind",
+    "kindMaintenance": "Announced maintenance",
+    "kindShutdown": "Planned shutdown",
+    "today": "today",
+    "hoursTitle": "Hours a day in its schedule",
+    "hoursNoteIesco": "IESCO publishes one schedule per interruption level and never says which is in force. Choose a level to see its windows above.",
+    "hoursNoteKe": "K-Electric's published schedule, which applies every day. A schedule, not a measurement.",
+    "levelHours": "h a day at level {n}",
+    "dailyHours": "hours a day scheduled",
+    "fullLink": "Full schedule, localities and history for this feeder"
   }
 }
