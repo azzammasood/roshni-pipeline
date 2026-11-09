@@ -89,6 +89,7 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Every schedule row carries `effective_from`; every live output carries source, effective date, `last_updated`.
 - Narration: the LLM writes prose only; numbers are injected from queries and validated.
 - Schedulers: GitHub Actions = production (`news.yml` every 3 h, news feeds only, trimmed; `snapshot.yml` daily, then `publish.yml`: parse → validate → build → resolve → build → report (Haiku 5.5 on prepaid credits, ≤$0.01/run; free models after credits run out) → export → site → public repo `azzammasood/roshni-site`, never edited by hand; failures open a `pipeline-failure` issue); Airflow = local showcase calling the CLI.
+- Watchdog (`watchdog.yml`, 2026-11-08): every 3 h a "Live site is out of date" issue (label `site-stale`, @-mentions the owner) if meta.json `last_updated` is >36 h old, closed when fresh; weekly API re-enable of the scheduled workflows (60-day inactivity rule). No empty commits to main.
 - The daily resolve (`roshni resolve --llm` in publish) decides press-release names by rules, then by LLM; the publish job commits `dbt/seeds/review_*.csv` back to main (bot commits: pull before editing seeds locally). Names stay `pending_review` only when no key/credits/valid reply; an owner or Claude decision always wins and is never overwritten.
 
 ## Working agreement

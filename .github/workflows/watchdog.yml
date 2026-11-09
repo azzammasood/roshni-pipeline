@@ -1,0 +1,60 @@
+# Watchdog (owner audit, 2026-11-08): the site sat 17 days stale in October 2026 and nobody saw the
+# failure issues. Two jobs, no checkout of data and no third-party fetch beyond our own site:
+# - freshness (every 3 h): the live meta.json must be under 36 h old, else a "Live site is out of
+#   date" issue that @-mentions the owner (.github/scripts/stale-site.sh); closed when fresh again.
+# - keep-enabled (weekly): GitHub disables scheduled workflows in a public repo after 60 days with
+#   no repository activity, and snapshots commit to the private store, not here. Re-enabling each
+#   scheduled workflow through the API resets that timer without commits to main.
+# Pull requests that change this file or the script run both jobs as a live check.
+name: watchdog
+
+on:
+  schedule:
+    - cron: "45 */3 * * *" # freshness, every 3 hours at :45 UTC
+    - cron: "50 6 * * 1" # keep-enabled, Mondays 06:50 UTC
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/watchdog.yml
+      - .github/scripts/stale-site.sh
+
+permissions:
+  contents: read
+
+concurrency:
+  group: watchdog-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  freshness:
+    if: github.event.schedule != '50 6 * * 1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github/scripts
+      - name: Check that the live site updated in the last 36 hours
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MAX_AGE_HOURS: "36"
+          NOTIFY: azzammasood
+        run: bash .github/scripts/stale-site.sh
+
+  keep-enabled:
+    if: github.event.schedule != '45 */3 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write # PUT .../actions/workflows/{id}/enable
+    steps:
+      - name: Re-enable the scheduled workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for wf in snapshot.yml news.yml publish.yml watchdog.yml; do
+            gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/${wf}/enable"
+            gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${wf}" --jq '"\(.path): \(.state)"'
+          done
