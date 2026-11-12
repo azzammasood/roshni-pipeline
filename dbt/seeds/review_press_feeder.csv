@@ -23,6 +23,7 @@ Attock:AWT,AWT,Attock,iesco:attock:081009,AWT 4,1,75.0,fuzzy,suggested,rejected,
 Attock:AWT-1,AWT-1,Attock,iesco:attock:081009,AWT 4,1,80.0,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Attock:AWT-4,AWT-4,Attock,iesco:attock:081009,AWT 4,1,100.0,exact,auto_exact,,
 Attock:AWT-IV,AWT-IV,Attock,iesco:attock:081009,AWT 4,1,72.7,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Attock:Ahmad Nagar,Ahmad Nagar,Attock,iesco:attock:014632,AHMED NAGAR,1,90.9,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
 Attock:Ahmed Nagar,Ahmed Nagar,Attock,iesco:attock:014632,AHMED NAGAR,1,100.0,exact,auto_exact,,
 Attock:Ahmedal,Ahmedal,Attock,iesco:attock:063102,AHMADAL,1,85.7,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
 Attock:Akhori,Akhori,Attock,iesco:attock:018912,AKHORI,1,100.0,exact,auto_exact,,
@@ -122,6 +123,9 @@ Attock:Katchery 4/C,Katchery 4/C,Attock,,,0,0,,no_candidate,,
 Attock:Khan Abad,Khan Abad,Attock,iesco:attock:014619,KHANABAD,1,94.1,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Attock:Khan Abad,Khan Abad,Attock,iesco:attock:014627,HUSSAIN ABAD,2,76.2,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Attock:Khan Abad,Khan Abad,Attock,iesco:attock:103905,HAFIZ ABAD,3,73.7,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Attock:Khanabad,Khanabad,Attock,iesco:attock:014619,KHANABAD,1,100.0,exact,auto_exact,,
+Attock:Khanabad,Khanabad,Attock,iesco:attock:075102,AMINABAD,2,75.0,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Attock:Khanabad,Khanabad,Attock,iesco:attock:012007,SHAMSABAD,3,70.6,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Attock:Kohistan Enclave,Kohistan Enclave,Attock,iesco:attock:112011,KOHISTAN ENCLAVE,1,100.0,exact,auto_exact,,
 Attock:Kohsar Colony,Kohsar Colony,Attock,iesco:attock:083312,KOHSAR COLONY,1,100.0,exact,auto_exact,,
 Attock:Lala Rukh,Lala Rukh,Attock,iesco:attock:014622,LALA RUKH,1,100.0,exact,auto_exact,,
@@ -447,6 +451,8 @@ GSO:Fauji Colony,Fauji Colony,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX 
 GSO:Fazal Ghee,Fazal Ghee,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:Fazal Shaheed,Fazal Shaheed,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:Fazal Steel,Fazal Steel,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Floor Mill-1,Floor Mill-1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Floor Mill-2,Floor Mill-2,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:Furnace,Furnace,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:G- 10/1,G- 10/1,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:G-10 markaz,G-10 markaz,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (2 windows)
@@ -533,6 +539,7 @@ GSO:Mohra Nagial,Mohra Nagial,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX 
 GSO:Molhal Mughlan,Molhal Mughlan,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:Morgah,Morgah,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:Muhammadi,Muhammadi,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
+GSO:Muhammadi Chowk,Muhammadi Chowk,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:Mumtaz,Mumtaz,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:Mushtaq Hussain,Mushtaq Hussain,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
 GSO:N. Karachi,N. Karachi,GSO,,,0,0,,out_of_scope,,circle 'GSO' has no XLSX feeder list (1 windows)
@@ -1397,6 +1404,7 @@ Rawalpindi Cantt:Bhall,Bhall,Rawalpindi Cantt,iesco:rawalpindi:064507,BHALL,1,10
 Rawalpindi Cantt:Bhangali,Bhangali,Rawalpindi Cantt,iesco:rawalpindi:007406,BHANGALI,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Bhangali,Bhangali,Rawalpindi Cantt,iesco:rawalpindi:017728,BASALI,2,71.4,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Rawalpindi Cantt:Bhangali,Bhangali,Rawalpindi Cantt,iesco:rawalpindi:008608,JHANGI,3,71.4,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Rawalpindi Cantt:Boston Khan,Boston Khan,Rawalpindi Cantt,iesco:rawalpindi:002538,BOSTAN KHAN,1,90.9,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
 Rawalpindi Cantt:CBR-II,CBR-II,Rawalpindi Cantt,iesco:rawalpindi:090012,CBR 1,1,72.7,fuzzy,suggested,rejected,auto-review: numbers differ
 Rawalpindi Cantt:CBR-II,CBR-II,Rawalpindi Cantt,iesco:rawalpindi:090013,CBR 2,2,72.7,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
 Rawalpindi Cantt:CWO,CWO,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
@@ -1537,6 +1545,7 @@ Rawalpindi Cantt:Mehboob Shaheed,Mehboob Shaheed,Rawalpindi Cantt,iesco:rawalpin
 Rawalpindi Cantt:Moorat,Moorat,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Rawalpindi Cantt:Morgah,Morgah,Rawalpindi Cantt,iesco:rawalpindi:087406,MORGAH,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Multi Story Flats,Multi Story Flats,Rawalpindi Cantt,iesco:rawalpindi:002504,MULTI STORY FLATS,1,100.0,exact,auto_exact,,
+Rawalpindi Cantt:Murree Brewery,Murree Brewery,Rawalpindi Cantt,iesco:rawalpindi:002511,MURREE BREWERY,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Nahr,Nahr,Rawalpindi Cantt,iesco:rawalpindi:009006,NARH,1,75.0,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
 Rawalpindi Cantt:Nara Matore,Nara Matore,Rawalpindi Cantt,iesco:rawalpindi:009002,NARA MATOR,1,95.2,fuzzy,suggested,,
 Rawalpindi Cantt:National Park,National Park,Rawalpindi Cantt,iesco:rawalpindi:002508,NATIONAL PARK,1,100.0,exact,auto_exact,,
@@ -1740,6 +1749,9 @@ Rawalpindi City:F-17/1,F-17/1,Rawalpindi City,iesco:rawalpindi:104908,F-17/1,1,1
 Rawalpindi City:F-17/1,F-17/1,Rawalpindi City,iesco:rawalpindi:104909,F-17/2,2,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Rawalpindi City:F-17/2,F-17/2,Rawalpindi City,iesco:rawalpindi:104909,F-17/2,1,100.0,exact,auto_exact,,
 Rawalpindi City:F-17/2,F-17/2,Rawalpindi City,iesco:rawalpindi:104908,F-17/1,2,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Rawalpindi City:F-Block,F-Block,Rawalpindi City,iesco:rawalpindi:061114,F BLOCK,1,100.0,exact,auto_exact,,
+Rawalpindi City:F-Block,F-Block,Rawalpindi City,iesco:rawalpindi:095807,B BLOCK,2,85.7,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
+Rawalpindi City:F-Block,F-Block,Rawalpindi City,iesco:rawalpindi:095831,C BLOCK,3,85.7,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Rawalpindi City:Faisal Town,Faisal Town,Rawalpindi City,iesco:rawalpindi:104915,FAISAL TOWN,1,100.0,exact,auto_exact,,
 Rawalpindi City:Faisal Town,Faisal Town,Rawalpindi City,iesco:rawalpindi:061112,FAZIA,2,72.7,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Rawalpindi City:Faisal Town-II,Faisal Town-II,Rawalpindi City,iesco:rawalpindi:104915,FAISAL TOWN,1,80.0,fuzzy,suggested,,
@@ -1832,6 +1844,8 @@ Rawalpindi City:Peshawar road,Peshawar road,Rawalpindi City,iesco:rawalpindi:008
 Rawalpindi City:Pind Hoon,Pind Hoon,Rawalpindi City,iesco:rawalpindi:104612,PIND HOON,1,100.0,exact,auto_exact,,
 Rawalpindi City:Qadeer Road,Qadeer Road,Rawalpindi City,iesco:rawalpindi:107616,HAIDER ROAD,1,81.8,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Rawalpindi City:Qadeer road,Qadeer road,Rawalpindi City,iesco:rawalpindi:107616,HAIDER ROAD,1,81.8,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
+Rawalpindi City:Quaid Azam Hospital,Quaid Azam Hospital,Rawalpindi City,iesco:rawalpindi:008624,QUAID AZAM HOSPITAL,1,100.0,exact,auto_exact,,
+Rawalpindi City:Quaid Azam Hospital,Quaid Azam Hospital,Rawalpindi City,iesco:rawalpindi:001003,QUAID AZAM COLONY,2,72.2,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Rawalpindi City:Quaid-e- Azam Hospital,Quaid-e- Azam Hospital,Rawalpindi City,iesco:rawalpindi:008624,QUAID AZAM HOSPITAL,1,95.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi City:Quaid-e-Azam Hospital,Quaid-e-Azam Hospital,Rawalpindi City,iesco:rawalpindi:008624,QUAID AZAM HOSPITAL,1,95.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Rawalpindi City:Raja Abad,Raja Abad,Rawalpindi City,iesco:rawalpindi:008619,RAJABAD,1,87.5,fuzzy,suggested,accepted,llm-review 2026-10-14 anthropic/claude-haiku-5.5: Spacing variant of RAJABAD
@@ -1873,6 +1887,7 @@ Rawalpindi City:Tehmasamabad,Tehmasamabad,Rawalpindi City,iesco:rawalpindi:04333
 Rawalpindi City:Tehmasma Abad,Tehmasma Abad,Rawalpindi City,iesco:rawalpindi:002518,TEHMASMABAD,1,91.7,fuzzy,suggested,,
 Rawalpindi City:Top City,Top City,Rawalpindi City,iesco:rawalpindi:104905,TOP CITY,1,100.0,exact,auto_exact,,
 Rawalpindi City:WASA,WASA,Rawalpindi City,,,0,0,,no_candidate,,
+Rawalpindi City:Wasa,Wasa,Rawalpindi City,,,0,0,,no_candidate,,
 Rawalpindi City:Zafar Ul Haq,Zafar Ul Haq,Rawalpindi City,iesco:rawalpindi:017914,ZAFAR UL HAQ,1,100.0,exact,auto_exact,,
 Rawalpindi City:Zafar ul Haq Road,Zafar ul Haq Road,Rawalpindi City,iesco:rawalpindi:017914,ZAFAR UL HAQ,1,82.8,fuzzy,suggested,,
 Rawalpindi City:Zarkoon Heights,Zarkoon Heights,Rawalpindi City,iesco:rawalpindi:008628,ZARKOON HEIGHT,1,96.6,fuzzy,suggested,accepted,claude-review 2026-10-10: singular/plural
