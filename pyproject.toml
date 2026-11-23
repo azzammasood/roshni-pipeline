@@ -24,6 +24,9 @@ dependencies = [
 roshni = "roshni.cli:app"
 
 [dependency-groups]
+bench = [
+    "psutil>=7.2.2",
+]
 databricks = [
     "dbt-databricks>=1.12.6",
 ]
