@@ -120,6 +120,6 @@ The full command list is in [`CLAUDE.md`](CLAUDE.md) (the working notes used whi
 
 ## About
 
-Built by **Ahmad Uzzam Masood**, a data engineer in Islamabad: [portfolio](https://azzammasood.github.io/) · [GitHub](https://github.com/azzammasood) · [LinkedIn](https://www.linkedin.com/in/azzammasood/).
+I'm **Ahmad Uzzam Masood**, a data engineer in Islamabad, and I built Roshni: [portfolio](https://azzammasood.github.io/) · [GitHub](https://github.com/azzammasood) · [LinkedIn](https://www.linkedin.com/in/azzammasood/).
 
 Source documents belong to their publishers (IESCO, K-Electric, NEPRA, PBS and the news outlets). The code is under the [MIT License](LICENSE).

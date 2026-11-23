@@ -1,0 +1,35 @@
+name: infra
+
+# Static checks of the Terraform in infra/ only. This workflow has no Databricks credentials and
+# never runs plan or apply: nothing is created unless the owner applies it by hand (README).
+on:
+  push:
+    branches: [main]
+    paths: ["infra/**", ".github/workflows/infra.yml"]
+  pull_request:
+    paths: ["infra/**", ".github/workflows/infra.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/databricks
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4.0.1
+        with:
+          terraform_version: 1.17.2
+          terraform_wrapper: false
+      - run: terraform fmt -check -recursive -diff
+      # Downloads the pinned provider only; no backend, no state, no workspace contact.
+      - run: terraform init -backend=false -input=false
+      - run: terraform validate
+      - uses: terraform-linters/setup-tflint@v6.3.2
+        with:
+          tflint_version: v0.66.0
+      - run: tflint --init
+      - run: tflint --format compact
