@@ -2,6 +2,23 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-23 (Pipeline health page)
+- **A public pipeline health page** (`/[lang]/health/`, export 1.9.0 `health`; owner, from a 2026 article on data-engineering portfolios: show how the system runs, with numbers). It is linked from the footer and the Architecture page. It shows:
+  - the last publish run and its result;
+  - publish runs that succeeded in the last 30 days (honestly 18 of 34 on 2026-11-23, because of the October stall);
+  - the median run time;
+  - dbt results;
+  - the 36-hour freshness target;
+  - a bar per publish run (duration, failures in red with a cross);
+  - daily fetch activity (requests, new files, failures);
+  - warehouse table sizes over time;
+  - per parsed table, rows kept, rows quarantined and the three most common reasons.
+
+  Every chart has a "Show the numbers" table.
+- **No new store for the history.** Publish runs come from the GitHub Actions API (`actions: read` added to publish.yml); fetch activity comes from the snapshot log, which records every fetch; table sizes are carried forward from the live `health.json` and appended to, one point per Karachi date, up to 365. A local export without those inputs still writes a valid document with those histories empty. Code: `src/roshni/export/health.py`, tests `test_health.py`.
+- **Quarantine is shown with its reasons**, because a bare count misleads. Press releases set aside 3,366 lines against 3,097 kept, almost all "feeder without date, circle and time in scope": text around the schedules, not lost data.
+- **Gate evidence:** pytest passes; vitest 556 (oracle regenerated on today's export, 514 cases); check:i18n (Urdu avoids English tool names), typecheck, lint, build and check:equity pass; axe 0 at 375 px on health and architecture, en/ur, light/dark.
+
 ## 2026-11-23 (Infrastructure as code for the optional Databricks path)
 - **Terraform module in `infra/databricks/`** (owner chose Databricks). It declares only what the existing Databricks path uses: the `roshni_raw` and `roshni` schemas in the `workspace` catalog (a new catalog is optional, off by default), the `uploads` volume, a 2X-Small serverless SQL warehouse with 5-minute auto-stop (or an existing warehouse ID), a serverless job whose dbt task runs `dbt build` on this repo daily at 09:30 Asia/Karachi, **created paused**, and read grants for listed principals (none by default). Provider `databricks/databricks` pinned to 1.143.0.
 - **Why reuse, not create, on Free Edition:** Free Edition allows "One SQL warehouse, limited to a 2X-Small cluster size" and already has one, and it has serverless compute only and no account APIs. So the default reuses the `workspace` catalog, the warehouse is reused by ID, and the job has no cluster block. With those settings nothing needs a paid workspace.

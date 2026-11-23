@@ -41,7 +41,8 @@
     "architecture": "Architecture",
     "cities": "Cities",
     "maker": "Author",
-    "myFeeder": "My feeder"
+    "myFeeder": "My feeder",
+    "health": "Pipeline health"
   },
   "banner": {
     "scheduled": "Scheduled (published schedule data), not measured outages."
@@ -645,5 +646,55 @@
     "levelHours": "h a day at level {n}",
     "dailyHours": "hours a day scheduled",
     "fullLink": "Full schedule, localities and history for this feeder"
+  },
+  "health": {
+    "kicker": "Operations · pipeline health",
+    "title": "How the pipeline is running",
+    "intro": "Every morning a GitHub Actions job fetches the sources, parses and tests them, rebuilds the warehouse and publishes this site. These are the records of those runs: about the pipeline itself, not about load shedding.",
+    "lastRun": "last publish run",
+    "succeeded": "succeeded",
+    "failed": "failed",
+    "successRate": "publish runs succeeded in the last 30 days",
+    "successOf": "{ok} of {n}",
+    "medianTime": "median publish run",
+    "minutes": "{m} min",
+    "dbtPassed": "dbt models and tests passed in the last build",
+    "passedOf": "{ok} of {n}",
+    "target": "freshness target: the site is never older than this",
+    "hours": "{h} h",
+    "runsTitle": "Publish runs",
+    "runsNote": "One bar per run, oldest on the left; the height is how long the run took. Failed runs are marked in red and with a cross. A failed run leaves the previous site in place.",
+    "runsLabel": "Duration of each publish run, oldest first",
+    "fetchTitle": "Fetching the sources",
+    "fetchNote": "Requests made each day (documents and news feeds, checked politely with ETag and If-Modified-Since). The darker part is new or changed files stored; a cross marks a day with failed fetches.",
+    "fetchLabel": "Fetches per day, with new files and failures",
+    "sizesTitle": "Warehouse size",
+    "sizesNote": "Rows in the main warehouse tables at each publish. History starts on {date}.",
+    "sizesNames": {
+      "feeders": "Feeders",
+      "schedule_windows": "Scheduled windows",
+      "planned_shutdowns": "Planned shutdowns",
+      "maintenance_windows": "Maintenance windows"
+    },
+    "table": "Table",
+    "rowsNow": "Rows now",
+    "since": "Change since {date}",
+    "qualityTitle": "Parsing quality",
+    "qualityNote": "Rows each parser kept, and rows it set aside with a reason instead of guessing (quarantine). A high count usually means a source prints text around its tables, not that data was lost.",
+    "kept": "Rows kept",
+    "quarantined": "Quarantined",
+    "reasons": "Most common reasons",
+    "date": "Date",
+    "started": "Started (Pakistan time)",
+    "duration": "Duration",
+    "result": "Result",
+    "fetches": "Fetches",
+    "newFiles": "New files",
+    "errors": "Failed",
+    "showNumbers": "Show the numbers",
+    "openRun": "run log",
+    "noRuns": "No run history is available in this build.",
+    "linkBody": "Publish runs, fetch activity, warehouse size and parsing quality, from the pipeline's own records.",
+    "footerLink": "Pipeline health"
   }
 }

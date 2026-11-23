@@ -121,6 +121,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
                   {fill(dict.footer.credit, { name: makerName(locale) }, locale)}{" "}
                   <Link prefetch={false} href={`/${locale}/maker/`} className="link">
                     {dict.footer.story}
+                  </Link>{" "}
+                  ·{" "}
+                  <Link prefetch={false} href={`/${locale}/health/`} className="link">
+                    {dict.health.footerLink}
                   </Link>
                 </p>
               </div>

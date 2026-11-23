@@ -122,4 +122,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - My feeder tab (2026-10-20, owner): search + pin on /my-feeder/, one-feeder analysis; IESCO without a level leads with announced maintenance; news strip freshness line.
 - Gates automated (2026-11-08, owner): new schedule versions dated automatically (`roshni effective-dates`, basis `automatic: …`), new IESCO listing rows fetched under a derived key; both posted to the "Pipeline notices" issue instead of stopping the run. PD GSC maintenance workbook added.
 - Resilience (2026-11-08, owner): publish runs after a failed snapshot; K-Electric checks use physical bounds (other daily totals flagged, not quarantined); browser reads the slim maintenance_upcoming (export 1.8.0).
+- Pipeline health (2026-11-23, owner): /health/ page from export 1.9.0 `health` (Actions API runs, snapshot-log fetch days, carried-forward table sizes, dbt results, quarantine with reasons); footer + Architecture links; axe 0.
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).

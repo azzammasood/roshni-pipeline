@@ -10,8 +10,9 @@ from pydantic import BaseModel, ConfigDict, Field
 # documents; 1.4.0: national month-by-month series; 1.5.0: K-Electric months from every schedule
 # version (MonthlyKeSchedule.changed_in_month); 1.6.0: maintenance (and notices) documents;
 # 1.7.0: notices document removed (the pipeline only keeps fully automated sources);
-# 1.8.0: maintenance_upcoming, the browser's slim copy of the windows from a week back on
-SCHEMA_VERSION = "1.8.0"
+# 1.8.0: maintenance_upcoming, the browser's slim copy of the windows from a week back on;
+# 1.9.0: health, the pipeline's own run records (export/health.py)
+SCHEMA_VERSION = "1.9.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -362,6 +363,68 @@ class MaintenanceSlot(Strict):
     repeats_circle_window: bool
 
 
+HEALTH_LABEL = "Records of the pipeline's own runs, not load-shedding data"
+
+
+class PublishRun(Strict):
+    """One completed run of the daily publish workflow (GitHub Actions)."""
+
+    started_at: datetime
+    duration_seconds: int
+    conclusion: str = Field(description="success, failure, cancelled, ...")
+    trigger: str = Field(description="workflow_run (after the snapshot), schedule or manual")
+    url: str
+
+
+class FetchDay(Strict):
+    """Snapshot activity on one Asia/Karachi day."""
+
+    date: date
+    fetches: int = Field(description="Requests made (documents and news feeds)")
+    new_files: int = Field(description="New or changed files stored")
+    errors: int = Field(description="Failed fetches, not counting links known to be broken")
+
+
+class SizePoint(Strict):
+    """Warehouse table sizes on one publish date."""
+
+    date: date
+    rows: dict[str, int]
+
+
+class QuarantineReason(Strict):
+    reason: str = Field(description="The parser's reason, up to the first colon")
+    rows: int
+
+
+class TableQuality(Strict):
+    """A parsed table: rows kept and rows quarantined with a reason."""
+
+    table: str
+    rows: int
+    quarantined: int
+    top_reasons: list[QuarantineReason] = Field(description="The three most common reasons")
+
+
+class DbtResults(Strict):
+    passed: int = Field(description="Models, seeds and tests that succeeded")
+    warned: int
+    failed: int
+    skipped: int
+
+
+class Health(Strict):
+    """What the pipeline did (since 1.9.0): publish runs, fetch activity, table sizes, dbt
+    results and quarantine counts. About the pipeline, not about load shedding."""
+
+    freshness_target_hours: int = Field(description="The site should never be older than this")
+    dbt: DbtResults
+    parsed: list[TableQuality]
+    sizes: list[SizePoint] = Field(description="One point per publish date, oldest first")
+    publish_runs: list[PublishRun] = Field(description="Newest completed runs, oldest first")
+    fetch_days: list[FetchDay] = Field(description="Every day with snapshot activity")
+
+
 class National(Strict):
     basis: str
     caveat: str
@@ -406,4 +469,5 @@ DOCUMENTS: dict[str, type] = {
     "news": Envelope[list[NewsHeadline]],
     "maintenance": Envelope[list[MaintenanceWindow]],
     "maintenance_upcoming": Envelope[list[MaintenanceSlot]],
+    "health": Envelope[Health],
 }

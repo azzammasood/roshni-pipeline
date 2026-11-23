@@ -11,6 +11,7 @@ import type {
   DarkProfilesDocument,
   EquityDocument,
   FeedersDocument,
+  HealthDocument,
   MaintenanceDocument,
   MaintenanceWindow,
   MetaDocument,
@@ -29,6 +30,7 @@ type Documents = {
   national: NationalDocument;
   news: NewsDocument;
   maintenance: MaintenanceDocument;
+  health: HealthDocument;
 };
 
 const DATA_DIR = path.join(process.cwd(), "public", "data", "v1");
