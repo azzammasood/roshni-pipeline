@@ -6,7 +6,7 @@ import { Stamp } from "@/components/Clock";
 import { ToolLogo } from "@/components/ToolLogo";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/architecture">): Promise<Metadata> {
-  return { title: (await resolveLocale(params)).dict.architecture.title };
+  return { title: (await resolveLocale(params)).dict.nav.architecture };
 }
 
 /** Public repository the daily publish job writes the site to. */

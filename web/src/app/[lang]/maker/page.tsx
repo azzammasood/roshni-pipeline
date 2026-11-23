@@ -6,7 +6,7 @@ import { MAKER, makerName } from "@/lib/maker";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/maker">): Promise<Metadata> {
   const { dict } = await resolveLocale(params);
-  return { title: dict.maker.title };
+  return { title: dict.nav.maker };
 }
 
 export default async function Maker({ params }: PageProps<"/[lang]/maker">) {
