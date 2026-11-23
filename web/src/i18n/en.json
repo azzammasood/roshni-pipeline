@@ -38,9 +38,9 @@
     "shutdowns": "Planned shutdowns",
     "equity": "Karachi schedule hours",
     "about": "About the data",
-    "architecture": "How it's built",
+    "architecture": "Architecture",
     "cities": "Cities",
-    "maker": "The maker",
+    "maker": "Author",
     "myFeeder": "My feeder"
   },
   "banner": {
@@ -458,7 +458,7 @@
     "home": "Go to the home page"
   },
   "architecture": {
-    "kicker": "Portfolio · how Roshni is built",
+    "kicker": "Architecture · how Roshni works",
     "title": "From a utility's PDF to this page, every day",
     "intro": "Roshni is a small data platform. It collects published schedules and reports, checks and models them in a warehouse, matches names across sources and publishes this static site. Each step below is a command in one Python command-line tool, and GitHub Actions runs them in order every day.",
     "flowTitle": "The pipeline",
@@ -568,7 +568,7 @@
     "noSchedule": "Roshni has no published load-shedding schedule for {company}, so only the figures it reported to NEPRA are shown."
   },
   "maker": {
-    "kicker": "The maker · the story behind Roshni",
+    "kicker": "Author · the story behind Roshni",
     "title": "The night it started",
     "intro": "Roshni began the way so many evenings do in Pakistan: in the dark.",
     "chapters": [
@@ -594,7 +594,7 @@
       }
     ],
     "finale": "This page is the last lamp on the line.",
-    "cardKicker": "Schedule card · the maker",
+    "cardKicker": "Author",
     "title2": "Data engineer, and the person behind Roshni",
     "ctaTitle": "Say hello",
     "linkPortfolio": "Portfolio",

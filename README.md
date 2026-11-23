@@ -2,7 +2,7 @@
 
 **A production data pipeline for Pakistan's load-shedding schedules, rebuilt every morning and published as a bilingual website.**
 
-[**Live site →**](https://azzammasood.github.io/roshni-site/) · [dbt docs and lineage graph](https://azzammasood.github.io/roshni-site/dbt-docs/) · [How it's built](https://azzammasood.github.io/roshni-site/en/architecture/) · [The story behind it](https://azzammasood.github.io/roshni-site/en/maker/) · [Case study](docs/case-study.md)
+[**Live site →**](https://azzammasood.github.io/roshni-site/) · [dbt docs and lineage graph](https://azzammasood.github.io/roshni-site/dbt-docs/) · [Architecture](https://azzammasood.github.io/roshni-site/en/architecture/) · [Author](https://azzammasood.github.io/roshni-site/en/maker/) · [Case study](docs/case-study.md)
 
 ![Roshni home page: NEPRA's reported load-shedding hours for every distribution company, FY 2012-13 to FY 2024-25](docs/img/home.png)
 
@@ -68,7 +68,7 @@ flowchart LR
 | | |
 |---|---|
 | ![Islamabad city page: year-by-year chart, share-of-the-day rings and IESCO's schedule as a 24-hour clock](docs/img/islamabad.png) | **Cities.** For each company, what it reported to NEPRA year by year, how that compares with the others, and, for Islamabad and Karachi, its own published schedule as a 24-hour clock with a grid-by-hour matrix. Islamabad's page sets IESCO's reported **0 hours** for FY 2024-25 beside its schedule, which plans **2 to 12 hours a day** depending on the interruption level in force. |
-| ![The maker page: a night-time story told along a power line](docs/img/maker.png) | **Scheduled now.** Pick a time and an IESCO level, or pin your feeder. **Planned shutdowns** from IESCO's press releases. **Karachi schedule hours by IBC**, descriptive fairness statistics. **How it's built** and **The maker**: the architecture, and the story behind the project. |
+| ![The Author page: a night-time story told along a power line](docs/img/maker.png) | **Scheduled now.** Pick a time and an IESCO level, or pin your feeder. **Planned shutdowns** from IESCO's press releases. **Karachi schedule hours by IBC**, descriptive fairness statistics. **Architecture** and **Author**: the architecture, and the story behind the project. |
 | ![Roshni in Urdu on a phone, right to left](docs/img/urdu-home.png) | **Urdu, right to left**, in Nastaliq, on every page. Accessibility is checked with axe at 375 px in light and dark themes, and every chart has a table view. |
 
 ## Engineering decisions worth a look
