@@ -9,14 +9,16 @@ import pytest
 from roshni.parsers.iesco_maintenance import parse_date, parse_dates, parse_time, parse_workbook
 
 
-def save(tmp_path: Path, rows: list[list], merge: str | None = None, name: str = "m.xlsx") -> Path:
+def save(
+    tmp_path: Path, rows: list[list], merge: str | tuple[str, ...] = (), name: str = "m.xlsx"
+) -> Path:
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "ISLAMABAD"
     for r in rows:
         ws.append(r)
-    if merge:
-        ws.merge_cells(merge)
+    for rng in (merge,) if isinstance(merge, str) else merge:
+        ws.merge_cells(rng)
     p = tmp_path / name
     wb.save(p)
     return p
@@ -77,6 +79,26 @@ def test_islamabad_layout(tmp_path: Path) -> None:
     assert res.rows[3].feeder_code is None and res.rows[3].feeder_name == "Feeder 5"
     reasons = sorted(q.reason.split(":")[0] for q in res.quarantine)
     assert reasons == ["date not readable", "window does not end after it starts"]
+
+
+def test_merged_data_cells_fill_every_row_they_cover(tmp_path: Path) -> None:
+    """GSO: one date and time merged down over several feeders; each feeder gets that window.
+
+    openpyxl reads only the top-left cell of a merge; the rows below would be dropped as
+    missing a date without filling them as Excel shows them.
+    """
+    rows = [
+        ISB_HEADER,
+        ISB_SUB,
+        isb_row(1, 90009, "15.10.2026"),
+        isb_row(2, 90010, None, start=None, end=None),
+        isb_row(3, 90011, None, start=None, end=None),
+    ]
+    res = parse_workbook(save(tmp_path, rows, merge=("J1:K1", "I3:I5", "J3:J5", "K3:K5")), "gso")
+    assert res.quarantine == []
+    assert [(w.feeder_code, w.outage_date, w.start_local, w.end_local) for w in res.rows] == [
+        (code, date(2026, 10, 15), "09:00", "14:00") for code in ("090009", "090010", "090011")
+    ]
 
 
 def test_titled_layout_with_from_to_columns(tmp_path: Path) -> None:

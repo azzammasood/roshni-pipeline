@@ -55,7 +55,7 @@ A batch pipeline with one CLI (`roshni`). Every step is a command, so GitHub Act
 ## What I would do next
 
 - **Measured data**, if a source ever allows it: a crowd-reported outage feed would need moderation and a backend, and would be labelled as reports, not measurements.
-- **More companies' schedules.** The warehouse and the site already handle any company; each new source needs a parser and owner approval.
+- **More companies' schedules.** The warehouse and the site already handle any company; each new source needs a parser and my approval.
 - **Scale-out**, as described in the README's "How this scales": Iceberg on object storage, streaming ingestion, and data contracts at the bronze boundary.
 
 Code: [github.com/azzammasood/roshni-pipeline](https://github.com/azzammasood/roshni-pipeline) · Site: [azzammasood.github.io/roshni-site](https://azzammasood.github.io/roshni-site/)
