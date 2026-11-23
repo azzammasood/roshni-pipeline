@@ -2,6 +2,10 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-23 (Hard problems written up, each backed by a test)
+- **`docs/hard-problems.md`** describes seven places where the obvious approach or a tool's default gave wrong answers: press-release name matching (rules, then an LLM limited to listed candidates, held by the backtest), schedule versions keyed by SHA-256 and dated automatically, midnight-wrapping windows in two engines (the oracle), IESCO's scenario playbook, canonical poppler text with a content-keyed cache, the eight maintenance-workbook layouts, and the portable incremental `fct_planned_shutdown`. Each section links to the code and tests. All numbers are taken from this file and data-audit.md.
+- **Three behaviours had no test and now have one:** `parsers/test_pdftext.py` (an xpdf banner is refused; the cache is keyed by content and page range, not by file name), a merged-data-cell case in `test_iesco_maintenance.py` (GSO-style dates merged down over several feeders), and `tests/test_incremental.py`. That last test runs dbt on DuckDB against a generated Parquet file and checks that a second run adds no duplicates and that a later run loads only new release files. It needs no data sources, so it runs in CI.
+
 ## 2026-11-23 (Tab names)
 - **"How it's built" is now "Architecture" and "The maker" is "Author"** (owner: the old names sounded informal). Urdu: ساخت and مصنف. The page kickers, the author card's label and the browser-tab titles use the same words, and the README links match. The URLs stay `/architecture/` and `/maker/`, so existing links keep working.
 
