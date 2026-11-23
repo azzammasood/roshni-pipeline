@@ -825,7 +825,7 @@ html[lang="ur"] .story-body {
   color: var(--wire);
 }
 
-/* The maker's schedule card: a feeder card turned business card. */
+/* Author page card: a feeder card turned business card. */
 .maker-card {
   border: 2px solid var(--ink);
   background: var(--surface);
@@ -889,7 +889,7 @@ html[dir="rtl"] .maker-link:hover .maker-arrow {
   translate: -4px 0;
 }
 
-/* Architecture page: links to the dbt docs and the code (styled like the maker's link cards). */
+/* Architecture page: links to the dbt docs and the code (styled like the Author page's link cards). */
 .arch-explore {
   border-color: var(--ink);
   background: var(--surface);
@@ -899,7 +899,7 @@ html[dir="rtl"] .maker-link:hover .maker-arrow {
   color: var(--accent);
 }
 
-/* The maker card never grows past the page on phones: one shrinkable column, long links wrap. */
+/* The Author card never grows past the page on phones: one shrinkable column, long links wrap. */
 .maker-card {
   grid-template-columns: minmax(0, 1fr);
 }
