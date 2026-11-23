@@ -2,6 +2,12 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-23 (Infrastructure as code for the optional Databricks path)
+- **Terraform module in `infra/databricks/`** (owner chose Databricks). It declares only what the existing Databricks path uses: the `roshni_raw` and `roshni` schemas in the `workspace` catalog (a new catalog is optional, off by default), the `uploads` volume, a 2X-Small serverless SQL warehouse with 5-minute auto-stop (or an existing warehouse ID), a serverless job whose dbt task runs `dbt build` on this repo daily at 09:30 Asia/Karachi, **created paused**, and read grants for listed principals (none by default). Provider `databricks/databricks` pinned to 1.143.0.
+- **Why reuse, not create, on Free Edition:** Free Edition allows "One SQL warehouse, limited to a 2X-Small cluster size" and already has one, and it has serverless compute only and no account APIs. So the default reuses the `workspace` catalog, the warehouse is reused by ID, and the job has no cluster block. With those settings nothing needs a paid workspace.
+- **No credentials, no automatic apply.** Auth comes from `DATABRICKS_HOST`/`DATABRICKS_TOKEN` or a `~/.databrickscfg` profile; tfvars and state are git-ignored. The dbt task uses a profile Databricks generates from the warehouse, catalog and schema, so no token is stored in the job. CI (`infra.yml`, on `infra/**`) runs `terraform fmt -check`, `init -backend=false`, `validate` and tflint, never plan or apply. The schemas created by the 2026-10 run are adopted with `terraform import` (README).
+- **Not proven until applied:** that the workspace accepts each object, that the generated dbt profile builds the project (the 2026-10 PASS=78 used `dbt/profiles.yml`), and the warehouse limit. Data still arrives only through `scripts/databricks_load.py`.
+
 ## 2026-11-23 (Tab names)
 - **"How it's built" is now "Architecture" and "The maker" is "Author"** (owner: the old names sounded informal). Urdu: ساخت and مصنف. The page kickers, the author card's label and the browser-tab titles use the same words, and the README links match. The URLs stay `/architecture/` and `/maker/`, so existing links keep working.
 

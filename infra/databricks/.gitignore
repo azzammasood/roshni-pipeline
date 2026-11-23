@@ -1,0 +1,8 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+# Local values (host, warehouse ID) stay local; only the example is committed.
+*.tfvars
+!terraform.tfvars.example
