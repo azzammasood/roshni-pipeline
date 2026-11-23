@@ -1,4 +1,4 @@
-// The maker's name, quote and links. Career details live on the linked portfolio, not here
+// Name, quote and links on the Author page. Career details live on the linked portfolio, not here
 // (owner, 2026-10-19). The name has an Urdu form; the quote stays in English.
 export const MAKER = {
   name: { en: "Ahmad Uzzam Masood", ur: "احمد عزام مسعود" } as Record<string, string>,
