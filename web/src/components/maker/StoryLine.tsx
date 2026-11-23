@@ -1,5 +1,5 @@
 "use client";
-// "The night it started": the maker's story as chapters hung on a power line that runs down the
+// "The night it started": the Author page's story as chapters hung on a power line that runs down the
 // page. Each chapter's lamp lights (and stays lit) when the chapter scrolls into view; the last
 // lamp is this page. Static HTML shows every chapter lit, so nothing depends on JavaScript.
 import { useEffect, useRef, useState } from "react";
