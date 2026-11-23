@@ -15,6 +15,7 @@ on:
 permissions:
   contents: write # commits review decisions and effective dates (dbt/seeds) back to main
   issues: write # failure-issue.sh, notice-issue.sh
+  actions: read # publish-run history for the health document
 
 concurrency:
   group: publish
@@ -104,7 +105,14 @@ jobs:
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           ROSHNI_NARRATOR_SPEND_CAP_USD: "0.01"
-      - run: uv run roshni export
+      # The health document (site page /health/): publish runs from the Actions API, fetch activity
+      # from the snapshot store, and table sizes carried forward from the live health.json.
+      - run: >-
+          uv run roshni export --snapshots store
+          --github-repo "${{ github.repository }}"
+          --previous-health "https://azzammasood.github.io/roshni-site/data/v1/health.json"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       # dbt docs (models, tests, lineage graph) as one static page, served at <site>/dbt-docs/.
       - run: uv run roshni dbt-docs --out data/dbt-docs
 

@@ -367,13 +367,23 @@ def export(
     write_schemas: bool = typer.Option(
         False, "--write-schemas", help="Regenerate schemas/v1/*.schema.json from the models."
     ),
+    snapshots: Path = typer.Option(
+        None, help="Snapshot store: daily fetch activity for the health document."
+    ),
+    github_repo: str = typer.Option(
+        None, help="owner/name: publish-run history from the GitHub Actions API (GITHUB_TOKEN)."
+    ),
+    previous_health: str = typer.Option(
+        None, help="URL of the live health.json: its table-size history is carried forward."
+    ),
 ) -> None:
     """Write the static JSON export and validate it against the committed JSON Schemas."""
     import duckdb
 
     from roshni.export.build import build_export, validate_export
     from roshni.export.build import write_schemas as write_schema_files
-    from roshni.paths import DATA_DIR
+    from roshni.export.health import build_health
+    from roshni.paths import DATA_DIR, REPO_ROOT
 
     if write_schemas:
         for p in write_schema_files():
@@ -386,7 +396,15 @@ def export(
     )
     con = duckdb.connect(str(db or DATA_DIR / "roshni.duckdb"), read_only=True)
     try:
-        counts = build_export(con, out, reports[-1] if reports else None)
+        health = build_health(
+            con,
+            DATA_DIR / "parsed",
+            REPO_ROOT / "dbt" / "target" / "run_results.json",
+            store=snapshots,
+            repo=github_repo,
+            previous_url=previous_health,
+        )
+        counts = build_export(con, out, reports[-1] if reports else None, health)
     finally:
         con.close()
     for name, status in validate_export(out).items():

@@ -11,7 +11,8 @@ import jsonschema
 import yaml
 
 from roshni.export import models as m
-from roshni.paths import CONFIG_DIR, REPO_ROOT
+from roshni.export.health import build_health
+from roshni.paths import CONFIG_DIR, DATA_DIR, REPO_ROOT
 from roshni.sources.registry import load_registry
 
 SCHEMA_DIR = REPO_ROOT / "schemas" / "v1"
@@ -326,7 +327,10 @@ def _meta(con, docs: list[str]) -> m.Meta:
 
 
 def build_export(
-    con: duckdb.DuckDBPyConnection, out: Path, report_json: Path | None = None
+    con: duckdb.DuckDBPyConnection,
+    out: Path,
+    report_json: Path | None = None,
+    health: m.Health | None = None,
 ) -> dict[str, int]:
     utc_session(con)
     now = datetime.now(UTC).replace(microsecond=0)
@@ -367,6 +371,10 @@ def build_export(
             for r in _rows(con, "select * from mart_news_headline order by recency")
         ],
     }
+    # Without inputs from the CLI: local tables only (no store, run history or live sizes).
+    docs["health"] = health or build_health(
+        con, DATA_DIR / "parsed", REPO_ROOT / "dbt" / "target" / "run_results.json"
+    )
     docs = {"meta": _meta(con, ["meta", *docs]), **docs}
     out.mkdir(parents=True, exist_ok=True)
     counts = {}
@@ -374,7 +382,8 @@ def build_export(
         env = m.DOCUMENTS[name](
             schema_id=f"roshni/{name}/v1", schema_version=m.SCHEMA_VERSION, generated_at=now,
             last_updated=last,
-            label={"national": m.NATIONAL_LABEL, "news": m.NEWS_LABEL}.get(name, m.LABEL),
+            label={"national": m.NATIONAL_LABEL, "news": m.NEWS_LABEL,
+                   "health": m.HEALTH_LABEL}.get(name, m.LABEL),
             data=data,
         )  # fmt: skip
         (out / f"{name}.json").write_text(env.model_dump_json(), encoding="utf-8")

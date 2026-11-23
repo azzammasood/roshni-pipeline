@@ -141,13 +141,14 @@ export default async function Architecture({ params }: PageProps<"/[lang]/archit
         <h2 id="explore" className="headline text-2xl">
           {t.exploreTitle}
         </h2>
-        <ul className="grid gap-3 sm:grid-cols-2 max-w-4xl">
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl">
           {[
             [t.docsLink, t.docsBody, DBT_DOCS],
             [t.codeLink, t.codeBody, CODE_REPO],
+            [dict.health.footerLink, dict.health.linkBody, `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/${locale}/health/`],
           ].map(([label, body, href]) => (
             <li key={href}>
-              <a href={href} className="maker-link arch-explore" rel="noopener noreferrer" target={href === DBT_DOCS ? undefined : "_blank"}>
+              <a href={href} className="maker-link arch-explore" rel="noopener noreferrer" target={href === CODE_REPO ? "_blank" : undefined}>
                 <span>
                   <span className="block headline text-xl">{label}</span>
                   <span className="block text-sm text-muted">{body}</span>

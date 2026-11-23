@@ -1,0 +1,283 @@
+{
+  "$defs": {
+    "DbtResults": {
+      "additionalProperties": false,
+      "properties": {
+        "failed": {
+          "title": "Failed",
+          "type": "integer"
+        },
+        "passed": {
+          "description": "Models, seeds and tests that succeeded",
+          "title": "Passed",
+          "type": "integer"
+        },
+        "skipped": {
+          "title": "Skipped",
+          "type": "integer"
+        },
+        "warned": {
+          "title": "Warned",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "passed",
+        "warned",
+        "failed",
+        "skipped"
+      ],
+      "title": "DbtResults",
+      "type": "object"
+    },
+    "FetchDay": {
+      "additionalProperties": false,
+      "description": "Snapshot activity on one Asia/Karachi day.",
+      "properties": {
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "errors": {
+          "description": "Failed fetches, not counting links known to be broken",
+          "title": "Errors",
+          "type": "integer"
+        },
+        "fetches": {
+          "description": "Requests made (documents and news feeds)",
+          "title": "Fetches",
+          "type": "integer"
+        },
+        "new_files": {
+          "description": "New or changed files stored",
+          "title": "New Files",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "date",
+        "fetches",
+        "new_files",
+        "errors"
+      ],
+      "title": "FetchDay",
+      "type": "object"
+    },
+    "Health": {
+      "additionalProperties": false,
+      "description": "What the pipeline did (since 1.9.0): publish runs, fetch activity, table sizes, dbt\nresults and quarantine counts. About the pipeline, not about load shedding.",
+      "properties": {
+        "dbt": {
+          "$ref": "#/$defs/DbtResults"
+        },
+        "fetch_days": {
+          "description": "Every day with snapshot activity",
+          "items": {
+            "$ref": "#/$defs/FetchDay"
+          },
+          "title": "Fetch Days",
+          "type": "array"
+        },
+        "freshness_target_hours": {
+          "description": "The site should never be older than this",
+          "title": "Freshness Target Hours",
+          "type": "integer"
+        },
+        "parsed": {
+          "items": {
+            "$ref": "#/$defs/TableQuality"
+          },
+          "title": "Parsed",
+          "type": "array"
+        },
+        "publish_runs": {
+          "description": "Newest completed runs, oldest first",
+          "items": {
+            "$ref": "#/$defs/PublishRun"
+          },
+          "title": "Publish Runs",
+          "type": "array"
+        },
+        "sizes": {
+          "description": "One point per publish date, oldest first",
+          "items": {
+            "$ref": "#/$defs/SizePoint"
+          },
+          "title": "Sizes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "freshness_target_hours",
+        "dbt",
+        "parsed",
+        "sizes",
+        "publish_runs",
+        "fetch_days"
+      ],
+      "title": "Health",
+      "type": "object"
+    },
+    "PublishRun": {
+      "additionalProperties": false,
+      "description": "One completed run of the daily publish workflow (GitHub Actions).",
+      "properties": {
+        "conclusion": {
+          "description": "success, failure, cancelled, ...",
+          "title": "Conclusion",
+          "type": "string"
+        },
+        "duration_seconds": {
+          "title": "Duration Seconds",
+          "type": "integer"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "trigger": {
+          "description": "workflow_run (after the snapshot), schedule or manual",
+          "title": "Trigger",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "started_at",
+        "duration_seconds",
+        "conclusion",
+        "trigger",
+        "url"
+      ],
+      "title": "PublishRun",
+      "type": "object"
+    },
+    "QuarantineReason": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "description": "The parser's reason, up to the first colon",
+          "title": "Reason",
+          "type": "string"
+        },
+        "rows": {
+          "title": "Rows",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "reason",
+        "rows"
+      ],
+      "title": "QuarantineReason",
+      "type": "object"
+    },
+    "SizePoint": {
+      "additionalProperties": false,
+      "description": "Warehouse table sizes on one publish date.",
+      "properties": {
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "rows": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Rows",
+          "type": "object"
+        }
+      },
+      "required": [
+        "date",
+        "rows"
+      ],
+      "title": "SizePoint",
+      "type": "object"
+    },
+    "TableQuality": {
+      "additionalProperties": false,
+      "description": "A parsed table: rows kept and rows quarantined with a reason.",
+      "properties": {
+        "quarantined": {
+          "title": "Quarantined",
+          "type": "integer"
+        },
+        "rows": {
+          "title": "Rows",
+          "type": "integer"
+        },
+        "table": {
+          "title": "Table",
+          "type": "string"
+        },
+        "top_reasons": {
+          "description": "The three most common reasons",
+          "items": {
+            "$ref": "#/$defs/QuarantineReason"
+          },
+          "title": "Top Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "table",
+        "rows",
+        "quarantined",
+        "top_reasons"
+      ],
+      "title": "TableQuality",
+      "type": "object"
+    }
+  },
+  "$id": "https://github.com/azzammasood/roshni-pipeline/schemas/v1/health.json",
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/Health"
+    },
+    "generated_at": {
+      "description": "When this export was produced (UTC)",
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "label": {
+      "description": "What the numbers are: schedules, or figures reported to the regulator; never measurements",
+      "title": "Label",
+      "type": "string"
+    },
+    "last_updated": {
+      "description": "Latest source fetch or warehouse build (UTC)",
+      "format": "date-time",
+      "title": "Last Updated",
+      "type": "string"
+    },
+    "schema_id": {
+      "description": "Document type and major version, e.g. roshni/feeders/v1",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Semantic version of the document schema",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_id",
+    "schema_version",
+    "generated_at",
+    "last_updated",
+    "label",
+    "data"
+  ],
+  "title": "roshni/health/v1",
+  "type": "object"
+}
