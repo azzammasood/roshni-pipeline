@@ -2,6 +2,9 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-23 (Architecture decision records)
+- **The main design trade-offs are summarised as ADRs in [`docs/adr/`](adr/README.md)** (seven records: DuckDB with portable dbt SQL, static versioned JSON on Pages, private snapshot repository, GE vs dbt tests, rules-then-LLM entity resolution, automated review gates, publish after a failed snapshot plus the watchdog). This log stays the full, dated source; the records point back to its entries.
+
 ## 2026-11-23 (Tab names; first person)
 - **"How it's built" is now "Architecture" and "The maker" is "Author"** (owner: the old names sounded informal). Urdu: ساخت and مصنف. The page kickers, the author card's label and the browser-tab titles use the same words, and the README links match. The URLs stay `/architecture/` and `/maker/`, so existing links keep working.
 - **First person, not third** (owner): the Author card reads "Data engineer" (was "Data engineer, and the person behind Roshni"; Urdu ڈیٹا انجینئر). The README's About section now reads "I'm Ahmad Uzzam Masood, a data engineer in Islamabad, and I built Roshni", and the case study says "my approval". Code comments call the page the Author page. The footer credit "Built by {name}" stays, as an attribution line.
