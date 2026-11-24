@@ -2,7 +2,6 @@
 
 Newest first. Format: date — decision — why.
 
-
 ## 2026-11-24 (README first screen)
 - **The README leads with the architecture diagram, then the why, then impact and scale in numbers** (owner, from a 2026 article on data-engineering portfolios: a reviewer gives a repo about 60 seconds). Order now:
   - badges (ci, publish, watchdog, license) and live links, including the pipeline health page;
