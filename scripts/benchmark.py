@@ -24,6 +24,7 @@ Usage:
   uv run --group bench python scripts/benchmark.py [--parsed DIR] [--factors 1,10,100]
                                                    [--only overhead,full,incremental,synthetic]
                                                    [--repeat N] [--keep]
+                                                   [--timeout SECONDS] [--exclude DBT_EXPR]
 """
 
 import argparse
@@ -32,6 +33,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -74,6 +76,8 @@ INT_KEYS: dict[str, list[str]] = {
     "kelectric_feeder_list": ["serial"],
 }
 INT_OFFSET = 10_000_000
+TIMEOUT: float | None = None  # seconds per build; set by --timeout
+EXCLUDE: str | None = None  # dbt --exclude for synthetic builds; set by --exclude
 
 
 def machine_spec() -> dict:
@@ -119,34 +123,62 @@ def run_build(db: Path, parsed: Path, target_dir: Path, log: Path, *extra: str) 
            "--parsed", str(parsed), "--db", str(db), *extra]  # fmt: skip
     # Other work on the machine skews timings; record how busy the CPU was just before.
     busy = psutil.cpu_percent(interval=1.0)
+    started_utc = datetime.now(UTC).isoformat(timespec="seconds")
     with log.open("w", encoding="utf-8") as out:
         start = time.perf_counter()
         proc = subprocess.Popen(cmd, stdout=out, stderr=subprocess.STDOUT, env=env, cwd=REPO_ROOT)
         peak = 0
-        if sys.platform == "win32":
-            # A uv venv's python.exe is a launcher that starts the real interpreter as a child,
-            # so watch the whole process tree. peak_wset is the OS-kept peak working set of
-            # each process; the largest one is the interpreter running dbt and DuckDB.
-            root = psutil.Process(proc.pid)
-            peaks: dict[int, int] = {}
-            while proc.poll() is None:
+        timed_out = False
+        root = psutil.Process(proc.pid)
+        peaks: dict[int, int] = {}
+        # The poll runs every 50 ms; a much longer gap means the machine slept or suspended the
+        # process, and the timing is not valid.
+        last, max_gap = start, 0.0
+        while True:
+            now = time.perf_counter()
+            max_gap, last = max(max_gap, now - last), now
+            if sys.platform == "win32":
+                if proc.poll() is not None:
+                    code = proc.returncode
+                    break
+                # A uv venv's python.exe is a launcher that starts the real interpreter as a
+                # child, so watch the whole process tree. peak_wset is the OS-kept peak working
+                # set of each process; the largest one is the interpreter running dbt and DuckDB.
                 with contextlib.suppress(psutil.Error):
                     for p in [root, *root.children(recursive=True)]:
                         with contextlib.suppress(psutil.Error):
                             peaks[p.pid] = max(peaks.get(p.pid, 0), p.memory_info().peak_wset)
-                time.sleep(0.05)
-            code = proc.wait()
-            peak = max(peaks.values(), default=0)
-        else:
-            _, status, usage = os.wait4(proc.pid, 0)
-            proc.returncode = code = os.waitstatus_to_exitcode(status)
-            peak = usage.ru_maxrss * (1 if sys.platform == "darwin" else 1024)
+            else:
+                pid, status, usage = os.wait4(proc.pid, os.WNOHANG)
+                if pid:
+                    proc.returncode = code = os.waitstatus_to_exitcode(status)
+                    peaks[pid] = usage.ru_maxrss * (1 if sys.platform == "darwin" else 1024)
+                    break
+            if TIMEOUT and time.perf_counter() - start > TIMEOUT:
+                timed_out = True
+                for p in [*root.children(recursive=True), root]:
+                    with contextlib.suppress(psutil.Error):
+                        p.kill()
+                proc.wait()
+                code = None
+                break
+            time.sleep(0.05)
+        peak = max(peaks.values(), default=0)
         wall = time.perf_counter() - start
     text = log.read_text(encoding="utf-8", errors="replace")
     done = [ln for ln in text.splitlines() if "Done. PASS=" in ln]
+    started = re.findall(r"START \S+(?: \S+)* model main\.(\w+)", text)
+    finished = set(
+        re.findall(r"(?:OK created|ERROR creating) \S+(?: \S+)* model main\.(\w+)", text)
+    )
     return {
         "args": list(extra),
+        "started_utc": started_utc,
+        "finished_utc": datetime.now(UTC).isoformat(timespec="seconds"),
         "exit_code": code,
+        "timed_out": timed_out,
+        "longest_poll_gap_seconds": round(max_gap, 3),
+        "models_running_when_stopped": sorted(set(started) - finished) if timed_out else [],
         "wall_seconds": round(wall, 3),
         "peak_memory_bytes": peak,
         "cpu_busy_percent_before": busy,
@@ -173,7 +205,9 @@ def node_timings(path: Path) -> dict:
     }
 
 
-def warehouse_stats(db: Path) -> dict:
+def warehouse_stats(db: Path, views: bool = True) -> dict:
+    """File size and row counts. views=False skips views: counting a view re-runs its query,
+    which at large synthetic factors can take far longer than the build itself."""
     con = duckdb.connect(str(db), read_only=True)
     try:
         rels = con.execute(
@@ -182,6 +216,9 @@ def warehouse_stats(db: Path) -> dict:
         ).fetchall()
         rows = {}
         for name, kind in rels:
+            if kind == "VIEW" and not views:
+                rows[name] = {"type": "view", "rows": None}
+                continue
             n = con.execute(f'select count(*) from "{name}"').fetchone()[0]
             rows[name] = {"type": "view" if kind == "VIEW" else "table", "rows": n}
     finally:
@@ -322,10 +359,11 @@ def scenario_synthetic(parsed: Path, work: Path, factors: list[int], repeat: int
         entry: dict = {"factor": factor, "input_rows": inputs, "runs": []}
         for i in range(repeat):
             db = d / f"roshni-{i}.duckdb"
-            r = run_build(db, d / "parsed", d / f"target-{i}", d / f"build-{i}.log")
+            ex = ["--exclude", EXCLUDE] if EXCLUDE else []
+            r = run_build(db, d / "parsed", d / f"target-{i}", d / f"build-{i}.log", *ex)
             if db.exists():
                 try:
-                    r |= warehouse_stats(db)
+                    r |= warehouse_stats(db, views=factor <= 10)
                 except duckdb.Error as e:
                     r["stats_error"] = str(e)
             entry["runs"].append(r)
@@ -347,7 +385,17 @@ def main() -> int:
     ap.add_argument("--out", type=Path, default=None)
     ap.add_argument("--work", type=Path, default=None, help="Work folder (default: a temp dir).")
     ap.add_argument("--keep", action="store_true", help="Keep the work folder.")
+    ap.add_argument(
+        "--timeout",
+        type=float,
+        default=None,
+        help="Stop a build after this many seconds and record it as timed out.",
+    )
+    ap.add_argument("--exclude", default=None,
+                    help="dbt --exclude expression for the synthetic builds.")  # fmt: skip
     a = ap.parse_args()
+    global TIMEOUT, EXCLUDE
+    TIMEOUT, EXCLUDE = a.timeout, a.exclude
 
     parsed = a.parsed.resolve()
     if not any(parsed.glob("*.parquet")):
@@ -372,6 +420,8 @@ def main() -> int:
             for f in sorted(parsed.glob("*.parquet"))
         },  # fmt: skip
         "work_dir": str(work),
+        "timeout_seconds": a.timeout,
+        "synthetic_exclude": a.exclude,
     }
     try:
         if "overhead" in only:

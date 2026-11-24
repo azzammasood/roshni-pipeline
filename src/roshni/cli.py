@@ -174,6 +174,7 @@ def build(
     db: Path = typer.Option(None, help="DuckDB file (default: data/roshni.duckdb)."),
     command: str = typer.Option("build", help="dbt command: build, run, test, parse, seed."),
     select: str = typer.Option(None, help="dbt --select expression."),
+    exclude: str = typer.Option(None, help="dbt --exclude expression."),
     target: str = typer.Option("dev", help="dbt target: dev (DuckDB) or databricks."),
 ) -> None:
     """Build the warehouse with dbt (seeds, models, tests) on DuckDB or Databricks."""
@@ -192,6 +193,8 @@ def build(
     args += ["--target", target]
     if select:
         args += ["--select", select]
+    if exclude:
+        args += ["--exclude", exclude]
     result = dbtRunner().invoke(args)
     if not result.success:
         raise typer.Exit(1)
