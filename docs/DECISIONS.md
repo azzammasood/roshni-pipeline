@@ -2,6 +2,16 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-24 (README first screen)
+- **The README leads with the architecture diagram, then the why, then impact and scale in numbers** (owner, from a 2026 article on data-engineering portfolios: a reviewer gives a repo about 60 seconds). Order now:
+  - badges (ci, publish, watchdog, license) and live links, including the pipeline health page;
+  - the Mermaid diagram, with the stage table folded under it;
+  - "Why";
+  - "Impact and scale", a table of figures dated 2026-11-24 from the health export, the dbt manifest and the test counts. It states 55 of 77 publish runs succeeded and links the October stall's ADR rather than hiding it;
+  - "Key trade-offs", linking the seven ADRs and the hard-problems doc.
+
+  The old "At a glance" table, whose counts were a month stale, is replaced. Operations now covers the watchdog, the notices issue and the Terraform module. "How this scales" is unchanged until the benchmark results land.
+
 ## 2026-11-23 (Pipeline health page)
 - **A public pipeline health page** (`/[lang]/health/`, export 1.9.0 `health`; owner, from a 2026 article on data-engineering portfolios: show how the system runs, with numbers). It is linked from the footer and the Architecture page. It shows:
   - the last publish run and its result;
