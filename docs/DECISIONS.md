@@ -8,8 +8,6 @@ Newest first. Format: date — decision — why.
 - **Finding: one join is quadratic.** `stg_pbs_urban` has `pop.key_rows = 1` in a LEFT JOIN's ON clause. DuckDB 1.5.6 plans that as a nested-loop join. `dim_area_indicators` takes 0.942–1.001 s at 1×, 53.422–56.172 s at 10× and 1,710.352 s at 100×, which is 98 % of the 100× build. Without that model and its downstream, the 100× build takes 86.801 s. The model is unchanged here: a fix must keep every census value identical, and simply dropping the condition is not correct.
 - **Only runs taken while the machine was awake count.** A first batch on 2026-11-23 ran 2–5× slower, with Modern Standby transitions in the Windows log, and was discarded. The script now records each run's UTC start and end, and the longest gap between its 50 ms polls. Across the runs used, the longest gap was 0.503 s.
 
-## 2026-11-23 (Tab names)
-
 ## 2026-11-24 (README first screen)
 - **The README leads with the architecture diagram, then the why, then impact and scale in numbers** (owner, from a 2026 article on data-engineering portfolios: a reviewer gives a repo about 60 seconds). Order now:
   - badges (ci, publish, watchdog, license) and live links, including the pipeline health page;
