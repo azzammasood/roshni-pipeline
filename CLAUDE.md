@@ -44,6 +44,8 @@ uv run roshni resolve                                           # candidates -> 
 uv run roshni dark-now [--at "2026-10-10 23:30"] [--level 12] [--json]   # scheduled-dark feeders
 uv run roshni report [--engine auto|openrouter|template]   # weekly equity report -> data/reports
 uv run roshni export [--write-schemas]                     # static JSON -> data/export/v1, validated
+uv run roshni ask "question" [--json] [--model groq/<id>]  # Ask Roshni (GROQ_API_KEY; docs/ask-roshni.md)
+uv run roshni ask-eval [--model P/M] [--only ID]          # golden-set eval -> data/reports/ask_eval_*
 docker compose -f airflow/docker-compose.yml up --build    # Airflow showcase on :8080 (manual DAG)
 uv run --group databricks python scripts/databricks_load.py     # upload parsed tables (env creds)
 uv run --group databricks roshni build --target databricks      # same models on Databricks
@@ -66,6 +68,8 @@ src/roshni/fetch/      http.py (PoliteClient), discover.py, store.py, snapshot.p
 src/roshni/parsers/    pdftext.py (poppler only), one module per source, run.py
 src/roshni/quality/    suites.py (GE suites per parsed table)
 src/roshni/export/     models.py (pydantic, source of schemas/v1), build.py; airflow/ = showcase DAG
+src/roshni/llm/        chain.py: OpenAI-compatible provider chain (config/llm.yml: Groq, then OpenRouter)
+src/roshni/ask/        semantic layer, sqlguard (sqlglot), engine, evaluate; config/semantic_layer.yml, ask_golden.yml
 roshni-snapshots       private repo, branch data-snapshots: raw_snapshots.csv + files/ (written
                        only by snapshot.yml/news.yml via .github/actions/snapshot-store; secret
                        SNAPSHOTS_DEPLOY_KEY). Third-party documents never go in this public repo.
@@ -123,4 +127,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Gates automated (2026-11-08, owner): new schedule versions dated automatically (`roshni effective-dates`, basis `automatic: …`), new IESCO listing rows fetched under a derived key; both posted to the "Pipeline notices" issue instead of stopping the run. PD GSC maintenance workbook added.
 - Resilience (2026-11-08, owner): publish runs after a failed snapshot; K-Electric checks use physical bounds (other daily totals flagged, not quarantined); browser reads the slim maintenance_upcoming (export 1.8.0).
 - Pipeline health (2026-11-23, owner): /health/ page from export 1.9.0 `health` (Actions API runs, snapshot-log fetch days, carried-forward table sizes, dbt results, quarantine with reasons); footer + Architecture links; axe 0.
+- Ask Roshni (2026-11-24, owner): `roshni ask` text-to-SQL over config/semantic_layer.yml, sqlglot guard, Groq main / OpenRouter fallback (config/llm.yml, no paid credits), prompt guard; `roshni ask-eval` golden set 25 items: qwen3.8-27b 25/25, gpt-oss-120b 25/25, gpt-oss-20b 24/25.
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).

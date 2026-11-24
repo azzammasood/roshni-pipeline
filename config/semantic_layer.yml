@@ -1,0 +1,162 @@
+# Semantic layer for Ask Roshni: the ONLY tables and columns an LLM-written query may touch.
+# Column descriptions come from the dbt docs (dbt/models/**/_*.yml), so there is one source of
+# truth; `note` adds guidance for the planner, `values: auto` lists distinct values (<= 25) from
+# the warehouse in the prompt. `caveats` are appended, verbatim, to every answer that uses the
+# table. Adding a table or column here is a reviewed change (tests check every entry exists).
+rules:
+  - These are PUBLISHED SCHEDULES and announcements, not measured outages. Never say a
+    feeder "was" or "actually" without power.
+  - Descriptive statistics only. Always return the row count behind an aggregate as `n`.
+  - K-Electric shares are among listed feeders only.
+  - Census figures are descriptive context; never infer income or wealth.
+  - Times are stored in UTC; display Asia/Karachi (UTC+5). Months are 'YYYY-MM' text.
+
+tables:
+  dim_feeder:
+    note: One row per feeder of either company. source = 'kelectric' or 'iesco'.
+    columns:
+      feeder_id: {}
+      source: {values: auto}
+      feeder_name: {}
+      feeder_code: {note: IESCO 6-digit zero-padded code; null for K-Electric.}
+      circle: {values: auto, note: IESCO circle (lower case); null for K-Electric.}
+      grid_name: {}
+      ibc: {note: K-Electric IBC area; null for IESCO.}
+      category: {values: auto}
+      atc_loss_pct: {}
+      in_feeder_list: {}
+      has_schedule: {}
+    caveats:
+      - Feeder attributes are as published by the company.
+
+  mart_ke_feeder_hours:
+    note: K-Electric listed feeders with scheduled hours per day (6 or 12).
+    columns:
+      feeder_id: {}
+      feeder_name: {}
+      ibc: {}
+      grid_name: {}
+      category: {values: auto}
+      atc_loss_pct: {}
+      schedule_match_confidence: {}
+      scheduled_hours_per_day: {}
+      effective_from: {}
+    caveats:
+      - K-Electric scheduled hours are a published schedule, not measured outages.
+      - Shares and averages are among listed feeders only.
+
+  mart_ke_ibc_equity:
+    note: One row per K-Electric IBC area; share_12h_pct is the share of its scheduled feeders on
+      the twelve-hour band.
+    columns:
+      ibc: {}
+      listed_feeders: {}
+      scheduled_feeders: {}
+      feeders_12h: {}
+      feeders_6h: {}
+      share_12h_pct: {}
+      mean_scheduled_hours: {}
+      mean_atc_loss_pct: {}
+      medium_feeders: {}
+      high_feeders: {}
+      very_high_feeders: {}
+    caveats:
+      - IBC figures describe published schedules among listed feeders; small areas have small n.
+
+  mart_ke_subdivision_equity:
+    note: Census 2023 subdivisions of Karachi joined to K-Electric IBC schedule figures.
+    columns:
+      subdivision_name: {}
+      ibcs: {}
+      scheduled_feeders: {}
+      share_12h_pct: {}
+      mean_scheduled_hours: {}
+      mean_atc_loss_pct: {}
+      literacy_pct: {}
+      degree_share_pct: {}
+      pacca_share_pct: {}
+      avg_household_size: {}
+      pop_total: {}
+    caveats:
+      - Census indicators are descriptive context (PBS Census 2023); no causal link is implied.
+
+  mart_feeder_dark_hours:
+    note: Scheduled dark minutes per feeder per local hour (0-23). K-Electric rows have
+      schedule_kind 'daily_cycle' and null scenario_level_hours; IESCO rows have one row per
+      scenario level (2-12 hours of load-shedding a day).
+    columns:
+      feeder_id: {}
+      source: {values: auto}
+      schedule_kind: {values: auto}
+      scenario_level_hours: {values: auto}
+      hour_of_day: {}
+      dark_minutes: {}
+      effective_from: {}
+    caveats:
+      - Dark minutes are scheduled, not measured.
+      - IESCO levels are a scenario playbook (which hours go dark at each level), not a forecast.
+
+  mart_monthly_iesco_shutdowns:
+    note: IESCO announced planned shutdowns per month and circle.
+    columns:
+      month: {}
+      circle: {values: auto}
+      windows: {}
+      window_hours: {}
+      releases: {}
+      first_date: {}
+      last_date: {}
+    caveats:
+      - Planned shutdowns are announcements, not measured outages.
+
+  mart_monthly_maintenance:
+    note: IESCO monthly maintenance schedules per month and workbook item.
+    columns:
+      month: {}
+      item: {values: auto}
+      windows: {}
+      feeders: {}
+      unique_windows: {}
+      unique_window_hours: {}
+      first_date: {}
+      last_date: {}
+    caveats:
+      - Maintenance windows are announced plans, not measured outages.
+
+  fct_maintenance_window:
+    note: One row per announced IESCO maintenance window. outage_date is the planned date.
+    columns:
+      window_id: {}
+      item: {values: auto}
+      feeder_id: {}
+      feeder_name_as_printed: {}
+      division: {}
+      subdivision: {}
+      outage_date: {}
+      start_local: {}
+      end_local: {}
+      window_minutes: {}
+      purpose: {}
+    caveats:
+      - Maintenance windows are announced plans, not measured outages.
+
+  mart_nepra_load_shedding:
+    note: Load-shedding hours per day REPORTED by NEPRA per company and fiscal year.
+      values_disagree marks years where NEPRA reports differ.
+    columns:
+      company: {values: auto}
+      fiscal_year: {values: auto}
+      reported_hours_per_day: {}
+      values_disagree: {}
+    caveats:
+      - These are NEPRA-reported figures, not Roshni measurements; a reported 0 means nil
+        reported.
+
+  mart_ke_schedule_history:
+    note: One row per stored K-Electric schedule version.
+    columns:
+      effective_from: {}
+      feeders: {}
+      avg_scheduled_hours: {}
+    caveats:
+      - Schedule versions are published schedules, not measurements.

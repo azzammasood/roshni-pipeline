@@ -413,3 +413,91 @@ def export(
     for name, status in validate_export(out).items():
         size = (out / f"{name}.json").stat().st_size
         typer.echo(f"{name:18} records={counts[name]:6} bytes={size:9,} schema={status}")
+
+
+@app.command()
+def ask(
+    question: str = typer.Argument(..., help="A question about schedules, e.g. 'Which IBC areas…'"),
+    model: str = typer.Option(None, help="Pin one 'provider/model', e.g. groq/qwen/qwen3.8-27b."),
+    as_json: bool = typer.Option(False, "--json", help="Print JSON (answer, SQL, rows, usage)."),
+    show_sql: bool = typer.Option(True, help="Print the SQL that produced the answer."),
+    db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
+) -> None:
+    """Ask Roshni in plain language: guarded SQL over the semantic layer, validated answer."""
+    import json
+    import sys
+
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # model text may hold any char
+
+    from roshni.ask import engine, sqlguard
+    from roshni.llm.chain import ChainConfig
+
+    cfg = ChainConfig.load()
+    if model:
+        cfg = cfg.pinned(model)
+    con = sqlguard.connect(db or engine.default_db())
+    try:
+        res = engine.ask(question, con, cfg)
+    finally:
+        con.close()
+    if as_json:
+        typer.echo(json.dumps(res.to_json(), default=str, indent=2, ensure_ascii=False))
+        return
+    typer.echo(f"[{res.status}] {res.answer or res.reason}")
+    if res.rows:
+        widths = [
+            min(32, max(len(c), *(len(r[i]) for r in res.rows[:20])))
+            for i, c in enumerate(res.columns)
+        ]
+        cells = zip(res.columns, widths, strict=True)
+        typer.echo("  " + "  ".join(c[:w].ljust(w) for c, w in cells))
+        for r in res.rows[:20]:
+            typer.echo("  " + "  ".join(v[:w].ljust(w) for v, w in zip(r, widths, strict=True)))
+        if len(res.rows) > 20:
+            typer.echo(f"  ... {len(res.rows) - 20} more rows (use --json)")
+    for c in res.caveats:
+        typer.echo(f"  note: {c}")
+    if show_sql and res.sql:
+        typer.echo(f"  sql: {res.sql}")
+    used = sorted(
+        {a["provider"] + "/" + a["model"] for a in res.attempts if a["outcome"] == "accepted"}
+    )
+    typer.echo(
+        f"  usage: {res.tokens} tokens, {res.latency_s}s, guard={res.guard}, "
+        f"models={used}, narrated_by={res.narrated_by}"
+    )
+
+
+@app.command("ask-eval")
+def ask_eval(
+    model: list[str] = typer.Option(
+        None, help="'provider/model' to score (repeatable; default: every model in llm.yml)."
+    ),
+    only: list[str] = typer.Option(None, help="Golden item ids to run (default: all)."),
+    pause: float = typer.Option(8.0, help="Seconds between questions (free-plan token limits)."),
+    out: Path = typer.Option(None, help="Output folder (default: data/reports)."),
+    db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
+) -> None:
+    """Score models on the Ask Roshni golden set: accuracy, refusals, guard, tokens, latency."""
+    import sys
+
+    from roshni.ask import engine, evaluate, semantic, sqlguard
+    from roshni.llm.chain import ChainConfig
+    from roshni.paths import DATA_DIR
+
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    cfg = ChainConfig.load()
+    cfg.max_wait_s = 65  # wait out a per-minute limit instead of failing over during an eval
+    items = [i for i in evaluate.load_items() if not only or i["id"] in only]
+    layer = semantic.load()
+    con = sqlguard.connect(db or engine.default_db())
+    scores = []
+    try:
+        for m in model or cfg.labels():
+            typer.echo(f"== {m}")
+            scores.append(evaluate.evaluate(con, cfg, m, items, layer, pause, typer.echo))
+    finally:
+        con.close()
+    md, js = evaluate.write(scores, out or DATA_DIR / "reports")
+    typer.echo(md.read_text(encoding="utf-8"))
+    typer.echo(f"wrote {md}\nwrote {js}")
