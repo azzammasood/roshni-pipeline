@@ -72,6 +72,7 @@ Figures as of 2026-11-24, from the pipeline's own records; the [pipeline health 
 | **Runs** | A publish run every day, news every 3 hours, a freshness watchdog every 3 hours. **The last 14 publish runs all succeeded**; a successful run takes a median **4 min 20 s**. Of 77 runs recorded since 2026-10-12, 55 succeeded: the failures are a 17-day stall in October, written up in [ADR 0006](docs/adr/0006-automate-review-gates.md). |
 | **Volume** | **3,549** polite fetches over 49 days, **199** new file versions stored. In the warehouse: **48,732** scheduled windows, **20,526** announced maintenance windows, **4,410** planned-shutdown windows, **1,726** feeders with a published schedule (1,101 IESCO, 625 K-Electric) and 130 company-years of NEPRA figures. |
 | **Quality** | 267 Python tests, 556 web tests (including a 514-case check that the browser's "dark now" engine matches the Python one), 38 dbt models with 129 tests (all 172 nodes pass in the latest build), Great Expectations on every parsed table, accessibility checks (axe) at phone width in light and dark themes. |
+| **Build speed (measured)** | A full warehouse build of today's data (181,660 input rows) takes about **12 s** on a 4-core laptop; synthetic **10×** data (1.8 M rows) builds in about **20 s** and **100×** (18.1 M rows) in **139 s**. Method and every run: [`docs/benchmarks.md`](docs/benchmarks.md). |
 | **Output** | About 3,500 static pages in English and Urdu, versioned JSON for every page, and dbt docs with the lineage graph. |
 | **Cost** | About $0 a month on free tiers. The language-model step is capped at $0.01 a run. |
 
@@ -113,7 +114,14 @@ The source inventory and verification oracles are in [`docs/data-audit.md`](docs
 
 ## How this scales
 
-Roshni's data is small: thousands of rows a day, a few hundred megabytes of documents a year. It runs comfortably on free tiers. The same design carries to a national, near-real-time version:
+Roshni's data is small: thousands of rows a day, a few hundred megabytes of documents a year. It runs comfortably on free tiers. I measured how far the current design goes before changing anything ([`docs/benchmarks.md`](docs/benchmarks.md), one 4-core laptop, three runs each):
+
+- **Today's data:** a full build (181,660 input rows, 38 models, 129 tests) takes about 12 s, of which dbt is about 5 s; peak memory about 330 MiB.
+- **Incremental:** loading one new press release into `fct_planned_shutdown` takes 0.16 s of model time.
+- **10× and 100× synthetic data:** 1.8 M rows build in about 20 s; 18.1 M rows in 139 s with about 4 GB peak memory and a 1 GB DuckDB file.
+- **What it found:** one census join was quadratic. At 100× it took 1,710 of 1,748 seconds. Rewriting it to join on an equality key brought the 100× build down to 139 s, with identical output.
+
+So a single DuckDB file comfortably holds about 100 times today's volume. Beyond that, the same design carries to a national, near-real-time version:
 
 | Pressure | Today | At scale |
 |---|---|---|
