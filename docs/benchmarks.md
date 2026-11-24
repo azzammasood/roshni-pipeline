@@ -1,6 +1,8 @@
 # Benchmarks: how the warehouse build scales
 
-Measured 2026-11-24 between 08:54 and 09:39 UTC on one laptop with `scripts/benchmark.py`.
+Measured 2026-11-24 between 08:54 and 09:53 UTC on one laptop with `scripts/benchmark.py`.
+Most results are from main before the join fix; the [After the fix](#after-the-fix) section
+measures the same builds with the fixed `stg_pbs_urban`.
 Every number below was copied from that script's JSON output (or, for the join timing, from the
 DuckDB session quoted under [Finding](#finding-one-join-is-quadratic)). Nothing is estimated or
 rounded up:
@@ -18,6 +20,8 @@ rounded up:
 | Synthetic 10×, full build (3) | 1,813,315 | 65.186–66.998 s | 1,057.7–1,073.5 MiB | 97,005,568–98,054,144 B | PASS=172 |
 | Synthetic 100×, full build (1) | 18,129,865 | 1,748.282 s | 3,922.4 MiB | 921,186,304 B | PASS=172 |
 | Synthetic 100× without `dim_area_indicators+` (1) | 18,129,865 | 86.801 s | 3,750.0 MiB | 416,296,960 B | PASS=153 |
+| **After the join fix:** synthetic 10×, full build (3) | 1,813,315 | 20.041–21.343 s | 965.6–1,035.0 MiB | 96,481,280–97,005,568 B | PASS=172 |
+| **After the join fix:** synthetic 100×, full build (1) | 18,129,865 | 138.940 s | 3,961.3 MiB | 998,780,928 B | PASS=172 |
 
 - **Today's data builds in about 12 s, and over half of that is fixed cost.** A full build is
   43 relations, 172 dbt nodes. Process start, dbt import and project parse take 6.865–7.136 s on
@@ -26,9 +30,11 @@ rounded up:
   press release (198 windows), the model itself runs in 0.159–0.166 s and adds exactly those
   rows: 4,212 → 4,410. With nothing new it runs in 0.144–0.148 s. The whole command takes
   5.864–7.176 s either way.
-- **One model does not scale.** `dim_area_indicators` takes 0.942–1.001 s at 1×,
-  53.422–56.172 s at 10× and 1,710.352 s at 100×. That is 98 % of the 100× build's dbt time.
-  The cause is one join condition (see [Finding](#finding-one-join-is-quadratic)).
+- **One model did not scale, and is now fixed.** Before the fix, `dim_area_indicators` took
+  0.942–1.001 s at 1×, 53.422–56.172 s at 10× and 1,710.352 s at 100×: 98 % of the 100× build's
+  dbt time. The cause was one join condition (see [Finding](#finding-one-join-is-quadratic)).
+  After the fix it takes 39.565 s at 100×, and the whole 100× build takes 138.940 s instead of
+  1,748.282 s, with every output value unchanged.
 - **Everything else scales well.** Without that model and its downstream (153 nodes), the build
   takes 11.696–12.413 s at 1×, 15.674–16.020 s at 10× and 86.801 s at 100×. Peak memory stays
   under 4 GiB on a 16 GB laptop at 100×.
@@ -183,10 +189,36 @@ rows:
 
 Both versions return the same number of rows here, but dropping the condition is not a correct
 fix: it would let a population row with an ambiguous key take a housing row. A fix has to keep
-every output value identical (for example, by computing the condition before the join). It is
-left as a follow-up, because it changes a model whose census numbers are regression-tested. Real
-census data will not grow 10×: PBS publishes these tables once per census. So this matters for
-reuse of the pattern, not for Roshni's daily build.
+every output value identical. Real census data will not grow 10×: PBS publishes these tables
+once per census. So this matters for reuse of the pattern more than for Roshni's daily build.
+
+### After the fix
+
+`stg_pbs_urban` now applies the uniqueness rules before the join:
+- housing rows whose key is not unique are filtered out in their own CTE;
+- an ambiguous population key becomes a NULL join key (`case when key_rows = 1 then area_key
+  end`), which matches nothing, exactly as the old ON condition did.
+
+The join is then a plain equality join, and DuckDB plans it as a `HASH_JOIN`. Same session
+method as above: 0.019 s at 1× and 0.097 s at 10× (was 0.227 s and 18.726 s).
+
+**Same outputs.** A full build on today's data was compared with a build of main (`d4cfaab`),
+relation by relation, with `EXCEPT ALL` in both directions. 42 of 43 relations are identical.
+The 43rd, `mart_build_info`, differs only in `built_at`. Today's data has no ambiguous urban
+keys, so `tests/test_pbs_urban_join.py` covers those cases with hand-made rows: an ambiguous
+population key, an ambiguous housing key, a missing housing row, and the same key in another
+province. The test passes on both the old and the new SQL.
+
+| Factor | Input rows | Wall s | dbt s | `dim_area_indicators` s | Peak MiB | DuckDB bytes | dbt result |
+|---|---|---|---|---|---|---|---|
+| 1× | 181,660 | 16.588 / 13.293 / 14.153 | 6.212 / 4.875 / 5.036 | 0.343 / 0.293 / 0.316 | 292.0 / 329.4 / 281.5 | 17,051,648 / 17,313,792 / 17,051,648 | PASS=172 |
+| 10× | 1,813,315 | 21.343 / 20.041 / 21.256 | 11.907 / 11.443 / 10.956 | 3.478 / 2.831 / 3.164 | 969.9 / 1,035.0 / 965.6 | 97,005,568 / 96,481,280 / 96,743,424 | PASS=172 |
+| 100× | 18,129,865 | 138.940 | 123.957 | 39.565 | 3,961.3 | 998,780,928 | PASS=172 |
+
+Run 2026-11-24 09:47–09:53 UTC. The longest poll gap was 0.253 s. At 100× the slowest node is
+now `fct_schedule_window` (55.367 s), then `dim_area_indicators` (39.565 s),
+`fct_maintenance_window` (38.182 s) and the `unique` test on
+`int_ke_feeder_join.schedule_name_norm` (38.039 s). No single model dominates any more.
 
 ### Rows per relation
 
@@ -276,4 +308,5 @@ uv run --group bench python scripts/benchmark.py --only synthetic --factors 100 
 
 Results go to `data/benchmarks/<timestamp>.json` (git-ignored), or wherever `--out` points.
 The JSON files behind this page are `main2.json`, `excl2.json`, `excl100b.json` and
-`x100b.json`, from runs on 2026-11-24.
+`x100b.json` (before the fix), and `fix-1-10.json` and `fix-100.json` (after it), all from
+runs on 2026-11-24.
