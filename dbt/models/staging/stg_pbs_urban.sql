@@ -1,13 +1,26 @@
 -- Tables 33 (population) and 34 (housing) side by side, joined on the hierarchical key only
 -- where that key is unique on both sides (Sindh PDFs leave some keys ambiguous; never guess).
+-- The uniqueness rules are applied before the join, so the join is a plain equality join: a
+-- condition on the left table inside a LEFT JOIN's ON clause made DuckDB plan a nested-loop
+-- join, quadratic in rows (docs/benchmarks.md). An ambiguous population key joins on NULL,
+-- which matches nothing, exactly as before.
 with pop as (
-    select *, count(*) over (partition by province, area_key) as key_rows
-    from {{ source('parsed', 'pbs_urban_population') }}
+    select
+        *,
+        case when key_rows = 1 then area_key end as join_key
+    from (
+        select *, count(*) over (partition by province, area_key) as key_rows
+        from {{ source('parsed', 'pbs_urban_population') }}
+    ) as p
 ),
 
 hou as (
-    select *, count(*) over (partition by province, area_key) as key_rows
-    from {{ source('parsed', 'pbs_urban_housing') }}
+    select *
+    from (
+        select *, count(*) over (partition by province, area_key) as key_rows
+        from {{ source('parsed', 'pbs_urban_housing') }}
+    ) as h
+    where key_rows = 1
 )
 
 select
@@ -38,6 +51,4 @@ select
 from pop
 left join hou
     on pop.province = hou.province
-    and pop.area_key = hou.area_key
-    and hou.key_rows = 1
-    and pop.key_rows = 1
+    and pop.join_key = hou.area_key
