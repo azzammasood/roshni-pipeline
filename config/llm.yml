@@ -1,0 +1,37 @@
+# LLM provider chain for Ask Roshni (and later parser healing). OpenAI-compatible APIs only.
+# Owner (2026-11-24): Groq free plan is the main provider; OpenRouter (free models, 50
+# requests/day without credits) is the fallback. No paid credits are bought for this.
+# A provider is skipped when its key env var is unset. Inside a provider, models are tried in
+# order; `roshni ask-eval` measures which order is best (see docs/ask-roshni.md).
+# The weekly report keeps its own chain in config/narrator.yml.
+providers:
+  - name: groq
+    base_url: https://api.groq.com/openai/v1
+    key_env: GROQ_API_KEY
+    # Free plan, per model: 30 req/min, 1K req/day, 8K tokens/min, 200K tokens/day.
+    models:
+      - id: qwen/qwen3.8-27b
+      - id: openai/gpt-oss-120b
+        params: {reasoning_effort: low}
+      - id: openai/gpt-oss-20b
+        params: {reasoning_effort: low}
+  - name: openrouter
+    base_url: https://openrouter.ai/api/v1
+    key_env: OPENROUTER_API_KEY
+    headers:
+      HTTP-Referer: https://github.com/azzammasood/roshni-pipeline
+      X-Title: roshni-pipeline
+    models:
+      # same free ids as config/narrator.yml (known to exist); unknown ids just fail over
+      - id: google/gemma-4-31b-it:free
+      - id: nvidia/nemotron-3-ultra-550b-a55b:free
+        params: {reasoning: {effort: low}}
+max_tokens: 2000
+temperature: 0
+max_wait_s: 20        # longest Retry-After we honour on HTTP 429 (ask-eval raises it)
+
+# Prompt-injection screen on every question before any SQL is generated.
+guard:
+  provider: groq
+  model: meta-llama/llama-prompt-guard-2-86m
+  threshold: 0.5      # score is P(attack); 0.5 and above is blocked
