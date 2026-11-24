@@ -2,6 +2,12 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-24 (Benchmarks: scale claims rest on measured runs)
+- **`scripts/benchmark.py` measures the warehouse build; results are in `docs/benchmarks.md`.** The README's "How this scales" table was design only. The script times a full `roshni build`, an incremental rebuild of `fct_planned_shutdown` after one new press release, and full builds on synthetic data at 1×, 10× and 100× the parsed row counts. For each run it records wall time, peak memory, dbt node times, rows per relation and the DuckDB file size. Every number in the doc is copied from a run. Inputs are copied to a temporary folder and dbt's target goes there too, so real data and seeds are never written. `psutil` is in a new `bench` dependency group, so CI and the daily job do not install it. `roshni build` gains `--exclude` (passed through to dbt).
+- **Synthetic data = replication with new keys, not generated variety.** Copy *k* gets `~k` on string keys and k × 10,000,000 on integer row keys, so copies join each other and never the review seeds. Simple, deterministic, and it keeps referential integrity, so all dbt tests still pass at 10×. The doc says plainly what this does not test: real value variety, matching against seeds, and the aggregate marts, which do not grow.
+- **Finding: one join is quadratic.** `stg_pbs_urban` has `pop.key_rows = 1` in a LEFT JOIN's ON clause. DuckDB 1.5.6 plans that as a nested-loop join. `dim_area_indicators` takes 0.942–1.001 s at 1×, 53.422–56.172 s at 10× and 1,710.352 s at 100×, which is 98 % of the 100× build. Without that model and its downstream, the 100× build takes 86.801 s. The model is unchanged here: a fix must keep every census value identical, and simply dropping the condition is not correct.
+- **Only runs taken while the machine was awake count.** A first batch on 2026-11-23 ran 2–5× slower, with Modern Standby transitions in the Windows log, and was discarded. The script now records each run's UTC start and end, and the longest gap between its 50 ms polls. Across the runs used, the longest gap was 0.503 s.
+
 ## 2026-11-24 (README first screen)
 - **The README leads with the architecture diagram, then the why, then impact and scale in numbers** (owner, from a 2026 article on data-engineering portfolios: a reviewer gives a repo about 60 seconds). Order now:
   - badges (ci, publish, watchdog, license) and live links, including the pipeline health page;
