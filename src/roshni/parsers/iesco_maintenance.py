@@ -7,6 +7,10 @@ measurements. Layouts differ by circle, so columns are found by their header wor
 in row 1 or 2), and merged cells take the value Excel records for the merge, which is not a guess.
 Only the first sheet is read; the "OFF ON" sheets restate the same windows as events.
 Rows that cannot be read are quarantined with a reason; anomalies are flagged, never fixed.
+
+Header aliases (config/parser_aliases.yml, written by `roshni heal`, see docs/parser-healing.md)
+are exact header texts mapped to a field; they are checked before the regexes, and every row of
+a sheet whose layout needed one carries the flag `header_alias_<field>`.
 """
 
 import re
@@ -14,9 +18,11 @@ from datetime import UTC, date, datetime, time, timedelta
 from pathlib import Path
 
 import openpyxl
+import yaml
 
 from roshni.parsers.common import ParseResult, Provenance, provenance
 from roshni.parsers.iesco_xlsx import normalise_code
+from roshni.paths import CONFIG_DIR
 
 KARACHI = timedelta(hours=5)
 
@@ -38,6 +44,27 @@ HEADERS: list[tuple[str, re.Pattern[str]]] = [
     ("remarks", re.compile(r"^remarks", re.I)),
 ]
 REQUIRED = ("date", "start", "end")
+FIELDS = tuple(name for name, _ in HEADERS)
+ALIASES_FILE = CONFIG_DIR / "parser_aliases.yml"
+
+
+def header_key(text: str) -> str:
+    """Normalised header text used as an alias key: lower case, single spaces."""
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+def load_aliases(path: Path = ALIASES_FILE) -> dict[str, str]:
+    """Accepted header aliases for this parser: normalised header text -> field."""
+    if not path.exists():
+        return {}
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return {
+        header_key(a["header"]): a["field"]
+        for a in data.get("iesco_maintenance") or []
+        if a.get("field") in FIELDS
+    }
+
+
 DATE_RES = [
     (re.compile(r"^(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})$"), "dmy"),
     (re.compile(r"^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T]\d{1,2}:\d{2}(?::\d{2})?)?$"), "ymd"),
@@ -142,20 +169,30 @@ def _utc(d: date, hhmm: str) -> datetime:
     return local - KARACHI
 
 
-def _header(rows: list[tuple]) -> tuple[int, dict[str, int]] | None:
-    """(row index, field -> column) for the first of rows 1-8 that names the required columns.
+def _header(
+    rows: list[tuple], aliases: dict[str, str] | None = None
+) -> tuple[int, dict[str, int], set[str]] | None:
+    """(row index, field -> column, fields found by alias) for the first of rows 1-8 that names
+    the required columns. Aliases (exact normalised text) are checked before the regexes.
 
     Titles sit above the header in some files (the PD GSC workbook starts its header on row 4).
     A lone "TIME" or "Timing" header spanning two columns maps start to it and end to the next
     column; From/To on the row underneath are read too.
     """
+    aliases = aliases or {}
     for i, row in enumerate(rows[:8]):
         cols: dict[str, int] = {}
+        via_alias: set[str] = set()
         below = rows[i + 1] if i + 1 < len(rows) else ()
         for line in (row, below):
             for j, cell in enumerate(line):
                 text = _clean(cell)
                 if not text or (line is below and j in cols.values()):
+                    continue
+                alias = aliases.get(header_key(text))
+                if alias and alias not in cols and (alias in ("start", "end") or line is row):
+                    cols[alias] = j
+                    via_alias.add(alias)
                     continue
                 for name, rx in HEADERS:
                     # The row underneath only adds From/To; every other field is on the header row.
@@ -164,10 +201,22 @@ def _header(rows: list[tuple]) -> tuple[int, dict[str, int]] | None:
                         cols[name] = j
                         break
         lone = _clean(row[cols["start"]]) if "start" in cols and cols["start"] < len(row) else None
-        if "start" in cols and "end" not in cols and lone and lone.upper() in ("TIME", "TIMING"):
-            cols["end"] = cols["start"] + 1
+        nxt = cols.get("start", -1) + 1
+        merged_alias = (
+            "start" in via_alias
+            and nxt < len(row)
+            and lone is not None
+            and _clean(row[nxt]) == lone
+        )  # a learned heading over two merged columns (unmerged: same text in both)
+        if (
+            "start" in cols
+            and "end" not in cols
+            and lone
+            and (lone.upper() in ("TIME", "TIMING") or merged_alias)
+        ):
+            cols["end"] = nxt
         if all(k in cols for k in REQUIRED) and ("feeder_name" in cols or "feeder_code" in cols):
-            return i, cols
+            return i, cols, via_alias
     return None
 
 
@@ -188,18 +237,23 @@ def _unmerged(ws) -> list[list[object]]:
     return grid
 
 
-def parse_workbook(path: Path, item: str) -> ParseResult[MaintenanceWindow]:
+def parse_workbook(
+    path: Path, item: str, aliases: dict[str, str] | None = None
+) -> ParseResult[MaintenanceWindow]:
+    """Parse one workbook. `aliases` None = the accepted aliases in config/parser_aliases.yml."""
     res: ParseResult[MaintenanceWindow] = ParseResult("iesco_maintenance_window")
+    aliases = load_aliases() if aliases is None else aliases
     prov = provenance(path)
     wb = openpyxl.load_workbook(path, data_only=True)
     ws = wb.worksheets[0]
     rows = _unmerged(ws)
-    head = _header([tuple(r) for r in rows])
+    head = _header([tuple(r) for r in rows], aliases)
     if head is None:
         why = "no header row with date, from, to and feeder"
         res.reject(prov, f"sheet {ws.title!r}", str(rows[:2])[:500], why)
         return res
-    hi, cols = head
+    hi, cols, via_alias = head
+    alias_flags = [f"header_alias_{f}" for f in sorted(via_alias)]
     first = hi + 1
     # A "From/To" sub-header row directly under the header carries no data.
     sub = {_clean(c) for c in rows[first] if _clean(c)} if first < len(rows) else set()
@@ -217,7 +271,7 @@ def parse_workbook(path: Path, item: str) -> ParseResult[MaintenanceWindow]:
         if (
             not texts
             or _numbering_row(texts)
-            or _header([tuple(row), tuple(rows[i + 1]) if i + 1 < len(rows) else ()])
+            or _header([tuple(row), tuple(rows[i + 1]) if i + 1 < len(rows) else ()], aliases)
         ):
             continue
         loc = f"sheet {ws.title!r} row {i + 1}"
@@ -238,7 +292,7 @@ def parse_workbook(path: Path, item: str) -> ParseResult[MaintenanceWindow]:
         if not name and not code_raw:
             res.reject(prov, loc, raw, "no feeder name or code")
             continue
-        base_flags = ["multi_date_cell"] if len(dates) > 1 else []
+        base_flags = (["multi_date_cell"] if len(dates) > 1 else []) + alias_flags
         code = normalise_code(cell(row, "feeder_code")) if code_raw else None
         if code_raw and code is None:
             base_flags.append("feeder_code_not_numeric")

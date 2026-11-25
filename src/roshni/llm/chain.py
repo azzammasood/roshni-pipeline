@@ -136,18 +136,26 @@ def complete(
                 if json_mode:
                     body["response_format"] = {"type": "json_object"}
                 t0 = time.perf_counter()
-                resp = http.post("/chat/completions", json=body)
-                if resp.status_code == 429:
-                    wait = float(resp.headers.get("retry-after") or cfg.max_wait_s + 1)
-                    if wait <= cfg.max_wait_s:
-                        _sleep(wait)
-                        t0 = time.perf_counter()
-                        resp = http.post("/chat/completions", json=body)
+                try:
+                    resp = http.post("/chat/completions", json=body)
+                    if resp.status_code == 429:
+                        # no Retry-After (Groq "busy"): a short pause, then one retry
+                        wait = float(resp.headers.get("retry-after") or 5)
+                        if wait <= cfg.max_wait_s:
+                            _sleep(wait)
+                            t0 = time.perf_counter()
+                            resp = http.post("/chat/completions", json=body)
+                except httpx.TransportError as e:  # DNS, connect, timeout: try the next model
+                    attempts.append(Attempt(p.name, m.id, f"network error: {type(e).__name__}"))
+                    continue
                 latency = time.perf_counter() - t0
                 att = Attempt(p.name, m.id, "", latency_s=round(latency, 3))
                 attempts.append(att)
                 if resp.status_code != 200:
-                    att.outcome = f"HTTP {resp.status_code}"
+                    ra = resp.headers.get("retry-after")
+                    att.outcome = f"HTTP {resp.status_code}" + (
+                        f" (retry-after {ra}s)" if ra else ""
+                    )
                     continue
                 data = resp.json()
                 usage = data.get("usage") or {}
@@ -179,11 +187,14 @@ def guard_score(
     key = prov and os.environ.get(prov.key_env)
     if not prov or not key:
         return None
-    with _client(prov, key, transport) as http:
-        resp = http.post(
-            "/chat/completions",
-            json={"model": g["model"], "messages": [{"role": "user", "content": text}]},
-        )
+    try:
+        with _client(prov, key, transport) as http:
+            resp = http.post(
+                "/chat/completions",
+                json={"model": g["model"], "messages": [{"role": "user", "content": text}]},
+            )
+    except httpx.TransportError:
+        return None
     if resp.status_code != 200:
         return None
     try:

@@ -501,3 +501,95 @@ def ask_eval(
     md, js = evaluate.write(scores, out or DATA_DIR / "reports")
     typer.echo(md.read_text(encoding="utf-8"))
     typer.echo(f"wrote {md}\nwrote {js}")
+
+
+@app.command()
+def heal(
+    snapshots: Path = typer.Option(
+        Path("data/snapshots"), help="Snapshot store with raw_snapshots.csv (e.g. store)."
+    ),
+    apply: bool = typer.Option(False, "--apply", help="Write accepted aliases to config."),
+    model: str = typer.Option(None, help="Pin one 'provider/model'."),
+    all_versions: bool = typer.Option(
+        False, "--all", help="Check every stored version (default: the newest per item)."
+    ),
+) -> None:
+    """Detect IESCO maintenance-workbook header drift and heal it with gated, learned aliases."""
+    import sys
+
+    from roshni.heal import headers as h
+    from roshni.llm.chain import ChainConfig
+    from roshni.parsers import iesco_maintenance as im
+
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    workbooks = h.stored_workbooks(snapshots)
+    if not workbooks:
+        typer.echo(f"no maintenance workbooks in {snapshots}")
+        return
+    newest = list({w.item: w for w in workbooks}.values())
+    targets = workbooks if all_versions else newest
+    cfg = ChainConfig.load()
+    if model:
+        cfg = cfg.pinned(model)
+    corpus = h.Corpus(workbooks, im.load_aliases())
+    results = [h.heal(t, cfg, corpus) for t in targets]
+    typer.echo(f"checked {len(targets)} workbook(s); drifted: "
+               f"{sum(r.status != 'healthy' for r in results)}")  # fmt: skip
+    lines = h.report(results, typer.echo)
+    if apply:
+        added = h.save_aliases(results)
+        typer.echo(f"aliases added to config/parser_aliases.yml: {added}")
+    if lines:
+        _notice(
+            "parser-healing",
+            ["Parser header drift in IESCO maintenance workbooks (`roshni heal`):", *lines],
+        )
+
+
+@app.command("heal-eval")
+def heal_eval(
+    snapshots: Path = typer.Option(Path("data/snapshots"), help="Snapshot store."),
+    model: list[str] = typer.Option(None, help="'provider/model' (repeatable; default: chain)."),
+    scenario: list[str] = typer.Option(None, help="renamed | abbreviated | urdu (default: all)."),
+    item: list[str] = typer.Option(None, help="Workbook items (default: newest of every item)."),
+    out: Path = typer.Option(None, help="Output folder (default: data/reports)."),
+) -> None:
+    """Chaos eval: rename real workbooks' headers, heal them, count exact recoveries per model."""
+    import json
+    import sys
+    import tempfile
+    from datetime import UTC, datetime
+
+    from roshni.heal import headers as h
+    from roshni.heal import simulate as sim
+    from roshni.llm.chain import ChainConfig
+    from roshni.paths import DATA_DIR
+
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    workbooks = h.stored_workbooks(snapshots)
+    newest = [w for w in {w.item: w for w in workbooks}.values() if not item or w.item in item]
+    cfg = ChainConfig.load()
+    cfg.max_wait_s = 65
+    corpus = h.Corpus(workbooks, {})  # no learned aliases: measure the healer alone
+    summaries, cases_out = [], {}
+    with tempfile.TemporaryDirectory() as tmp:
+        for m in model or cfg.labels():
+            typer.echo(f"== {m}")
+            cases = []
+            for wb in newest:
+                for sc in scenario or list(sim.SCENARIOS):
+                    c = sim.run_case(wb, sc, cfg.pinned(m), corpus, Path(tmp))
+                    cases.append(c)
+                    typer.echo(f"  {c.status:21} {wb.item:17} {sc:12} {c.tokens:5} tok "
+                               f"{c.latency_s:5.2f}s {c.detail[:80]}")  # fmt: skip
+            summaries.append(sim.summary(m, cases))
+            cases_out[m] = [c.__dict__ for c in cases]
+    folder = out or DATA_DIR / "reports"
+    folder.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%MZ")
+    path = folder / f"heal_eval_{stamp}.json"
+    path.write_text(json.dumps({"summary": summaries, "cases": cases_out}, indent=2,
+                               ensure_ascii=False), encoding="utf-8")  # fmt: skip
+    for s in summaries:
+        typer.echo(json.dumps(s))
+    typer.echo(f"wrote {path}")

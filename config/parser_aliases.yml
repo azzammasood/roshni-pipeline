@@ -1,0 +1,7 @@
+# Header aliases learned by `roshni heal` (docs/parser-healing.md). Each entry maps one exact
+# header text (compared lower-case, single spaces) to a field the parser already knows. An entry
+# is written only after the gate passed: the drifted workbook parses (header found, quarantine
+# at most 25 % and lower than before) AND every other stored workbook parses exactly as before.
+# Rows read through an alias carry the flag header_alias_<field>. Owner or Claude may delete or
+# correct an entry; `by` says who decided (llm-heal <date> <provider/model> | owner | claude).
+iesco_maintenance: []

@@ -64,6 +64,20 @@ jobs:
           key: pdftext-${{ github.run_id }}
           restore-keys: pdftext-
 
+      # Header drift in IESCO maintenance workbooks: an LLM maps unknown headers to the parser's
+      # known fields; an alias is kept only if every stored workbook still parses exactly as
+      # before (docs/parser-healing.md). Groq first, OpenRouter fallback. A failure here never
+      # stops the run: parse then works with the aliases it already has.
+      - name: Heal parser header drift
+        continue-on-error: true
+        run: uv run roshni heal --snapshots store --apply
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      - name: Post notices (parser healing)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/notice-issue.sh "publish" data/notices/parser-healing.md
       - run: uv run roshni parse --snapshots store --census-from census
       # A new schedule version gets its effective_from row automatically (owner, 2026-11-08):
       # the date the file states, else its HTTP Last-Modified. Committed with the review seeds.
@@ -82,11 +96,11 @@ jobs:
           ROSHNI_NARRATOR_SPEND_CAP_USD: "0.01"
       - run: uv run roshni build
       # Persist the decisions so each name is decided once (an LLM must not re-decide daily).
-      - name: Commit review decisions and effective dates
+      - name: Commit review decisions, effective dates and parser aliases
         run: |
-          if git diff --quiet -- dbt/seeds; then echo "no new review decisions"; exit 0; fi
-          git add dbt/seeds/review_*.csv dbt/seeds/source_documents.csv
-          git -c user.name="github-actions[bot]"               -c user.email="41898283+github-actions[bot]@users.noreply.github.com"               commit -q -m "chore(review): automatic review decisions and effective dates [skip ci]"
+          if git diff --quiet -- dbt/seeds config/parser_aliases.yml; then echo "no new review decisions"; exit 0; fi
+          git add dbt/seeds/review_*.csv dbt/seeds/source_documents.csv config/parser_aliases.yml
+          git -c user.name="github-actions[bot]"               -c user.email="41898283+github-actions[bot]@users.noreply.github.com"               commit -q -m "chore(review): automatic review decisions, effective dates and parser aliases [skip ci]"
           for attempt in 1 2 3; do
             if git pull -q --rebase origin main && git push -q origin HEAD:main; then exit 0; fi
             sleep 5

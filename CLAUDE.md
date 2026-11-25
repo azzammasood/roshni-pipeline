@@ -46,6 +46,8 @@ uv run roshni report [--engine auto|openrouter|template]   # weekly equity repor
 uv run roshni export [--write-schemas]                     # static JSON -> data/export/v1, validated
 uv run roshni ask "question" [--json] [--model groq/<id>]  # Ask Roshni (GROQ_API_KEY; docs/ask-roshni.md)
 uv run roshni ask-eval [--model P/M] [--only ID]          # golden-set eval -> data/reports/ask_eval_*
+uv run roshni heal --snapshots STORE [--apply]          # parser header drift -> gated aliases (docs/parser-healing.md)
+uv run roshni heal-eval --snapshots STORE [--model P/M]   # chaos eval: renamed/abbreviated/Urdu headers
 docker compose -f airflow/docker-compose.yml up --build    # Airflow showcase on :8080 (manual DAG)
 uv run --group databricks python scripts/databricks_load.py     # upload parsed tables (env creds)
 uv run --group databricks roshni build --target databricks      # same models on Databricks
@@ -70,6 +72,7 @@ src/roshni/quality/    suites.py (GE suites per parsed table)
 src/roshni/export/     models.py (pydantic, source of schemas/v1), build.py; airflow/ = showcase DAG
 src/roshni/llm/        chain.py: OpenAI-compatible provider chain (config/llm.yml: Groq, then OpenRouter)
 src/roshni/ask/        semantic layer, sqlguard (sqlglot), engine, evaluate; config/semantic_layer.yml, ask_golden.yml
+src/roshni/heal/       headers.py (drift, LLM mapping, regression gate, aliases), simulate.py; config/parser_aliases.yml
 roshni-snapshots       private repo, branch data-snapshots: raw_snapshots.csv + files/ (written
                        only by snapshot.yml/news.yml via .github/actions/snapshot-store; secret
                        SNAPSHOTS_DEPLOY_KEY). Third-party documents never go in this public repo.
@@ -94,6 +97,7 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Narration: the LLM writes prose only; numbers are injected from queries and validated.
 - Schedulers: GitHub Actions = production (`news.yml` every 3 h, news feeds only, trimmed; `snapshot.yml` daily, then `publish.yml`: parse → validate → build → resolve → build → report (Haiku 5.5 on prepaid credits, ≤$0.01/run; free models after credits run out) → export → site → public repo `azzammasood/roshni-site`, never edited by hand; failures open a `pipeline-failure` issue); Airflow = local showcase calling the CLI.
 - Watchdog (`watchdog.yml`, 2026-11-08): every 3 h a "Live site is out of date" issue (label `site-stale`, @-mentions the owner) if meta.json `last_updated` is >36 h old, closed when fresh; weekly API re-enable of the scheduled workflows (60-day inactivity rule). No empty commits to main.
+- Parser healing: `config/parser_aliases.yml` entries are written by `roshni heal --apply` in publish (committed with the seeds) only after the regression gate; owner/Claude may edit them. The LLM only names columns, never values.
 - The daily resolve (`roshni resolve --llm` in publish) decides press-release names by rules, then by LLM; the publish job commits `dbt/seeds/review_*.csv` back to main (bot commits: pull before editing seeds locally). Names stay `pending_review` only when no key/credits/valid reply; an owner or Claude decision always wins and is never overwritten.
 
 ## Working agreement
@@ -128,4 +132,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Resilience (2026-11-08, owner): publish runs after a failed snapshot; K-Electric checks use physical bounds (other daily totals flagged, not quarantined); browser reads the slim maintenance_upcoming (export 1.8.0).
 - Pipeline health (2026-11-23, owner): /health/ page from export 1.9.0 `health` (Actions API runs, snapshot-log fetch days, carried-forward table sizes, dbt results, quarantine with reasons); footer + Architecture links; axe 0.
 - Ask Roshni (2026-11-24, owner): `roshni ask` text-to-SQL over config/semantic_layer.yml, sqlglot guard, Groq main / OpenRouter fallback (config/llm.yml, no paid credits), prompt guard; `roshni ask-eval` golden set 25 items: qwen3.8-27b 25/25, gpt-oss-120b 25/25, gpt-oss-20b 24/25.
+- Self-healing parsers (2026-11-25, owner): `roshni heal` learns IESCO maintenance header aliases (config/parser_aliases.yml) behind a no-regression gate over all stored workbooks; publish runs it before parse; chaos eval 27 cases: gpt-oss-20b 27/27, gpt-oss-120b 26/27, Qwen 23/27 (4 x HTTP 429).
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).
