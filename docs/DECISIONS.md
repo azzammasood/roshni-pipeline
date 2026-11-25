@@ -2,6 +2,12 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-25 (Parser healing on the health page; export 1.10.0)
+- **Owner asked for both AI features on the website.** Part 1: `/health/` shows parser healing from `health.healing` (export 1.10.0). Part 2, Ask Roshni on the site through a Cloudflare Worker with per-visitor caps, follows separately.
+- **Three inputs, none needing a store of its own.** This run's check comes from `data/heal/status.json`, which `roshni heal` writes every time (in publish it runs in the same job, before export). The learned aliases come from `config/parser_aliases.yml`. The chaos-eval record is `evals/parser_healing.json`, committed and updated by `roshni heal-eval --record`.
+- **`last_check` is null when the heal step did not run.** The page then says so; it never carries an old check forward as if it were today's.
+- **The eval record holds the three single-run summaries of 2026-11-25** (data/reports heal2_* and heal3_qwen). These are the same numbers as docs/parser-healing.md.
+
 ## 2026-11-25 (Self-healing parsers: learned header aliases behind a regression gate)
 - **`roshni heal` repairs IESCO maintenance-workbook header drift by learning aliases, not by editing data** (owner: second AI feature after Ask Roshni). Drift = no header found, or more than 25 % of rows (at least 10) quarantined; today's real workbooks quarantine 0-18 % for genuine row problems. An LLM maps columns to the parser's fourteen known fields or `ignore`, choosing only listed fields and existing columns; it never outputs a data value. Design and results in `docs/parser-healing.md`.
 - **Deterministic gate before anything is kept.** The drifted workbook must find its header, parse rows and quarantine at most 25 % and less than before; every other stored workbook must parse exactly as before, row for row. A workbook containing none of the new header texts cannot change and is not re-parsed. Optional aliases that change another workbook are dropped one by one; a regressing required field fails the proposal.

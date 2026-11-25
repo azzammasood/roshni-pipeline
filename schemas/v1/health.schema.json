@@ -64,6 +64,208 @@
       "title": "FetchDay",
       "type": "object"
     },
+    "HealCheck": {
+      "additionalProperties": false,
+      "description": "The parser-healing check of the newest publish run (`roshni heal`).",
+      "properties": {
+        "aliases_added": {
+          "title": "Aliases Added",
+          "type": "integer"
+        },
+        "checked_at": {
+          "format": "date-time",
+          "title": "Checked At",
+          "type": "string"
+        },
+        "drifted": {
+          "title": "Drifted",
+          "type": "integer"
+        },
+        "healed": {
+          "title": "Healed",
+          "type": "integer"
+        },
+        "results": {
+          "items": {
+            "$ref": "#/$defs/HealWorkbook"
+          },
+          "title": "Results",
+          "type": "array"
+        },
+        "workbooks": {
+          "title": "Workbooks",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "checked_at",
+        "workbooks",
+        "drifted",
+        "healed",
+        "aliases_added",
+        "results"
+      ],
+      "title": "HealCheck",
+      "type": "object"
+    },
+    "HealEval": {
+      "additionalProperties": false,
+      "description": "Chaos evaluation (`roshni heal-eval`): real workbooks with renamed headers.",
+      "properties": {
+        "models": {
+          "items": {
+            "$ref": "#/$defs/HealEvalModel"
+          },
+          "title": "Models",
+          "type": "array"
+        },
+        "run_on": {
+          "format": "date",
+          "title": "Run On",
+          "type": "string"
+        },
+        "scenarios": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Scenarios",
+          "type": "array"
+        },
+        "workbooks": {
+          "title": "Workbooks",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "run_on",
+        "workbooks",
+        "scenarios",
+        "models"
+      ],
+      "title": "HealEval",
+      "type": "object"
+    },
+    "HealEvalModel": {
+      "additionalProperties": false,
+      "properties": {
+        "cases": {
+          "title": "Cases",
+          "type": "integer"
+        },
+        "failed": {
+          "description": "Proposal refused by the checks, or the provider was busy",
+          "title": "Failed",
+          "type": "integer"
+        },
+        "healed_but_different": {
+          "description": "Healed into different data (should be 0)",
+          "title": "Healed But Different",
+          "type": "integer"
+        },
+        "latency_mean_s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Latency Mean S"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "recovered": {
+          "description": "Healed parse equals the original parse row for row",
+          "title": "Recovered",
+          "type": "integer"
+        },
+        "tokens_total": {
+          "title": "Tokens Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model",
+        "cases",
+        "recovered",
+        "healed_but_different",
+        "failed",
+        "tokens_total",
+        "latency_mean_s"
+      ],
+      "title": "HealEvalModel",
+      "type": "object"
+    },
+    "HealWorkbook": {
+      "additionalProperties": false,
+      "properties": {
+        "item": {
+          "description": "Maintenance listing row the workbook was fetched under",
+          "title": "Item",
+          "type": "string"
+        },
+        "status": {
+          "description": "healthy: parsed without drift; healed: drift repaired by a gated alias; failed: drift found, no proposal passed the gate (rows stay in quarantine)",
+          "enum": [
+            "healthy",
+            "healed",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "item",
+        "status"
+      ],
+      "title": "HealWorkbook",
+      "type": "object"
+    },
+    "Healing": {
+      "additionalProperties": false,
+      "description": "Self-healing parsers (since 1.10.0): the last check, every learned alias, the eval.",
+      "properties": {
+        "aliases": {
+          "items": {
+            "$ref": "#/$defs/LearnedAlias"
+          },
+          "title": "Aliases",
+          "type": "array"
+        },
+        "eval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HealEval"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_check": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HealCheck"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "None when the heal step did not run"
+        }
+      },
+      "required": [
+        "last_check",
+        "aliases",
+        "eval"
+      ],
+      "title": "Healing",
+      "type": "object"
+    },
     "Health": {
       "additionalProperties": false,
       "description": "What the pipeline did (since 1.9.0): publish runs, fetch activity, table sizes, dbt\nresults and quarantine counts. About the pipeline, not about load shedding.",
@@ -83,6 +285,18 @@
           "description": "The site should never be older than this",
           "title": "Freshness Target Hours",
           "type": "integer"
+        },
+        "healing": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Healing"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Self-healing parsers (1.10.0)"
         },
         "parsed": {
           "items": {
@@ -117,6 +331,51 @@
         "fetch_days"
       ],
       "title": "Health",
+      "type": "object"
+    },
+    "LearnedAlias": {
+      "additionalProperties": false,
+      "properties": {
+        "added": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Added"
+        },
+        "by": {
+          "description": "llm-heal <date> <provider/model> | owner | claude",
+          "title": "By",
+          "type": "string"
+        },
+        "field": {
+          "description": "Field the parser already knows",
+          "title": "Field",
+          "type": "string"
+        },
+        "header": {
+          "description": "Exact header text, lower case, single spaces",
+          "title": "Header",
+          "type": "string"
+        },
+        "parser": {
+          "title": "Parser",
+          "type": "string"
+        }
+      },
+      "required": [
+        "parser",
+        "header",
+        "field",
+        "added",
+        "by"
+      ],
+      "title": "LearnedAlias",
       "type": "object"
     },
     "PublishRun": {

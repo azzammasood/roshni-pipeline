@@ -17,7 +17,7 @@ The LLM never writes a row: it only names which column holds which field.
 import json
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import yaml
@@ -422,6 +422,23 @@ def save_aliases(
     body = yaml.safe_dump(data, sort_keys=False, allow_unicode=True, width=100)
     path.write_text(header + body, encoding="utf-8")
     return added
+
+
+def write_status(
+    results: list[HealResult], added: int, path: Path, now: datetime | None = None
+) -> dict:
+    """The check's outcome for the health page (export reads it; data/heal/status.json)."""
+    status = {
+        "checked_at": (now or datetime.now(UTC)).replace(microsecond=0).isoformat(),
+        "workbooks": len(results),
+        "drifted": sum(r.status != "healthy" for r in results),
+        "healed": sum(r.status == "healed" for r in results),
+        "aliases_added": added,
+        "results": [{"item": r.workbook.item, "status": r.status} for r in results],
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(status, indent=2), encoding="utf-8")
+    return status
 
 
 def report(results: list[HealResult], log: Callable[[str], None] = print) -> list[str]:

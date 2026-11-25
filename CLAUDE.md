@@ -47,7 +47,7 @@ uv run roshni export [--write-schemas]                     # static JSON -> data
 uv run roshni ask "question" [--json] [--model groq/<id>]  # Ask Roshni (GROQ_API_KEY; docs/ask-roshni.md)
 uv run roshni ask-eval [--model P/M] [--only ID]          # golden-set eval -> data/reports/ask_eval_*
 uv run roshni heal --snapshots STORE [--apply]          # parser header drift -> gated aliases (docs/parser-healing.md)
-uv run roshni heal-eval --snapshots STORE [--model P/M]   # chaos eval: renamed/abbreviated/Urdu headers
+uv run roshni heal-eval --snapshots STORE [--model P/M] [--record]   # chaos eval; --record -> evals/
 docker compose -f airflow/docker-compose.yml up --build    # Airflow showcase on :8080 (manual DAG)
 uv run --group databricks python scripts/databricks_load.py     # upload parsed tables (env creds)
 uv run --group databricks roshni build --target databricks      # same models on Databricks
@@ -133,4 +133,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Pipeline health (2026-11-23, owner): /health/ page from export 1.9.0 `health` (Actions API runs, snapshot-log fetch days, carried-forward table sizes, dbt results, quarantine with reasons); footer + Architecture links; axe 0.
 - Ask Roshni (2026-11-24, owner): `roshni ask` text-to-SQL over config/semantic_layer.yml, sqlglot guard, Groq main / OpenRouter fallback (config/llm.yml, no paid credits), prompt guard; `roshni ask-eval` golden set 25 items: qwen3.8-27b 25/25, gpt-oss-120b 25/25, gpt-oss-20b 24/25.
 - Self-healing parsers (2026-11-25, owner): `roshni heal` learns IESCO maintenance header aliases (config/parser_aliases.yml) behind a no-regression gate over all stored workbooks; publish runs it before parse; chaos eval 27 cases: gpt-oss-20b 27/27, gpt-oss-120b 26/27, Qwen 23/27 (4 x HTTP 429).
+- Healing on /health/ (2026-11-25, owner): export 1.10.0 `health.healing` (last check, learned aliases, chaos-eval record `evals/parser_healing.json`, `heal-eval --record`).
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).

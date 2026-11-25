@@ -129,3 +129,39 @@ def test_build_health_without_network(monkeypatch: pytest.MonkeyPatch, tmp_path:
         con.execute(f"create table {table} as select 1 as x")
     h = build_health(con, tmp_path, tmp_path / "r.json", repo="o/r", previous_url="https://x")
     assert h.publish_runs == [] and len(h.sizes) == 1
+
+
+def test_healing_reads_status_aliases_and_eval(tmp_path: Path) -> None:
+    status = tmp_path / "status.json"
+    status.write_text(json.dumps({
+        "checked_at": "2026-11-25T03:00:00+00:00", "workbooks": 2, "drifted": 1, "healed": 1,
+        "aliases_added": 1,
+        "results": [{"item": "a", "status": "healthy"}, {"item": "b", "status": "healed"}],
+    }), encoding="utf-8")  # fmt: skip
+    aliases = tmp_path / "aliases.yml"
+    aliases.write_text(
+        "# comment\niesco_maintenance:\n- header: day\n  field: date\n  added: '2026-11-25'\n"
+        "  by: llm-heal 2026-11-25 groq/x\n  evidence: e\n",
+        encoding="utf-8",
+    )
+    evals = tmp_path / "eval.json"
+    evals.write_text(json.dumps({
+        "run_on": "2026-11-25", "workbooks": 9, "scenarios": ["renamed"],
+        "models": [{"model": "groq/x", "cases": 9, "recovered": 9, "healed_but_different": 0,
+                    "failed": 0, "tokens_total": 100, "latency_mean_s": 0.5}],
+    }), encoding="utf-8")  # fmt: skip
+    h = health.healing(status, aliases, evals)
+    assert (h.last_check.drifted, h.last_check.results[1].status) == (1, "healed")
+    assert [(a.parser, a.header, a.field) for a in h.aliases] == [
+        ("iesco_maintenance", "day", "date")
+    ]
+    assert h.eval.models[0].recovered == 9
+
+
+def test_healing_without_files_is_empty(tmp_path: Path) -> None:
+    h = health.healing(tmp_path / "a", tmp_path / "b", tmp_path / "c")
+    assert (h.last_check, h.aliases, h.eval) == (None, [], None)
+
+
+def test_committed_eval_record_validates() -> None:
+    assert health.healing(Path("missing"), Path("missing")).eval.workbooks == 9

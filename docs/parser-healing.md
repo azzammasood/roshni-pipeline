@@ -8,7 +8,11 @@ arrives with headers the parser has never seen, `roshni heal` repairs the parser
 uv run roshni heal --snapshots store            # detect + heal the newest workbook per item
 uv run roshni heal --snapshots store --apply    # ... and write accepted aliases to config
 uv run roshni heal-eval --snapshots store       # chaos eval: rename real headers, heal, score
+uv run roshni heal-eval --snapshots store --record   # ... and update evals/parser_healing.json
 ```
+
+The site's `/health/` page shows the last check (`data/heal/status.json`, written by every
+`roshni heal`), every learned alias and the committed eval record (export 1.10.0).
 
 ## How it works
 

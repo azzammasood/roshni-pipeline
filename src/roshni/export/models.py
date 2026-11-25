@@ -11,8 +11,8 @@ from pydantic import BaseModel, ConfigDict, Field
 # version (MonthlyKeSchedule.changed_in_month); 1.6.0: maintenance (and notices) documents;
 # 1.7.0: notices document removed (the pipeline only keeps fully automated sources);
 # 1.8.0: maintenance_upcoming, the browser's slim copy of the windows from a week back on;
-# 1.9.0: health, the pipeline's own run records (export/health.py)
-SCHEMA_VERSION = "1.9.0"
+# 1.9.0: health, the pipeline's own run records (export/health.py); 1.10.0: health.healing
+SCHEMA_VERSION = "1.10.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -413,6 +413,60 @@ class DbtResults(Strict):
     skipped: int
 
 
+class HealWorkbook(Strict):
+    item: str = Field(description="Maintenance listing row the workbook was fetched under")
+    status: Literal["healthy", "healed", "failed"] = Field(
+        description="healthy: parsed without drift; healed: drift repaired by a gated alias; "
+        "failed: drift found, no proposal passed the gate (rows stay in quarantine)"
+    )
+
+
+class HealCheck(Strict):
+    """The parser-healing check of the newest publish run (`roshni heal`)."""
+
+    checked_at: datetime
+    workbooks: int
+    drifted: int
+    healed: int
+    aliases_added: int
+    results: list[HealWorkbook]
+
+
+class LearnedAlias(Strict):
+    parser: str
+    header: str = Field(description="Exact header text, lower case, single spaces")
+    field: str = Field(description="Field the parser already knows")
+    added: date | None
+    by: str = Field(description="llm-heal <date> <provider/model> | owner | claude")
+
+
+class HealEvalModel(Strict):
+    model: str
+    cases: int
+    recovered: int = Field(description="Healed parse equals the original parse row for row")
+    healed_but_different: int = Field(description="Healed into different data (should be 0)")
+    failed: int = Field(description="Proposal refused by the checks, or the provider was busy")
+    tokens_total: int
+    latency_mean_s: float | None
+
+
+class HealEval(Strict):
+    """Chaos evaluation (`roshni heal-eval`): real workbooks with renamed headers."""
+
+    run_on: date
+    workbooks: int
+    scenarios: list[str]
+    models: list[HealEvalModel]
+
+
+class Healing(Strict):
+    """Self-healing parsers (since 1.10.0): the last check, every learned alias, the eval."""
+
+    last_check: HealCheck | None = Field(description="None when the heal step did not run")
+    aliases: list[LearnedAlias]
+    eval: HealEval | None
+
+
 class Health(Strict):
     """What the pipeline did (since 1.9.0): publish runs, fetch activity, table sizes, dbt
     results and quarantine counts. About the pipeline, not about load shedding."""
@@ -423,6 +477,7 @@ class Health(Strict):
     sizes: list[SizePoint] = Field(description="One point per publish date, oldest first")
     publish_runs: list[PublishRun] = Field(description="Newest completed runs, oldest first")
     fetch_days: list[FetchDay] = Field(description="Every day with snapshot activity")
+    healing: Healing | None = Field(default=None, description="Self-healing parsers (1.10.0)")
 
 
 class National(Strict):

@@ -37,6 +37,10 @@ export interface Health {
    * The site should never be older than this
    */
   freshness_target_hours: number;
+  /**
+   * Self-healing parsers (1.10.0)
+   */
+  healing?: Healing | null;
   parsed: TableQuality[];
   /**
    * Newest completed runs, oldest first
@@ -73,6 +77,81 @@ export interface FetchDay {
    * New or changed files stored
    */
   new_files: number;
+}
+/**
+ * Self-healing parsers (since 1.10.0): the last check, every learned alias, the eval.
+ */
+export interface Healing {
+  aliases: LearnedAlias[];
+  eval: HealEval | null;
+  /**
+   * None when the heal step did not run
+   */
+  last_check: HealCheck | null;
+}
+export interface LearnedAlias {
+  added: string | null;
+  /**
+   * llm-heal <date> <provider/model> | owner | claude
+   */
+  by: string;
+  /**
+   * Field the parser already knows
+   */
+  field: string;
+  /**
+   * Exact header text, lower case, single spaces
+   */
+  header: string;
+  parser: string;
+}
+/**
+ * Chaos evaluation (`roshni heal-eval`): real workbooks with renamed headers.
+ */
+export interface HealEval {
+  models: HealEvalModel[];
+  run_on: string;
+  scenarios: string[];
+  workbooks: number;
+}
+export interface HealEvalModel {
+  cases: number;
+  /**
+   * Proposal refused by the checks, or the provider was busy
+   */
+  failed: number;
+  /**
+   * Healed into different data (should be 0)
+   */
+  healed_but_different: number;
+  latency_mean_s: number | null;
+  model: string;
+  /**
+   * Healed parse equals the original parse row for row
+   */
+  recovered: number;
+  tokens_total: number;
+}
+/**
+ * The parser-healing check of the newest publish run (`roshni heal`).
+ */
+export interface HealCheck {
+  aliases_added: number;
+  checked_at: string;
+  drifted: number;
+  healed: number;
+  results: HealWorkbook[];
+  workbooks: number;
+}
+export interface HealWorkbook {
+  /**
+   * Maintenance listing row the workbook was fetched under
+   */
+  item: string;
+  /**
+   * healthy: parsed without drift; healed: drift repaired by a gated alias; failed: drift found, no proposal passed the gate (rows stay in quarantine)
+   */
+  status: "healthy" | "healed" | "failed";
 }
 /**
  * A parsed table: rows kept and rows quarantined with a reason.

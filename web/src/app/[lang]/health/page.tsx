@@ -5,6 +5,9 @@ import { num } from "@/lib/format";
 import { resolveLocale } from "@/lib/locale";
 import { Stamp } from "@/components/Clock";
 import { ScrollRegion } from "@/components/ScrollRegion";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import type { Healing as HealingDoc } from "@/types/v1";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/health">): Promise<Metadata> {
   return { title: (await resolveLocale(params)).dict.nav.health };
@@ -33,6 +36,7 @@ export default async function Health({ params }: PageProps<"/[lang]/health">) {
   const first = h.sizes[0];
   const now = h.sizes.at(-1);
   const sizeNames = t.sizesNames as Record<string, string>;
+  const heal = h.healing ?? null;
 
   const tiles: [React.ReactNode, string][] = [
     [
@@ -228,7 +232,132 @@ export default async function Health({ params }: PageProps<"/[lang]/health">) {
           </table>
         </ScrollRegion>
       </section>
+
+      {heal && <Healing heal={heal} t={t} n={n} locale={locale} />}
     </article>
+  );
+}
+
+
+/** Self-healing parsers (export 1.10.0 `health.healing`): last check, learned aliases, chaos eval. */
+function Healing({
+  heal,
+  t,
+  n,
+  locale,
+}: {
+  heal: HealingDoc;
+  t: Dictionary["health"];
+  n: (v: number) => string;
+  locale: Locale;
+}) {
+  const c = heal.last_check;
+  const ev = heal.eval;
+  const tiles: [string, string][] = c
+    ? [
+        [n(c.workbooks), t.healChecked],
+        [n(c.drifted), t.healDrifted],
+        [n(c.healed), t.healHealed],
+        [n(heal.aliases.length), t.healAliases],
+      ]
+    : [];
+  return (
+    <section className="rule pt-4 space-y-4">
+      <h2 id="healing" className="headline text-3xl">
+        {t.healTitle}
+      </h2>
+      <p className="text-sm max-w-prose">{t.healNote}</p>
+      {c ? (
+        <dl className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4">
+          {tiles.map(([value, label]) => (
+            <div key={label} className="border-t border-line pt-2 flex flex-col-reverse">
+              <dt className="text-sm">
+                {label}
+                {label === t.healChecked && (
+                  <span className="block text-muted">
+                    {t.healCheckedAt} <Stamp iso={c.checked_at} />
+                  </span>
+                )}
+              </dt>
+              <dd className="headline text-3xl tabular-nums">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <p className="text-muted">{t.healNoCheck}</p>
+      )}
+
+      <h3 className="headline text-2xl">{t.aliasesTitle}</h3>
+      {heal.aliases.length === 0 ? (
+        <p className="text-sm">{t.aliasesNone}</p>
+      ) : (
+        <ScrollRegion label={t.aliasesTitle}>
+          <table className="data">
+            <thead>
+              <tr>
+                <th scope="col">{t.aliasHeader}</th>
+                <th scope="col">{t.aliasField}</th>
+                <th scope="col">{t.aliasBy}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {heal.aliases.map((a) => (
+                <tr key={`${a.parser}:${a.header}`}>
+                  <th scope="row" className="font-normal">
+                    <bdi>{a.header}</bdi>
+                  </th>
+                  <td className="font-mono text-xs" dir="ltr">
+                    {a.field}
+                  </td>
+                  <td className="text-sm" lang="en" dir="ltr">
+                    {a.by}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </ScrollRegion>
+      )}
+
+      {ev && (
+        <>
+          <h3 className="headline text-2xl">{t.evalTitle}</h3>
+          <p className="text-sm max-w-prose">
+            {fill(t.evalNote, { date: ev.run_on, w: n(ev.workbooks) }, locale)}
+          </p>
+          <ScrollRegion label={t.evalTitle}>
+            <table className="data">
+              <thead>
+                <tr>
+                  <th scope="col">{t.evalModel}</th>
+                  <th scope="col">{t.evalRecovered}</th>
+                  <th scope="col">{t.evalDifferent}</th>
+                  <th scope="col">{t.evalFailed}</th>
+                  <th scope="col">{t.evalTokens}</th>
+                  <th scope="col">{t.evalSeconds}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ev.models.map((r) => (
+                  <tr key={r.model}>
+                    <th scope="row" className="font-mono text-xs font-normal" dir="ltr">
+                      {r.model}
+                    </th>
+                    <td className="tabular-nums">
+                      {fill(t.recoveredOf, { ok: n(r.recovered), n: n(r.cases) }, locale)}
+                    </td>
+                    <td className="tabular-nums">{n(r.healed_but_different)}</td>
+                    <td className="tabular-nums">{n(r.failed)}</td>
+                    <td className="tabular-nums">{n(r.tokens_total)}</td>
+                    <td className="tabular-nums">{r.latency_mean_s === null ? "–" : n(r.latency_mean_s)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollRegion>
+        </>
+      )}
+    </section>
   );
 }
 

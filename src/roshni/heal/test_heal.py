@@ -238,3 +238,14 @@ def test_network_error_moves_to_the_next_model(books):
     res = h.heal(drifted, _cfg(), h.Corpus([drifted], {}), transport=httpx.MockTransport(handler))
     assert res.status == "healed" and res.model == "groq/m2"
     assert res.attempts[0]["outcome"] == "network error: ConnectError"
+
+
+def test_write_status_counts_outcomes(tmp_path, books):
+    from datetime import UTC, datetime
+
+    wb = books[0]
+    ok = h.HealResult(wb, h.Health(1, 0, True), "healthy")
+    bad = h.HealResult(wb, h.Health(1, 0, True), "failed")
+    out = h.write_status([ok, bad], 0, tmp_path / "s.json", datetime(2026, 11, 25, tzinfo=UTC))
+    assert (out["workbooks"], out["drifted"], out["healed"]) == (2, 1, 0)
+    assert json.loads((tmp_path / "s.json").read_text())["checked_at"].startswith("2026-11-25")
