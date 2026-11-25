@@ -99,6 +99,68 @@ How these numbers were reached, in full:
   models at 25/25 mean the set needs harder questions (joins, multi-step, ambiguous wording)
   before it can separate them. Add items whenever a real question goes wrong.
 
+## On the website (Cloudflare Worker, in progress)
+
+The site is static, so the parts are split. Nothing secret reaches the browser, and no server
+runs a query.
+
+```mermaid
+flowchart LR
+  B[browser] -- question --> W[Worker<br/>key, prompts, caps]
+  W -- guard + plan --> G[Groq chain]
+  W -- SQL + ticket --> B
+  B -- DuckDB-WASM over<br/>published Parquet --> R[result]
+  R -- facts --> W
+  W -- checked narration<br/>placeholders only --> B
+```
+
+- **Export `ask/`** (`roshni export`, `src/roshni/ask/bundle.py`): one Parquet file per
+  semantic-layer table with the allowlisted columns only (about 400 KB in all), and
+  `context.json`. That file holds the planner and narrator prompts, built from the same code
+  `roshni ask` uses, plus the feedback texts, allowlist, caveats and limits.
+- **Worker** (`worker/`, TypeScript). `POST /v1/ask` runs the guard and the plan and costs one
+  question. `POST /v1/replan` gives one corrected try for that question. `POST /v1/narrate`
+  gives one checked narration. `GET /v1/quota` reports what is left. The Worker reads its
+  prompts from the site's `context.json` and never takes one from the browser. It checks a
+  narration with a port of `check_prose`.
+- **Browser** (next step): runs the SQL with DuckDB-WASM, checks it against the allowlist with
+  DuckDB's own parser, builds the facts and renders the placeholders.
+- **Parity.** `tests/fixtures/ask_parity.json` is generated from the Python answer checks and
+  formatting (`uv run python -m roshni.ask.parity`). Python checks the file is current, and
+  the Worker's tests (and later the site's) must give the same result for every case.
+  `worker/src/llm.json` must equal `config/llm.yml`.
+
+### Caps (wrangler.toml)
+
+| cap | value | why |
+|---|---|---|
+| one visitor, per minute | 3 | stops scripted bursts |
+| one visitor, per day | 10 | no one visitor can use up the day |
+| whole site, per minute | 6 | Groq allows 8K tokens/min per model; one question is ~3.3K |
+| whole site, per day | 150 | ~3.3K tokens each (ask-eval: 81,248 tokens / 25 items) |
+| whole site, tokens per day | 450,000 | Groq free plan: 200K/day per model, three models |
+
+- **Days are Pakistan days.** A refused request gets HTTP 429 with the reason and the seconds
+  until it may retry.
+- **One Durable Object counts everything.** It handles requests one at a time, so counts can't
+  race, and an hourly alarm deletes earlier days' counts and expired tickets.
+- **Tickets.** A question's re-plan and narration need its ticket. A ticket belongs to the
+  visitor who asked, lasts ten minutes and allows one of each, so neither can be repeated or
+  shared.
+- **Visitor ids.** A visitor is an HMAC of the IP address with a secret (`VISITOR_SALT`) and
+  the day. The address is never stored, and the id changes daily.
+- **Origins.** Only the site's origins get answers. Other origins get 403. This is not a
+  security boundary; the caps are.
+
+### Run it locally
+
+```
+uv run roshni export                      # writes data/export/v1/ask/
+cd worker; npm ci; npm test               # 47 tests, no network
+# worker/.dev.vars (git-ignored): CONTEXT_URL, ALLOWED_ORIGINS, VISITOR_SALT, GROQ_API_KEY
+npx wrangler dev --port 8787              # serve data/export/v1 on :3102 for CONTEXT_URL
+```
+
 ## Limits
 
 - Names (areas, companies) may be written by the narrator in words; only numbers are forced

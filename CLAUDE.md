@@ -59,6 +59,8 @@ npm run lint ; npm run typecheck ; npm test ; npm run build   # static site -> w
 npm run check:equity [-- --locale ur]  # after build: every equity-page number traces to equity.json
 npm run check:i18n ; npm run i18n:review   # translation checks; regenerate docs/urdu-review.md
 uv run python scripts/dark_now_oracle.py   # then npm test: TS dark-now == Python (full export)
+uv run python -m roshni.ask.parity         # after changing check_prose/fmt: regenerate parity cases
+# worker/ (Ask Roshni on the site, Cloudflare; docs/ask-roshni.md): npm ci ; npm run typecheck ; npm test
 ```
 
 ## Layout
@@ -80,6 +82,7 @@ config/                sources.yml, policy.yml
 dbt/                   staging views, int_ke_feeder_join, marts + quarantine_* tables, seeds/source_documents.csv
 tests/                 cross-cutting tests, fixtures/
 scripts/  docs/  .github/workflows/
+worker/                Cloudflare Worker for Ask Roshni on the site (key, prompts, caps; no SQL)
 web/                   Next.js static site: src/app/[lang], src/i18n, src/lib, src/types/v1 (generated), fixtures/v1
 census/                committed trimmed census tables + manifest (used by publish.yml)
 data/                  generated, git-ignored
@@ -134,4 +137,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Ask Roshni (2026-11-24, owner): `roshni ask` text-to-SQL over config/semantic_layer.yml, sqlglot guard, Groq main / OpenRouter fallback (config/llm.yml, no paid credits), prompt guard; `roshni ask-eval` golden set 25 items: qwen3.8-27b 25/25, gpt-oss-120b 25/25, gpt-oss-20b 24/25.
 - Self-healing parsers (2026-11-25, owner): `roshni heal` learns IESCO maintenance header aliases (config/parser_aliases.yml) behind a no-regression gate over all stored workbooks; publish runs it before parse; chaos eval 27 cases: gpt-oss-20b 27/27, gpt-oss-120b 26/27, Qwen 23/27 (4 x HTTP 429).
 - Healing on /health/ (2026-11-25, owner): export 1.10.0 `health.healing` (last check, learned aliases, chaos-eval record `evals/parser_healing.json`, `heal-eval --record`).
+- Ask Roshni on the site, A1 (2026-11-25, owner approved Cloudflare): export `ask/` bundle + `worker/` (guard/plan/replan/narrate, caps in a Durable Object, 47 tests, parity with Python). Next: browser page (DuckDB-WASM), then deploy (owner creates the Cloudflare account).
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).

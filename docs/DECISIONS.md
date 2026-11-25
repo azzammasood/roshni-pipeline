@@ -2,6 +2,27 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-25 (Ask Roshni on the website: Cloudflare Worker with per-visitor caps)
+- **Owner approved Cloudflare** (Workers and Durable Objects, free plan) as the one server-side
+  piece, on the condition that no single visitor can use up the free Groq limits. It is
+  hosting, not a data source; the allowed sources are unchanged.
+- **The browser runs the SQL; the Worker never does.** The published Parquet holds the
+  allowlisted columns only, and the browser checks the SQL with DuckDB's own parser before
+  running it. The Worker keeps the key, the prompts and the caps. Its own check on a plan is
+  light (JSON, one SELECT, length); a failed browser check uses the one re-plan.
+- **One source for prompts.** The Worker fetches `context.json` from the site, which is
+  generated from `engine.py`. The feedback texts moved into constants there for this.
+- **Caps.** Per visitor: 3 a minute and 10 a day. Whole site: 6 a minute, 150 a day and
+  450K tokens a day. The numbers come from the ask-eval token use and Groq's free-plan limits.
+  A question that fails still counts, so retrying a failure cannot get around the caps.
+- **Privacy.** Visitors are counted by an HMAC of their IP address, a secret and the day.
+  Counts and tickets are deleted after the day ends or after ten minutes.
+- **Parity file instead of trust.** The Worker's narration check is a port of the Python one.
+  `tests/fixtures/ask_parity.json` pins 25 narration cases, 14 formatting cases and 6 slug
+  cases from Python, and both sides are tested against it.
+- **Bug found by the parity file.** `fmt(True)` printed "1", because Python's bool is an int.
+  It now prints "true".
+
 ## 2026-11-25 (Parser healing on the health page; export 1.10.0)
 - **Owner asked for both AI features on the website.** Part 1: `/health/` shows parser healing from `health.healing` (export 1.10.0). Part 2, Ask Roshni on the site through a Cloudflare Worker with per-visitor caps, follows separately.
 - **Three inputs, none needing a store of its own.** This run's check comes from `data/heal/status.json`, which `roshni heal` writes every time (in publish it runs in the same job, before export). The learned aliases come from `config/parser_aliases.yml`. The chaos-eval record is `evals/parser_healing.json`, committed and updated by `roshni heal-eval --record`.

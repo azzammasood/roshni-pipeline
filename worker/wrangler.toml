@@ -1,0 +1,29 @@
+# Ask Roshni Worker (docs/ask-roshni.md, "On the website"). Free plan: Workers + one
+# SQLite-backed Durable Object. Secrets (never in this file): GROQ_API_KEY, OPENROUTER_API_KEY,
+# VISITOR_SALT; set with `npx wrangler secret put NAME`. Local dev reads them from .dev.vars
+# (git-ignored), which may also override the vars below.
+name = "roshni-ask"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+
+[vars]
+CONTEXT_URL = "https://azzammasood.github.io/roshni-site/data/v1/ask/context.json"
+ALLOWED_ORIGINS = "https://azzammasood.github.io"
+# Caps. One question costs about 3,300 tokens (ask-eval: 81,248 tokens for 25 items). Groq's
+# free plan allows 200K tokens/day and 8K tokens/min per model, three models in the chain.
+VISITOR_PER_MINUTE = "3"
+VISITOR_PER_DAY = "10"
+SITE_PER_MINUTE = "6"
+SITE_PER_DAY = "150"
+SITE_TOKENS_PER_DAY = "450000"
+
+[[durable_objects.bindings]]
+name = "QUOTA"
+class_name = "QuotaDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["QuotaDO"]
+
+[observability]
+enabled = true

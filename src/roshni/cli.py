@@ -383,6 +383,7 @@ def export(
     """Write the static JSON export and validate it against the committed JSON Schemas."""
     import duckdb
 
+    from roshni.ask.bundle import build_bundle
     from roshni.export.build import build_export, validate_export
     from roshni.export.build import write_schemas as write_schema_files
     from roshni.export.health import build_health
@@ -413,6 +414,13 @@ def export(
     for name, status in validate_export(out).items():
         size = (out / f"{name}.json").stat().st_size
         typer.echo(f"{name:18} records={counts[name]:6} bytes={size:9,} schema={status}")
+    con = duckdb.connect(str(db or DATA_DIR / "roshni.duckdb"), read_only=True)
+    try:
+        ctx = build_bundle(con, out / "ask")
+    finally:
+        con.close()
+    size = sum(f.stat().st_size for f in (out / "ask").iterdir())
+    typer.echo(f"ask/ (Ask Roshni bundle) tables={len(ctx['tables'])} bytes={size:,}")
 
 
 @app.command()

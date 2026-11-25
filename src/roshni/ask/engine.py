@@ -29,6 +29,13 @@ NOT_MEASURED = re.compile(
     r"|\b(was|were|went|been)\s+(without power|dark|off)\b"
 )
 MAX_FACT_ROWS = 10
+# Feedback for the planner's one corrected try (also used by the site's Worker via ask/bundle.py).
+FEEDBACK_ERROR = "That query failed in DuckDB: {err}. Fix it."
+FEEDBACK_EMPTY = (
+    "That query returned no rows. Check every filter value against the listed "
+    "Values for that column and try again; if the data truly has none, keep it."
+)
+FEEDBACK_GUARD = "That query was refused by the SQL guard: {problems}. Fix it."
 
 PLANNER = """You translate questions about Pakistan electricity load-shedding SCHEDULES into one
 DuckDB SELECT query over the tables below, and nothing else.
@@ -83,6 +90,8 @@ class AskResult:
 def fmt(v) -> str:
     if v is None:
         return "null"
+    if isinstance(v, bool):  # before int: bool is an int subclass and would print as 1
+        return "true" if v else "false"
     if isinstance(v, float | Decimal):
         # Half-up on the decimal text (as DuckDB ROUND does): 10.25 -> 10.3, not 10.2.
         d = Decimal(str(v))
@@ -208,15 +217,12 @@ def ask(
         except duckdb.Error as e:
             err = str(e).splitlines()[0][:300]
             out.reason = f"Query failed: {err}"
-            feedback = f"That query failed in DuckDB: {err}. Fix it."
+            feedback = FEEDBACK_ERROR.format(err=err)
         else:
             if res.rows or round_ == 2:
                 break
             # Empty result: usually a filter value in the wrong format. One corrected try.
-            feedback = (
-                "That query returned no rows. Check every filter value against the listed "
-                "Values for that column and try again; if the data truly has none, keep it."
-            )
+            feedback = FEEDBACK_EMPTY
         messages += [
             {"role": "assistant", "content": comp.text},
             {"role": "user", "content": feedback},
