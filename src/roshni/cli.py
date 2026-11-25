@@ -520,6 +520,7 @@ def heal(
     from roshni.heal import headers as h
     from roshni.llm.chain import ChainConfig
     from roshni.parsers import iesco_maintenance as im
+    from roshni.paths import DATA_DIR
 
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     workbooks = h.stored_workbooks(snapshots)
@@ -536,9 +537,11 @@ def heal(
     typer.echo(f"checked {len(targets)} workbook(s); drifted: "
                f"{sum(r.status != 'healthy' for r in results)}")  # fmt: skip
     lines = h.report(results, typer.echo)
+    added = 0
     if apply:
         added = h.save_aliases(results)
         typer.echo(f"aliases added to config/parser_aliases.yml: {added}")
+    h.write_status(results, added, DATA_DIR / "heal" / "status.json")
     if lines:
         _notice(
             "parser-healing",
@@ -553,6 +556,9 @@ def heal_eval(
     scenario: list[str] = typer.Option(None, help="renamed | abbreviated | urdu (default: all)."),
     item: list[str] = typer.Option(None, help="Workbook items (default: newest of every item)."),
     out: Path = typer.Option(None, help="Output folder (default: data/reports)."),
+    record: bool = typer.Option(
+        False, "--record", help="Also update evals/parser_healing.json (shown on /health/)."
+    ),
 ) -> None:
     """Chaos eval: rename real workbooks' headers, heal them, count exact recoveries per model."""
     import json
@@ -593,3 +599,6 @@ def heal_eval(
     for s in summaries:
         typer.echo(json.dumps(s))
     typer.echo(f"wrote {path}")
+    if record:
+        rec = sim.record(summaries, len(newest), scenario or list(sim.SCENARIOS))
+        typer.echo(f"updated {rec}")

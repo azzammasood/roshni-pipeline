@@ -7,9 +7,11 @@ original parse row for row (ignoring the `header_alias_*` flags and file provena
 Nothing here writes config/parser_aliases.yml.
 """
 
+import json
 import shutil
 import statistics
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 
 import openpyxl
@@ -17,6 +19,7 @@ import openpyxl
 from roshni.heal import headers as h
 from roshni.llm.chain import ChainConfig
 from roshni.parsers import iesco_maintenance as im
+from roshni.paths import REPO_ROOT
 
 # field -> new header text. Chosen so that no parser regex matches them.
 SCENARIOS: dict[str, dict[str, str]] = {
@@ -151,3 +154,28 @@ def summary(model: str, cases: list[Case]) -> dict:
         "tokens_total": sum(c.tokens for c in cases),
         "latency_mean_s": round(statistics.mean(lat), 2) if lat else None,
     }
+
+
+EVAL_RECORD = REPO_ROOT / "evals" / "parser_healing.json"
+
+
+def record(
+    summaries: list[dict],
+    workbooks: int,
+    scenarios: list[str],
+    path: Path = EVAL_RECORD,
+    today: date | None = None,
+) -> Path:
+    """Replace these models' rows in the committed eval record (other models are kept)."""
+    data = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"models": []}
+    keep = {s["model"] for s in summaries}
+    data["models"] = [r for r in data["models"] if r["model"] not in keep] + [
+        {k: s[k] for k in ("model", "cases", "recovered", "healed_but_different", "failed",
+                           "tokens_total", "latency_mean_s")}
+        for s in summaries
+    ]  # fmt: skip
+    data["models"].sort(key=lambda r: (-r["recovered"], r["model"]))
+    data.update(run_on=str(today or date.today()), workbooks=workbooks, scenarios=scenarios)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    return path

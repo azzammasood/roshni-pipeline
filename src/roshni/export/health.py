@@ -4,7 +4,9 @@ Three histories, none of which needs a store of its own:
 - publish runs (start, duration, outcome) from the GitHub Actions API, which keeps them;
 - daily fetch activity from the snapshot log (raw_snapshots.csv), which records every fetch;
 - warehouse table sizes per publish, carried forward from the live health.json and appended to.
-Plus this run's dbt results and the parsed tables' quarantine counts.
+Plus this run's dbt results and the parsed tables' quarantine counts, and (1.10.0) parser
+healing: this run's check (data/heal/status.json), the learned aliases (config) and the committed
+chaos-eval record (evals/parser_healing.json).
 
 Every input is optional: a local run without the store, the API or the live site still writes a
 valid document, with those histories empty.
@@ -19,8 +21,14 @@ from pathlib import Path
 
 import duckdb
 import httpx
+import yaml
 
 from roshni.export import models as m
+from roshni.paths import CONFIG_DIR, DATA_DIR, REPO_ROOT
+
+HEAL_STATUS = DATA_DIR / "heal" / "status.json"
+ALIASES = CONFIG_DIR / "parser_aliases.yml"
+HEAL_EVAL = REPO_ROOT / "evals" / "parser_healing.json"
 
 FRESHNESS_TARGET_HOURS = 36  # the watchdog's threshold (watchdog.yml)
 KARACHI = timedelta(hours=5)
@@ -147,6 +155,25 @@ def parsed_quality(parsed: Path) -> list[m.TableQuality]:
     return out
 
 
+def healing(
+    status: Path = HEAL_STATUS, aliases: Path = ALIASES, evals: Path = HEAL_EVAL
+) -> m.Healing:
+    """Parser healing; each part is None or empty when its file is missing."""
+    check = (
+        m.HealCheck(**json.loads(status.read_text(encoding="utf-8"))) if status.exists() else None
+    )
+    learned = []
+    if aliases.exists():
+        for parser, entries in (yaml.safe_load(aliases.read_text(encoding="utf-8")) or {}).items():
+            learned += [
+                m.LearnedAlias(parser=parser, header=e["header"], field=e["field"],
+                               added=e.get("added"), by=e.get("by", ""))
+                for e in entries or []
+            ]  # fmt: skip
+    ev = m.HealEval(**json.loads(evals.read_text(encoding="utf-8"))) if evals.exists() else None
+    return m.Healing(last_check=check, aliases=learned, eval=ev)
+
+
 def build_health(
     con: duckdb.DuckDBPyConnection,
     parsed: Path,
@@ -169,4 +196,5 @@ def build_health(
             repo, os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
         ),
         fetch_days=fetch_days(store),
+        healing=healing(),
     )
