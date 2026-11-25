@@ -31,12 +31,16 @@ flowchart LR
   Site[Next.js static site<br/>English + Urdu<br/>GitHub Pages]
   Docs[dbt docs + lineage]
   H[Pipeline health page]
+  HL[Parser healing<br/>LLM maps new headers,<br/>no-regression gate]
+  AR[Ask Roshni<br/>question → guarded SQL<br/>→ checked answer]
   Sources -->|daily, ≤1 req/s,<br/>conditional GET| S --> P --> Q --> W
   W <--> R
   W --> N --> E
   W --> E --> Site
   W --> Docs
   E --> H
+  S --> HL -.->|learned aliases| P
+  W --> AR
   classDef src fill:#f5c518,color:#14213d,stroke:#14213d
 ```
 
@@ -46,12 +50,13 @@ flowchart LR
 | Stage | What happens | Tools |
 |---|---|---|
 | **1 · Snapshot** | Discover files on the publishers' listing pages and fetch politely: robots.txt, at most one request a second, `If-Modified-Since`/`ETag`. Each new version is stored once with its SHA-256 and fetch time. | Python, httpx, Beautiful Soup, GitHub Actions |
-| **2 · Parse** | One parser per source turns PDFs and spreadsheets into typed rows. Unreadable rows go to quarantine with a reason; nothing is silently fixed. | poppler `pdftotext` (Docker), openpyxl, pydantic, Parquet |
+| **2 · Parse** | One parser per source turns PDFs and spreadsheets into typed rows. Unreadable rows go to quarantine with a reason; nothing is silently fixed. When a maintenance workbook arrives with headers the parser has never seen, a language model maps them to known fields and the mapping is kept only if every stored workbook still parses exactly as before. | poppler `pdftotext` (Docker), openpyxl, pydantic, Parquet, Groq |
 | **3 · Validate** | Expectation suites on every parsed table; golden-count regression tests on real files. | Great Expectations, pytest |
 | **4 · Warehouse** | Staging views → intermediate joins → marts and `quarantine_*` tables, with tests on every model. The SQL stays portable. | dbt, DuckDB, Databricks |
 | **5 · Resolve** | Feeder names are matched across sources: exact matches auto-accept, then written rules, then a language model choosing *only among listed candidates*. Every decision stores its confidence and reason, and a backtest keeps the rules honest. | RapidFuzz, OpenRouter, Claude |
 | **6 · Analyse and narrate** | Descriptive statistics (no causal claims, sample sizes always shown); a weekly summary in which the model writes prose only and every number is injected and validated. | SQL, OpenRouter |
 | **7 · Export** | Versioned JSON validated against JSON Schemas generated from pydantic models, including the pipeline's own health records. | pydantic, JSON Schema |
+| **Ask** | `roshni ask` answers plain-language questions: a model writes SQL over an allowlisted semantic layer, a guard checks it, DuckDB computes every number, and code adds the caveats. | sqlglot, DuckDB, Groq, OpenRouter |
 | **8 · Publish** | A static Next.js site (TypeScript, Tailwind CSS) with a browser-side "dark now" engine that is checked row for row against the Python version. | Next.js, React, Vitest, axe-core |
 
 </details>
@@ -71,10 +76,35 @@ Figures as of 2026-11-24, from the pipeline's own records; the [pipeline health 
 | **Manual work replaced** | Checking the IESCO, K-Electric and NEPRA websites by hand (15 IESCO workbooks, daily press releases, two K-Electric PDFs, NEPRA's annual reports) and 14 news feeds. Since 2026-11-08 the pipeline runs with **no manual step**: new schedule versions are dated from the file itself and new listing rows are picked up automatically, with a notice instead of a stop. |
 | **Runs** | A publish run every day, news every 3 hours, a freshness watchdog every 3 hours. **The last 14 publish runs all succeeded**; a successful run takes a median **4 min 20 s**. Of 77 runs recorded since 2026-10-12, 55 succeeded: the failures are a 17-day stall in October, written up in [ADR 0006](docs/adr/0006-automate-review-gates.md). |
 | **Volume** | **3,549** polite fetches over 49 days, **199** new file versions stored. In the warehouse: **48,732** scheduled windows, **20,526** announced maintenance windows, **4,410** planned-shutdown windows, **1,726** feeders with a published schedule (1,101 IESCO, 625 K-Electric) and 130 company-years of NEPRA figures. |
-| **Quality** | 267 Python tests, 556 web tests (including a 514-case check that the browser's "dark now" engine matches the Python one), 38 dbt models with 129 tests (all 172 nodes pass in the latest build), Great Expectations on every parsed table, accessibility checks (axe) at phone width in light and dark themes. |
+| **Quality** | 336 Python tests, 556 web tests (including a 514-case check that the browser's "dark now" engine matches the Python one), 38 dbt models with 129 tests (all 172 nodes pass in the latest build), Great Expectations on every parsed table, accessibility checks (axe) at phone width in light and dark themes. |
 | **Build speed (measured)** | A full warehouse build of today's data (181,660 input rows) takes about **12 s** on a 4-core laptop; synthetic **10×** data (1.8 M rows) builds in about **20 s** and **100×** (18.1 M rows) in **139 s**. Method and every run: [`docs/benchmarks.md`](docs/benchmarks.md). |
 | **Output** | About 3,500 static pages in English and Urdu, versioned JSON for every page, and dbt docs with the lineage graph. |
-| **Cost** | About $0 a month on free tiers. The language-model step is capped at $0.01 a run. |
+| **Cost** | About $0 a month on free tiers. The weekly report's language-model step is capped at $0.01 a run; Ask Roshni and parser healing run on Groq's free plan with free OpenRouter models as fallback. |
+
+## AI in the pipeline, measured
+
+Two language-model features, each built so the model can be wrong without the data being wrong, and each scored on its own evaluation set.
+
+**Ask Roshni** ([`docs/ask-roshni.md`](docs/ask-roshni.md)): `roshni ask "Which IBC areas have the highest share of twelve-hour feeders?"`
+
+- A prompt-injection screen (`llama-prompt-guard-2`) runs before anything else.
+- The planner sees a **semantic layer**: allowlisted tables and columns, described by the dbt docs, with real category values. It refuses questions about actual outages, causes, forecasts, consumers or income.
+- A **SQL guard** (sqlglot) allows one read-only SELECT on allowlisted columns only. Queries run on a read-only connection with external access off, a row cap and a timeout, with one self-correcting retry.
+- The narrator writes **placeholders, never numbers**. A validator rejects digits, causal wording and "actual outage" wording. Caveats, `n` and the build time are added by code.
+
+**Self-healing parsers** ([`docs/parser-healing.md`](docs/parser-healing.md)): `roshni heal`, run before parsing every day.
+
+- Drift means a workbook with no recognised header, or one that quarantines more than 25 % of its rows.
+- The model maps columns to the parser's known fields. It never outputs a data value.
+- A **deterministic gate** keeps the mapping only if the broken file parses again and every other stored workbook parses exactly as before.
+- Accepted mappings become reviewable header aliases, recording who decided and the evidence. Rows read through one are flagged.
+
+| Evaluation (Groq free plan) | qwen3.8-27b | gpt-oss-120b | gpt-oss-20b |
+|---|---|---|---|
+| Ask Roshni: 25-item golden set, scored by execution match (19 answers, 4 refusals, 2 injections) | **25/25**, 0.94 s mean | **25/25**, 1.89 s | 24/25, 1.20 s |
+| Parser healing: 27 chaos cases (9 real workbooks with headers renamed in English, abbreviated or in Urdu), exact row-for-row recovery | 23/27 (4 × HTTP 429) | 26/27 | **27/27** |
+
+Both evaluation write-ups list the bugs their first runs found in the evaluation and in the product, and how each was fixed. Providers are an OpenAI-compatible chain ([`config/llm.yml`](config/llm.yml)): Groq first, OpenRouter's free models as fallback, with every attempt's tokens and latency recorded.
 
 ## Key trade-offs
 
@@ -104,7 +134,7 @@ Where the obvious approach failed and what the code does instead, each backed by
 
 - **Raw first, never edited.** Every source file is kept exactly as published, keyed by its hash, so any number can be rebuilt from the original document. The snapshot store lives in a separate private repository because the files are third-party documents.
 - **Quarantine, not silent fixes.** A row that cannot be parsed is set aside with its reason, and known anomalies are flagged rather than corrected. dbt has `quarantine_*` tables for rows that fail joins.
-- **An LLM where it helps, never as the source of truth.** It picks only among listed candidates when matching names, and it writes prose only in the weekly summary. Every number comes from SQL and is validated before publishing, and spend is capped per run.
+- **An LLM where it helps, never as the source of truth.** It picks only among listed candidates when matching names, writes prose only in the weekly summary and in Ask Roshni, writes SQL only inside an allowlist, and names columns only when healing a parser. Every number comes from SQL and is validated before publishing, every model output passes a deterministic check, and spend is capped per run.
 - **Portable SQL.** The same dbt project builds on DuckDB every day and on Databricks (smoke-tested), with no dialect-specific functions in models.
 - **Incremental where it is true.** `fct_planned_shutdown` loads only new press-release files (they never change once published), with a per-adapter strategy: `delete+insert` on DuckDB, `merge` on Databricks.
 - **Two schedulers, one CLI.** GitHub Actions runs production. An Airflow DAG in Docker runs the same `roshni` commands as a showcase. Neither contains business logic.
@@ -138,10 +168,13 @@ So a single DuckDB file comfortably holds about 100 times today's volume. Beyond
 
 ```bash
 uv sync                                  # Python 3.12 environment
-uv run pytest                            # 267 tests (full-file tests skip without data-sources/)
+uv run pytest                            # 336 tests (full-file tests skip without data-sources/)
 uv run roshni --help                     # every pipeline step is one command
 uv run roshni build                      # dbt build on DuckDB
 uv run roshni dbt-docs                   # data/dbt-docs/index.html (lineage graph included)
+uv run roshni ask "How many listed K-Electric feeders have scheduled hours per day?"   # needs GROQ_API_KEY
+uv run roshni ask-eval                   # golden-set eval of every model in config/llm.yml
+uv run roshni heal-eval --snapshots STORE   # chaos eval of parser healing on stored workbooks
 cd web && npm ci && npm run sync-data:fixtures && npm run dev   # the site, on fixture data
 docker compose -f airflow/docker-compose.yml up --build         # Airflow showcase on :8080
 ```
@@ -151,10 +184,10 @@ The full command list is in [`CLAUDE.md`](CLAUDE.md) (the working notes used whi
 ## Operations
 
 - **Daily:** `snapshot.yml` fetches into the private snapshot store, then `publish.yml` parses, validates, builds, resolves, reports, exports, builds the site and the dbt docs, and pushes the site to [`azzammasood/roshni-site`](https://github.com/azzammasood/roshni-site).
-- **Secrets:** `SNAPSHOTS_DEPLOY_KEY` (write access to the snapshot store), `SITE_DEPLOY_KEY` (push to the site repo), `OPENROUTER_API_KEY` (optional; without it the narrator falls back to a template).
+- **Secrets:** `SNAPSHOTS_DEPLOY_KEY` (write access to the snapshot store), `SITE_DEPLOY_KEY` (push to the site repo), `OPENROUTER_API_KEY` (optional; without it the narrator falls back to a template), `GROQ_API_KEY` (parser healing; without it the chain uses OpenRouter).
 - **Failure handling:** a failed run opens or updates a `pipeline-failure` issue and closes it after the next good run. Publish still runs after a failed snapshot, using the last good files.
 - **Watchdog:** every 3 hours `watchdog.yml` checks that the live site is under 36 hours old and opens an issue that notifies me if not; weekly it re-enables the scheduled workflows so GitHub's 60-day inactivity rule never switches them off.
-- **Automatic decisions:** new schedule versions and new listing rows are handled without stopping the run and reported in a "Pipeline notices" issue.
+- **Automatic decisions:** new schedule versions, new listing rows and learned parser header aliases are handled without stopping the run and reported in a "Pipeline notices" issue.
 - **Infrastructure as code:** [`infra/databricks/`](infra/databricks/) holds Terraform for the optional Databricks deployment (catalog, schemas, volume, SQL warehouse, a paused job), checked in CI with `fmt`, `validate` and tflint. Nothing is applied automatically.
 
 ## About
