@@ -314,7 +314,49 @@ def test_matches_rounds_half_up_like_duckdb():
         (0.0, "0.0"),
         (1234, "1,234"),
         (None, "null"),
+        (True, "true"),
     ],  # fmt: skip
 )
 def test_fmt_rounds_half_up(v, shown):
     assert engine.fmt(v) == shown
+
+
+# --- website bundle and parity with the TypeScript ports --------------------------------------
+
+
+def test_parity_file_matches_python():
+    from roshni.ask import parity
+
+    on_disk = json.loads(parity.PARITY_FILE.read_text(encoding="utf-8"))
+    assert on_disk == json.loads(json.dumps(parity.cases())), (
+        "regenerate: uv run python -m roshni.ask.parity"
+    )
+
+
+def test_worker_llm_config_matches_config_llm_yml():
+    import yaml
+
+    from roshni.paths import CONFIG_DIR, REPO_ROOT
+
+    worker = json.loads((REPO_ROOT / "worker" / "src" / "llm.json").read_text(encoding="utf-8"))
+    assert worker == yaml.safe_load((CONFIG_DIR / "llm.yml").read_text(encoding="utf-8"))
+
+
+def test_bundle_has_allowlisted_columns_and_the_cli_prompts(tmp_path):
+    import duckdb as ddb
+
+    from roshni.ask import bundle
+
+    c = ddb.connect()
+    for t in LAYER.tables.values():
+        cols = ", ".join(f'1 as "{col}"' for col in t.columns)
+        c.execute(f"create table {t.name} as select {cols}, 'x' as source_file")
+    ctx = bundle.build_bundle(c, tmp_path, LAYER)
+    for name, t in ctx["tables"].items():
+        got = [r[0] for r in c.execute(
+            f"describe select * from '{(tmp_path / t['file']).as_posix()}'").fetchall()]  # fmt: skip
+        assert got == list(LAYER.tables[name].columns) and "source_file" not in got
+    assert ctx["planner_system"] == engine.PLANNER.format(context=LAYER.prompt_context(c))
+    assert ctx["narrator_system"] == engine.NARRATOR
+    assert "{err}" in ctx["feedback"]["error"] and "{problems}" in ctx["feedback"]["guard"]
+    assert json.loads((tmp_path / "context.json").read_text(encoding="utf-8")) == ctx

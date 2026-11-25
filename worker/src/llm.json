@@ -1,0 +1,56 @@
+{
+  "providers": [
+    {
+      "name": "groq",
+      "base_url": "https://api.groq.com/openai/v1",
+      "key_env": "GROQ_API_KEY",
+      "models": [
+        {
+          "id": "qwen/qwen3.8-27b"
+        },
+        {
+          "id": "openai/gpt-oss-120b",
+          "params": {
+            "reasoning_effort": "low"
+          }
+        },
+        {
+          "id": "openai/gpt-oss-20b",
+          "params": {
+            "reasoning_effort": "low"
+          }
+        }
+      ]
+    },
+    {
+      "name": "openrouter",
+      "base_url": "https://openrouter.ai/api/v1",
+      "key_env": "OPENROUTER_API_KEY",
+      "headers": {
+        "HTTP-Referer": "https://github.com/azzammasood/roshni-pipeline",
+        "X-Title": "roshni-pipeline"
+      },
+      "models": [
+        {
+          "id": "google/gemma-4-31b-it:free"
+        },
+        {
+          "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "params": {
+            "reasoning": {
+              "effort": "low"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "max_tokens": 2000,
+  "temperature": 0,
+  "max_wait_s": 20,
+  "guard": {
+    "provider": "groq",
+    "model": "meta-llama/llama-prompt-guard-2-86m",
+    "threshold": 0.5
+  }
+}

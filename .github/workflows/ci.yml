@@ -53,3 +53,20 @@ jobs:
       # Every number on the equity page must trace to equity.json (fixtures carry the full file).
       - run: npm run check:equity
       - run: npm run check:equity -- --locale ur
+
+  worker:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: worker
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      # includes the parity cases generated from the Python answer checks
+      - run: npm test

@@ -1,0 +1,272 @@
+{
+ "facts": {
+  "row_count": "2",
+  "r1_ibc": "IBC - A",
+  "r1_share_12h_pct": "90.0",
+  "r2_n": "1,234"
+ },
+ "prose": [
+  {
+   "text": "{r1_ibc} has the highest share at {r1_share_12h_pct}%.",
+   "question": "",
+   "problems": []
+  },
+  {
+   "text": "{r1_ibc} has 90% of feeders on the long schedule.",
+   "question": "",
+   "problems": [
+    "contains a number not taken from the result"
+   ]
+  },
+  {
+   "text": "{r1_ibc} is high because of losses.",
+   "question": "",
+   "problems": [
+    "causal or accusatory wording"
+   ]
+  },
+  {
+   "text": "{r1_ibc} actually lost power most often.",
+   "question": "",
+   "problems": [
+    "calls a schedule an actual/measured outage"
+   ]
+  },
+  {
+   "text": "These are schedules, not measured outages: {r1_ibc}.",
+   "question": "",
+   "problems": []
+  },
+  {
+   "text": "{r1_ibc} is not actually dark.",
+   "question": "",
+   "problems": []
+  },
+  {
+   "text": "Feeders in {r1_ibc} were without power.",
+   "question": "",
+   "problems": [
+    "calls a schedule an actual/measured outage"
+   ]
+  },
+  {
+   "text": "Feeders in {r1_ibc} went dark at night.",
+   "question": "",
+   "problems": [
+    "calls a schedule an actual/measured outage"
+   ]
+  },
+  {
+   "text": "{r1_ibc} loses electricity daily.",
+   "question": "",
+   "problems": [
+    "calls a schedule an actual/measured outage"
+   ]
+  },
+  {
+   "text": "{r9_ibc} leads.",
+   "question": "",
+   "problems": [
+    "unknown placeholders ['r9_ibc']"
+   ]
+  },
+  {
+   "text": "Three areas lead, starting with {r1_ibc}.",
+   "question": "",
+   "problems": [
+    "contains a number word not in the question"
+   ]
+  },
+  {
+   "text": "Twenty-one feeders, led by {r1_ibc}.",
+   "question": "",
+   "problems": [
+    "contains a number word not in the question"
+   ]
+  },
+  {
+   "text": "A dozen feeders, led by {r1_ibc}.",
+   "question": "",
+   "problems": [
+    "contains a number word not in the question"
+   ]
+  },
+  {
+   "text": "No values here.",
+   "question": "",
+   "problems": [
+    "no values from the result"
+   ]
+  },
+  {
+   "text": "In 2024-25, the top five start with {r1_ibc}.",
+   "question": "Which five areas had the most hours in 2024-25?",
+   "problems": []
+  },
+  {
+   "text": "Six or twelve hours: {r1_ibc} has {r2_n}.",
+   "question": "",
+   "problems": []
+  },
+  {
+   "text": "- {r1_ibc}\n- {r2_n}",
+   "question": "",
+   "problems": [
+    "lists, headings or tables are not allowed"
+   ]
+  },
+  {
+   "text": "1. {r1_ibc} leads",
+   "question": "",
+   "problems": [
+    "contains a number not taken from the result",
+    "lists, headings or tables are not allowed"
+   ]
+  },
+  {
+   "text": "## {r1_ibc}",
+   "question": "",
+   "problems": [
+    "lists, headings or tables are not allowed"
+   ]
+  },
+  {
+   "text": "{r1_ibc} is unfair to the poor.",
+   "question": "",
+   "problems": [
+    "causal or accusatory wording"
+   ]
+  },
+  {
+   "text": "{r1_ibc} is targeted.",
+   "question": "",
+   "problems": [
+    "causal or accusatory wording"
+   ]
+  },
+  {
+   "text": "Schedules are driven by losses in {r1_ibc}.",
+   "question": "",
+   "problems": [
+    "causal or accusatory wording"
+   ]
+  },
+  {
+   "text": "The result shows {r1_ibc} at {r1_share_12h_pct} and {r2_n} feeders.",
+   "question": "",
+   "problems": []
+  },
+  {
+   "text": "{r1_ibc} had 1,234.5 hours and {row_count} rows.",
+   "question": "",
+   "problems": [
+    "contains a number not taken from the result"
+   ]
+  },
+  {
+   "text": "{r1_ibc} REALLY leads.",
+   "question": "",
+   "problems": [
+    "calls a schedule an actual/measured outage"
+   ]
+  }
+ ],
+ "fmt": [
+  {
+   "value": 10.25,
+   "decimal": true,
+   "shown": "10.3"
+  },
+  {
+   "value": 2452.0,
+   "decimal": true,
+   "shown": "2,452.0"
+  },
+  {
+   "value": 0.125,
+   "decimal": true,
+   "shown": "0.13"
+  },
+  {
+   "value": 0.0,
+   "decimal": true,
+   "shown": "0.0"
+  },
+  {
+   "value": 1234,
+   "decimal": false,
+   "shown": "1,234"
+  },
+  {
+   "value": null,
+   "decimal": false,
+   "shown": "null"
+  },
+  {
+   "value": -3.45,
+   "decimal": true,
+   "shown": "-3.5"
+  },
+  {
+   "value": 0.004,
+   "decimal": true,
+   "shown": "0.00"
+  },
+  {
+   "value": 99.95,
+   "decimal": true,
+   "shown": "100.0"
+  },
+  {
+   "value": 1000000,
+   "decimal": false,
+   "shown": "1,000,000"
+  },
+  {
+   "value": 0.5,
+   "decimal": true,
+   "shown": "0.50"
+  },
+  {
+   "value": -0.0,
+   "decimal": true,
+   "shown": "0.0"
+  },
+  {
+   "value": "IBC - A",
+   "decimal": false,
+   "shown": "IBC - A"
+  },
+  {
+   "value": true,
+   "decimal": false,
+   "shown": "true"
+  }
+ ],
+ "slug": [
+  {
+   "text": "share_12h_pct",
+   "slug": "share_12h_pct"
+  },
+  {
+   "text": "Share (12h) %",
+   "slug": "share_12h"
+  },
+  {
+   "text": "n",
+   "slug": "n"
+  },
+  {
+   "text": "COUNT(*)",
+   "slug": "count"
+  },
+  {
+   "text": "  ",
+   "slug": "col"
+  },
+  {
+   "text": "Feeder-Name",
+   "slug": "feeder_name"
+  }
+ ]
+}
