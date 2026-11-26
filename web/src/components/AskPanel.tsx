@@ -102,7 +102,8 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
     const el = input.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = `${el.scrollHeight}px`;
+    // scrollHeight leaves out the border; without it a 1 px scrollbar shows
+    el.style.height = `${el.scrollHeight + el.offsetHeight - el.clientHeight}px`;
   }, [question]);
 
   useEffect(() => {
