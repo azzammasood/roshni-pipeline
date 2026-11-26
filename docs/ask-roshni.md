@@ -99,7 +99,7 @@ How these numbers were reached, in full:
   models at 25/25 mean the set needs harder questions (joins, multi-step, ambiguous wording)
   before it can separate them. Add items whenever a real question goes wrong.
 
-## On the website (`/ask/`; Worker deploy pending)
+## On the website (`/ask/`)
 
 The site is static, so the parts are split. Nothing secret reaches the browser, and no server
 runs a query.
@@ -172,6 +172,20 @@ flowchart LR
   the day. The address is never stored, and the id changes daily.
 - **Origins.** Only the site's origins get answers. Other origins get 403. This is not a
   security boundary; the caps are.
+
+### Deploy
+
+The Worker runs at `https://roshni-ask.ahmaduzzammasood.workers.dev` on the owner's free
+Cloudflare account. It was deployed on 2026-11-26 with `npx wrangler deploy` in `worker/`. The
+secrets `GROQ_API_KEY` and `VISITOR_SALT` were set with `npx wrangler secret put`, and their
+values were never printed. After changing `worker/`, deploy again with the same command. Publish
+builds the site with `NEXT_PUBLIC_ASK_URL` set to that address, which also shows the nav link.
+
+Checked live after the first deploy:
+- requests with no origin or another origin got 403;
+- the CORS preflight answers only `https://azzammasood.github.io`;
+- `/v1/quota` showed 10 and 150 questions left;
+- `/v1/ask` answered 503, without spending a question, until the site published `ask/`.
 
 ### Run it locally
 

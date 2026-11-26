@@ -141,6 +141,8 @@ jobs:
           NEXT_PUBLIC_BASE_PATH: ${{ env.SITE_BASE_PATH }}
           # Urdu approved by the owner 2026-10-12 (docs/urdu-review.md).
           NEXT_PUBLIC_LOCALES: en,ur
+          # Ask Roshni Worker (worker/, deployed with `npx wrangler deploy`; docs/ask-roshni.md).
+          NEXT_PUBLIC_ASK_URL: https://roshni-ask.ahmaduzzammasood.workers.dev
         run: |
           npm ci
           npm run sync-data
