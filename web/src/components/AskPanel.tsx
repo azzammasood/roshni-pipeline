@@ -1,6 +1,12 @@
 "use client";
 // Ask Roshni: a question in, an answer whose numbers come from a query the browser ran on the
 // published data. The Worker (worker/) plans and narrates; lib/ask/session.ts does the rest.
+//
+// Layout (owner review 2026-11-26): a night-sky console holds the question; under it a power line
+// runs through the five stations of an answer (engine, query, check, run, answer) and a spark
+// travels to the one at work. The answer switches on directly under the console and is scrolled
+// into view; the example questions sit below it. Motion is CSS only and stops under
+// prefers-reduced-motion (motion.css, "Ask Roshni").
 import { useEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/fill";
@@ -8,26 +14,40 @@ import { ASK_URL, quota, workerApi } from "@/lib/ask/api";
 import { openDb } from "@/lib/ask/duckdb";
 import { type Answer, type Remaining, type Step, askQuestion } from "@/lib/ask/session";
 import { num } from "@/lib/format";
+import { BulbArt } from "@/components/Bulb";
 import { ScrollRegion } from "@/components/ScrollRegion";
 
 // From the golden set (config/ask_golden.yml): each is known to have an answer in the data.
-const EXAMPLES = [
-  "Which K-Electric IBC area has the most listed feeders?",
-  "How many listed K-Electric feeders are scheduled for six hours a day, and how many for twelve?",
-  "Show K-Electric's NEPRA-reported load-shedding hours per day for every fiscal year.",
-  "What is the most common purpose given for IESCO maintenance windows?",
+const EXAMPLES: { tag: string; q: string }[] = [
+  { tag: "K-Electric", q: "Which K-Electric IBC area has the most listed feeders?" },
+  { tag: "K-Electric", q: "How many listed K-Electric feeders are scheduled for six hours a day, and how many for twelve?" },
+  { tag: "NEPRA", q: "Show K-Electric's NEPRA-reported load-shedding hours per day for every fiscal year." },
+  { tag: "IESCO", q: "What is the most common purpose given for IESCO maintenance windows?" },
 ];
 
 type T = Dictionary["ask"];
+type Phase = Step | "load";
+type Station = "load" | "plan" | "check" | "run" | "narrate";
+const STATIONS: Station[] = ["load", "plan", "check", "run", "narrate"];
+const STATION_OF: Record<Phase, number> = { load: 0, guard: 1, plan: 1, replan: 1, check: 2, run: 3, narrate: 4 };
+
+/** Where the line ended: index of the last station reached, and how. */
+type Track = { at: number; state: "running" | "done" | "stopped"; replanned: boolean };
+
+const reduceMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export function AskPanel({ locale, t }: { locale: string; t: T }) {
   const [question, setQuestion] = useState("");
   const [busy, setBusy] = useState(false);
-  const [step, setStep] = useState<Step | "load" | null>(null);
+  const [phase, setPhase] = useState<Phase | null>(null);
+  const [track, setTrack] = useState<Track | null>(null);
   const [answer, setAnswer] = useState<Answer | null>(null);
+  const [asked, setAsked] = useState("");
   const [remaining, setRemaining] = useState<Remaining | null>(null);
   const [loadError, setLoadError] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
   const result = useRef<HTMLDivElement>(null);
+  const input = useRef<HTMLTextAreaElement>(null);
   const n = (v: number) => num(v, locale);
 
   useEffect(() => {
@@ -35,111 +55,216 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
     void quota().then((q) => q.remaining && setRemaining(q.remaining));
   }, []);
 
+  useEffect(() => {
+    if (!busy) return;
+    const start = performance.now();
+    const id = window.setInterval(() => setElapsed((performance.now() - start) / 1000), 100);
+    return () => window.clearInterval(id);
+  }, [busy]);
+
   if (!ASK_URL) return <p className="text-lg">{t.off}</p>;
+
+  function onStep(p: Phase) {
+    setPhase(p);
+    setTrack((tr) => ({ at: STATION_OF[p], state: "running", replanned: (tr?.replanned ?? false) || p === "replan" }));
+  }
 
   async function submit(q: string) {
     const text = q.trim();
     if (!text || busy) return;
     setBusy(true);
     setAnswer(null);
+    setAsked(text);
     setLoadError(false);
+    setElapsed(0);
+    setTrack({ at: 0, state: "running", replanned: false });
     try {
-      setStep("load");
+      onStep("load");
       const opened = await openDb();
-      const a = await askQuestion(text, { api: workerApi, db: opened.db, ctx: opened.ctx, serialize: opened.serialize, onStep: setStep });
+      const a = await askQuestion(text, {
+        api: workerApi,
+        db: opened.db,
+        ctx: opened.ctx,
+        serialize: opened.serialize,
+        onStep,
+      });
       setAnswer(a);
       if (a.remaining) setRemaining(a.remaining);
+      setTrack((tr) => ({
+        at: a.status === "answered" ? 4 : (tr?.at ?? 1),
+        state: a.status === "answered" ? "done" : "stopped",
+        replanned: tr?.replanned ?? false,
+      }));
     } catch (e) {
       console.error("Ask Roshni could not load the query engine:", e);
       setLoadError(true);
+      setTrack((tr) => ({ at: tr?.at ?? 0, state: "stopped", replanned: tr?.replanned ?? false }));
     } finally {
       setBusy(false);
-      setStep(null);
-      requestAnimationFrame(() => result.current?.focus());
+      setPhase(null);
+      requestAnimationFrame(() => {
+        const el = result.current;
+        if (!el) return;
+        el.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+        el.focus({ preventScroll: true });
+      });
     }
   }
 
-  const stepText: Record<Step | "load", string> = {
-    load: t.stepLoad, plan: t.stepPlan, check: t.stepCheck, run: t.stepRun, replan: t.stepReplan, narrate: t.stepNarrate, guard: t.stepPlan,
+  const stepText: Record<Phase, string> = {
+    load: t.stepLoad,
+    guard: t.stepPlan,
+    plan: t.stepPlan,
+    check: t.stepCheck,
+    run: t.stepRun,
+    replan: t.stepReplan,
+    narrate: t.stepNarrate,
   };
+  const stationText: Record<Station, string> = {
+    load: t.stationLoad,
+    plan: t.stationPlan,
+    check: t.stationCheck,
+    run: t.stationRun,
+    narrate: t.stationNarrate,
+  };
+  const lit = answer?.status === "answered";
 
   return (
-    <div className="space-y-8">
-      <form
-        className="space-y-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void submit(question);
-        }}
-      >
-        <label htmlFor="ask-q" className="block font-semibold">
-          {t.label}
-        </label>
-        <textarea
-          id="ask-q"
-          className="field w-full text-lg"
-          rows={3}
-          maxLength={500}
-          dir="auto"
-          value={question}
-          placeholder={t.placeholder}
-          onChange={(e) => setQuestion(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              void submit(question);
-            }
+    <div className="space-y-10">
+      <div className={`ask-console${busy ? " is-busy" : ""}${lit ? " is-lit" : ""}`}>
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void submit(question);
           }}
-        />
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <button type="submit" disabled={busy || !question.trim()} className="chip px-4 py-1.5 bg-ink text-bg font-semibold disabled:opacity-50">
-            {busy ? t.asking : t.ask}
-          </button>
-          {remaining && (
-            <p className="text-sm text-muted">
-              {fill(t.remaining, { v: n(remaining.visitor_today), s: n(remaining.site_today) }, locale)}
-            </p>
-          )}
-        </div>
-        <p className="text-sm text-muted">{t.englishOnly}</p>
-      </form>
+        >
+          <div className="flex items-baseline justify-between gap-4 flex-wrap">
+            <label htmlFor="ask-q" className="kicker">
+              {t.label}
+            </label>
+            {remaining && (
+              <p className="ask-meter" aria-live="polite">
+                <span className="ask-meter-dots" aria-hidden="true">
+                  {Array.from({ length: Math.min(10, remaining.visitor_today) }, (_, i) => (
+                    <span key={i} />
+                  ))}
+                </span>
+                {fill(t.remaining, { v: n(remaining.visitor_today) }, locale)}
+              </p>
+            )}
+          </div>
+          <div className="ask-input-row">
+            <textarea
+              ref={input}
+              id="ask-q"
+              className="ask-input"
+              rows={2}
+              maxLength={500}
+              dir="auto"
+              value={question}
+              placeholder={t.placeholder}
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  void submit(question);
+                }
+              }}
+            />
+            <button type="submit" disabled={busy || !question.trim()} className="ask-switch">
+              <svg viewBox="0 0 40 48" className="ask-switch-bulb" aria-hidden="true" focusable="false">
+                <BulbArt />
+              </svg>
+              <span>{busy ? t.asking : t.ask}</span>
+            </button>
+          </div>
+          <p className="ask-hint">{t.hintEnter}</p>
+        </form>
 
-      <section aria-labelledby="ask-examples" className="space-y-2">
-        <h2 id="ask-examples" className="text-sm font-semibold">
-          {t.examplesTitle}
+        {track && (
+          <div className="ask-line-wrap">
+            <ol
+              className={`ask-line is-${track.state}`}
+              style={{ "--at": track.at } as React.CSSProperties}
+              aria-hidden="true"
+            >
+              {STATIONS.map((s, i) => {
+                const state =
+                  i < track.at || (i === track.at && track.state === "done")
+                    ? "done"
+                    : i === track.at
+                      ? track.state === "running"
+                        ? "active"
+                        : "stopped"
+                      : "todo";
+                return (
+                  <li key={s} className={`ask-station is-${state}`}>
+                    <span className="ask-lamp" />
+                    <span className="ask-station-name">
+                      {stationText[s]}
+                      {s === "plan" && track.replanned && <span className="ask-retry"> ↻</span>}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="ask-status" aria-live="polite">
+              <span>{busy && phase ? `${stepText[phase]}…` : ""}</span>
+              <span className="ask-clock" dir="ltr">
+                {track && (busy || answer) ? fill(t.seconds, { s: n(Math.round(elapsed * 10) / 10) }, locale) : ""}
+              </span>
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div ref={result} tabIndex={-1} className="outline-none scroll-mt-24">
+        {busy && !answer && <AnswerSkeleton />}
+        {loadError && <p className="mark">{t.loadError}</p>}
+        {answer && <AnswerView a={answer} asked={asked} t={t} locale={locale} />}
+      </div>
+
+      <section aria-labelledby="ask-examples" className="space-y-3">
+        <h2 id="ask-examples" className="kicker">
+          {answer ? t.askAnother : t.examplesTitle}
         </h2>
-        <ul className="flex flex-wrap gap-2" lang="en" dir="ltr">
-          {EXAMPLES.map((q) => (
+        <ul className="ask-examples" lang="en" dir="ltr">
+          {EXAMPLES.map(({ tag, q }) => (
             <li key={q}>
               <button
                 type="button"
                 disabled={busy}
-                className="chip px-2 py-1 text-start text-sm hover:bg-surface disabled:opacity-50"
+                className="ask-example"
                 onClick={() => {
                   setQuestion(q);
+                  input.current?.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "center" });
                   void submit(q);
                 }}
               >
-                {q}
+                <span className="ask-example-tag">{tag}</span>
+                <span>{q}</span>
               </button>
             </li>
           ))}
         </ul>
       </section>
-
-      <div aria-live="polite" className="min-h-6">
-        {busy && step && <p className="text-sm text-muted">{stepText[step]}…</p>}
-      </div>
-
-      <div ref={result} tabIndex={-1} className="outline-none">
-        {loadError && <p className="mark">{t.loadError}</p>}
-        {answer && <AnswerView a={answer} t={t} locale={locale} />}
-      </div>
     </div>
   );
 }
 
-function AnswerView({ a, t, locale }: { a: Answer; t: T; locale: string }) {
+function AnswerSkeleton() {
+  return (
+    <div className="ask-answer space-y-3" aria-hidden="true">
+      <div className="skeleton h-4 w-24" />
+      <div className="skeleton h-8 w-full max-w-2xl" />
+      <div className="skeleton h-8 w-2/3 max-w-xl" />
+      <div className="skeleton h-24 w-full mt-4" />
+    </div>
+  );
+}
+
+function AnswerView({ a, asked, t, locale }: { a: Answer; asked: string; t: T; locale: string }) {
   const n = (v: number) => num(v, locale);
   const minutes = (s?: number) => n(Math.max(1, Math.ceil((s ?? 60) / 60)));
   if (a.status !== "answered") {
@@ -161,13 +286,15 @@ function AnswerView({ a, t, locale }: { a: Answer; t: T; locale: string }) {
               : t.failed;
     const why = a.status === "refused" || a.status === "failed" ? a.reason : "";
     return (
-      <section aria-labelledby="ask-answer" className="rule pt-4 space-y-2">
-        <h2 id="ask-answer" className="headline text-3xl">
-          {t.answerTitle}
+      <section aria-labelledby="ask-answer" className="ask-answer is-off space-y-3">
+        <p className="ask-asked" lang="en" dir="auto">
+          {asked}
+        </p>
+        <h2 id="ask-answer" className="headline text-3xl sm:text-4xl">
+          {msg}
         </h2>
-        <p className="text-lg">{msg}</p>
         {why && (
-          <p className="text-sm text-muted" lang="en" dir="ltr">
+          <p className="text-sm text-muted max-w-prose" lang="en" dir="ltr">
             {why}
           </p>
         )}
@@ -176,17 +303,20 @@ function AnswerView({ a, t, locale }: { a: Answer; t: T; locale: string }) {
     );
   }
   return (
-    <section aria-labelledby="ask-answer" className="rule pt-4 space-y-4">
-      <h2 id="ask-answer" className="headline text-3xl">
+    <section aria-labelledby="ask-answer" className="ask-answer is-on space-y-5">
+      <p className="ask-asked" lang="en" dir="auto">
+        {asked}
+      </p>
+      <h2 id="ask-answer" className="sr-only">
         {t.answerTitle}
       </h2>
-      <p className="text-xl max-w-prose" lang="en" dir="ltr">
+      <p className="ask-answer-text headline" lang="en" dir="ltr">
         {a.answer}
       </p>
       {!a.narrated && a.n > 0 && <p className="text-sm text-muted">{t.templateNote}</p>}
       {a.columns.length > 0 && a.n > 0 && (
         <ScrollRegion label={t.tableTitle} dir="ltr">
-          <table className="data" lang="en">
+          <table className="data ask-table" lang="en">
             <thead>
               <tr>
                 {a.columns.map((c) => (
@@ -198,7 +328,7 @@ function AnswerView({ a, t, locale }: { a: Answer; t: T; locale: string }) {
             </thead>
             <tbody>
               {a.rows.map((r, i) => (
-                <tr key={i}>
+                <tr key={i} style={{ "--i": Math.min(i, 12) } as React.CSSProperties}>
                   {r.map((v, j) => (
                     <td key={j} className="tabular-nums">
                       {v}
@@ -210,8 +340,8 @@ function AnswerView({ a, t, locale }: { a: Answer; t: T; locale: string }) {
           </table>
         </ScrollRegion>
       )}
-      <div className="space-y-1 text-sm">
-        <h3 className="font-semibold">{t.caveatsTitle}</h3>
+      <div className="ask-fine space-y-1 text-sm">
+        <h3 className="kicker">{t.caveatsTitle}</h3>
         <ul className="list-disc ps-5 space-y-1">
           <li>{t.notMeasured}</li>
           {a.caveats.map((c) => (
@@ -231,17 +361,13 @@ function SqlDetails({ a, t, locale }: { a: Answer; t: T; locale: string }) {
   const tokens = a.attempts.reduce((s, x) => s + x.tokens, 0);
   const models = [...new Set(a.models)];
   return (
-    <details className="text-sm">
+    <details className="ask-sql text-sm">
       <summary className="link cursor-pointer">{t.howThis}</summary>
       <div className="mt-2 space-y-2">
-        <pre className="font-mono text-xs whitespace-pre-wrap break-words border border-line p-3" dir="ltr" lang="en">
+        <pre className="ask-sql-code" dir="ltr" lang="en">
           {a.sql}
         </pre>
-        {models.length > 0 && (
-          <p>
-            {fill(t.writtenBy, { m: models.join(", "), t: num(tokens, locale) }, locale)}
-          </p>
-        )}
+        {models.length > 0 && <p>{fill(t.writtenBy, { m: models.join(", "), t: num(tokens, locale) }, locale)}</p>}
       </div>
     </details>
   );
