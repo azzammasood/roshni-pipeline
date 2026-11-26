@@ -11,6 +11,11 @@ on:
     workflows: [snapshot]
     types: [completed]
   workflow_dispatch:
+    inputs:
+      evals:
+        description: Also run the weekly evals (Ask Roshni golden set, parser-healing chaos test)
+        type: boolean
+        default: false
 
 permissions:
   contents: write # commits review decisions and effective dates (dbt/seeds) back to main
@@ -28,7 +33,7 @@ jobs:
     # still reports the fetch error. Only a cancelled snapshot is skipped.
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion != 'cancelled'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       ROSHNI_PDFTEXT: docker # canonical poppler from the project image, never the runner's
       SITE_REPO: git@github.com:azzammasood/roshni-site.git
@@ -95,12 +100,47 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           ROSHNI_NARRATOR_SPEND_CAP_USD: "0.01"
       - run: uv run roshni build
-      # Persist the decisions so each name is decided once (an LLM must not re-decide daily).
-      - name: Commit review decisions, effective dates and parser aliases
+      # Weekly evals (owner, 2026-11-26): on Mondays (UTC), or when asked for, the chain's main
+      # model (the one serving the site) is scored on the Ask Roshni golden set and on the
+      # parser-healing chaos test, against this run's warehouse and stored workbooks. Each record
+      # in evals/ gets a history point and is committed with the seeds; /health/ shows both. A
+      # score below its floor or below that model's previous run is posted to "Pipeline notices".
+      # Never stops the run. Groq only (free plan); it uses that model's daily tokens, not the
+      # Worker's caps.
+      - name: Decide on the weekly evals
+        id: evals
         run: |
-          if git diff --quiet -- dbt/seeds config/parser_aliases.yml; then echo "no new review decisions"; exit 0; fi
-          git add dbt/seeds/review_*.csv dbt/seeds/source_documents.csv config/parser_aliases.yml
-          git -c user.name="github-actions[bot]"               -c user.email="41898283+github-actions[bot]@users.noreply.github.com"               commit -q -m "chore(review): automatic review decisions, effective dates and parser aliases [skip ci]"
+          if [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.evals }}" = true ] \
+              || [ "$(date -u +%u)" = 1 ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Weekly eval, Ask Roshni golden set
+        if: steps.evals.outputs.run == 'true'
+        continue-on-error: true
+        timeout-minutes: 20
+        run: uv run roshni ask-eval --main --record
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      - name: Weekly eval, parser-healing chaos test
+        if: steps.evals.outputs.run == 'true'
+        continue-on-error: true
+        timeout-minutes: 15
+        run: uv run roshni heal-eval --snapshots store --main --record
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      - name: Post notices (eval regressions)
+        if: steps.evals.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash .github/scripts/notice-issue.sh "publish" data/notices/ask-eval.md
+          bash .github/scripts/notice-issue.sh "publish" data/notices/heal-eval.md
+      # Persist the decisions so each name is decided once (an LLM must not re-decide daily).
+      - name: Commit review decisions, effective dates, parser aliases and eval records
+        run: |
+          if git diff --quiet -- dbt/seeds config/parser_aliases.yml evals && [ -z "$(git ls-files --others --exclude-standard evals)" ]; then echo "no new review decisions"; exit 0; fi
+          git add dbt/seeds/review_*.csv dbt/seeds/source_documents.csv config/parser_aliases.yml evals
+          git -c user.name="github-actions[bot]"               -c user.email="41898283+github-actions[bot]@users.noreply.github.com"               commit -q -m "chore(review): automatic review decisions, effective dates, parser aliases and eval records [skip ci]"
           for attempt in 1 2 3; do
             if git pull -q --rebase origin main && git push -q origin HEAD:main; then exit 0; fi
             sleep 5

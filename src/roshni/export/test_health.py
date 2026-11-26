@@ -165,3 +165,21 @@ def test_healing_without_files_is_empty(tmp_path: Path) -> None:
 
 def test_committed_eval_record_validates() -> None:
     assert health.healing(Path("missing"), Path("missing")).eval.workbooks == 9
+
+
+def test_ask_eval_reads_the_record(tmp_path: Path) -> None:
+    assert health.ask_eval(tmp_path / "missing.json") is None
+    rec = tmp_path / "ask.json"
+    row = {"model": "groq/x", "items": 4, "overall_pct": 75.0, "answer_accuracy_pct": 100.0,
+           "refusal_accuracy_pct": 100.0, "guard_accuracy_pct": 50.0, "narration_pass_pct": 100.0,
+           "tokens_total": 40, "latency_mean_s": 1.0, "latency_p95_s": 1.0}  # fmt: skip
+    rec.write_text(json.dumps({"run_on": "2026-11-30", "models": [row], "history": [
+        {"date": "2026-11-30", "model": "groq/x", "passed": 3, "total": 4, "score_pct": 75.0}
+    ]}), encoding="utf-8")  # fmt: skip
+    ev = health.ask_eval(rec)
+    assert (ev.models[0].guard_accuracy_pct, ev.history[0].passed) == (50.0, 3)
+
+
+def test_committed_heal_record_has_history() -> None:
+    ev = health.healing(Path("missing"), Path("missing")).eval
+    assert len(ev.history) >= len(ev.models)

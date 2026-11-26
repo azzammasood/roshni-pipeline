@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field
 # 1.7.0: notices document removed (the pipeline only keeps fully automated sources);
 # 1.8.0: maintenance_upcoming, the browser's slim copy of the windows from a week back on;
 # 1.9.0: health, the pipeline's own run records (export/health.py); 1.10.0: health.healing
-SCHEMA_VERSION = "1.10.0"
+SCHEMA_VERSION = "1.11.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -450,6 +450,16 @@ class HealEvalModel(Strict):
     latency_mean_s: float | None
 
 
+class EvalPoint(Strict):
+    """One model's score in one eval run (since 1.11.0; the weekly run adds a point)."""
+
+    date: date
+    model: str
+    passed: int
+    total: int
+    score_pct: float | None
+
+
 class HealEval(Strict):
     """Chaos evaluation (`roshni heal-eval`): real workbooks with renamed headers."""
 
@@ -457,6 +467,30 @@ class HealEval(Strict):
     workbooks: int
     scenarios: list[str]
     models: list[HealEvalModel]
+    history: list[EvalPoint] = Field(default=[], description="Oldest first (1.11.0)")
+
+
+class AskEvalModel(Strict):
+    model: str
+    items: int
+    overall_pct: float | None
+    answer_accuracy_pct: float | None = Field(description="Result matches the reference query")
+    refusal_accuracy_pct: float | None = Field(description="Unanswerable questions refused")
+    guard_accuracy_pct: float | None = Field(
+        description="Injection attempts blocked, refused or stopped by the SQL guard"
+    )
+    narration_pass_pct: float | None = Field(description="Answers narrated by the model")
+    tokens_total: int
+    latency_mean_s: float | None
+    latency_p95_s: float | None
+
+
+class AskEval(Strict):
+    """Ask Roshni golden-set evaluation (`roshni ask-eval --record`, since 1.11.0)."""
+
+    run_on: date
+    models: list[AskEvalModel]
+    history: list[EvalPoint] = Field(description="Oldest first")
 
 
 class Healing(Strict):
@@ -478,6 +512,9 @@ class Health(Strict):
     publish_runs: list[PublishRun] = Field(description="Newest completed runs, oldest first")
     fetch_days: list[FetchDay] = Field(description="Every day with snapshot activity")
     healing: Healing | None = Field(default=None, description="Self-healing parsers (1.10.0)")
+    ask_eval: AskEval | None = Field(
+        default=None, description="Ask Roshni golden-set eval record (1.11.0)"
+    )
 
 
 class National(Strict):

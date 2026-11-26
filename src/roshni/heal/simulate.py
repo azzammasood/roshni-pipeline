@@ -16,6 +16,7 @@ from pathlib import Path
 
 import openpyxl
 
+from roshni import evalrecord
 from roshni.heal import headers as h
 from roshni.llm.chain import ChainConfig
 from roshni.parsers import iesco_maintenance as im
@@ -157,6 +158,7 @@ def summary(model: str, cases: list[Case]) -> dict:
 
 
 EVAL_RECORD = REPO_ROOT / "evals" / "parser_healing.json"
+FLOOR_PCT = 85.0  # a weekly recovery rate below this is posted as a notice
 
 
 def record(
@@ -175,7 +177,18 @@ def record(
         for s in summaries
     ]  # fmt: skip
     data["models"].sort(key=lambda r: (-r["recovered"], r["model"]))
-    data.update(run_on=str(today or date.today()), workbooks=workbooks, scenarios=scenarios)
+    day = today or date.today()
+    data.update(run_on=str(day), workbooks=workbooks, scenarios=scenarios)
+    evalrecord.append(
+        data, [evalrecord.point(day, s["model"], s["recovered"], s["cases"]) for s in summaries]
+    )
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     return path
+
+
+def regressions(path: Path = EVAL_RECORD, today: date | None = None) -> list[str]:
+    """Notice lines for this run (evalrecord.regressions over the record)."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    day = today or date.today()
+    return evalrecord.regressions(data, day, FLOOR_PCT, "Parser-healing chaos test")
