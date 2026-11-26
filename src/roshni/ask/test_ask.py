@@ -360,3 +360,34 @@ def test_bundle_has_allowlisted_columns_and_the_cli_prompts(tmp_path):
     assert ctx["narrator_system"] == engine.NARRATOR
     assert "{err}" in ctx["feedback"]["error"] and "{problems}" in ctx["feedback"]["guard"]
     assert json.loads((tmp_path / "context.json").read_text(encoding="utf-8")) == ctx
+
+
+def test_bundle_keeps_integer_sums_integer(tmp_path):
+    import duckdb as ddb
+
+    from roshni.ask import bundle
+
+    c = ddb.connect()
+    for t in LAYER.tables.values():
+        cols = ", ".join(f'1 as "{col}"' for col in t.columns)
+        c.execute(f"create table {t.name} as select {cols}")
+    c.execute("create or replace table mart_feeder_dark_hours as select "
+              + ", ".join(f"1::hugeint as \"{col}\"" for col in LAYER.tables["mart_feeder_dark_hours"].columns))  # fmt: skip
+    bundle.build_bundle(c, tmp_path, LAYER)
+    p = (tmp_path / "mart_feeder_dark_hours.parquet").as_posix()
+    assert {r[1] for r in c.execute(f"describe select * from '{p}'").fetchall()} == {"BIGINT"}
+
+
+@pytest.mark.skipif(not (DATA_DIR / "roshni.duckdb").exists(), reason="needs a built warehouse")
+def test_bundle_types_match_the_warehouse(tmp_path):
+    from roshni.ask import bundle
+
+    con = duckdb.connect(str(DATA_DIR / "roshni.duckdb"), read_only=True)
+    ctx = bundle.build_bundle(con, tmp_path, LAYER)
+    for name, t in ctx["tables"].items():
+        want = {r[0]: r[1] for r in con.execute(f"describe {name}").fetchall()}
+        got = con.execute(
+            f"describe select * from '{(tmp_path / t['file']).as_posix()}'"
+        ).fetchall()
+        for col, typ, *_ in got:
+            assert typ == bundle._NARROW.get(want[col], want[col]), (name, col, typ, want[col])

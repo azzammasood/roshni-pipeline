@@ -2,6 +2,22 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-25 (Ask Roshni page: DuckDB-WASM in the browser, self-hosted)
+- **Owner approved** downloading DuckDB's official extensions at build time. Each is pinned by
+  SHA-256 in `web/scripts/sync-duckdb.mjs`: `json`, 821 KB, needed for `json_serialize_sql`;
+  `parquet`, 3.2 MB, needed to read the tables. The WASM build has neither.
+- **Self-hosted engine.** The site also serves the DuckDB-WASM engine (eh build, about 36 MB).
+  It loads only when someone asks a question. Visitors' browsers never contact DuckDB or a CDN.
+- **The SQL guard uses DuckDB's own parse tree**, not a JavaScript SQL parser. Only SELECT
+  statements serialize at all. Its verdicts are pinned against Python's sqlglot guard on 48
+  cases.
+- **HUGEINT becomes BIGINT in the bundle.** Parquet has no 128-bit integer, so DuckDB wrote
+  `sum()` of an integer column as DOUBLE. The real-data parity test caught this.
+- **Answers stay in English** (narration and caveats); the page and its messages are in both
+  languages. Example questions come from the golden set, so each is known to have an answer.
+- **The nav link appears only when `NEXT_PUBLIC_ASK_URL` is set.** Until the Worker is
+  deployed, `/ask/` says it is not switched on.
+
 ## 2026-11-25 (Ask Roshni on the website: Cloudflare Worker with per-visitor caps)
 - **Owner approved Cloudflare** (Workers and Durable Objects, free plan) as the one server-side
   piece, on the condition that no single visitor can use up the free Groq limits. It is

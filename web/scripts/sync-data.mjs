@@ -1,6 +1,7 @@
 // Copy the static export into public/data/v1 (git-ignored) after checking each envelope.
 // Usage: node scripts/sync-data.mjs [--from DIR]   (default ../data/export/v1; CI uses fixtures/v1)
-import { copyFile, mkdir, readFile, rm } from "node:fs/promises";
+import { copyFile, mkdir, readdir, readFile, rm } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -22,5 +23,14 @@ for (const doc of DOCS) {
   await copyFile(src, path.join(to, `${doc}.json`));
   const n = Array.isArray(env.data) ? env.data.length : "-";
   console.log(`${doc.padEnd(18)} ${env.schema_version}  rows=${n}`);
+}
+// Ask Roshni bundle (export ask/: Parquet + context.json); fixtures have none, the page then
+// cannot load data, which only matters once NEXT_PUBLIC_ASK_URL is set.
+const askFrom = path.join(from, "ask");
+if (existsSync(path.join(askFrom, "context.json"))) {
+  await mkdir(path.join(to, "ask"), { recursive: true });
+  const files = await readdir(askFrom);
+  for (const f of files) await copyFile(path.join(askFrom, f), path.join(to, "ask", f));
+  console.log(`ask/               ${files.length} files`);
 }
 console.log(`synced ${path.relative(webDir, from)} -> ${path.relative(webDir, to)}`);

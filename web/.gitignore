@@ -42,3 +42,4 @@ next-env.d.ts
 
 # export copied by scripts/sync-data.mjs (generated)
 /public/data/
+/public/duckdb/
