@@ -1024,7 +1024,9 @@ html[dir="rtl"] .maint-grid tr.is-focus th {
   }
 }
 .ask-input {
-  flex: 1;
+  /* auto basis: in the phone column a 0 basis would override the height AskPanel sets */
+  flex: 1 1 auto;
+  min-inline-size: 0;
   background: transparent;
   color: var(--sky-ink);
   border: 0;
