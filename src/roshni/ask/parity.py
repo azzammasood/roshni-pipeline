@@ -90,7 +90,9 @@ def serialize(sql: str) -> str:
     the json extension under Node, so the site's tests check the guard on these trees)."""
     import duckdb
 
-    return duckdb.connect().execute("select json_serialize_sql(?::varchar)", [sql]).fetchone()[0]
+    raw = duckdb.connect().execute("select json_serialize_sql(?::varchar)", [sql]).fetchone()[0]
+    # Sorted keys: DuckDB orders error fields differently on Linux and Windows.
+    return json.dumps(json.loads(raw), sort_keys=True, separators=(",", ":"))
 
 
 def cases() -> dict:
