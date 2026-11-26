@@ -1,0 +1,26 @@
+{
+  "models": [
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "items": 35,
+      "overall_pct": 97.1,
+      "answer_accuracy_pct": 95.5,
+      "refusal_accuracy_pct": 100.0,
+      "guard_accuracy_pct": 100.0,
+      "narration_pass_pct": 100.0,
+      "tokens_total": 104684,
+      "latency_mean_s": 0.94,
+      "latency_p95_s": 2.44
+    }
+  ],
+  "run_on": "2026-11-26",
+  "history": [
+    {
+      "date": "2026-11-26",
+      "model": "groq/qwen/qwen3.8-27b",
+      "passed": 34,
+      "total": 35,
+      "score_pct": 97.1
+    }
+  ]
+}
