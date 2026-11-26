@@ -12,7 +12,19 @@ uv run roshni heal-eval --snapshots store --record   # ... and update evals/pars
 ```
 
 The site's `/health/` page shows the last check (`data/heal/status.json`, written by every
-`roshni heal`), every learned alias and the committed eval record (export 1.10.0).
+`roshni heal`), every learned alias and the committed eval record (export 1.10.0), with one
+history point per weekly run (1.11.0).
+
+## Scope, on purpose
+
+This heals one failure: column headings in IESCO's monthly maintenance workbooks that the parser
+does not recognise. That is the drift these files actually show (each circle's office writes its
+own headings, and they change between months), and it is a failure a gate can check exactly:
+either every stored workbook parses row for row as before, or the alias is refused. It does not
+try to be a general "AI fixes any parser". A new date format, a merged-cell layout or a different
+file type changes what the data means, not just where it sits, so it still goes to quarantine
+with a reason and needs a code change and a test. The same pattern would fit the IESCO scenario
+workbooks; it is not wired there because they have not drifted.
 
 ## How it works
 
@@ -54,6 +66,10 @@ cannot introduce new parsing logic, it applies to every future file with the sam
 regression gate can prove it changes nothing else.
 
 ## Chaos evaluation
+
+Runs every Monday in `publish.yml` (`heal-eval --snapshots store --main --record`) on that day's
+stored workbooks, with the chain's main model. The record gets a history point; a recovery rate
+below 85 % or below the previous run is posted to the "Pipeline notices" issue.
 
 `heal-eval` takes the newest stored workbook of every item, renames the needed headers in a copy
 (three scenarios: plain English renames, abbreviations, Urdu), checks that the parser now

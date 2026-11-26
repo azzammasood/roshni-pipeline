@@ -2,6 +2,27 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-26 (AI features monitored: weekly evals, usage counts; export 1.11.0)
+- **Owner asked** for every reviewer objection to be addressed: evals that ran once by hand,
+  no production view of Ask Roshni, small eval sets, healing that looks general, and a README
+  that led with "you can ask questions".
+- **Weekly evals in publish, not a separate workflow.** Only publish has the warehouse and the
+  stored workbooks; a separate workflow would rebuild both. Mondays (UTC) or
+  `workflow_dispatch` with `evals: true`. Main model only (`--main`): it is the one serving the
+  site, and scoring all three weekly would spend Groq's free tokens for no decision.
+- **History in the committed records** (`evals/*.json`, at most 104 points each), committed by
+  the publish job with the seeds. A score below its floor (Ask 90 %, healing 85 %) or below the
+  model's previous point is a pipeline notice, never a failed run. The healing record's first
+  points are its 2026-11-25 run.
+- **Golden set 25 → 35.** New `expect: reject` (not answered, by any layer) for rule-breaking
+  attempts where blocking or refusing are both right. Items were added untested against models,
+  as the set's own rule says (never edit an item to make a model pass); the first weekly run
+  measures them.
+- **Usage counts in the Worker's Durable Object**, counts only (no text, no ids), 30 days,
+  read live by `/health/` through `GET /v1/stats`. Not baked into the export: the page would be
+  up to a day old, and nothing needs a longer history yet.
+- **Healing stays narrow** (headings in one workbook family); docs now say why.
+
 ## 2026-11-25 (Ask Roshni page: DuckDB-WASM in the browser, self-hosted)
 - **Owner approved** downloading DuckDB's official extensions at build time. Each is pinned by
   SHA-256 in `web/scripts/sync-duckdb.mjs`: `json`, 821 KB, needed for `json_serialize_sql`;

@@ -83,7 +83,13 @@ Figures as of 2026-11-24, from the pipeline's own records; the [pipeline health 
 
 ## AI in the pipeline, measured
 
-Two language-model features, each built so the model can be wrong without the data being wrong, and each scored on its own evaluation set.
+Two language-model features, each built so the model can be wrong without the data being wrong, each scored on its own evaluation set every week, and each watched in production.
+
+What sets them apart from a typical text-to-SQL or "LLM fixes my parser" demo:
+
+- **The model never produces a number or a data value.** Ask Roshni's numbers come from a query the visitor's own browser runs; the narrator may only write placeholders. The healer only names columns; parsing stays deterministic.
+- **Code decides, not the model.** Ask Roshni's SQL passes a guard on DuckDB's own parse tree before it runs. A learned parser alias is kept only if every stored workbook still parses exactly as before.
+- **Measured, then monitored.** Both evals run every Monday in the production workflow against that day's data. Each run adds a history point to [`evals/`](evals/), a drop is posted as a pipeline notice, and the live [health page](https://azzammasood.github.io/roshni-site/en/health/#ask) shows the scores alongside Ask Roshni's own usage counts.
 
 **Ask Roshni** ([`docs/ask-roshni.md`](docs/ask-roshni.md)): `roshni ask "Which IBC areas have the highest share of twelve-hour feeders?"`
 
@@ -98,18 +104,21 @@ Two language-model features, each built so the model can be wrong without the da
 - The **visitor's browser** runs the SQL with DuckDB-WASM on about 400 KB of published Parquet, after checking it against the allowlist with DuckDB's own parse tree. External access is switched off first, and the engine and its extensions are served by the site itself.
 - **Caps** keep one visitor from using up the free limits: 3 questions a minute and 10 a day per visitor (an HMAC of the IP and the day, never the IP itself), and 150 questions and 450K tokens a day for the whole site, sized from the eval's token use and Groq's free-plan limits.
 - **Parity tests** pin the TypeScript ports to Python: 25 narration checks, 48 SQL-guard verdicts, and every golden reference query returning the same rows in the browser as in the warehouse.
+- **Usage counts, not logs.** The Worker counts per day: questions, visitors, refusals, injection blocks, queries corrected after the browser's check, cap refusals, tokens and planning-time buckets. It stores no question text and no visitor id; the health page reads the counts live.
 
-**Self-healing parsers** ([`docs/parser-healing.md`](docs/parser-healing.md)): `roshni heal`, run before parsing every day.
+**Self-healing parsers** ([`docs/parser-healing.md`](docs/parser-healing.md)): `roshni heal`, run before parsing every day. Narrow on purpose: it heals one kind of failure, column headings in IESCO's monthly maintenance workbooks, because that is the drift the sources actually show and the one a regression gate can check exactly. New date formats or file types still go to quarantine with a reason.
 
 - Drift means a workbook with no recognised header, or one that quarantines more than 25 % of its rows.
 - The model maps columns to the parser's known fields. It never outputs a data value.
 - A **deterministic gate** keeps the mapping only if the broken file parses again and every other stored workbook parses exactly as before.
 - Accepted mappings become reviewable header aliases, recording who decided and the evidence. Rows read through one are flagged.
 
-| Evaluation (Groq free plan) | qwen3.8-27b | gpt-oss-120b | gpt-oss-20b |
+| Evaluation (Groq free plan, first full runs) | qwen3.8-27b | gpt-oss-120b | gpt-oss-20b |
 |---|---|---|---|
-| Ask Roshni: 25-item golden set, scored by execution match (19 answers, 4 refusals, 2 injections) | **25/25**, 0.94 s mean | **25/25**, 1.89 s | 24/25, 1.20 s |
-| Parser healing: 27 chaos cases (9 real workbooks with headers renamed in English, abbreviated or in Urdu), exact row-for-row recovery | 23/27 (4 × HTTP 429) | 26/27 | **27/27** |
+| Ask Roshni: 25-item golden set, scored by execution match (19 answers, 4 refusals, 2 injections), 2026-11-24 | **25/25**, 0.94 s mean | **25/25**, 1.89 s | 24/25, 1.20 s |
+| Parser healing: 27 chaos cases (9 real workbooks with headers renamed in English, abbreviated or in Urdu), exact row-for-row recovery, 2026-11-25 | 23/27 (4 × HTTP 429) | 26/27 | **27/27** |
+
+Since 2026-11-26 the golden set has 35 items: 22 answers (including one asked in Urdu, a paraphrase, and a real question with an injection attached), 8 refusals (measured outages, income, other companies, a named person), 2 injections that must be blocked, and 3 rule-breaking attempts that must not be answered (role-play, an Urdu injection, a file read). The weekly run scores the model that serves the site; the latest scores and their history are on the [health page](https://azzammasood.github.io/roshni-site/en/health/#ask).
 
 Both evaluation write-ups list the bugs their first runs found in the evaluation and in the product, and how each was fixed. Providers are an OpenAI-compatible chain ([`config/llm.yml`](config/llm.yml)): Groq first, OpenRouter's free models as fallback, with every attempt's tokens and latency recorded.
 
@@ -192,6 +201,7 @@ The full command list is in [`CLAUDE.md`](CLAUDE.md) (the working notes used whi
 ## Operations
 
 - **Daily:** `snapshot.yml` fetches into the private snapshot store, then `publish.yml` parses, validates, builds, resolves, reports, exports, builds the site and the dbt docs, and pushes the site to [`azzammasood/roshni-site`](https://github.com/azzammasood/roshni-site).
+- **Weekly evals:** on Mondays `publish.yml` also runs `roshni ask-eval --main --record` and `roshni heal-eval --main --record` against that run's warehouse and stored workbooks, commits the updated records in `evals/`, and posts a notice when a score falls below its floor (90 % and 85 %) or below the previous week. A failed eval never stops the publish.
 - **Ask Roshni Worker:** `worker-deploy.yml` typechecks, tests and deploys `worker/` to Cloudflare on every change, copies the Groq key into it, and smoke-tests the live Worker. Publish builds the site with the Worker's address, which switches on the Ask page.
 - **Secrets:** `SNAPSHOTS_DEPLOY_KEY` (write access to the snapshot store), `SITE_DEPLOY_KEY` (push to the site repo), `OPENROUTER_API_KEY` (optional; without it the narrator falls back to a template), `GROQ_API_KEY` (parser healing and the Ask Roshni Worker; without it the chain uses OpenRouter), `CLOUDFLARE_API_TOKEN` (Worker deploys).
 - **Failure handling:** a failed run opens or updates a `pipeline-failure` issue and closes it after the next good run. Publish still runs after a failed snapshot, using the last good files.
