@@ -41,6 +41,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const nav = [
     ["", dict.nav.home],
     ["my-feeder/", dict.nav.myFeeder],
+    // Only once the Worker is deployed (NEXT_PUBLIC_ASK_URL): the page says "not switched on".
+    ...(process.env.NEXT_PUBLIC_ASK_URL ? ([["ask/", dict.nav.ask]] as const) : []),
     ["city/", dict.nav.cities],
     ["shutdowns/", dict.nav.shutdowns],
     ["karachi-equity/", dict.nav.equity],

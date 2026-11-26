@@ -99,7 +99,7 @@ How these numbers were reached, in full:
   models at 25/25 mean the set needs harder questions (joins, multi-step, ambiguous wording)
   before it can separate them. Add items whenever a real question goes wrong.
 
-## On the website (Cloudflare Worker, in progress)
+## On the website (`/ask/`; Worker deploy pending)
 
 The site is static, so the parts are split. Nothing secret reaches the browser, and no server
 runs a query.
@@ -123,12 +123,33 @@ flowchart LR
   gives one checked narration. `GET /v1/quota` reports what is left. The Worker reads its
   prompts from the site's `context.json` and never takes one from the browser. It checks a
   narration with a port of `check_prose`.
-- **Browser** (next step): runs the SQL with DuckDB-WASM, checks it against the allowlist with
-  DuckDB's own parser, builds the facts and renders the placeholders.
+- **Browser** (`web/src/lib/ask/`, page `/[lang]/ask/`). The engine is DuckDB-WASM (DuckDB
+  1.5.4). It loads on the first question only and reads the ten tables from `ask/`. It then
+  switches off external access and locks the configuration, so a query can read nothing else.
+  - `guard.ts` applies the SQL guard's rules to DuckDB's own parse tree
+    (`json_serialize_sql`). Only SELECT statements serialize, so DDL, DML, PRAGMA and ATTACH
+    fail first.
+  - `runner.ts` casts every column to DuckDB's own text, so DECIMAL stays exact, and caps the
+    rows.
+  - `session.ts` follows `engine.ask`: one corrected try after a guard refusal, an error or an
+    empty first result.
+  - The engine and the `json` and `parquet` extensions are served by the site
+    (`web/scripts/sync-duckdb.mjs`; SHA-256 pinned). Visitors contact only the site and the
+    Worker.
+  - Without `NEXT_PUBLIC_ASK_URL` the page says Ask Roshni is not switched on, and the nav
+    leaves it out.
 - **Parity.** `tests/fixtures/ask_parity.json` is generated from the Python answer checks and
   formatting (`uv run python -m roshni.ask.parity`). Python checks the file is current, and
   the Worker's tests (and later the site's) must give the same result for every case.
   `worker/src/llm.json` must equal `config/llm.yml`.
+- **Same SQL guard verdicts.** The parity file also holds 48 SQL cases with Python's verdict and
+  DuckDB's parse tree; the site's guard must agree on every one. DuckDB-WASM cannot load
+  extensions from disk under Node, so the tests use these trees.
+- **Same rows on real data** (local only). `uv run python -m roshni.ask.parity --oracle` runs
+  every golden reference query on the warehouse and formats it with `engine.fmt`. The site's
+  test runs the same queries in DuckDB-WASM on the published Parquet and must get the same
+  rows. It found that Parquet stores HUGEINT as DOUBLE: integer sums would have shown as
+  "14,895.0", so the bundle now writes them as BIGINT.
 
 ### Caps (wrangler.toml)
 
@@ -159,7 +180,19 @@ uv run roshni export                      # writes data/export/v1/ask/
 cd worker; npm ci; npm test               # 47 tests, no network
 # worker/.dev.vars (git-ignored): CONTEXT_URL, ALLOWED_ORIGINS, VISITOR_SALT, GROQ_API_KEY
 npx wrangler dev --port 8787              # serve data/export/v1 on :3102 for CONTEXT_URL
+# web/.env.local (git-ignored): NEXT_PUBLIC_ASK_URL=http://127.0.0.1:8787, then in web/:
+npm run sync-data ; npx next dev --port 3100   # the Worker allows http://localhost:3100
 ```
+
+Checked on 2026-11-25 with the live Groq key through the local Worker:
+- **Answered correctly.** Most listed feeders: IBC - Orangi - I, 41. Six-hour and twelve-hour
+  feeders: 125 and 492 of 617. Most planned shutdown hours, Oct 2026: Islamabad, 2,452.0. All
+  three match the warehouse.
+- **Refused and blocked.** "actually lost power" was refused, and "ignore all previous
+  instructions" was blocked.
+- **Capped.** The fourth question in a minute got the per-visitor message.
+- **Accessibility.** Axe found 0 violations at 375 px, light and dark, in English and Urdu, with
+  and without an answer.
 
 ## Limits
 

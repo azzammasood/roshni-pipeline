@@ -42,7 +42,8 @@
     "cities": "Cities",
     "maker": "Author",
     "myFeeder": "My feeder",
-    "health": "Pipeline health"
+    "health": "Pipeline health",
+    "ask": "Ask Roshni"
   },
   "banner": {
     "scheduled": "Scheduled (published schedule data), not measured outages."
@@ -718,5 +719,48 @@
     "evalTokens": "Tokens",
     "evalSeconds": "Mean seconds",
     "recoveredOf": "{ok} of {n}"
+  },
+  "ask": {
+    "kicker": "Ask the data",
+    "title": "Ask Roshni",
+    "intro": "Ask a question about the published schedules in plain words. An AI model writes one database query; your browser runs it on Roshni's published data, so every number in the answer comes from that query. The model only writes the words around the numbers, and its sentences are checked before you see them.",
+    "off": "Ask Roshni is not switched on yet.",
+    "label": "Your question",
+    "placeholder": "Which K-Electric IBC area has the most listed feeders?",
+    "ask": "Ask",
+    "asking": "Working…",
+    "remaining": "{v} questions left for you today; {s} for the whole site.",
+    "englishOnly": "Answers are written in English.",
+    "examplesTitle": "Try one of these",
+    "stepLoad": "Loading the query engine and data (first question only)",
+    "stepPlan": "Writing a query",
+    "stepCheck": "Checking the query",
+    "stepRun": "Running it in your browser",
+    "stepReplan": "Correcting the query",
+    "stepNarrate": "Writing the answer",
+    "answerTitle": "Answer",
+    "tableTitle": "Query result",
+    "templateNote": "The model's sentence did not pass the checks, so only the row count is shown.",
+    "caveatsTitle": "Read with care",
+    "notMeasured": "These are published schedules and reported figures, never measured outages.",
+    "rows": "n = {n} result rows.",
+    "rowsCapped": "n = {n} result rows (the first {n} are shown).",
+    "howThis": "Show the query",
+    "writtenBy": "Written by {m}; {t} tokens.",
+    "refused": "Roshni's data cannot answer that.",
+    "blocked": "That looks like an attempt to change Ask Roshni's instructions, so it was not run.",
+    "cappedMinute": "You have asked several questions in the last minute. Try again in about {m} minute(s).",
+    "cappedBusy": "Many people are asking right now. Try again in about {m} minute(s).",
+    "cappedDay": "You have used today's questions. They reset at midnight, Pakistan time.",
+    "cappedSite": "Ask Roshni has used today's free capacity. It resets at midnight, Pakistan time.",
+    "failed": "No answer this time.",
+    "unavailable": "Ask Roshni is unavailable right now. Please try again later.",
+    "loadError": "The query engine could not load in this browser.",
+    "howTitle": "How an answer is made",
+    "how1": "A small model screens the question for attempts to change the instructions.",
+    "how2": "A model on a free plan writes one query, using only the tables and columns Roshni publishes.",
+    "how3": "Your browser checks the query with the database's own parser and runs it on the published data. Nothing else can be read.",
+    "how4": "The model writes one to three sentences that may only point to values in the result. They are checked for numbers of their own, for causes and for calling schedules outages.",
+    "how5": "Each visitor has a few questions a day, and the whole site has a daily limit, so the free capacity is shared."
   }
 }

@@ -16,6 +16,14 @@ import duckdb
 from roshni.ask import engine, semantic, sqlguard
 
 BUNDLE_VERSION = 1
+# Parquet has no 128-bit integers: DuckDB would write HUGEINT (e.g. sum() of an integer) as
+# DOUBLE, and the site would show 14,895 as "14,895.0". The values fit in BIGINT.
+_NARROW = {"HUGEINT": "BIGINT", "UHUGEINT": "UBIGINT"}
+
+
+def _column(name: str, type_: str) -> str:
+    q = f'"{name}"'
+    return f"cast({q} as {_NARROW[type_]}) as {q}" if type_ in _NARROW else q
 
 
 def build_bundle(
@@ -25,7 +33,8 @@ def build_bundle(
     out.mkdir(parents=True, exist_ok=True)
     tables = {}
     for t in layer.tables.values():
-        cols = ", ".join(f'"{c}"' for c in t.columns)  # allowlisted names only
+        types = {r[0]: r[1] for r in con.execute(f"describe {t.name}").fetchall()}
+        cols = ", ".join(_column(c, types.get(c, "")) for c in t.columns)  # allowlisted only
         path = out / f"{t.name}.parquet"
         con.execute(
             f"copy (select {cols} from {t.name}) to '{path.as_posix()}' "
