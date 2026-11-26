@@ -10,6 +10,15 @@
       "latency_mean_s": 0.71
     },
     {
+      "model": "groq/qwen/qwen3.8-27b",
+      "cases": 27,
+      "recovered": 27,
+      "healed_but_different": 0,
+      "failed": 0,
+      "tokens_total": 53716,
+      "latency_mean_s": 0.81
+    },
+    {
       "model": "groq/openai/gpt-oss-120b",
       "cases": 27,
       "recovered": 26,
@@ -17,18 +26,9 @@
       "failed": 1,
       "tokens_total": 50570,
       "latency_mean_s": 0.95
-    },
-    {
-      "model": "groq/qwen/qwen3.8-27b",
-      "cases": 27,
-      "recovered": 23,
-      "healed_but_different": 0,
-      "failed": 4,
-      "tokens_total": 45349,
-      "latency_mean_s": 0.65
     }
   ],
-  "run_on": "2026-11-25",
+  "run_on": "2026-11-26",
   "workbooks": 9,
   "scenarios": [
     "renamed",
@@ -56,6 +56,13 @@
       "passed": 23,
       "total": 27,
       "score_pct": 85.2
+    },
+    {
+      "date": "2026-11-26",
+      "model": "groq/qwen/qwen3.8-27b",
+      "passed": 27,
+      "total": 27,
+      "score_pct": 100.0
     }
   ]
 }

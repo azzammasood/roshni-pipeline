@@ -222,5 +222,5 @@ def record(
          for s in scores],
     )  # fmt: skip
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
     return path, evalrecord.regressions(data, day, FLOOR_PCT, "Ask Roshni golden set")
