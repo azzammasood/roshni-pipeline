@@ -7,7 +7,9 @@ import { Stamp } from "@/components/Clock";
 import { ScrollRegion } from "@/components/ScrollRegion";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
-import type { Healing as HealingDoc } from "@/types/v1";
+import { AskUsage } from "@/components/AskUsage";
+import { ASK_URL } from "@/lib/ask/api";
+import type { AskEval, EvalPoint, Healing as HealingDoc } from "@/types/v1";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/health">): Promise<Metadata> {
   return { title: (await resolveLocale(params)).dict.nav.health };
@@ -37,6 +39,7 @@ export default async function Health({ params }: PageProps<"/[lang]/health">) {
   const now = h.sizes.at(-1);
   const sizeNames = t.sizesNames as Record<string, string>;
   const heal = h.healing ?? null;
+  const askEval = h.ask_eval ?? null;
 
   const tiles: [React.ReactNode, string][] = [
     [
@@ -234,6 +237,7 @@ export default async function Health({ params }: PageProps<"/[lang]/health">) {
       </section>
 
       {heal && <Healing heal={heal} t={t} n={n} locale={locale} />}
+      {(askEval || ASK_URL) && <AskSection ev={askEval} t={t} n={n} locale={locale} />}
     </article>
   );
 }
@@ -355,6 +359,129 @@ function Healing({
               </tbody>
             </table>
           </ScrollRegion>
+          <EvalHistory history={ev.history ?? []} t={t} n={n} locale={locale} />
+        </>
+      )}
+    </section>
+  );
+}
+
+const HISTORY_SHOWN = 24;
+
+/** One row per model and weekly run, newest first (export 1.11.0 `history`). */
+function EvalHistory({
+  history,
+  t,
+  n,
+  locale,
+}: {
+  history: EvalPoint[];
+  t: Dictionary["health"];
+  n: (v: number) => string;
+  locale: Locale;
+}) {
+  if (history.length === 0) return null;
+  const rows = history.slice(-HISTORY_SHOWN).reverse();
+  return (
+    <>
+      <h4 className="headline text-xl">{t.historyTitle}</h4>
+      <p className="text-sm max-w-prose">{t.historyNote}</p>
+      <ScrollRegion label={t.historyTitle}>
+        <table className="data">
+          <thead>
+            <tr>
+              <th scope="col">{t.date}</th>
+              <th scope="col">{t.evalModel}</th>
+              <th scope="col">{t.score}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((p) => (
+              <tr key={`${p.date}:${p.model}`}>
+                <th scope="row" className="font-normal tabular-nums" dir="ltr">
+                  {p.date}
+                </th>
+                <td className="font-mono text-xs" dir="ltr">
+                  {p.model}
+                </td>
+                <td className="tabular-nums">
+                  {fill(t.recoveredOf, { ok: n(p.passed), n: n(p.total) }, locale)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </ScrollRegion>
+    </>
+  );
+}
+
+/** Ask Roshni (export 1.11.0 `health.ask_eval`, plus live counts from the Worker). */
+function AskSection({
+  ev,
+  t,
+  n,
+  locale,
+}: {
+  ev: AskEval | null;
+  t: Dictionary["health"];
+  n: (v: number) => string;
+  locale: Locale;
+}) {
+  const pct = (v: number | null) => (v === null ? "–" : `${n(v)}%`);
+  return (
+    <section className="rule pt-4 space-y-4">
+      <h2 id="ask" className="headline text-3xl">
+        {t.askTitle}
+      </h2>
+      <p className="text-sm max-w-prose">{t.askNote}</p>
+      {ev && (
+        <>
+          <h3 className="headline text-2xl">{t.askEvalTitle}</h3>
+          <p className="text-sm max-w-prose">
+            {fill(t.askEvalNote, { date: ev.run_on, items: n(ev.models[0]?.items ?? 0) }, locale)}
+          </p>
+          <ScrollRegion label={t.askEvalTitle}>
+            <table className="data">
+              <thead>
+                <tr>
+                  <th scope="col">{t.evalModel}</th>
+                  <th scope="col">{t.askOverall}</th>
+                  <th scope="col">{t.askAnswer}</th>
+                  <th scope="col">{t.askRefuse}</th>
+                  <th scope="col">{t.askGuard}</th>
+                  <th scope="col">{t.askNarrated}</th>
+                  <th scope="col">{t.evalTokens}</th>
+                  <th scope="col">{t.evalSeconds}</th>
+                  <th scope="col">{t.askP95}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ev.models.map((r) => (
+                  <tr key={r.model}>
+                    <th scope="row" className="font-mono text-xs font-normal" dir="ltr">
+                      {r.model}
+                    </th>
+                    <td className="tabular-nums">{pct(r.overall_pct)}</td>
+                    <td className="tabular-nums">{pct(r.answer_accuracy_pct)}</td>
+                    <td className="tabular-nums">{pct(r.refusal_accuracy_pct)}</td>
+                    <td className="tabular-nums">{pct(r.guard_accuracy_pct)}</td>
+                    <td className="tabular-nums">{pct(r.narration_pass_pct)}</td>
+                    <td className="tabular-nums">{n(r.tokens_total)}</td>
+                    <td className="tabular-nums">{r.latency_mean_s === null ? "–" : n(r.latency_mean_s)}</td>
+                    <td className="tabular-nums">{r.latency_p95_s === null ? "–" : n(r.latency_p95_s)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollRegion>
+          <EvalHistory history={ev.history} t={t} n={n} locale={locale} />
+        </>
+      )}
+      {ASK_URL && (
+        <>
+          <h3 className="headline text-2xl">{t.usageTitle}</h3>
+          <AskUsage locale={locale} t={t} />
         </>
       )}
     </section>
