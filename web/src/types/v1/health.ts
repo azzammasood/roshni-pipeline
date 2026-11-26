@@ -28,6 +28,10 @@ export interface HealthDocument {
  * results and quarantine counts. About the pipeline, not about load shedding.
  */
 export interface Health {
+  /**
+   * Ask Roshni golden-set eval record (1.11.0)
+   */
+  ask_eval?: AskEval | null;
   dbt: DbtResults;
   /**
    * Every day with snapshot activity
@@ -50,6 +54,51 @@ export interface Health {
    * One point per publish date, oldest first
    */
   sizes: SizePoint[];
+}
+/**
+ * Ask Roshni golden-set evaluation (`roshni ask-eval --record`, since 1.11.0).
+ */
+export interface AskEval {
+  /**
+   * Oldest first
+   */
+  history: EvalPoint[];
+  models: AskEvalModel[];
+  run_on: string;
+}
+/**
+ * One model's score in one eval run (since 1.11.0; the weekly run adds a point).
+ */
+export interface EvalPoint {
+  date: string;
+  model: string;
+  passed: number;
+  score_pct: number | null;
+  total: number;
+}
+export interface AskEvalModel {
+  /**
+   * Result matches the reference query
+   */
+  answer_accuracy_pct: number | null;
+  /**
+   * Injection attempts blocked, refused or stopped by the SQL guard
+   */
+  guard_accuracy_pct: number | null;
+  items: number;
+  latency_mean_s: number | null;
+  latency_p95_s: number | null;
+  model: string;
+  /**
+   * Answers narrated by the model
+   */
+  narration_pass_pct: number | null;
+  overall_pct: number | null;
+  /**
+   * Unanswerable questions refused
+   */
+  refusal_accuracy_pct: number | null;
+  tokens_total: number;
 }
 export interface DbtResults {
   failed: number;
@@ -109,6 +158,10 @@ export interface LearnedAlias {
  * Chaos evaluation (`roshni heal-eval`): real workbooks with renamed headers.
  */
 export interface HealEval {
+  /**
+   * Oldest first (1.11.0)
+   */
+  history?: EvalPoint[];
   models: HealEvalModel[];
   run_on: string;
   scenarios: string[];

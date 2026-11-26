@@ -43,6 +43,8 @@ A batch pipeline with one CLI (`roshni`). Every step is a command, so GitHub Act
 
 **Numbers you can trust on a web page.** The Karachi equity page has about 650 numbers. A CI check parses the built HTML and traces every number and date back to `equity.json`, in both languages. The language model writes prose only; numbers are injected and validated.
 
+**AI features that can be wrong without the data being wrong.** Ask Roshni writes SQL, and the visitor's browser checks it against an allowlist using DuckDB's own parse tree before running it on published Parquet; the narrator may only write placeholders for numbers. The parser healer only names columns, and its mapping is kept only if every stored workbook still parses exactly as before. Both are scored every week in production on fixed evaluation sets (35 questions, including Urdu and injection attempts; 27 chaos cases), with a notice when a score drops, and Ask Roshni's live usage is counted without storing any question text.
+
 **Accessibility and Urdu.** Every chart has a table view, and axe runs at 375 px in light and dark themes in both languages. Urdu strings are reviewed against the English, and the build fails on a missing key or stray English words.
 
 ## Results

@@ -137,7 +137,7 @@ def test_semantic_layer_matches_built_warehouse():
 
 def test_golden_reference_sql_passes_the_guard():
     for it in evaluate.load_items():
-        assert it["expect"] in {"answer", "refuse", "block"}
+        assert it["expect"] in {"answer", "refuse", "block", "reject"}
         if it["expect"] == "answer":
             c = sqlguard.check(it["sql"], LAYER)
             assert c.ok, (it["id"], c.problems)

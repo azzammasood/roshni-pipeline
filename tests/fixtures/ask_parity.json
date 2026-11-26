@@ -509,6 +509,21 @@
    "sql": "select effective_from from mart_ke_schedule_history order by effective_from",
    "ok": true,
    "ast": "{\"error\":false,\"statements\":[{\"named_param_map\":[],\"node\":{\"aggregate_handling\":\"STANDARD_HANDLING\",\"cte_map\":{\"map\":[]},\"from_table\":{\"alias\":\"\",\"at_clause\":null,\"catalog_name\":\"\",\"column_name_alias\":[],\"query_location\":27,\"sample\":null,\"schema_name\":\"\",\"table_name\":\"mart_ke_schedule_history\",\"type\":\"BASE_TABLE\"},\"group_expressions\":[],\"group_sets\":[],\"having\":null,\"modifiers\":[{\"orders\":[{\"expression\":{\"alias\":\"\",\"class\":\"COLUMN_REF\",\"column_names\":[\"effective_from\"],\"query_location\":61,\"type\":\"COLUMN_REF\"},\"null_order\":\"ORDER_DEFAULT\",\"type\":\"ORDER_DEFAULT\"}],\"type\":\"ORDER_MODIFIER\"}],\"qualify\":null,\"sample\":null,\"select_list\":[{\"alias\":\"\",\"class\":\"COLUMN_REF\",\"column_names\":[\"effective_from\"],\"query_location\":7,\"type\":\"COLUMN_REF\"}],\"type\":\"SELECT_NODE\",\"where_clause\":null}}]}"
+  },
+  {
+   "sql": "select count(*) as n from mart_ke_ibc_equity",
+   "ok": true,
+   "ast": "{\"error\":false,\"statements\":[{\"named_param_map\":[],\"node\":{\"aggregate_handling\":\"STANDARD_HANDLING\",\"cte_map\":{\"map\":[]},\"from_table\":{\"alias\":\"\",\"at_clause\":null,\"catalog_name\":\"\",\"column_name_alias\":[],\"query_location\":26,\"sample\":null,\"schema_name\":\"\",\"table_name\":\"mart_ke_ibc_equity\",\"type\":\"BASE_TABLE\"},\"group_expressions\":[],\"group_sets\":[],\"having\":null,\"modifiers\":[],\"qualify\":null,\"sample\":null,\"select_list\":[{\"alias\":\"n\",\"catalog\":\"\",\"children\":[],\"class\":\"FUNCTION\",\"distinct\":false,\"export_state\":false,\"filter\":null,\"function_name\":\"count_star\",\"is_operator\":false,\"order_bys\":{\"orders\":[],\"type\":\"ORDER_MODIFIER\"},\"query_location\":7,\"schema\":\"\",\"type\":\"FUNCTION\"}],\"type\":\"SELECT_NODE\",\"where_clause\":null}}]}"
+  },
+  {
+   "sql": "select count(*) as n from mart_ke_ibc_equity",
+   "ok": true,
+   "ast": "{\"error\":false,\"statements\":[{\"named_param_map\":[],\"node\":{\"aggregate_handling\":\"STANDARD_HANDLING\",\"cte_map\":{\"map\":[]},\"from_table\":{\"alias\":\"\",\"at_clause\":null,\"catalog_name\":\"\",\"column_name_alias\":[],\"query_location\":26,\"sample\":null,\"schema_name\":\"\",\"table_name\":\"mart_ke_ibc_equity\",\"type\":\"BASE_TABLE\"},\"group_expressions\":[],\"group_sets\":[],\"having\":null,\"modifiers\":[],\"qualify\":null,\"sample\":null,\"select_list\":[{\"alias\":\"n\",\"catalog\":\"\",\"children\":[],\"class\":\"FUNCTION\",\"distinct\":false,\"export_state\":false,\"filter\":null,\"function_name\":\"count_star\",\"is_operator\":false,\"order_bys\":{\"orders\":[],\"type\":\"ORDER_MODIFIER\"},\"query_location\":7,\"schema\":\"\",\"type\":\"FUNCTION\"}],\"type\":\"SELECT_NODE\",\"where_clause\":null}}]}"
+  },
+  {
+   "sql": "select count(*) as n from mart_ke_feeder_hours where scheduled_hours_per_day = 12",
+   "ok": true,
+   "ast": "{\"error\":false,\"statements\":[{\"named_param_map\":[],\"node\":{\"aggregate_handling\":\"STANDARD_HANDLING\",\"cte_map\":{\"map\":[]},\"from_table\":{\"alias\":\"\",\"at_clause\":null,\"catalog_name\":\"\",\"column_name_alias\":[],\"query_location\":26,\"sample\":null,\"schema_name\":\"\",\"table_name\":\"mart_ke_feeder_hours\",\"type\":\"BASE_TABLE\"},\"group_expressions\":[],\"group_sets\":[],\"having\":null,\"modifiers\":[],\"qualify\":null,\"sample\":null,\"select_list\":[{\"alias\":\"n\",\"catalog\":\"\",\"children\":[],\"class\":\"FUNCTION\",\"distinct\":false,\"export_state\":false,\"filter\":null,\"function_name\":\"count_star\",\"is_operator\":false,\"order_bys\":{\"orders\":[],\"type\":\"ORDER_MODIFIER\"},\"query_location\":7,\"schema\":\"\",\"type\":\"FUNCTION\"}],\"type\":\"SELECT_NODE\",\"where_clause\":{\"alias\":\"\",\"class\":\"COMPARISON\",\"left\":{\"alias\":\"\",\"class\":\"COLUMN_REF\",\"column_names\":[\"scheduled_hours_per_day\"],\"query_location\":53,\"type\":\"COLUMN_REF\"},\"query_location\":77,\"right\":{\"alias\":\"\",\"class\":\"CONSTANT\",\"query_location\":79,\"type\":\"VALUE_CONSTANT\",\"value\":{\"is_null\":false,\"type\":{\"id\":\"INTEGER\",\"type_info\":null},\"value\":12}},\"type\":\"COMPARE_EQUAL\"}}}]}"
   }
  ]
 }

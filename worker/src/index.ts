@@ -3,6 +3,7 @@
 import { DurableObject } from "cloudflare:workers";
 import { type Context, type QuotaApi, handle, loadContext } from "./app";
 import { type Limits, Quota, type Store, type Ticket, visitorId } from "./quota";
+import { type Event, Stats } from "./stats";
 
 export interface Env {
   QUOTA: DurableObjectNamespace<QuotaDO>;
@@ -38,9 +39,12 @@ function storeOf(storage: DurableObjectStorage): Store {
 
 export class QuotaDO extends DurableObject<Env> implements QuotaApi {
   private q: Quota;
+  private s: Stats;
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
-    this.q = new Quota(storeOf(ctx.storage), limits(env));
+    const store = storeOf(ctx.storage);
+    this.s = new Stats(store);
+    this.q = new Quota(store, limits(env), this.s);
   }
   private async tidy() {
     if ((await this.ctx.storage.getAlarm()) === null) await this.ctx.storage.setAlarm(Date.now() + 3_600_000);
@@ -61,8 +65,15 @@ export class QuotaDO extends DurableObject<Env> implements QuotaApi {
   ticket(id: string, visitor: string) {
     return this.q.ticket(id, visitor, Date.now());
   }
+  record(e: Event) {
+    return this.s.record(e, Date.now());
+  }
+  async stats() {
+    return { days: await this.s.days(Date.now()), limits: limits(this.env) };
+  }
   async alarm() {
     await this.q.sweep(Date.now());
+    await this.s.sweep(Date.now());
     await this.ctx.storage.setAlarm(Date.now() + 3_600_000);
   }
 }

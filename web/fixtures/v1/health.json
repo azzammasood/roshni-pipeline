@@ -1,6 +1,6 @@
 {
  "schema_id": "roshni/health/v1",
- "schema_version": "1.10.0",
+ "schema_version": "1.11.0",
  "generated_at": "2026-11-25T12:33:18Z",
  "last_updated": "2026-11-24T10:53:11.638884Z",
  "label": "Records of the pipeline's own runs, not load-shedding data",
@@ -257,8 +257,85 @@
       "tokens_total": 45349,
       "latency_mean_s": 0.65
      }
+    ],
+    "history": [
+     {
+      "date": "2026-11-18",
+      "model": "groq/openai/gpt-oss-20b",
+      "passed": 26,
+      "total": 27,
+      "score_pct": 96.3
+     },
+     {
+      "date": "2026-11-18",
+      "model": "groq/openai/gpt-oss-120b",
+      "passed": 26,
+      "total": 27,
+      "score_pct": 96.3
+     },
+     {
+      "date": "2026-11-18",
+      "model": "groq/qwen/qwen3.8-27b",
+      "passed": 23,
+      "total": 27,
+      "score_pct": 85.2
+     },
+     {
+      "date": "2026-11-25",
+      "model": "groq/openai/gpt-oss-20b",
+      "passed": 27,
+      "total": 27,
+      "score_pct": 100.0
+     },
+     {
+      "date": "2026-11-25",
+      "model": "groq/openai/gpt-oss-120b",
+      "passed": 26,
+      "total": 27,
+      "score_pct": 96.3
+     },
+     {
+      "date": "2026-11-25",
+      "model": "groq/qwen/qwen3.8-27b",
+      "passed": 23,
+      "total": 27,
+      "score_pct": 85.2
+     }
     ]
    }
+  },
+  "ask_eval": {
+   "run_on": "2026-11-30",
+   "models": [
+    {
+     "model": "groq/fixture-model",
+     "items": 35,
+     "overall_pct": 97.1,
+     "answer_accuracy_pct": 100.0,
+     "refusal_accuracy_pct": 100.0,
+     "guard_accuracy_pct": 83.3,
+     "narration_pass_pct": 95.7,
+     "tokens_total": 61234,
+     "latency_mean_s": 1.84,
+     "latency_p95_s": 3.9
+    }
+   ],
+   "history": [
+    {
+     "date": "2026-11-23",
+     "model": "groq/fixture-model",
+     "passed": 25,
+     "total": 25,
+     "score_pct": 100.0
+    },
+    {
+     "date": "2026-11-30",
+     "model": "groq/fixture-model",
+     "passed": 34,
+     "total": 35,
+     "score_pct": 97.1
+    }
+   ]
   }
  }
 }

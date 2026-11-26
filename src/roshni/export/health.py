@@ -6,7 +6,8 @@ Three histories, none of which needs a store of its own:
 - warehouse table sizes per publish, carried forward from the live health.json and appended to.
 Plus this run's dbt results and the parsed tables' quarantine counts, and (1.10.0) parser
 healing: this run's check (data/heal/status.json), the learned aliases (config) and the committed
-chaos-eval record (evals/parser_healing.json).
+chaos-eval record (evals/parser_healing.json); (1.11.0) the Ask Roshni eval record
+(evals/ask_roshni.json), both with one history point per weekly run.
 
 Every input is optional: a local run without the store, the API or the live site still writes a
 valid document, with those histories empty.
@@ -29,6 +30,7 @@ from roshni.paths import CONFIG_DIR, DATA_DIR, REPO_ROOT
 HEAL_STATUS = DATA_DIR / "heal" / "status.json"
 ALIASES = CONFIG_DIR / "parser_aliases.yml"
 HEAL_EVAL = REPO_ROOT / "evals" / "parser_healing.json"
+ASK_EVAL = REPO_ROOT / "evals" / "ask_roshni.json"
 
 FRESHNESS_TARGET_HOURS = 36  # the watchdog's threshold (watchdog.yml)
 KARACHI = timedelta(hours=5)
@@ -174,6 +176,14 @@ def healing(
     return m.Healing(last_check=check, aliases=learned, eval=ev)
 
 
+def ask_eval(path: Path = ASK_EVAL) -> m.AskEval | None:
+    """The committed Ask Roshni eval record, or None before its first recorded run."""
+    if not path.exists():
+        return None
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return m.AskEval(run_on=data["run_on"], models=data["models"], history=data["history"])
+
+
 def build_health(
     con: duckdb.DuckDBPyConnection,
     parsed: Path,
@@ -197,4 +207,5 @@ def build_health(
         ),
         fetch_days=fetch_days(store),
         healing=healing(),
+        ask_eval=ask_eval(),
     )

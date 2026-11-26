@@ -485,6 +485,10 @@ def ask_eval(
     pause: float = typer.Option(8.0, help="Seconds between questions (free-plan token limits)."),
     out: Path = typer.Option(None, help="Output folder (default: data/reports)."),
     db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
+    main: bool = typer.Option(False, "--main", help="Score only the chain's first model."),
+    record: bool = typer.Option(
+        False, "--record", help="Also update evals/ask_roshni.json (shown on /health/)."
+    ),
 ) -> None:
     """Score models on the Ask Roshni golden set: accuracy, refusals, guard, tokens, latency."""
     import sys
@@ -501,7 +505,7 @@ def ask_eval(
     con = sqlguard.connect(db or engine.default_db())
     scores = []
     try:
-        for m in model or cfg.labels():
+        for m in model or (cfg.labels()[:1] if main else cfg.labels()):
             typer.echo(f"== {m}")
             scores.append(evaluate.evaluate(con, cfg, m, items, layer, pause, typer.echo))
     finally:
@@ -509,6 +513,17 @@ def ask_eval(
     md, js = evaluate.write(scores, out or DATA_DIR / "reports")
     typer.echo(md.read_text(encoding="utf-8"))
     typer.echo(f"wrote {md}\nwrote {js}")
+    if record:
+        rec, lines = evaluate.record(scores)
+        typer.echo(f"updated {rec}")
+        _eval_notice("ask-eval", lines)
+
+
+def _eval_notice(name: str, lines: list[str]) -> None:
+    """A weekly score below its floor or below the model's last run: a notice issue entry."""
+    if lines:
+        typer.echo("\n".join(lines))
+        _notice(name, [f"Weekly eval regression (`roshni {name} --record`):", *lines])
 
 
 @app.command()
@@ -567,6 +582,7 @@ def heal_eval(
     record: bool = typer.Option(
         False, "--record", help="Also update evals/parser_healing.json (shown on /health/)."
     ),
+    main: bool = typer.Option(False, "--main", help="Score only the chain's first model."),
 ) -> None:
     """Chaos eval: rename real workbooks' headers, heal them, count exact recoveries per model."""
     import json
@@ -587,7 +603,7 @@ def heal_eval(
     corpus = h.Corpus(workbooks, {})  # no learned aliases: measure the healer alone
     summaries, cases_out = [], {}
     with tempfile.TemporaryDirectory() as tmp:
-        for m in model or cfg.labels():
+        for m in model or (cfg.labels()[:1] if main else cfg.labels()):
             typer.echo(f"== {m}")
             cases = []
             for wb in newest:
@@ -610,3 +626,4 @@ def heal_eval(
     if record:
         rec = sim.record(summaries, len(newest), scenario or list(sim.SCENARIOS))
         typer.echo(f"updated {rec}")
+        _eval_notice("heal-eval", sim.regressions(rec))

@@ -45,9 +45,9 @@ uv run roshni dark-now [--at "2026-10-10 23:30"] [--level 12] [--json]   # sched
 uv run roshni report [--engine auto|openrouter|template]   # weekly equity report -> data/reports
 uv run roshni export [--write-schemas]                     # static JSON -> data/export/v1, validated
 uv run roshni ask "question" [--json] [--model groq/<id>]  # Ask Roshni (GROQ_API_KEY; docs/ask-roshni.md)
-uv run roshni ask-eval [--model P/M] [--only ID]          # golden-set eval -> data/reports/ask_eval_*
+uv run roshni ask-eval [--model P/M] [--only ID] [--main] [--record]   # golden set; --record -> evals/ (weekly in publish)
 uv run roshni heal --snapshots STORE [--apply]          # parser header drift -> gated aliases (docs/parser-healing.md)
-uv run roshni heal-eval --snapshots STORE [--model P/M] [--record]   # chaos eval; --record -> evals/
+uv run roshni heal-eval --snapshots STORE [--model P/M] [--main] [--record]   # chaos eval; --record -> evals/
 docker compose -f airflow/docker-compose.yml up --build    # Airflow showcase on :8080 (manual DAG)
 uv run --group databricks python scripts/databricks_load.py     # upload parsed tables (env creds)
 uv run --group databricks roshni build --target databricks      # same models on Databricks
@@ -139,4 +139,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Self-healing parsers (2026-11-25, owner): `roshni heal` learns IESCO maintenance header aliases (config/parser_aliases.yml) behind a no-regression gate over all stored workbooks; publish runs it before parse; chaos eval 27 cases: gpt-oss-20b 27/27, gpt-oss-120b 26/27, Qwen 23/27 (4 x HTTP 429).
 - Healing on /health/ (2026-11-25, owner): export 1.10.0 `health.healing` (last check, learned aliases, chaos-eval record `evals/parser_healing.json`, `heal-eval --record`).
 - Ask Roshni on the site, A1 (2026-11-25, owner approved Cloudflare): export `ask/` bundle + `worker/` (guard/plan/replan/narrate, caps in a Durable Object, 47 tests, parity with Python). A2 page /ask/ (DuckDB-WASM self-hosted with json+parquet extensions, SHA-pinned; guard on DuckDB's parse tree; parity incl. real-data oracle). A3 (2026-11-26): Worker live at https://roshni-ask.ahmaduzzammasood.workers.dev (owner's free Cloudflare account; deployed by `worker-deploy.yml` on every change to worker/, which also copies the GROQ_API_KEY repo secret); publish sets NEXT_PUBLIC_ASK_URL.
+- AI monitored (2026-11-26, owner): weekly evals in publish (Mondays or dispatch `evals: true`; main model; history in evals/, regressions → notices), golden set 35 items (`expect: reject`), Worker usage counts (`GET /v1/stats`, no text or ids), /health/ "Ask Roshni in use" section (export 1.11.0); healing scope documented as narrow on purpose.
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).

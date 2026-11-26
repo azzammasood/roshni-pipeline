@@ -4,6 +4,7 @@
 //   POST /v1/replan   {ticket, kind, detail}          -> one corrected plan for that question
 //   POST /v1/narrate  {ticket, columns, facts}        -> one checked narration for that question
 //   GET  /v1/quota                                    -> questions left today
+//   GET  /v1/stats                                    -> daily usage counts (no text, no ids)
 //
 // The browser runs the SQL (DuckDB-WASM over the published Parquet) and its own SQL guard; this
 // Worker holds the key, the prompts (fetched from the site's ask/context.json, never taken from
@@ -11,7 +12,8 @@
 // narration may only refer to them by placeholder and is checked here before it is returned.
 import { type Attempt, type ChainDeps, CONFIG, complete, guardScore, parseJson, tokens } from "./chain";
 import { checkProse, pyColumns } from "./prose";
-import { type Admission, MAX_REPLANS, type Msg, type Remaining, type Ticket } from "./quota";
+import { type Admission, type Limits, MAX_REPLANS, type Msg, type Remaining, type Ticket } from "./quota";
+import { BUCKETS_S, type Day, type Event, STATS_DAYS } from "./stats";
 
 export type Context = {
   bundle_version: number;
@@ -30,6 +32,8 @@ export interface QuotaApi {
   addTokens(n: number): Promise<void>;
   putTicket(id: string, t: Ticket): Promise<void>;
   ticket(id: string, visitor: string): Promise<Ticket | null>;
+  record(e: Event): Promise<void>;
+  stats(): Promise<{ days: (Day & { date: string })[]; limits: Limits }>;
 }
 
 export type Deps = {
@@ -48,6 +52,8 @@ const FACT_KEY = /^(row_count|r\d{1,2}_[a-z0-9_]{1,60})$/;
 
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json; charset=utf-8" } });
+
+const latency = (atts: Attempt[]) => Math.round(atts.reduce((s, a) => s + a.latency_s, 0) * 100) / 100;
 
 const publicAttempts = (atts: Attempt[], stage: string) =>
   atts.map((a) => ({ stage, model: `${a.provider}/${a.model}`, outcome: a.outcome, tokens: a.tokens_in + a.tokens_out, latency_s: a.latency_s }));
@@ -81,12 +87,23 @@ async function readBody(req: Request): Promise<Record<string, unknown> | null> {
 }
 
 /** Plan (or re-plan) from the conversation so far; records tokens; answers the browser. */
-async function plan(deps: Deps, ctx: Context, history: Msg[], ticketId: string, t: Ticket, stage: string) {
+async function plan(
+  deps: Deps,
+  ctx: Context,
+  history: Msg[],
+  ticketId: string,
+  t: Ticket,
+  stage: string,
+  replan?: "error" | "empty" | "guard",
+) {
   const comp = await complete([{ role: "system", content: ctx.planner_system }, ...history], planProblems, deps.chain, true);
-  await deps.quota.addTokens(tokens(comp.attempts));
+  const used = tokens(comp.attempts);
+  await deps.quota.addTokens(used);
   const attempts = publicAttempts(comp.attempts, stage);
-  if (comp.text === null) return json(200, { status: "failed", reason: "No model produced a valid query.", attempts });
-  const p = parseJson(comp.text);
+  const p = comp.text === null ? null : parseJson(comp.text);
+  const outcome = p === null ? "failed" : p.answerable ? "planned" : "refused";
+  await deps.quota.record({ kind: "plan", outcome, replan, latency_s: latency(comp.attempts), tokens: used });
+  if (p === null || comp.text === null) return json(200, { status: "failed", reason: "No model produced a valid query.", attempts });
   if (!p.answerable) return json(200, { status: "refused", reason: String(p.reason ?? "") || "Not answerable from Roshni.", attempts });
   const sql = String(p.sql).trim().replace(/;\s*$/, "");
   t.history = [...history, { role: "assistant", content: comp.text }];
@@ -108,6 +125,17 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
   if (req.method === "GET" && path === "/v1/quota") {
     return json(200, { status: "ok", remaining: await deps.quota.remaining(deps.visitor) });
   }
+  if (req.method === "GET" && path === "/v1/stats") {
+    const s = await deps.quota.stats();
+    const caps = {
+      visitor_per_minute: s.limits.visitorPerMinute,
+      visitor_per_day: s.limits.visitorPerDay,
+      site_per_minute: s.limits.globalPerMinute,
+      site_per_day: s.limits.globalPerDay,
+      site_tokens_per_day: s.limits.tokensPerDay,
+    };
+    return json(200, { status: "ok", window_days: STATS_DAYS, buckets_s: BUCKETS_S, caps, days: s.days });
+  }
   if (req.method !== "POST") return json(404, { status: "not_found" });
   const body = await readBody(req);
   if (!body) return json(400, { status: "bad_request", reason: "Send a JSON object under 16 KB." });
@@ -120,8 +148,10 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
     const adm = await deps.quota.admit(deps.visitor);
     if (!adm.ok) return json(429, { status: "capped", reason: adm.reason, retry_after_s: adm.retry_after_s, remaining: adm.remaining });
     const score = await guardScore(question, deps.chain);
-    if (score !== null && score >= CONFIG.guard.threshold)
+    if (score !== null && score >= CONFIG.guard.threshold) {
+      await deps.quota.record({ kind: "blocked" });
       return json(200, { status: "blocked", reason: "The question looks like a prompt-injection attempt.", remaining: adm.remaining });
+    }
     const id = deps.newId();
     const t: Ticket = { visitor: deps.visitor, question, created: deps.now(), replans: 0, narrated: false, history: [] };
     const res = await plan(deps, ctx, [{ role: "user", content: question }], id, t, "plan1");
@@ -141,7 +171,7 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
     const feedback = ctx.feedback[kind].replace("{err}", detail).replace("{problems}", detail);
     t.replans++;
     await deps.quota.putTicket(id, t);
-    return plan(deps, ctx, [...t.history, { role: "user", content: feedback }], id, t, "plan2");
+    return plan(deps, ctx, [...t.history, { role: "user", content: feedback }], id, t, "plan2", kind);
   }
 
   if (path === "/v1/narrate") {
@@ -165,7 +195,10 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
       (text) => checkProse(text, facts, t.question),
       deps.chain,
     );
-    await deps.quota.addTokens(tokens(comp.attempts));
+    const used = tokens(comp.attempts);
+    await deps.quota.addTokens(used);
+    const outcome = comp.text === null ? "template" : "narrated";
+    await deps.quota.record({ kind: "narrate", outcome, latency_s: latency(comp.attempts), tokens: used });
     const attempts = publicAttempts(comp.attempts, "narrate");
     if (comp.text === null) return json(200, { status: "template", attempts });
     return json(200, { status: "narrated", text: comp.text, model: comp.model, attempts });

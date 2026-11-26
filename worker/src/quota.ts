@@ -5,8 +5,11 @@
 //   and per-day limits, and today's token budget is not spent. Days are Pakistan days.
 // - Admission issues a ticket: the one corrected re-plan and the one narration of that question
 //   need it, so they cost no extra question but cannot be repeated or used by someone else.
+// - Admissions and refusals are also counted in the daily usage record (stats.ts), if given.
 // - A visitor is an HMAC of the IP address with a secret and the day (visitorId); the raw IP is
 //   never stored, and the id changes every day.
+
+import type { Stats } from "./stats";
 
 export interface Store {
   get<T>(key: string): Promise<T | undefined>;
@@ -69,6 +72,7 @@ export class Quota {
   constructor(
     private store: Store,
     private limits: Limits,
+    private stats?: Stats,
   ) {}
 
   private keys(visitor: string, now: number) {
@@ -94,12 +98,16 @@ export class Quota {
     const g = fresh(await this.store.get<Counter>(k.g), now);
     const toMidnight = secondsToPktMidnight(now);
     const remaining = await this.remaining(visitor, now);
-    const refuse = (reason: Reason, retry_after_s: number): Admission => ({ ok: false, reason, retry_after_s, remaining });
+    const refuse = async (reason: Reason, retry_after_s: number): Promise<Admission> => {
+      await this.stats?.record({ kind: "capped", reason }, now);
+      return { ok: false, reason, retry_after_s, remaining };
+    };
     if (v.count >= L.visitorPerDay) return refuse("visitor_day", toMidnight);
     if (g.count >= L.globalPerDay) return refuse("site_day", toMidnight);
     if ((g.tokens ?? 0) >= L.tokensPerDay) return refuse("site_tokens", toMidnight);
     if (v.recent.length >= L.visitorPerMinute) return refuse("visitor_minute", waitMinute(v.recent, now));
     if (g.recent.length >= L.globalPerMinute) return refuse("site_minute", waitMinute(g.recent, now));
+    await this.stats?.record({ kind: "question", newVisitor: v.count === 0 }, now);
     v.count++;
     v.recent.push(now);
     g.count++;

@@ -1,5 +1,150 @@
 {
   "$defs": {
+    "AskEval": {
+      "additionalProperties": false,
+      "description": "Ask Roshni golden-set evaluation (`roshni ask-eval --record`, since 1.11.0).",
+      "properties": {
+        "history": {
+          "description": "Oldest first",
+          "items": {
+            "$ref": "#/$defs/EvalPoint"
+          },
+          "title": "History",
+          "type": "array"
+        },
+        "models": {
+          "items": {
+            "$ref": "#/$defs/AskEvalModel"
+          },
+          "title": "Models",
+          "type": "array"
+        },
+        "run_on": {
+          "format": "date",
+          "title": "Run On",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_on",
+        "models",
+        "history"
+      ],
+      "title": "AskEval",
+      "type": "object"
+    },
+    "AskEvalModel": {
+      "additionalProperties": false,
+      "properties": {
+        "answer_accuracy_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Result matches the reference query",
+          "title": "Answer Accuracy Pct"
+        },
+        "guard_accuracy_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Injection attempts blocked, refused or stopped by the SQL guard",
+          "title": "Guard Accuracy Pct"
+        },
+        "items": {
+          "title": "Items",
+          "type": "integer"
+        },
+        "latency_mean_s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Latency Mean S"
+        },
+        "latency_p95_s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Latency P95 S"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "narration_pass_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Answers narrated by the model",
+          "title": "Narration Pass Pct"
+        },
+        "overall_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Overall Pct"
+        },
+        "refusal_accuracy_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Unanswerable questions refused",
+          "title": "Refusal Accuracy Pct"
+        },
+        "tokens_total": {
+          "title": "Tokens Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model",
+        "items",
+        "overall_pct",
+        "answer_accuracy_pct",
+        "refusal_accuracy_pct",
+        "guard_accuracy_pct",
+        "narration_pass_pct",
+        "tokens_total",
+        "latency_mean_s",
+        "latency_p95_s"
+      ],
+      "title": "AskEvalModel",
+      "type": "object"
+    },
     "DbtResults": {
       "additionalProperties": false,
       "properties": {
@@ -28,6 +173,49 @@
         "skipped"
       ],
       "title": "DbtResults",
+      "type": "object"
+    },
+    "EvalPoint": {
+      "additionalProperties": false,
+      "description": "One model's score in one eval run (since 1.11.0; the weekly run adds a point).",
+      "properties": {
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "integer"
+        },
+        "score_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Score Pct"
+        },
+        "total": {
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "date",
+        "model",
+        "passed",
+        "total",
+        "score_pct"
+      ],
+      "title": "EvalPoint",
       "type": "object"
     },
     "FetchDay": {
@@ -112,6 +300,15 @@
       "additionalProperties": false,
       "description": "Chaos evaluation (`roshni heal-eval`): real workbooks with renamed headers.",
       "properties": {
+        "history": {
+          "default": [],
+          "description": "Oldest first (1.11.0)",
+          "items": {
+            "$ref": "#/$defs/EvalPoint"
+          },
+          "title": "History",
+          "type": "array"
+        },
         "models": {
           "items": {
             "$ref": "#/$defs/HealEvalModel"
@@ -270,6 +467,18 @@
       "additionalProperties": false,
       "description": "What the pipeline did (since 1.9.0): publish runs, fetch activity, table sizes, dbt\nresults and quarantine counts. About the pipeline, not about load shedding.",
       "properties": {
+        "ask_eval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AskEval"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ask Roshni golden-set eval record (1.11.0)"
+        },
         "dbt": {
           "$ref": "#/$defs/DbtResults"
         },

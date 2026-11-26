@@ -8,6 +8,7 @@ uv run roshni ask "Which five K-Electric IBC areas have the highest share of fee
 uv run roshni ask "..." --json                     # answer, SQL, rows, caveats, tokens, latency
 uv run roshni ask "..." --model groq/openai/gpt-oss-120b   # pin one model
 uv run roshni ask-eval                             # score every model on the golden set
+uv run roshni ask-eval --main --record             # main model only; update evals/ask_roshni.json
 ```
 
 Needs `GROQ_API_KEY` (main provider, free plan) and optionally `OPENROUTER_API_KEY`
@@ -63,12 +64,25 @@ Every attempt records provider, model, outcome, tokens and latency.
 
 ## Evaluation
 
-`config/ask_golden.yml` holds 25 items: 19 questions with hand-written reference SQL, 4 that must
-be refused and 2 prompt injections that must be blocked. Scoring is by execution: the model's
+`config/ask_golden.yml` holds 35 items (25 until 2026-11-26): 22 questions with hand-written
+reference SQL, 8 that must be refused, 2 prompt injections that must be blocked, and 3
+rule-breaking attempts (`expect: reject`) that must not be answered, whether the prompt guard
+blocks them, the planner refuses or the SQL guard stops every query. Reject items are scored with
+the guard items. The 2026-11-26 additions are adversarial on purpose: an Urdu question, a
+paraphrase, a real question with an injection attached, an Urdu injection, role-play, a file
+read, and refusals for measured outages, income, another company's schedule and a named person. Scoring is by execution: the model's
 result must contain the reference result (every reference column found among the result columns,
 rows equal as a multiset, or in order when `ordered: true`; numbers compared at one decimal).
 CI checks that every reference query passes the SQL guard; the live eval needs a key and a built
 warehouse and writes `data/reports/ask_eval_<stamp>.{md,json}`.
+
+**Weekly, in production.** Every Monday `publish.yml` runs `ask-eval --main --record` against
+that run's warehouse with the model that serves the site. `evals/ask_roshni.json` keeps the
+latest row per model and one history point per run; the publish job commits it, and `/health/`
+shows both (export 1.11.0 `health.ask_eval`). A score below 90 % or below that model's previous
+run is posted to the "Pipeline notices" issue. Together with the healing eval it uses most of
+that model's free daily tokens on Groq (about 115K and 50K of 200K) once a week; on that day the
+Worker's chain falls over to the next model when the first one is out of tokens.
 
 ### Results, 2026-11-24 (Groq free plan, 25 items)
 
@@ -172,6 +186,16 @@ flowchart LR
   the day. The address is never stored, and the id changes daily.
 - **Origins.** Only the site's origins get answers. Other origins get 403. This is not a
   security boundary; the caps are.
+
+### Usage counts (`GET /v1/stats`)
+
+The Durable Object keeps one record per Pakistan day for 30 days (`worker/src/stats.ts`):
+questions admitted, distinct visitors, cap refusals by reason, prompt-guard blocks, plans
+written, refusals, failures, re-plans by the browser's reason (`error`, `empty`, `guard`),
+narrations and template fallbacks, tokens, and planning and narration time as histograms
+(buckets up to 0.5, 1, 2, 4, 8, 16 s and above). No question text, ticket or visitor id is
+stored or returned. `/health/` fetches the counts in the browser, so they are current even
+though the page is built once a day; the deploy workflow's smoke test checks the route.
 
 ### Deploy
 

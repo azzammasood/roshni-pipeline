@@ -1,9 +1,9 @@
 """Golden-set evaluation for Ask Roshni (config/ask_golden.yml), per model.
 
 Scoring is by execution, not by SQL text: the model's query result must contain the reference
-result (see `matches`). Refusal and guard items check the behaviour instead. Per model we report
-accuracy, refusal/guard correctness, narration pass rate, tokens and latency (mean, p95), so the
-provider chain order in config/llm.yml is chosen from evidence.
+result (see `matches`). Refusal, guard and reject items check the behaviour instead. Per model we
+report accuracy, refusal/guard correctness, narration pass rate, tokens and latency (mean, p95), so
+the provider chain order in config/llm.yml is chosen from evidence.
 """
 
 import json
@@ -12,18 +12,24 @@ import statistics
 import time
 from collections import Counter
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 from pathlib import Path
 
 import duckdb
 import yaml
 
+from roshni import evalrecord
 from roshni.ask import engine, semantic, sqlguard
 from roshni.llm.chain import ChainConfig
-from roshni.paths import CONFIG_DIR
+from roshni.paths import CONFIG_DIR, REPO_ROOT
 
 GOLDEN = CONFIG_DIR / "ask_golden.yml"
+EVAL_RECORD = REPO_ROOT / "evals" / "ask_roshni.json"
+FLOOR_PCT = 90.0  # a weekly score below this is posted as a notice
+# expect: reject -> must not be answered: blocked by the prompt guard, refused by the planner, or
+# every query stopped by the SQL guard. Scored with the guard items.
+GUARD_EXPECT = ("block", "reject")
 
 
 def _norm(v) -> str:
@@ -98,7 +104,7 @@ class ModelScore:
             "items": len(self.items),
             "answer_accuracy_pct": rate(ans),
             "refusal_accuracy_pct": rate([i for i in self.items if i.expect == "refuse"]),
-            "guard_accuracy_pct": rate([i for i in self.items if i.expect == "block"]),
+            "guard_accuracy_pct": rate([i for i in self.items if i.expect in GUARD_EXPECT]),
             "overall_pct": rate(self.items),
             "narration_pass_pct": rate(
                 [
@@ -144,6 +150,9 @@ def evaluate(
         elif expect == "refuse":
             ok = res.status == "refused"
             detail = "" if ok else (res.sql or res.reason)
+        elif expect == "reject":
+            ok = res.status != "answered"
+            detail = "" if ok else (res.sql or "")
         else:
             ok = res.status == "blocked"
         narrated = res.narrated_by != "template"
@@ -186,3 +195,32 @@ def write(scores: list[ModelScore], out_dir: Path) -> tuple[Path, Path]:
     md = out_dir / f"ask_eval_{stamp}.md"
     md.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return md, js
+
+
+RECORD_KEYS = ("model", "items", "overall_pct", "answer_accuracy_pct", "refusal_accuracy_pct",
+               "guard_accuracy_pct", "narration_pass_pct", "tokens_total", "latency_mean_s",
+               "latency_p95_s")  # fmt: skip
+
+
+def record(
+    scores: list[ModelScore], path: Path = EVAL_RECORD, today: date | None = None
+) -> tuple[Path, list[str]]:
+    """Update the committed record: these models' latest rows (other models are kept) and one
+    history point each. Returns the path and the regression notice lines."""
+    day = today or date.today()
+    data = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"models": []}
+    keep = {s.model for s in scores}
+    rows = [{k: s.summary()[k] for k in RECORD_KEYS} for s in scores]
+    data["models"] = sorted(
+        [r for r in data["models"] if r["model"] not in keep] + rows,
+        key=lambda r: (-(r["overall_pct"] or 0), r["model"]),
+    )
+    data["run_on"] = str(day)
+    evalrecord.append(
+        data,
+        [evalrecord.point(day, s.model, sum(i.correct for i in s.items), len(s.items))
+         for s in scores],
+    )  # fmt: skip
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    return path, evalrecord.regressions(data, day, FLOOR_PCT, "Ask Roshni golden set")

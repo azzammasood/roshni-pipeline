@@ -56,3 +56,6 @@ jobs:
           body=$(curl -sf -H "Origin: $SITE_ORIGIN" "$WORKER_URL/v1/quota")
           echo "$body"
           echo "$body" | grep -q '"status":"ok"'
+          stats=$(curl -sf -H "Origin: $SITE_ORIGIN" "$WORKER_URL/v1/stats")
+          echo "$stats" | head -c 300; echo
+          echo "$stats" | grep -q '"window_days":30'
