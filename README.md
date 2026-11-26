@@ -7,7 +7,7 @@
 [![watchdog](https://github.com/azzammasood/roshni-pipeline/actions/workflows/watchdog.yml/badge.svg)](https://github.com/azzammasood/roshni-pipeline/actions/workflows/watchdog.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-[**Live site →**](https://azzammasood.github.io/roshni-site/) · [Pipeline health](https://azzammasood.github.io/roshni-site/en/health/) · [dbt docs and lineage](https://azzammasood.github.io/roshni-site/dbt-docs/) · [Architecture](https://azzammasood.github.io/roshni-site/en/architecture/) · [Case study](docs/case-study.md) · [Author](https://azzammasood.github.io/roshni-site/en/maker/)
+[**Live site →**](https://azzammasood.github.io/roshni-site/) · [**Ask Roshni**](https://azzammasood.github.io/roshni-site/en/ask/) · [Pipeline health](https://azzammasood.github.io/roshni-site/en/health/) · [dbt docs and lineage](https://azzammasood.github.io/roshni-site/dbt-docs/) · [Architecture](https://azzammasood.github.io/roshni-site/en/architecture/) · [Case study](docs/case-study.md) · [Author](https://azzammasood.github.io/roshni-site/en/maker/)
 
 ## Architecture
 
@@ -32,7 +32,7 @@ flowchart LR
   Docs[dbt docs + lineage]
   H[Pipeline health page]
   HL[Parser healing<br/>LLM maps new headers,<br/>no-regression gate]
-  AR[Ask Roshni<br/>question → guarded SQL<br/>→ checked answer]
+  AR[Ask Roshni on the site<br/>Cloudflare Worker plans,<br/>browser runs the SQL]
   Sources -->|daily, ≤1 req/s,<br/>conditional GET| S --> P --> Q --> W
   W <--> R
   W --> N --> E
@@ -40,7 +40,7 @@ flowchart LR
   W --> Docs
   E --> H
   S --> HL -.->|learned aliases| P
-  W --> AR
+  E -->|Parquet| AR --> Site
   classDef src fill:#f5c518,color:#14213d,stroke:#14213d
 ```
 
@@ -56,7 +56,7 @@ flowchart LR
 | **5 · Resolve** | Feeder names are matched across sources: exact matches auto-accept, then written rules, then a language model choosing *only among listed candidates*. Every decision stores its confidence and reason, and a backtest keeps the rules honest. | RapidFuzz, OpenRouter, Claude |
 | **6 · Analyse and narrate** | Descriptive statistics (no causal claims, sample sizes always shown); a weekly summary in which the model writes prose only and every number is injected and validated. | SQL, OpenRouter |
 | **7 · Export** | Versioned JSON validated against JSON Schemas generated from pydantic models, including the pipeline's own health records. | pydantic, JSON Schema |
-| **Ask** | `roshni ask` answers plain-language questions: a model writes SQL over an allowlisted semantic layer, a guard checks it, DuckDB computes every number, and code adds the caveats. | sqlglot, DuckDB, Groq, OpenRouter |
+| **Ask** | [Ask Roshni](https://azzammasood.github.io/roshni-site/en/ask/) answers plain-language questions on the site (and `roshni ask` on the command line). A Cloudflare Worker holds the key and the prompts and plans one SQL query; the visitor's browser checks it with DuckDB's own parser and runs it on the published Parquet, so every number comes from that query; the Worker checks the narration. | Cloudflare Workers + Durable Objects, DuckDB-WASM, sqlglot, Groq |
 | **8 · Publish** | A static Next.js site (TypeScript, Tailwind CSS) with a browser-side "dark now" engine that is checked row for row against the Python version. | Next.js, React, Vitest, axe-core |
 
 </details>
@@ -76,10 +76,10 @@ Figures as of 2026-11-24, from the pipeline's own records; the [pipeline health 
 | **Manual work replaced** | Checking the IESCO, K-Electric and NEPRA websites by hand (15 IESCO workbooks, daily press releases, two K-Electric PDFs, NEPRA's annual reports) and 14 news feeds. Since 2026-11-08 the pipeline runs with **no manual step**: new schedule versions are dated from the file itself and new listing rows are picked up automatically, with a notice instead of a stop. |
 | **Runs** | A publish run every day, news every 3 hours, a freshness watchdog every 3 hours. **The last 14 publish runs all succeeded**; a successful run takes a median **4 min 20 s**. Of 77 runs recorded since 2026-10-12, 55 succeeded: the failures are a 17-day stall in October, written up in [ADR 0006](docs/adr/0006-automate-review-gates.md). |
 | **Volume** | **3,549** polite fetches over 49 days, **199** new file versions stored. In the warehouse: **48,732** scheduled windows, **20,526** announced maintenance windows, **4,410** planned-shutdown windows, **1,726** feeders with a published schedule (1,101 IESCO, 625 K-Electric) and 130 company-years of NEPRA figures. |
-| **Quality** | 336 Python tests, 556 web tests (including a 514-case check that the browser's "dark now" engine matches the Python one), 38 dbt models with 129 tests (all 172 nodes pass in the latest build), Great Expectations on every parsed table, accessibility checks (axe) at phone width in light and dark themes. |
+| **Quality** | 346 Python tests, 633 web tests (including a 514-case check that the browser's "dark now" engine matches the Python one), 47 Worker tests, 38 dbt models with 129 tests (all 172 nodes pass in the latest build), Great Expectations on every parsed table, accessibility checks (axe) at phone width in light and dark themes. |
 | **Build speed (measured)** | A full warehouse build of today's data (181,660 input rows) takes about **12 s** on a 4-core laptop; synthetic **10×** data (1.8 M rows) builds in about **20 s** and **100×** (18.1 M rows) in **139 s**. Method and every run: [`docs/benchmarks.md`](docs/benchmarks.md). |
 | **Output** | About 3,500 static pages in English and Urdu, versioned JSON for every page, and dbt docs with the lineage graph. |
-| **Cost** | About $0 a month on free tiers. The weekly report's language-model step is capped at $0.01 a run; Ask Roshni and parser healing run on Groq's free plan with free OpenRouter models as fallback. |
+| **Cost** | About $0 a month on free tiers. The weekly report's language-model step is capped at $0.01 a run; Ask Roshni and parser healing run on Groq's free plan with free OpenRouter models as fallback; the Ask Roshni Worker runs on Cloudflare's free plan. |
 
 ## AI in the pipeline, measured
 
@@ -91,6 +91,13 @@ Two language-model features, each built so the model can be wrong without the da
 - The planner sees a **semantic layer**: allowlisted tables and columns, described by the dbt docs, with real category values. It refuses questions about actual outages, causes, forecasts, consumers or income.
 - A **SQL guard** (sqlglot) allows one read-only SELECT on allowlisted columns only. Queries run on a read-only connection with external access off, a row cap and a timeout, with one self-correcting retry.
 - The narrator writes **placeholders, never numbers**. A validator rejects digits, causal wording and "actual outage" wording. Caveats, `n` and the build time are added by code.
+
+**On the site** ([try it](https://azzammasood.github.io/roshni-site/en/ask/), English and Urdu pages; answers in English). The site is static, so the work is split:
+
+- A **Cloudflare Worker** holds the Groq key and the prompts (fetched from the site, never taken from the browser), runs the guard and the planner, and checks the narration.
+- The **visitor's browser** runs the SQL with DuckDB-WASM on about 400 KB of published Parquet, after checking it against the allowlist with DuckDB's own parse tree. External access is switched off first, and the engine and its extensions are served by the site itself.
+- **Caps** keep one visitor from using up the free limits: 3 questions a minute and 10 a day per visitor (an HMAC of the IP and the day, never the IP itself), and 150 questions and 450K tokens a day for the whole site, sized from the eval's token use and Groq's free-plan limits.
+- **Parity tests** pin the TypeScript ports to Python: 25 narration checks, 48 SQL-guard verdicts, and every golden reference query returning the same rows in the browser as in the warehouse.
 
 **Self-healing parsers** ([`docs/parser-healing.md`](docs/parser-healing.md)): `roshni heal`, run before parsing every day.
 
@@ -137,6 +144,7 @@ Where the obvious approach failed and what the code does instead, each backed by
 - **An LLM where it helps, never as the source of truth.** It picks only among listed candidates when matching names, writes prose only in the weekly summary and in Ask Roshni, writes SQL only inside an allowlist, and names columns only when healing a parser. Every number comes from SQL and is validated before publishing, every model output passes a deterministic check, and spend is capped per run.
 - **Portable SQL.** The same dbt project builds on DuckDB every day and on Databricks (smoke-tested), with no dialect-specific functions in models.
 - **Incremental where it is true.** `fct_planned_shutdown` loads only new press-release files (they never change once published), with a per-adapter strategy: `delete+insert` on DuckDB, `merge` on Databricks.
+- **Questions answered without a query server.** Ask Roshni's SQL runs in the visitor's browser on published Parquet; the only server-side piece is a small capped Worker that holds the key. The same split carries to larger data: precomputed Parquet on a CDN, compute at the edge or in the browser.
 - **Two schedulers, one CLI.** GitHub Actions runs production. An Airflow DAG in Docker runs the same `roshni` commands as a showcase. Neither contains business logic.
 - **Trust signals on the page.** Every page is labelled "schedule, not measurement", the header shows how fresh the data is, every chart has a table view, and every number on the equity page is traced back to the export in CI.
 
@@ -160,7 +168,7 @@ So a single DuckDB file comfortably holds about 100 times today's volume. Beyond
 | **Parsing** (hundreds of PDFs a day) | Sequential, with a PDF-text cache keyed by SHA-256 | The same parsers fanned out per file (AWS Batch, Lambda or Spark), idempotent because outputs are keyed by input hash |
 | **Orchestration** | GitHub Actions; Airflow showcase | Airflow (MWAA) or Dagster with sensors on new snapshots, per-source backfills, and SLAs on freshness |
 | **Quality** | Great Expectations and dbt tests that fail the run | The same suites as data contracts at the bronze-to-silver boundary; anomaly alerts on row counts and freshness; quarantine tables surfaced in a dashboard |
-| **Serving** | Static JSON on GitHub Pages | The same versioned JSON on a CDN for public pages, plus a small API (or DuckDB-Wasm over Parquet) for ad-hoc queries |
+| **Serving** | Static JSON on GitHub Pages; ad-hoc questions run in the browser (DuckDB-WASM over Parquet) behind a capped Worker | The same versioned JSON and Parquet on a CDN; a paid model tier and higher Worker caps for ad-hoc questions, or a small query API if the data outgrows the browser |
 | **Cost** | About $0 a month, plus at most $0.01 per LLM run | Storage-heavy and compute-light: incremental models and partition pruning keep warehouse spend proportional to new data, not to history |
 | **Governance** | Decisions log, provenance on every row | Column-level lineage from dbt into a catalog (Unity Catalog or DataHub), row provenance kept as today, and PII-free by design (no consumer data ever) |
 
@@ -168,7 +176,7 @@ So a single DuckDB file comfortably holds about 100 times today's volume. Beyond
 
 ```bash
 uv sync                                  # Python 3.12 environment
-uv run pytest                            # 336 tests (full-file tests skip without data-sources/)
+uv run pytest                            # 346 tests (full-file tests skip without data-sources/)
 uv run roshni --help                     # every pipeline step is one command
 uv run roshni build                      # dbt build on DuckDB
 uv run roshni dbt-docs                   # data/dbt-docs/index.html (lineage graph included)
@@ -184,7 +192,8 @@ The full command list is in [`CLAUDE.md`](CLAUDE.md) (the working notes used whi
 ## Operations
 
 - **Daily:** `snapshot.yml` fetches into the private snapshot store, then `publish.yml` parses, validates, builds, resolves, reports, exports, builds the site and the dbt docs, and pushes the site to [`azzammasood/roshni-site`](https://github.com/azzammasood/roshni-site).
-- **Secrets:** `SNAPSHOTS_DEPLOY_KEY` (write access to the snapshot store), `SITE_DEPLOY_KEY` (push to the site repo), `OPENROUTER_API_KEY` (optional; without it the narrator falls back to a template), `GROQ_API_KEY` (parser healing; without it the chain uses OpenRouter).
+- **Ask Roshni Worker:** `worker-deploy.yml` typechecks, tests and deploys `worker/` to Cloudflare on every change, copies the Groq key into it, and smoke-tests the live Worker. Publish builds the site with the Worker's address, which switches on the Ask page.
+- **Secrets:** `SNAPSHOTS_DEPLOY_KEY` (write access to the snapshot store), `SITE_DEPLOY_KEY` (push to the site repo), `OPENROUTER_API_KEY` (optional; without it the narrator falls back to a template), `GROQ_API_KEY` (parser healing and the Ask Roshni Worker; without it the chain uses OpenRouter), `CLOUDFLARE_API_TOKEN` (Worker deploys).
 - **Failure handling:** a failed run opens or updates a `pipeline-failure` issue and closes it after the next good run. Publish still runs after a failed snapshot, using the last good files.
 - **Watchdog:** every 3 hours `watchdog.yml` checks that the live site is under 36 hours old and opens an issue that notifies me if not; weekly it re-enables the scheduled workflows so GitHub's 60-day inactivity rule never switches them off.
 - **Automatic decisions:** new schedule versions, new listing rows and learned parser header aliases are handled without stopping the run and reported in a "Pipeline notices" issue.
