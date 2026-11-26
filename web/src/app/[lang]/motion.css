@@ -1443,3 +1443,45 @@ html[dir="rtl"] .maint-grid tr.is-focus th {
     background: var(--line);
   }
 }
+
+/* Query-engine lamp in the console: dim until warming, pulsing while it loads, lit when ready. */
+.ask-hint-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+.ask-engine {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--sky-muted);
+}
+.ask-engine-lamp {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--sky-line);
+}
+.ask-engine.is-warming .ask-engine-lamp {
+  border-color: var(--wire);
+  background: rgb(245 197 24 / 0.35);
+}
+.ask-engine.is-ready {
+  color: var(--sky-ink);
+}
+.ask-engine.is-ready .ask-engine-lamp {
+  border-color: var(--wire);
+  background: var(--wire);
+  box-shadow: 0 0 8px rgb(245 197 24 / 0.8);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ask-engine.is-warming .ask-engine-lamp {
+    animation: ask-pulse 1.1s ease-out infinite;
+  }
+  .ask-engine.is-ready .ask-engine-lamp {
+    animation: ask-lamp-on 0.45s ease-out;
+  }
+}

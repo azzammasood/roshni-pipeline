@@ -803,6 +803,9 @@
     "stationNarrate": "Answer",
     "hintEnter": "Enter to ask · Shift + Enter for a new line",
     "seconds": "{s} s",
-    "askAnother": "Ask another"
+    "askAnother": "Ask another",
+    "engineIdle": "Query engine loads when you start",
+    "engineWarming": "Warming up the query engine…",
+    "engineReady": "Query engine ready"
   }
 }

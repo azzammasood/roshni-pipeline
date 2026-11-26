@@ -7,6 +7,9 @@
 // travels to the one at work. The answer switches on directly under the console and is scrolled
 // into view; the example questions sit below it. Motion is CSS only and stops under
 // prefers-reduced-motion (motion.css, "Ask Roshni").
+// The query engine (about 8 MB compressed) starts loading before the first question: when the
+// visitor focuses the box or points at the console or an example, or once the page is idle
+// (not on data-saver connections). A lamp in the console says when it is ready.
 import { useEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/fill";
@@ -34,6 +37,27 @@ const STATION_OF: Record<Phase, number> = { load: 0, guard: 1, plan: 1, replan: 
 /** Where the line ended: index of the last station reached, and how. */
 type Track = { at: number; state: "running" | "done" | "stopped"; replanned: boolean };
 
+type Engine = "idle" | "warming" | "ready";
+
+const saveData = () =>
+  typeof navigator !== "undefined" && Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
+
+// One engine per page load (lib/ask/duckdb.ts), so its state lives beside it, not in React.
+let engineState: Engine = "idle";
+const engineListeners = new Set<(e: Engine) => void>();
+const setEngineState = (e: Engine) => {
+  engineState = e;
+  engineListeners.forEach((l) => l(e));
+};
+function warm() {
+  if (engineState !== "idle") return;
+  setEngineState("warming");
+  openDb().then(
+    () => setEngineState("ready"),
+    () => setEngineState("idle"),
+  );
+}
+
 const reduceMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export function AskPanel({ locale, t }: { locale: string; t: T }) {
@@ -46,6 +70,7 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
   const [remaining, setRemaining] = useState<Remaining | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [elapsed, setElapsed] = useState(0);
+  const [engine, setEngine] = useState<Engine>(engineState);
   const result = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
   const n = (v: number) => num(v, locale);
@@ -53,6 +78,23 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
   useEffect(() => {
     if (!ASK_URL) return;
     void quota().then((q) => q.remaining && setRemaining(q.remaining));
+  }, []);
+
+  useEffect(() => {
+    engineListeners.add(setEngine);
+    return () => {
+      engineListeners.delete(setEngine);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!ASK_URL || saveData()) return;
+    const id = window.setTimeout(() => {
+      const idle = (window as Window & { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
+      if (idle) idle(() => warm());
+      else warm();
+    }, 2500);
+    return () => window.clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -77,10 +119,13 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
     setAsked(text);
     setLoadError(false);
     setElapsed(0);
-    setTrack({ at: 0, state: "running", replanned: false });
+    const ready = engineState === "ready";
+    setTrack({ at: ready ? 1 : 0, state: "running", replanned: false });
     try {
-      onStep("load");
+      if (!ready) onStep("load");
+      if (engineState === "idle") setEngineState("warming");
       const opened = await openDb();
+      setEngineState("ready");
       const a = await askQuestion(text, {
         api: workerApi,
         db: opened.db,
@@ -97,6 +142,7 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
       }));
     } catch (e) {
       console.error("Ask Roshni could not load the query engine:", e);
+      if (engineState !== "ready") setEngineState("idle");
       setLoadError(true);
       setTrack((tr) => ({ at: tr?.at ?? 0, state: "stopped", replanned: tr?.replanned ?? false }));
     } finally {
@@ -131,7 +177,11 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
 
   return (
     <div className="space-y-10">
-      <div className={`ask-console${busy ? " is-busy" : ""}${lit ? " is-lit" : ""}`}>
+      <div
+        className={`ask-console${busy ? " is-busy" : ""}${lit ? " is-lit" : ""}`}
+        onPointerEnter={warm}
+        onFocusCapture={warm}
+      >
         <form
           className="space-y-4"
           onSubmit={(e) => {
@@ -179,7 +229,13 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
               <span>{busy ? t.asking : t.ask}</span>
             </button>
           </div>
-          <p className="ask-hint">{t.hintEnter}</p>
+          <div className="ask-hint-row">
+            <p className="ask-hint">{t.hintEnter}</p>
+            <p className={`ask-engine is-${engine}`} aria-live="polite">
+              <span className="ask-engine-lamp" aria-hidden="true" />
+              {engine === "ready" ? t.engineReady : engine === "warming" ? t.engineWarming : t.engineIdle}
+            </p>
+          </div>
         </form>
 
         {track && (
@@ -236,6 +292,8 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
                 type="button"
                 disabled={busy}
                 className="ask-example"
+                onPointerEnter={warm}
+                onFocus={warm}
                 onClick={() => {
                   setQuestion(q);
                   input.current?.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "center" });
