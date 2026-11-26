@@ -1,0 +1,58 @@
+# Deploy the Ask Roshni Worker (worker/) to Cloudflare. Owner, 2026-11-26: deploys run here, not
+# from a laptop. Secrets: CLOUDFLARE_API_TOKEN (Cloudflare template "Edit Cloudflare Workers") and
+# GROQ_API_KEY (the same repo secret publish uses; copied into the Worker on every deploy, so a
+# rotated key needs only `gh secret set GROQ_API_KEY` and a re-run). VISITOR_SALT lives only in
+# Cloudflare and is kept across deploys.
+name: worker-deploy
+
+on:
+  push:
+    branches: [main]
+    paths: ["worker/**", ".github/workflows/worker-deploy.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: worker-deploy
+  cancel-in-progress: false
+
+env:
+  WORKER_URL: https://roshni-ask.ahmaduzzammasood.workers.dev
+  SITE_ORIGIN: https://azzammasood.github.io
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: worker
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - name: Deploy
+        run: npx wrangler deploy
+      - name: Copy the Groq key into the Worker
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: printf '%s' "$GROQ_API_KEY" | npx wrangler secret put GROQ_API_KEY
+      - name: Smoke test the live Worker (no question is asked, so no quota is spent)
+        run: |
+          set -eu
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$WORKER_URL/v1/quota")
+          test "$code" = 403 || { echo "no-origin request returned $code, expected 403"; exit 1; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' -H "Origin: https://example.com" "$WORKER_URL/v1/quota")
+          test "$code" = 403 || { echo "foreign origin returned $code, expected 403"; exit 1; }
+          body=$(curl -sf -H "Origin: $SITE_ORIGIN" "$WORKER_URL/v1/quota")
+          echo "$body"
+          echo "$body" | grep -q '"status":"ok"'
