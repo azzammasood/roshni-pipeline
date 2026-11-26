@@ -10,7 +10,7 @@
 // The query engine (about 8 MB compressed) starts loading before the first question: when the
 // visitor focuses the box or points at the console or an example, or once the page is idle
 // (not on data-saver connections). A lamp in the console says when it is ready.
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/fill";
 import { ASK_URL, quota, workerApi } from "@/lib/ask/api";
@@ -96,6 +96,14 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
     }, 2500);
     return () => window.clearTimeout(id);
   }, []);
+
+  // The box grows with the question (typed or filled in from an example), up to a cap.
+  useLayoutEffect(() => {
+    const el = input.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [question]);
 
   useEffect(() => {
     if (!busy) return;
@@ -369,7 +377,7 @@ function AnswerView({ a, asked, t, locale }: { a: Answer; asked: string; t: T; l
         {t.answerTitle}
       </h2>
       <p className="ask-answer-text headline" lang="en" dir="ltr">
-        {a.answer}
+        <span className="ask-answer-mark">{a.answer}</span>
       </p>
       {!a.narrated && a.n > 0 && <p className="text-sm text-muted">{t.templateNote}</p>}
       {a.columns.length > 0 && a.n > 0 && (
