@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AskPanel } from "@/components/AskPanel";
+import { num } from "@/lib/format";
 import { resolveLocale } from "@/lib/locale";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/ask">): Promise<Metadata> {
@@ -18,13 +19,18 @@ export default async function Ask({ params }: PageProps<"/[lang]/ask">) {
         <p className="text-lg max-w-prose">{t.intro}</p>
       </header>
       <AskPanel locale={locale} t={t} />
-      <section aria-labelledby="ask-how" className="rule pt-4 space-y-3 max-w-prose">
+      <section aria-labelledby="ask-how" className="rule pt-4 space-y-5">
         <h2 id="ask-how" className="headline text-3xl">
           {t.howTitle}
         </h2>
-        <ol className="list-decimal ps-5 space-y-2">
-          {[t.how1, t.how2, t.how3, t.how4, t.how5].map((s) => (
-            <li key={s}>{s}</li>
+        <ol className="ask-how">
+          {[t.how1, t.how2, t.how3, t.how4, t.how5].map((s, i) => (
+            <li key={s}>
+              <span className="ask-how-num" aria-hidden="true">
+                {num(i + 1, locale)}
+              </span>
+              <p>{s}</p>
+            </li>
           ))}
         </ol>
       </section>

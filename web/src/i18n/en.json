@@ -764,8 +764,7 @@
     "placeholder": "Which K-Electric IBC area has the most listed feeders?",
     "ask": "Ask",
     "asking": "Working…",
-    "remaining": "{v} questions left for you today; {s} for the whole site.",
-    "englishOnly": "Answers are written in English.",
+    "remaining": "{v} questions left today",
     "examplesTitle": "Try one of these",
     "stepLoad": "Loading the query engine and data (first question only)",
     "stepPlan": "Writing a query",
@@ -796,6 +795,14 @@
     "how2": "A model on a free plan writes one query, using only the tables and columns Roshni publishes.",
     "how3": "Your browser checks the query with the database's own parser and runs it on the published data. Nothing else can be read.",
     "how4": "The model writes one to three sentences that may only point to values in the result. They are checked for numbers of their own, for causes and for calling schedules outages.",
-    "how5": "Each visitor has a few questions a day, and the whole site has a daily limit, so the free capacity is shared."
+    "how5": "Each visitor has a few questions a day, and the whole site has a daily limit, so the free capacity is shared.",
+    "stationLoad": "Engine",
+    "stationPlan": "Query",
+    "stationCheck": "Check",
+    "stationRun": "Run",
+    "stationNarrate": "Answer",
+    "hintEnter": "Enter to ask · Shift + Enter for a new line",
+    "seconds": "{s} s",
+    "askAnother": "Ask another"
   }
 }
