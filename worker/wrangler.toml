@@ -1,9 +1,10 @@
-# Ask Roshni Worker (docs/ask-roshni.md, "On the website"). Free plan: Workers + one
-# SQLite-backed Durable Object. Secrets (never in this file): GROQ_API_KEY, OPENROUTER_API_KEY,
-# VISITOR_SALT; set with `npx wrangler secret put NAME`. Local dev reads them from .dev.vars
-# (git-ignored), which may also override the vars below.
+# Ask Roshni Worker (docs/ask-roshni.md, "On the website"). Deployed by
+# .github/workflows/worker-deploy.yml on every change to worker/. Free plan: Workers + one
+# SQLite-backed Durable Object. Secrets (never in this file): GROQ_API_KEY (copied from the repo
+# secret on every deploy) and VISITOR_SALT (set once in Cloudflare, kept across deploys).
 name = "roshni-ask"
 main = "src/index.ts"
+account_id = "ab63e70bd4be38c7b7e22b3e24a244c8"  # not a secret; lets CI deploy with an API token
 compatibility_date = "2026-11-01"
 
 [vars]

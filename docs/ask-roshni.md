@@ -176,10 +176,19 @@ flowchart LR
 ### Deploy
 
 The Worker runs at `https://roshni-ask.ahmaduzzammasood.workers.dev` on the owner's free
-Cloudflare account. It was deployed on 2026-11-26 with `npx wrangler deploy` in `worker/`. The
-secrets `GROQ_API_KEY` and `VISITOR_SALT` were set with `npx wrangler secret put`, and their
-values were never printed. After changing `worker/`, deploy again with the same command. Publish
-builds the site with `NEXT_PUBLIC_ASK_URL` set to that address, which also shows the nav link.
+Cloudflare account. `.github/workflows/worker-deploy.yml` deploys it whenever `worker/` changes
+on main, and can also be run by hand. Each run:
+1. typechecks and tests the Worker;
+2. runs `wrangler deploy`, using the repo secret `CLOUDFLARE_API_TOKEN` (Cloudflare template
+   "Edit Cloudflare Workers");
+3. copies the repo secret `GROQ_API_KEY` into the Worker, so rotating the key means updating one
+   secret and re-running;
+4. smoke-tests the live Worker without asking a question: 403 with no origin or another origin,
+   and `/v1/quota` ok for the site.
+
+`VISITOR_SALT` is set only in Cloudflare and is kept across deploys. Publish builds the site with
+`NEXT_PUBLIC_ASK_URL` set to the Worker's address, which also shows the nav link. The first
+deploy (2026-11-26) was made from a laptop; there is no local deploy or local data any more.
 
 Checked live after the first deploy:
 - requests with no origin or another origin got 403;
@@ -187,26 +196,24 @@ Checked live after the first deploy:
 - `/v1/quota` showed 10 and 150 questions left;
 - `/v1/ask` answered 503, without spending a question, until the site published `ask/`.
 
-### Run it locally
-
-```
-uv run roshni export                      # writes data/export/v1/ask/
-cd worker; npm ci; npm test               # 47 tests, no network
-# worker/.dev.vars (git-ignored): CONTEXT_URL, ALLOWED_ORIGINS, VISITOR_SALT, GROQ_API_KEY
-npx wrangler dev --port 8787              # serve data/export/v1 on :3102 for CONTEXT_URL
-# web/.env.local (git-ignored): NEXT_PUBLIC_ASK_URL=http://127.0.0.1:8787, then in web/:
-npm run sync-data ; npx next dev --port 3100   # the Worker allows http://localhost:3100
-```
-
-Checked on 2026-11-25 with the live Groq key through the local Worker:
+Checked on 2026-11-25, before deploy, with the Groq key through a local Worker, on a local
+warehouse that held the August K-Electric schedule:
 - **Answered correctly.** Most listed feeders: IBC - Orangi - I, 41. Six-hour and twelve-hour
   feeders: 125 and 492 of 617. Most planned shutdown hours, Oct 2026: Islamabad, 2,452.0. All
-  three match the warehouse.
+  three match that warehouse.
 - **Refused and blocked.** "actually lost power" was refused, and "ignore all previous
   instructions" was blocked.
 - **Capped.** The fourth question in a minute got the per-visitor message.
 - **Accessibility.** Axe found 0 violations at 375 px, light and dark, in English and Urdu, with
   and without an answer.
+
+Testing is done on the live site and Worker (owner, 2026-11-26), not on a local warehouse. The
+real-data oracle test in `web/src/lib/ask/ask.test.ts` skips without a local export.
+
+Checked on 2026-11-26, live site and Worker: "How many listed K-Electric feeders are scheduled
+for six hours a day, and how many for twelve?" returned 110, 462 and 572. That matches the live
+data (October schedule). A first comparison with a local warehouse (617) was wrong because that
+warehouse still held the August schedule.
 
 ## Limits
 
