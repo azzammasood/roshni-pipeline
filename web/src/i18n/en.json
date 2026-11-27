@@ -374,7 +374,11 @@
         "High Loss": "High Loss",
         "Medium Loss": "Medium Loss"
       }
-    }
+    },
+    "explainTitle": "Ask Roshni explains",
+    "explainShare": "Which IBC areas have the largest share on twelve hours?",
+    "explainCategory": "Average hours by loss category",
+    "explainLiteracy": "The most literate subdivision and its twelve-hour share"
   },
   "about": {
     "title": "About the data",
@@ -881,7 +885,9 @@
       "unclear": "Hard to understand",
       "slow": "Too slow",
       "refused_wrongly": "It should have answered"
-    }
+    },
+    "askRollingCi": "(95% interval {lo}–{hi}%)",
+    "askRolling": "Last 7 days: {p} of {t} answers right over {runs} daily runs ({from} to {to}). Each run scores one seventh of the {all} golden questions and paraphrases, so the week covers every one; the interval shows how much a score from this many questions can move by chance."
   },
   "ask": {
     "kicker": "Ask the data",
@@ -992,7 +998,9 @@
     "followUpTo": "Follow-up to: {q}",
     "followUpCancel": "Ask a new question instead",
     "followUpPlaceholder": "For example: and which has the fewest?",
-    "followUpDone": "Answered as a follow-up to your previous question"
+    "followUpDone": "Answered as a follow-up to your previous question",
+    "busyPrepared": "The free models are busy or today's limit is reached. These questions were answered this morning by the same pipeline and cost nothing to open:",
+    "preparedNote": "Prepared this morning from the data built {at}, by the same pipeline and checks as a live question. Opening it used none of your questions."
   },
   "aiDiagram": {
     "title": "Ask Roshni, end to end",

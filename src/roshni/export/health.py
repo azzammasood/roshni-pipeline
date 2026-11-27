@@ -180,8 +180,20 @@ def ask_eval(path: Path = ASK_EVAL) -> m.AskEval | None:
     """The committed Ask Roshni eval record, or None before its first recorded run."""
     if not path.exists():
         return None
+    from roshni import evalrecord
+    from roshni.ask.evaluate import load_items
+
     data = json.loads(path.read_text(encoding="utf-8"))
-    return m.AskEval(run_on=data["run_on"], models=data["models"], history=data["history"])
+    run_on = date.fromisoformat(data["run_on"])
+    models = sorted({p["model"] for p in data["history"] if p["date"] == data["run_on"]})
+    rolling = [r for r in (evalrecord.rolling(data, mo, run_on) for mo in models) if r]
+    return m.AskEval(
+        run_on=data["run_on"],
+        models=data["models"],
+        history=data["history"],
+        items_total=len(load_items()),
+        rolling=rolling,
+    )
 
 
 def build_health(

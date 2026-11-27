@@ -16,6 +16,7 @@ import { fill } from "@/i18n/fill";
 import { ASK_URL, quota, workerApi } from "@/lib/ask/api";
 import { openDb } from "@/lib/ask/duckdb";
 import { isPersonalSchedule } from "@/lib/ask/intent";
+import { type Prepared, loadPrepared, toAnswer } from "@/lib/ask/prepared";
 import { type Answer, type Remaining, type Step, askQuestion } from "@/lib/ask/session";
 import { num } from "@/lib/format";
 import { AnswerChart, Feedback, Trace, VoiceButton, followUpLabel } from "@/components/AskExtras";
@@ -75,6 +76,8 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
   const [mine, setMine] = useState(false);
   // A follow-up: the earlier answer's ticket (the Worker holds its question and plan, 10 min).
   const [previous, setPrevious] = useState<{ ticket: string; q: string } | null>(null);
+  // Answers the publish job prepared this morning (examples, equity links, busy fallback).
+  const [prepared, setPrepared] = useState<Prepared | null>(null);
   const [asked, setAsked] = useState("");
   const [remaining, setRemaining] = useState<Remaining | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -87,6 +90,22 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
   useEffect(() => {
     if (!ASK_URL) return;
     void quota().then((q) => q.remaining && setRemaining(q.remaining));
+  }, []);
+
+  useEffect(() => {
+    void loadPrepared().then((p) => {
+      setPrepared(p);
+      // /ask/?p=<id>: open a prepared answer (the equity page's "Explain this" links).
+      const id = new URLSearchParams(window.location.search).get("p");
+      const item = id ? p?.items.find((i) => i.id === id) : undefined;
+      if (item && p) {
+        setQuestion(item.question);
+        setAsked(item.question);
+        setAnswer(toAnswer(item, p.built_at));
+        setTrack({ at: 4, state: "done", replanned: false });
+        requestAnimationFrame(() => result.current?.scrollIntoView({ block: "start" }));
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -148,10 +167,24 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
     reveal();
   }
 
+  /** A question the publish job already answered today: shown at once, no question used. */
+  function showPrepared(text: string): boolean {
+    const item = prepared?.items.find((i) => i.question.toLowerCase() === text.toLowerCase());
+    if (!item || !prepared || previous) return false;
+    setMine(false);
+    setLoadError(false);
+    setAsked(item.question);
+    setAnswer(toAnswer(item, prepared.built_at));
+    setTrack({ at: 4, state: "done", replanned: false });
+    reveal();
+    return true;
+  }
+
   async function submit(q: string) {
     const text = q.trim();
     if (!text || busy) return;
     if (isPersonalSchedule(text)) return showMine(text);
+    if (showPrepared(text)) return;
     setMine(false);
     setBusy(true);
     setAnswer(null);
@@ -338,6 +371,11 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
             t={t}
             locale={locale}
             onMine={() => showMine(asked)}
+            prepared={prepared}
+            onPrepared={(q) => {
+              setQuestion(q);
+              showPrepared(q);
+            }}
             onFollowUp={() => {
               if (!answer.ticket) return;
               setPrevious({ ticket: answer.ticket, q: asked });
@@ -397,6 +435,8 @@ function AnswerView({
   locale,
   onMine,
   onFollowUp,
+  prepared,
+  onPrepared,
 }: {
   a: Answer;
   asked: string;
@@ -404,6 +444,8 @@ function AnswerView({
   locale: string;
   onMine: () => void;
   onFollowUp: () => void;
+  prepared: Prepared | null;
+  onPrepared: (q: string) => void;
 }) {
   const n = (v: number) => num(v, locale);
   const minutes = (s?: number) => n(Math.max(1, Math.ceil((s ?? 60) / 60)));
@@ -446,6 +488,20 @@ function AnswerView({
             </button>
           </p>
         )}
+        {(a.status === "unavailable" || a.status === "capped") && prepared && prepared.items.length > 0 && (
+          <div className="space-y-2">
+            <p className="max-w-prose">{t.busyPrepared}</p>
+            <ul className="flex flex-wrap gap-2" lang="en" dir="ltr">
+              {prepared.items.map((p) => (
+                <li key={p.id}>
+                  <button type="button" className="chip px-2 py-1 text-start" onClick={() => onPrepared(p.question)}>
+                    {p.question}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {a.status === "refused" && <Feedback ticket={a.ticket} refused t={t} />}
         {a.sql && <SqlDetails a={a} t={t} locale={locale} />}
       </section>
@@ -463,6 +519,11 @@ function AnswerView({
         <span className="ask-answer-mark">{a.answer}</span>
       </p>
       {a.follow_up && <p className="kicker">{t.followUpDone}</p>}
+      {a.prepared !== undefined && (
+        <p className="ask-prepared text-sm">
+          {fill(t.preparedNote, { at: a.prepared || "–" }, locale)}
+        </p>
+      )}
       {!a.narrated && a.n > 0 && <p className="text-sm text-muted">{t.templateNote}</p>}
       <AnswerChart a={a} />
       {a.columns.length > 0 && a.n > 0 && (

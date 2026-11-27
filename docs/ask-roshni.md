@@ -84,6 +84,21 @@ run is posted to the "Pipeline notices" issue. Together with the healing eval it
 that model's free daily tokens on Groq (about 115K and 50K of 200K) once a week; on that day the
 Worker's chain falls over to the next model when the first one is out of tokens.
 
+### Daily slices and prepared answers (2026-11-27, one Groq account)
+
+- The golden set has 35 items plus 69 paraphrases (104; `paraphrases:` in ask_golden.yml, each
+  scored as `<id>~<n>` with the same reference). Every publish run scores one seventh
+  (`ask-eval --daily`, about 15 items, ~45K tokens); a week covers all of them. /health/ shows the
+  pooled 7-day score with a 95% Wilson interval. Notices: an item that passed before and fails
+  now, or a 7-day score under 90%. The parser-healing chaos test stays weekly (Mondays).
+- `roshni ask-prepared` answers config/ask_prepared.yml (7 golden questions, ~21K tokens) after
+  the export into `ask/prepared.json`. The page shows these instantly for the examples, the
+  equity page's "Explain this" links (`/ask/?p=<id>`) and as the fallback when the models are
+  busy or the day's limit is reached. They use none of the visitor's questions.
+- Daily Groq budget (main model, 200K tokens): eval slice ~45K + prepared ~21K + visitors; the
+  fallback models (gpt-oss-120b, gpt-oss-20b, each with their own 200K) absorb visitor peaks. The
+  Worker's site cap (450K tokens a day) is unchanged.
+
 ### First weekly run, 2026-11-26 (35 items, qwen3.8-27b)
 
 34/35: every answer, refusal, injection and rule-breaking item passed except

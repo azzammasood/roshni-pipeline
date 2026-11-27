@@ -12,11 +12,33 @@
           "title": "History",
           "type": "array"
         },
+        "items_total": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Golden items incl. paraphrases",
+          "title": "Items Total"
+        },
         "models": {
           "items": {
             "$ref": "#/$defs/AskEvalModel"
           },
           "title": "Models",
+          "type": "array"
+        },
+        "rolling": {
+          "default": [],
+          "description": "Per model, 7 days (1.12.0)",
+          "items": {
+            "$ref": "#/$defs/RollingScore"
+          },
+          "title": "Rolling",
           "type": "array"
         },
         "run_on": {
@@ -643,6 +665,65 @@
         "rows"
       ],
       "title": "QuarantineReason",
+      "type": "object"
+    },
+    "RollingScore": {
+      "additionalProperties": false,
+      "description": "One model's pooled score over the last 7 days of daily slices (since 1.12.0).",
+      "properties": {
+        "ci_high_pct": {
+          "description": "95% Wilson interval, upper bound",
+          "title": "Ci High Pct",
+          "type": "number"
+        },
+        "ci_low_pct": {
+          "description": "95% Wilson interval, lower bound",
+          "title": "Ci Low Pct",
+          "type": "number"
+        },
+        "from_date": {
+          "format": "date",
+          "title": "From Date",
+          "type": "string"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "integer"
+        },
+        "runs": {
+          "title": "Runs",
+          "type": "integer"
+        },
+        "score_pct": {
+          "title": "Score Pct",
+          "type": "number"
+        },
+        "to_date": {
+          "format": "date",
+          "title": "To Date",
+          "type": "string"
+        },
+        "total": {
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model",
+        "from_date",
+        "to_date",
+        "runs",
+        "passed",
+        "total",
+        "score_pct",
+        "ci_low_pct",
+        "ci_high_pct"
+      ],
+      "title": "RollingScore",
       "type": "object"
     },
     "SizePoint": {

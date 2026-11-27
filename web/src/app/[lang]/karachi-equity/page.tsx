@@ -70,6 +70,20 @@ export default async function Equity({ params }: PageProps<"/[lang]/karachi-equi
             <ExportText value={fromExport(doc.label, locale)} />. {fill(t.effective, { date: effective }, locale)}
           </p>
         )}
+        <nav aria-label={t.explainTitle} className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
+          <span className="kicker">{t.explainTitle}</span>
+          {(
+            [
+              ["ibc-top-share-twelve", t.explainShare],
+              ["category-mean-hours", t.explainCategory],
+              ["literacy-top", t.explainLiteracy],
+            ] as const
+          ).map(([id, label]) => (
+            <a key={id} className="link" href={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/${locale}/ask/?p=${id}`}>
+              {label}
+            </a>
+          ))}
+        </nav>
       </header>
 
       <section aria-label={t.kpiLabel}>
