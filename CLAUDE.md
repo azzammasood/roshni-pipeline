@@ -104,7 +104,9 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - The daily resolve (`roshni resolve --llm` in publish) decides press-release names by rules, then by LLM; the publish job commits `dbt/seeds/review_*.csv` back to main (bot commits: pull before editing seeds locally). Names stay `pending_review` only when no key/credits/valid reply; an owner or Claude decision always wins and is never overwritten.
 
 ## Working agreement
-- **Test on the live site, not locally** (owner, 2026-11-26). No local warehouse, snapshots, exports, data folders or dev servers; CI runs the code tests, and behaviour is checked on https://azzammasood.github.io/roshni-site/ and the live Worker after publish or deploy. Local work is code, docs and the repo's own lint/tests only.
+- **Test on the live site, not locally** (owner, 2026-11-26). Pages' CDN serves the previous
+  page for up to 10 min after a deploy and ignores query strings: wait until the served HTML
+  names the new CSS/JS file. No local warehouse, snapshots, exports, data folders or dev servers; CI runs the code tests, and behaviour is checked on https://azzammasood.github.io/roshni-site/ and the live Worker after publish or deploy. Local work is code, docs and the repo's own lint/tests only.
 - Work phase by phase; stop at each gate with evidence (test output, row counts).
 - Owner is on a limited plan: don't dump whole PDFs or tables; use head/counts; one phase per session.
 
@@ -140,4 +142,5 @@ data-sources/          hand-downloaded, git-ignored, not managed by code
 - Healing on /health/ (2026-11-25, owner): export 1.10.0 `health.healing` (last check, learned aliases, chaos-eval record `evals/parser_healing.json`, `heal-eval --record`).
 - Ask Roshni on the site, A1 (2026-11-25, owner approved Cloudflare): export `ask/` bundle + `worker/` (guard/plan/replan/narrate, caps in a Durable Object, 47 tests, parity with Python). A2 page /ask/ (DuckDB-WASM self-hosted with json+parquet extensions, SHA-pinned; guard on DuckDB's parse tree; parity incl. real-data oracle). A3 (2026-11-26): Worker live at https://roshni-ask.ahmaduzzammasood.workers.dev (owner's free Cloudflare account; deployed by `worker-deploy.yml` on every change to worker/, which also copies the GROQ_API_KEY repo secret); publish sets NEXT_PUBLIC_ASK_URL.
 - AI monitored (2026-11-26, owner): weekly evals in publish (Mondays or dispatch `evals: true`; main model; history in evals/, regressions → notices), golden set 35 items (`expect: reject`), Worker usage counts (`GET /v1/stats`, no text or ids), /health/ "Ask Roshni in use" section (export 1.11.0); healing scope documented as narrow on purpose.
+- Ask page redesign (2026-11-26, owner review): console, five-station power line, answer in view above the examples, engine warm-up and ready lamp; setup has no query timeout (slow connections); publish commit step identity fixed (rebase).
 - Backend complete. Frontend kickoff (2026-10-11): Next.js static export, English first with Urdu-ready i18n/RTL, no map in v1; hosted from the public repo roshni-site (2026-10-12).
