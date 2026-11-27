@@ -2,6 +2,25 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-26 (Ask Roshni page redesign; engine and publish fixes)
+- **Owner review of /ask/:** the page looked old-fashioned, nothing moved while a question ran,
+  and the answer appeared below the examples, out of view. Removed "Answers are written in
+  English." and the site-wide count; only the visitor's own questions left are shown.
+- **Design:** a night-sky console holds the question. A power line runs through five stations
+  (engine, query, check, run, answer): current flows, lamps light, ↻ marks a corrected query and
+  a red lamp the stop point, with a timer. The answer appears under the console and is scrolled
+  into view, with a highlight under each line; the examples follow it. All motion is CSS and
+  stops under prefers-reduced-motion.
+- **The query engine warms up before the first question** (on focus, on pointing at the console
+  or an example, or when the page is idle; not with data saver). It is about 8 MB gzipped.
+- **Setup has no query timeout.** The 10 s limit was meant for visitors' queries but also wrapped
+  `install parquet` (3.2 MB). Found on a slow connection while checking live.
+- **Publish commit step:** the bot identity comes from env vars for the whole step, because
+  `git pull --rebase` replays the commit when main moves during a run. The first weekly eval's
+  records (Ask 34/35, healing 27/27) were written from that run's log.
+- **Live checks:** GitHub Pages' CDN serves a page for up to 10 minutes after a deploy and
+  ignores query strings. Wait until the served HTML names the new CSS or JS file before checking.
+
 ## 2026-11-26 (AI features monitored: weekly evals, usage counts; export 1.11.0)
 - **Owner asked** for every reviewer objection to be addressed: evals that ran once by hand,
   no production view of Ask Roshni, small eval sets, healing that looks general, and a README
