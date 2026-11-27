@@ -15,13 +15,18 @@ import type { Dictionary } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/fill";
 import { ASK_URL, quota, workerApi } from "@/lib/ask/api";
 import { openDb } from "@/lib/ask/duckdb";
+import { isPersonalSchedule } from "@/lib/ask/intent";
 import { type Answer, type Remaining, type Step, askQuestion } from "@/lib/ask/session";
 import { num } from "@/lib/format";
+import { AskMySchedule } from "@/components/AskMySchedule";
 import { BulbArt } from "@/components/Bulb";
+import type { LeadStrings } from "@/components/PinnedFeeder";
 import { ScrollRegion } from "@/components/ScrollRegion";
 
 // From the golden set (config/ask_golden.yml): each is known to have an answer in the data.
+// The first is the everyday question; it goes to the schedule engine (lib/ask/intent.ts).
 const EXAMPLES: { tag: string; q: string }[] = [
+  { tag: "Your feeder", q: "Will I get load shedding today?" },
   { tag: "K-Electric", q: "Which K-Electric IBC area has the most listed feeders?" },
   { tag: "K-Electric", q: "How many listed K-Electric feeders are scheduled for six hours a day, and how many for twelve?" },
   { tag: "NEPRA", q: "Show K-Electric's NEPRA-reported load-shedding hours per day for every fiscal year." },
@@ -60,12 +65,13 @@ function warm() {
 
 const reduceMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-export function AskPanel({ locale, t }: { locale: string; t: T }) {
+export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStrings }) {
   const [question, setQuestion] = useState("");
   const [busy, setBusy] = useState(false);
   const [phase, setPhase] = useState<Phase | null>(null);
   const [track, setTrack] = useState<Track | null>(null);
   const [answer, setAnswer] = useState<Answer | null>(null);
+  const [mine, setMine] = useState(false);
   const [asked, setAsked] = useState("");
   const [remaining, setRemaining] = useState<Remaining | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -120,9 +126,30 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
     setTrack((tr) => ({ at: STATION_OF[p], state: "running", replanned: (tr?.replanned ?? false) || p === "replan" }));
   }
 
+  function reveal() {
+    requestAnimationFrame(() => {
+      const el = result.current;
+      if (!el) return;
+      el.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+      el.focus({ preventScroll: true });
+    });
+  }
+
+  /** The visitor's own feeder: answered by the schedule engine, no model, no quota. */
+  function showMine(text: string) {
+    setAnswer(null);
+    setTrack(null);
+    setLoadError(false);
+    setAsked(text);
+    setMine(true);
+    reveal();
+  }
+
   async function submit(q: string) {
     const text = q.trim();
     if (!text || busy) return;
+    if (isPersonalSchedule(text)) return showMine(text);
+    setMine(false);
     setBusy(true);
     setAnswer(null);
     setAsked(text);
@@ -157,12 +184,7 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
     } finally {
       setBusy(false);
       setPhase(null);
-      requestAnimationFrame(() => {
-        const el = result.current;
-        if (!el) return;
-        el.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
-        el.focus({ preventScroll: true });
-      });
+      reveal();
     }
   }
 
@@ -287,12 +309,20 @@ export function AskPanel({ locale, t }: { locale: string; t: T }) {
       <div ref={result} tabIndex={-1} className="outline-none scroll-mt-24">
         {busy && !answer && <AnswerSkeleton />}
         {loadError && <p className="mark">{t.loadError}</p>}
-        {answer && <AnswerView a={answer} asked={asked} t={t} locale={locale} />}
+        {mine && (
+          <>
+            <p className="ask-asked mb-3" lang="en" dir="auto">
+              {asked}
+            </p>
+            <AskMySchedule locale={locale} t={t} lt={lt} />
+          </>
+        )}
+        {answer && <AnswerView a={answer} asked={asked} t={t} locale={locale} onMine={() => showMine(asked)} />}
       </div>
 
       <section aria-labelledby="ask-examples" className="space-y-3">
         <h2 id="ask-examples" className="kicker">
-          {answer ? t.askAnother : t.examplesTitle}
+          {answer || mine ? t.askAnother : t.examplesTitle}
         </h2>
         <ul className="ask-examples" lang="en" dir="ltr">
           {EXAMPLES.map(({ tag, q }) => (
@@ -331,7 +361,19 @@ function AnswerSkeleton() {
   );
 }
 
-function AnswerView({ a, asked, t, locale }: { a: Answer; asked: string; t: T; locale: string }) {
+function AnswerView({
+  a,
+  asked,
+  t,
+  locale,
+  onMine,
+}: {
+  a: Answer;
+  asked: string;
+  t: T;
+  locale: string;
+  onMine: () => void;
+}) {
   const n = (v: number) => num(v, locale);
   const minutes = (s?: number) => n(Math.max(1, Math.ceil((s ?? 60) / 60)));
   if (a.status !== "answered") {
@@ -363,6 +405,14 @@ function AnswerView({ a, asked, t, locale }: { a: Answer; asked: string; t: T; l
         {why && (
           <p className="text-sm text-muted max-w-prose" lang="en" dir="ltr">
             {why}
+          </p>
+        )}
+        {a.status !== "blocked" && (
+          <p className="max-w-prose">
+            {t.mineOffer}{" "}
+            <button type="button" className="link font-semibold" onClick={onMine}>
+              {t.mineButton}
+            </button>
           </p>
         )}
         {a.sql && <SqlDetails a={a} t={t} locale={locale} />}

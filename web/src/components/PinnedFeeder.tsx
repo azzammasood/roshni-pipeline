@@ -24,6 +24,12 @@ export type LeadStrings = Pick<Dictionary, "lead" | "common" | "sources">;
 
 const areaOf = (f: Feeder) => (f.ibc ? ibcName(f.ibc) : f.circle ? circleName(f.circle) : f.grid);
 
+/** The lead is the page's h1 on its own pages, an h2 (smaller) inside Ask Roshni's answer. */
+const headingOf = (h: "h1" | "h2") =>
+  h === "h1"
+    ? (["h1", "lead", "text-[2.1rem] sm:text-5xl"] as const)
+    : (["h2", "ask-lead", "text-3xl sm:text-4xl"] as const);
+
 export function duration(minutes: number, t: LeadStrings["lead"], locale: string) {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
@@ -41,6 +47,7 @@ export function PinnedFeeder({
   maintenance,
   locale,
   t,
+  heading = "h1",
 }: {
   feeders: Feeder[];
   feeder: Feeder;
@@ -53,7 +60,10 @@ export function PinnedFeeder({
   maintenance?: MaintenanceSlot[];
   locale: string;
   t: LeadStrings;
+  /** h2 when the lead sits inside another page (Ask Roshni). */
+  heading?: "h1" | "h2";
 }) {
+  const [H, hid, big] = headingOf(heading);
   const clock = useClock();
   const [finding, setFinding] = useState(false);
   const { lead } = t;
@@ -89,7 +99,7 @@ export function PinnedFeeder({
   if (finding) return <FeederFinder feeders={feeders} locale={locale} t={t} onDone={() => setFinding(false)} />;
 
   return (
-    <section aria-labelledby="lead" className="lead-reveal space-y-3">
+    <section aria-labelledby={hid} className="lead-reveal space-y-3">
       <p className="kicker flex flex-wrap gap-x-2">
         <span>{lead.kicker}</span>
         <span aria-hidden="true">·</span>
@@ -127,7 +137,7 @@ export function PinnedFeeder({
         </div>
       )}
 
-      <h1 id="lead" className="headline text-[2.1rem] sm:text-5xl max-w-3xl">
+      <H id={hid} className={`headline ${big} max-w-3xl`}>
         {iesco && level !== null && !notYet && (
           <span className="block kicker text-signal mb-2">{fill(lead.ifLevel, { n: level }, locale)}</span>
         )}
@@ -151,7 +161,7 @@ export function PinnedFeeder({
               : status.active
                 ? rich(lead.darkNow, { name, end: time(status.end) })
                 : rich(lead.next, { name, start: time(status.start) })}
-      </h1>
+      </H>
       {maintLead && <p className="text-sm text-muted max-w-prose">{lead.maintNote}</p>}
       {status && (
         <p className="text-lg text-muted">
@@ -207,12 +217,15 @@ export function FeederFinder({
   t,
   feeders,
   onDone,
+  heading = "h1",
 }: {
   locale: string;
   t: LeadStrings;
   feeders: Feeder[];
   onDone?: () => void;
+  heading?: "h1" | "h2";
 }) {
+  const [H, hid, big] = headingOf(heading);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [picked, setPicked] = useState<Feeder | null>(null);
@@ -253,11 +266,11 @@ export function FeederFinder({
   };
   const status = term.length < 2 ? "" : hits.length ? fill(lead.results, { n: hits.length }, locale) : lead.noResults;
   return (
-    <section aria-labelledby="lead" className="space-y-3">
+    <section aria-labelledby={hid} className="space-y-3">
       <p className="kicker">{lead.kicker}</p>
-      <h1 id="lead" className="headline text-[2.1rem] sm:text-5xl">
+      <H id={hid} className={`headline ${big}`}>
         {lead.findTitle}
-      </h1>
+      </H>
       <p className="max-w-prose">{lead.findIntro}</p>
       {/* Results float over the page (no reflow below); Escape or a click outside closes them. */}
       <div ref={box} className="relative max-w-xl">

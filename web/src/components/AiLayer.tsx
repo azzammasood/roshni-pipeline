@@ -6,6 +6,7 @@
 import type { Locale } from "@/i18n/config";
 import { type Dictionary, fill } from "@/i18n/dictionaries";
 import type { Health } from "@/types/v1";
+import { AiDiagram } from "./AiDiagram";
 import { ToolLogo } from "./ToolLogo";
 
 type Kind = "model" | "code";
@@ -91,6 +92,8 @@ export function AiLayer({ dict, locale, health }: { dict: Dictionary; locale: Lo
           </li>
         </ul>
       </div>
+
+      <AiDiagram t={dict.aiDiagram} locale={locale} />
 
       {LANES.map((lane, li) => {
         const lt = lanes[lane.key];
