@@ -516,7 +516,125 @@
     "docsLink": "dbt docs and lineage graph",
     "docsBody": "Every model, column test and source, and the graph of how each table is built from the others.",
     "codeLink": "The code on GitHub",
-    "codeBody": "The pipeline, the warehouse models, the tests and this site, with the decisions behind them."
+    "codeBody": "The pipeline, the warehouse models, the tests and this site, with the decisions behind them.",
+    "ai": {
+      "kicker": "The AI layer",
+      "title": "Where language models work, and what checks them",
+      "intro": "Language models do three narrow jobs here: turning a visitor's question into a query, testing themselves every week, and recognising renamed spreadsheet columns. In each one the model only proposes. Code checks the proposal before anything reaches a page, and every number you see comes from a query, never from a model.",
+      "legendLabel": "Key",
+      "legendModel": "Language model step",
+      "legendCode": "Code step: checks, runs, records",
+      "kindModel": "Model",
+      "kindCode": "Code",
+      "stopsLabel": "Stops:",
+      "scoreAsk": "Last weekly eval: Ask Roshni {passed} of {total}",
+      "scoreHeal": "parser healing {passed} of {total}",
+      "scoreAliases": "{n} column names learned so far",
+      "note": "The models run on free plans: Groq first, OpenRouter when Groq is busy. When both are busy the step fails safely: no question is answered without the checks, and no column name is learned without the proof.",
+      "lanes": {
+        "ask": {
+          "title": "A visitor asks a question",
+          "when": "Every question on the Ask page",
+          "body": "Seven steps across your browser, a Cloudflare Worker and the model providers. If the query fails, returns nothing or is refused by the guard, the model gets one corrected try, told why.",
+          "stations": {
+            "gate": {
+              "title": "Limits",
+              "body": "The Worker counts questions per visitor and for the whole site, and the tokens spent each day, in a Durable Object.",
+              "stops": "More than 10 questions a day or 3 a minute from one visitor."
+            },
+            "screen": {
+              "title": "Injection screen",
+              "body": "A small classifier model (Llama Prompt Guard 2) scores how likely the question is an attack.",
+              "stops": "Questions that try to override the instructions."
+            },
+            "plan": {
+              "title": "Write the query",
+              "body": "The main model writes one SQL query using only the tables and columns described in the semantic layer, or says the data cannot answer.",
+              "stops": "Questions the data cannot answer, such as measured outages or income."
+            },
+            "guard": {
+              "title": "SQL guard",
+              "body": "In your browser, DuckDB parses the query and the guard walks its parse tree. The same rules run in Python, and tests keep the two in agreement.",
+              "stops": "Anything but a read-only SELECT on allowed tables and columns: no files, no table functions, no SELECT *."
+            },
+            "run": {
+              "title": "Run in your browser",
+              "body": "DuckDB-WASM runs the query over the site's own published data files. There is no database server.",
+              "stops": "Queries that run longer than 10 seconds."
+            },
+            "narrate": {
+              "title": "Write the answer",
+              "body": "The model writes one or two sentences with a blank for every number. Code fills the blanks from the result rows.",
+              "stops": "Nothing on its own: the next step checks it."
+            },
+            "check": {
+              "title": "Check the sentences",
+              "body": "The prose is rejected if it types a number of its own, uses causal words such as “because”, or calls a schedule a measured outage.",
+              "stops": "Made-up numbers and claims. A rejected answer is replaced by a plain template."
+            }
+          }
+        },
+        "evals": {
+          "title": "The AI is tested every week",
+          "when": "Mondays, inside the daily publish run",
+          "body": "The same code the site uses is run on questions with known answers and on real workbooks with deliberately changed headers. Each score goes into a history, and a drop raises a notice.",
+          "stations": {
+            "golden": {
+              "title": "Golden questions",
+              "body": "35 questions with reference queries: some to answer, some to refuse, and injection attempts to block.",
+              "stops": "Nothing: this is the answer key."
+            },
+            "answer": {
+              "title": "Answer them",
+              "body": "The main model answers every golden question through the full Ask pipeline.",
+              "stops": "Its result rows are compared with the reference query's rows, not its wording."
+            },
+            "chaos": {
+              "title": "Break the parser",
+              "body": "Copies of real maintenance workbooks get renamed, abbreviated or Urdu headers, and the model must heal them.",
+              "stops": "A heal counts only if the parse equals the original, row for row."
+            },
+            "score": {
+              "title": "Record the score",
+              "body": "One point per model per run is kept in the repository, about two years of history.",
+              "stops": "Duplicates: a second run on the same day replaces the first."
+            },
+            "alert": {
+              "title": "Raise the alarm",
+              "body": "If Ask Roshni falls below 90% or healing below 85%, the run posts to the pipeline's notices issue.",
+              "stops": "A quiet decline nobody notices."
+            }
+          }
+        },
+        "heal": {
+          "title": "A spreadsheet changes its headers",
+          "when": "Every publish run, before parsing",
+          "body": "IESCO's maintenance workbooks are typed by people, and their column names drift. Instead of failing, the parser asks a model which known column a new header means, then proves the answer on every stored workbook.",
+          "stations": {
+            "drift": {
+              "title": "Spot the drift",
+              "body": "A workbook drifts when its header row is not found, or when a quarter of its rows land in quarantine.",
+              "stops": "Workbooks that already parse: they are left alone."
+            },
+            "name": {
+              "title": "Name the columns",
+              "body": "The model sees the top rows with column numbers and maps columns to the parser's known fields.",
+              "stops": "Fields or columns that do not exist. The model never writes a row."
+            },
+            "gate": {
+              "title": "Prove it",
+              "body": "The drifted workbook must now parse, and every other stored workbook must parse exactly as before.",
+              "stops": "Any regression: the new names are refused."
+            },
+            "learn": {
+              "title": "Learn it",
+              "body": "Accepted names are written to a settings file with the evidence and committed, so the next run needs no model.",
+              "stops": "Asking the model again about the same header."
+            }
+          }
+        }
+      }
+    }
   },
   "city": {
     "indexKicker": "Pakistan · eleven distribution companies",

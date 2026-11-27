@@ -1494,3 +1494,165 @@ html[dir="rtl"] .maint-grid tr.is-focus th {
     animation: ask-lamp-on 0.45s ease-out;
   }
 }
+
+/* The AI layer on the architecture page (components/AiLayer.tsx). Each lane is a power line
+   running down the inline-start edge; model steps are night-sky tiles with a diamond lamp, code
+   steps are paper tiles with a round one, so every model step is visibly followed by a check. */
+.ai-lane {
+  position: relative;
+  border: 1.5px solid var(--ink);
+  background: var(--surface);
+  padding: 1.4rem 1rem 1rem;
+  display: grid;
+  gap: 1.1rem;
+}
+.ai-key {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 1.5px solid var(--ink);
+  background: var(--bg);
+}
+.ai-key-model {
+  background: var(--sky);
+  border-color: var(--wire);
+}
+.ai-score {
+  font-weight: 600;
+  text-decoration: none;
+  border-block-end: 2px solid var(--wire);
+}
+.ai-score:hover {
+  background: var(--wash);
+}
+.ai-line {
+  position: relative;
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  padding-inline-start: 2rem;
+  list-style: none;
+}
+.ai-line::before {
+  content: "";
+  position: absolute;
+  inset-block: 1rem;
+  inset-inline-start: 0.6rem;
+  width: 3px;
+  background:
+    linear-gradient(to bottom, transparent 0 42%, var(--wire) 42% 58%, transparent 58%) 0 0 / 100% 200% no-repeat,
+    var(--line);
+}
+.ai-node {
+  position: relative;
+}
+.ai-lamp {
+  position: absolute;
+  inset-block-start: 1.05rem;
+  inset-inline-start: calc(-2rem + 0.6rem + 1.5px - 0.45rem);
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--wire);
+  z-index: 1;
+}
+.ai-model .ai-lamp {
+  border-radius: 0;
+  transform: rotate(45deg);
+  border-color: var(--wire);
+}
+.ai-card {
+  border: 1.5px solid var(--ink);
+  background: var(--bg);
+  padding: 0.75rem 0.9rem 0.8rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.ai-node:hover .ai-card,
+.ai-node:focus-within .ai-card {
+  transform: translateX(3px);
+  box-shadow: 0 0 0 3px var(--wire);
+}
+html[dir="rtl"] .ai-node:hover .ai-card {
+  transform: translateX(-3px);
+}
+.ai-model .ai-card {
+  --bg: var(--sky);
+  --ink: var(--sky-ink);
+  --muted: var(--sky-muted);
+  --line: var(--sky-line);
+  background: var(--sky);
+  color: var(--sky-ink);
+  border-color: var(--wire);
+}
+.ai-kind {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ai-model .ai-kind {
+  color: var(--wire);
+}
+.ai-model .ai-kind::before {
+  content: "◆ ";
+}
+.ai-body {
+  margin-block-start: 0.25rem;
+}
+.ai-stops {
+  margin-block-start: 0.6rem;
+  border-inline-start: 3px solid var(--signal);
+  padding-inline-start: 0.5rem;
+}
+.ai-model .ai-stops {
+  border-color: var(--wire);
+}
+.ai-files {
+  margin-block-start: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.ai-files code {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.7rem;
+  border: 1px solid var(--line);
+  padding: 0 0.35rem;
+  overflow-wrap: anywhere;
+}
+/* Wide screens: what the step does on the left, what it stops and where it lives on the right. */
+@media (min-width: 48rem) {
+  .ai-lane {
+    padding: 1.6rem 1.4rem 1.2rem;
+  }
+  .ai-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 17rem);
+    grid-template-areas: "kind stops" "title stops" "body files";
+    grid-template-rows: auto auto 1fr;
+    column-gap: 1.4rem;
+    align-items: start;
+  }
+  .ai-kind { grid-area: kind; }
+  .ai-title { grid-area: title; }
+  .ai-body { grid-area: body; }
+  .ai-stops { grid-area: stops; margin-block-start: 0; }
+  .ai-files { grid-area: files; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ai-line::before {
+    animation: wire-pulse-y calc(var(--n, 6) * 0.45s) linear infinite;
+  }
+  .ai-lamp {
+    background: transparent;
+    animation: lamp-cycle calc(var(--n, 6) * 0.45s) steps(1, end) infinite;
+    animation-delay: calc(var(--i, 0) * 0.45s);
+  }
+  .ai-model .ai-lamp {
+    background: var(--sky);
+  }
+}
