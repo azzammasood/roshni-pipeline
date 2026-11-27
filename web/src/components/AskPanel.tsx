@@ -18,6 +18,7 @@ import { openDb } from "@/lib/ask/duckdb";
 import { isPersonalSchedule } from "@/lib/ask/intent";
 import { type Answer, type Remaining, type Step, askQuestion } from "@/lib/ask/session";
 import { num } from "@/lib/format";
+import { AnswerChart, Feedback, Trace, VoiceButton, followUpLabel } from "@/components/AskExtras";
 import { AskMySchedule } from "@/components/AskMySchedule";
 import { BulbArt } from "@/components/Bulb";
 import type { LeadStrings } from "@/components/PinnedFeeder";
@@ -72,6 +73,8 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
   const [track, setTrack] = useState<Track | null>(null);
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [mine, setMine] = useState(false);
+  // A follow-up: the earlier answer's ticket (the Worker holds its question and plan, 10 min).
+  const [previous, setPrevious] = useState<{ ticket: string; q: string } | null>(null);
   const [asked, setAsked] = useState("");
   const [remaining, setRemaining] = useState<Remaining | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -168,7 +171,9 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
         ctx: opened.ctx,
         serialize: opened.serialize,
         onStep,
+        previous: previous?.ticket,
       });
+      setPrevious(null);
       setAnswer(a);
       if (a.remaining) setRemaining(a.remaining);
       setTrack((tr) => ({
@@ -235,6 +240,14 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
               </p>
             )}
           </div>
+          {previous && (
+            <p className="ask-followup">
+              <span>{followUpLabel(t, previous.q, locale)}</span>
+              <button type="button" className="link" onClick={() => setPrevious(null)}>
+                {t.followUpCancel}
+              </button>
+            </p>
+          )}
           <div className="ask-input-row">
             <textarea
               ref={input}
@@ -244,7 +257,7 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
               maxLength={500}
               dir="auto"
               value={question}
-              placeholder={t.placeholder}
+              placeholder={previous ? t.followUpPlaceholder : t.placeholder}
               onChange={(e) => setQuestion(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
@@ -253,6 +266,7 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
                 }
               }}
             />
+            <VoiceButton locale={locale} t={t} onText={(s) => setQuestion(s)} />
             <button type="submit" disabled={busy || !question.trim()} className="ask-switch">
               <svg viewBox="0 0 40 48" className="ask-switch-bulb" aria-hidden="true" focusable="false">
                 <BulbArt />
@@ -317,7 +331,22 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
             <AskMySchedule locale={locale} t={t} lt={lt} />
           </>
         )}
-        {answer && <AnswerView a={answer} asked={asked} t={t} locale={locale} onMine={() => showMine(asked)} />}
+        {answer && (
+          <AnswerView
+            a={answer}
+            asked={asked}
+            t={t}
+            locale={locale}
+            onMine={() => showMine(asked)}
+            onFollowUp={() => {
+              if (!answer.ticket) return;
+              setPrevious({ ticket: answer.ticket, q: asked });
+              setQuestion("");
+              input.current?.focus({ preventScroll: true });
+              input.current?.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "center" });
+            }}
+          />
+        )}
       </div>
 
       <section aria-labelledby="ask-examples" className="space-y-3">
@@ -367,12 +396,14 @@ function AnswerView({
   t,
   locale,
   onMine,
+  onFollowUp,
 }: {
   a: Answer;
   asked: string;
   t: T;
   locale: string;
   onMine: () => void;
+  onFollowUp: () => void;
 }) {
   const n = (v: number) => num(v, locale);
   const minutes = (s?: number) => n(Math.max(1, Math.ceil((s ?? 60) / 60)));
@@ -415,6 +446,7 @@ function AnswerView({
             </button>
           </p>
         )}
+        {a.status === "refused" && <Feedback ticket={a.ticket} refused t={t} />}
         {a.sql && <SqlDetails a={a} t={t} locale={locale} />}
       </section>
     );
@@ -430,7 +462,9 @@ function AnswerView({
       <p className="ask-answer-text headline" lang="en" dir="ltr">
         <span className="ask-answer-mark">{a.answer}</span>
       </p>
+      {a.follow_up && <p className="kicker">{t.followUpDone}</p>}
       {!a.narrated && a.n > 0 && <p className="text-sm text-muted">{t.templateNote}</p>}
+      <AnswerChart a={a} />
       {a.columns.length > 0 && a.n > 0 && (
         <ScrollRegion label={t.tableTitle} dir="ltr">
           <table className="data ask-table" lang="en">
@@ -469,6 +503,14 @@ function AnswerView({
           <li>{fill(a.truncated ? t.rowsCapped : t.rows, { n: n(a.n) }, locale)}</li>
         </ul>
       </div>
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        {a.ticket && (
+          <button type="button" className="ask-followup-btn" onClick={onFollowUp}>
+            <span aria-hidden="true">↳</span> {t.followUpAsk}
+          </button>
+        )}
+        <Feedback ticket={a.ticket} t={t} />
+      </div>
       <SqlDetails a={a} t={t} locale={locale} />
     </section>
   );
@@ -485,6 +527,7 @@ function SqlDetails({ a, t, locale }: { a: Answer; t: T; locale: string }) {
           {a.sql}
         </pre>
         {models.length > 0 && <p>{fill(t.writtenBy, { m: models.join(", "), t: num(tokens, locale) }, locale)}</p>}
+        <Trace a={a} t={t} locale={locale} />
       </div>
     </details>
   );

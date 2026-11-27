@@ -185,6 +185,22 @@ questions ("How many feeders...today?") stay with the planner; none of the golde
 routed. A refused or failed answer offers the same lookup, so a miss is never a wrong answer.
 The page's architecture drawing is `components/AiDiagram.tsx` (also on /architecture/).
 
+### Follow-ups, votes, trace, charts, voice (2026-11-27)
+
+- **Follow-ups:** `POST /v1/ask {question, previous}`. `previous` is the visitor's own earlier
+  ticket (10 min); the Worker adds that question and its accepted plan from its own store, so the
+  browser never supplies assistant text. Costs one question, like any other.
+- **Votes:** `POST /v1/feedback {ticket, vote, reason?}`, one per answer; reasons are a fixed list
+  (`wrong`, `unclear`, `slow`, `refused_wrongly`), free text is dropped. Counts only, shown on
+  /health/. No question text is kept, so the review loop works from reason counts and the eval set.
+- **Trace:** under "Show the query": the Prompt Guard score, each model call (model, outcome,
+  tokens, seconds), the browser guard's verdict and the DuckDB run time (`TraceEvent` in
+  `lib/ask/session.ts`).
+- **Charts:** chosen by code (`lib/ask/chart.ts`): one label and one numeric column, 2-24 rows.
+  No model involved, no tokens.
+- **Voice:** the browser's speech recognition (en-PK / ur-PK), hidden where unsupported; in
+  Chrome the audio goes to Google, which the button's title says.
+
 ### Caps (wrangler.toml)
 
 | cap | value | why |

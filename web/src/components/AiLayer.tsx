@@ -10,6 +10,7 @@ import { AiDiagram } from "./AiDiagram";
 import { ToolLogo } from "./ToolLogo";
 
 type Kind = "model" | "code";
+const CODE = "https://github.com/azzammasood/roshni-pipeline";
 type Station = { key: string; kind: Kind; files: string[] };
 type Lane = { key: "ask" | "evals" | "heal"; tools: string[]; stations: Station[] };
 
@@ -118,6 +119,16 @@ export function AiLayer({ dict, locale, health }: { dict: Dictionary; locale: Lo
                 </p>
               )}
             </header>
+            {lane.key === "heal" && (
+              <p className="text-sm -mt-2 flex flex-wrap gap-x-5 gap-y-1">
+                <a href={`${CODE}/blob/main/evals/parser_healing.json`} className="link" rel="noopener noreferrer" target="_blank">
+                  {t.healRecord}
+                </a>
+                <a href={`${CODE}/blob/main/docs/parser-healing.md`} className="link" rel="noopener noreferrer" target="_blank">
+                  {t.healDocs}
+                </a>
+              </p>
+            )}
             <ol className="ai-line" style={{ "--n": lane.stations.length } as React.CSSProperties}>
               {lane.stations.map((s, i) => {
                 const st = lt.stations[s.key];

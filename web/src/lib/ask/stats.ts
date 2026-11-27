@@ -17,6 +17,7 @@ export type StatsDay = {
   tokens: number;
   plan_latency: number[];
   narrate_latency: number[];
+  feedback?: { up: number; down: number; reasons: Record<string, number> };
 };
 
 export type Stats = {
@@ -72,6 +73,9 @@ export type Totals = {
   corrected: number;
   tokens: number;
   medianBucket: number | null;
+  up: number;
+  down: number;
+  reasons: Record<string, number>;
 };
 
 export function totals(days: StatsDay[]): Totals {
@@ -84,5 +88,11 @@ export function totals(days: StatsDay[]): Totals {
     corrected: sum(days.map((d) => d.replans.guard + d.replans.error + d.replans.empty)),
     tokens: sum(days.map((d) => d.tokens)),
     medianBucket: quantileBucket(addHist(days.map((d) => d.plan_latency)), 0.5),
+    up: sum(days.map((d) => d.feedback?.up ?? 0)),
+    down: sum(days.map((d) => d.feedback?.down ?? 0)),
+    reasons: days.reduce<Record<string, number>>((acc, d) => {
+      for (const [k, v] of Object.entries(d.feedback?.reasons ?? {})) acc[k] = (acc[k] ?? 0) + v;
+      return acc;
+    }, {}),
   };
 }

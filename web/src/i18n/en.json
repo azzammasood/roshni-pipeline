@@ -633,7 +633,9 @@
             }
           }
         }
-      }
+      },
+      "healRecord": "The chaos-test record (every run, every case)",
+      "healDocs": "How healing works, and why its scope is narrow"
     }
   },
   "city": {
@@ -871,7 +873,15 @@
     "colRefused": "Refused",
     "colCapped": "Capped",
     "colCorrected": "Corrected",
-    "colMedian": "Median planning"
+    "colMedian": "Median planning",
+    "usageVotes": "Votes on answers: up / down",
+    "usageDownWhy": "Reasons for a down vote:",
+    "voteReasons": {
+      "wrong": "Wrong answer",
+      "unclear": "Hard to understand",
+      "slow": "Too slow",
+      "refused_wrongly": "It should have answered"
+    }
   },
   "ask": {
     "kicker": "Ask the data",
@@ -955,7 +965,34 @@
         "title": "Grounded narration",
         "body": "The model sees the column names and the result's facts and writes one to three sentences that point at them with placeholders; your browser fills in the values. A checker rejects stray digits or number words, causal words and wording that turns a schedule into a measured outage, and a plain template is shown instead."
       }
-    ]
+    ],
+    "voteLabel": "Was this useful?",
+    "voteUp": "Yes",
+    "voteDown": "No",
+    "voteReasons": {
+      "wrong": "Wrong answer",
+      "unclear": "Hard to understand",
+      "slow": "Too slow",
+      "refused_wrongly": "It should have answered"
+    },
+    "voteThanks": "Thank you. Only the count is kept, not your question.",
+    "voteClosed": "Voting on this answer has closed (10 minutes).",
+    "traceTitle": "Every step of this answer",
+    "traceScreen": "Injection screen",
+    "tracePlan": "Write the query",
+    "traceReplan": "Corrected query",
+    "traceNarrate": "Write the answer",
+    "traceGuard": "SQL guard",
+    "traceRun": "Run in browser",
+    "traceRetry": "Ask for a correction",
+    "voiceStart": "Speak",
+    "voiceStop": "Stop",
+    "voiceNote": "Uses your browser's speech recognition. In Chrome the audio goes to Google to be turned into text; Roshni receives only the text you send.",
+    "followUpAsk": "Ask a follow-up",
+    "followUpTo": "Follow-up to: {q}",
+    "followUpCancel": "Ask a new question instead",
+    "followUpPlaceholder": "For example: and which has the fewest?",
+    "followUpDone": "Answered as a follow-up to your previous question"
   },
   "aiDiagram": {
     "title": "Ask Roshni, end to end",
@@ -977,7 +1014,7 @@
       "run": "query on published files",
       "worker": "prompts, plan, narrate",
       "limits": "quotas, usage counts",
-      "prose": "numbers, causes, wording",
+      "prose": "numbers, causes, words",
       "screen": "injection probability",
       "plan": "writes SQL and sentences",
       "fallback": "fallback when busy",

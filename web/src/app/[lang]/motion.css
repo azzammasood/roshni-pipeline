@@ -1810,3 +1810,152 @@ html[dir="rtl"] .ai-node:hover .ai-card {
   0%, 100% { filter: none; }
   50% { filter: drop-shadow(0 0 4px var(--wire)); }
 }
+
+/* Ask Roshni additions: microphone, follow-up, votes, trace, code-chosen chart. */
+.ask-mic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  border: 1.5px solid var(--sky-line);
+  color: var(--sky-ink);
+  background: transparent;
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ask-mic svg {
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+.ask-mic svg rect {
+  fill: currentColor;
+  stroke: none;
+}
+.ask-mic:hover,
+.ask-mic.is-on {
+  border-color: var(--wire);
+  color: var(--wire);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ask-mic.is-on {
+    animation: aid-glow 1.2s ease-in-out infinite;
+  }
+}
+.ask-followup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  align-items: baseline;
+  font-size: 0.85rem;
+  color: var(--sky-muted);
+  border-inline-start: 3px solid var(--wire);
+  padding-inline-start: 0.6rem;
+}
+.ask-followup .link {
+  color: var(--wire);
+}
+.ask-followup-btn {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1.5px solid var(--ink);
+  padding: 0.35rem 0.8rem;
+  background: var(--bg);
+}
+.ask-followup-btn:hover {
+  background: var(--wire);
+  color: var(--notice-ink);
+}
+.ask-trace {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.72rem;
+}
+.ask-trace li {
+  display: grid;
+  grid-template-columns: 9.5rem 11rem minmax(0, 1fr) 4.5rem 4.5rem;
+  gap: 0.6rem;
+  border-block-end: 1px dotted var(--line);
+  padding-block: 0.2rem;
+}
+.ask-trace-result {
+  overflow-wrap: anywhere;
+}
+.ask-trace-time,
+.ask-trace-tokens {
+  text-align: end;
+  color: var(--muted);
+}
+@media (max-width: 40rem) {
+  .ask-trace li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .ask-trace-who,
+  .ask-trace-result {
+    grid-column: 1 / -1;
+  }
+}
+.ask-chart {
+  border: 1.5px solid var(--line);
+  padding: 0.8rem 0.9rem;
+  max-inline-size: 46rem;
+}
+.ask-chart-cap {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-block-end: 0.5rem;
+}
+.ask-chart ol {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ask-chart li {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+  font-size: 0.8rem;
+}
+.ask-chart-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ask-chart-bar {
+  block-size: 0.9rem;
+  background: var(--surface);
+}
+.ask-chart-bar > span {
+  display: block;
+  block-size: 100%;
+  inline-size: var(--w);
+  background: var(--wire);
+  border-inline-end: 2px solid var(--ink);
+}
+.ask-chart-value {
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ask-chart-bar > span {
+    animation: ask-bar 0.6s ease-out both;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+}
+@keyframes ask-bar {
+  from { inline-size: 0; }
+}

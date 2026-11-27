@@ -20,14 +20,20 @@ export type Day = {
   tokens: number;
   plan_latency: number[]; // histogram over BUCKETS_S (+1 overflow)
   narrate_latency: number[];
+  /** Visitors' votes on answers (one per question), with a fixed reason for a down vote. */
+  feedback?: { up: number; down: number; reasons: Partial<Record<FeedbackReason, number>> };
 };
+
+export const FEEDBACK_REASONS = ["wrong", "unclear", "refused_wrongly", "slow"] as const;
+export type FeedbackReason = (typeof FEEDBACK_REASONS)[number];
 
 export type Event =
   | { kind: "question"; newVisitor: boolean }
   | { kind: "capped"; reason: Reason }
   | { kind: "blocked" }
   | { kind: "plan"; outcome: "planned" | "refused" | "failed"; replan?: "error" | "empty" | "guard"; latency_s: number; tokens: number }
-  | { kind: "narrate"; outcome: "narrated" | "template"; latency_s: number; tokens: number };
+  | { kind: "narrate"; outcome: "narrated" | "template"; latency_s: number; tokens: number }
+  | { kind: "feedback"; vote: "up" | "down"; reason?: FeedbackReason };
 
 const empty = (): Day => ({
   questions: 0,
@@ -73,6 +79,12 @@ export function apply(d: Day, e: Event): Day {
       d.tokens += e.tokens;
       d.narrate_latency[bucket(e.latency_s)]++;
       break;
+    case "feedback": {
+      const f = (d.feedback ??= { up: 0, down: 0, reasons: {} });
+      f[e.vote]++;
+      if (e.vote === "down" && e.reason) f.reasons[e.reason] = (f.reasons[e.reason] ?? 0) + 1;
+      break;
+    }
   }
   return d;
 }

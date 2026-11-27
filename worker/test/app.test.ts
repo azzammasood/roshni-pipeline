@@ -243,3 +243,44 @@ describe("stats", () => {
     expect((await store.list({ prefix: "s:" })).size).toBe(30);
   });
 });
+
+describe("follow-ups", () => {
+  it("plans a follow-up with the visitor's earlier question and plan as context", async () => {
+    const s = setup((b) => (b.model === "guard" ? reply("0") : reply(PLAN)));
+    await s.post("/v1/ask", { question: "Which IBC leads?" });
+    const r = await s.post("/v1/ask", { question: "and the least?", previous: "ticket-1" });
+    expect(r.body).toMatchObject({ status: "planned", follow_up: true });
+    const msgs = s.calls.at(-1)!.body.messages;
+    expect(msgs.map((m) => m.role)).toEqual(["system", "user", "assistant", "user"]);
+    expect(msgs[1].content).toBe("Which IBC leads?");
+    expect(msgs[2].content).toBe(PLAN);
+    expect(msgs[3].content).toBe("Follow-up to the question above: and the least?");
+  });
+
+  it("ignores another visitor's ticket and unknown ids", async () => {
+    const s = setup((b) => (b.model === "guard" ? reply("0") : reply(PLAN)));
+    await s.post("/v1/ask", { question: "Which IBC leads?" });
+    const r = await s.post("/v1/ask", { question: "and the least?", previous: "ticket-1" }, "v2");
+    expect(r.body.follow_up).toBe(false);
+    expect(s.calls.at(-1)!.body.messages).toHaveLength(2);
+  });
+});
+
+describe("feedback", () => {
+  it("counts one vote per answer, with a fixed reason for a down vote", async () => {
+    const s = setup((b) => (b.model === "guard" ? reply("0") : reply(PLAN)));
+    await s.post("/v1/ask", { question: "q" });
+    expect((await s.post("/v1/feedback", { ticket: "ticket-1", vote: "down", reason: "wrong" })).body.status).toBe("recorded");
+    expect((await s.post("/v1/feedback", { ticket: "ticket-1", vote: "up" })).status).toBe(409);
+    expect((await s.post("/v1/feedback", { ticket: "ticket-1", vote: "maybe" })).status).toBe(400);
+    const stats = (await s.get("/v1/stats")).body;
+    expect(stats.days.at(-1).feedback).toEqual({ up: 0, down: 1, reasons: { wrong: 1 } });
+  });
+
+  it("drops free-text reasons", async () => {
+    const s = setup((b) => (b.model === "guard" ? reply("0") : reply(PLAN)));
+    await s.post("/v1/ask", { question: "q" });
+    await s.post("/v1/feedback", { ticket: "ticket-1", vote: "down", reason: "my number is 0300..." });
+    expect((await s.get("/v1/stats")).body.days.at(-1).feedback).toEqual({ up: 0, down: 1, reasons: {} });
+  });
+});

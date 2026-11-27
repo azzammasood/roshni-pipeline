@@ -16,16 +16,23 @@ export type PlanReply = {
   attempts?: Attempt[];
   remaining?: Remaining;
   retry_after_s?: number;
+  /** Prompt Guard 2 score for the question (first plan only); null when the screen was skipped. */
+  guard?: number | null;
+  /** True when the Worker planned this as a follow-up to the visitor's earlier question. */
+  follow_up?: boolean;
 };
 export type NarrateReply = { status: "narrated" | "template" | string; text?: string; model?: string; attempts?: Attempt[] };
 
 export interface Api {
-  ask(question: string): Promise<PlanReply>;
+  ask(question: string, previous?: string): Promise<PlanReply>;
   replan(ticket: string, kind: "error" | "empty" | "guard", detail: string): Promise<PlanReply>;
   narrate(ticket: string, columns: string[], facts: Record<string, string>): Promise<NarrateReply>;
 }
 
 export type Step = "guard" | "plan" | "check" | "run" | "replan" | "narrate";
+
+/** What the browser did, for the trace under "Show the query" (model calls are in attempts). */
+export type TraceEvent = { step: "guard" | "run" | "replan"; ok: boolean; ms: number; detail: string };
 
 export type Answer = {
   question: string;
@@ -44,12 +51,18 @@ export type Answer = {
   remaining?: Remaining;
   models: string[];
   attempts: Attempt[];
+  trace: TraceEvent[];
+  ticket?: string;
+  guard_score?: number | null;
+  follow_up?: boolean;
 };
 
 const blank = (question: string): Answer => ({
   question, status: "failed", answer: "", narrated: false, sql: null, columns: [], rows: [], truncated: false,
-  tables: [], caveats: [], n: 0, reason: "", models: [], attempts: [],
+  tables: [], caveats: [], n: 0, reason: "", models: [], attempts: [], trace: [],
 });
+
+const ms = (t0: number) => Math.round(performance.now() - t0);
 
 function stop(a: Answer, r: PlanReply): Answer | null {
   a.attempts.push(...(r.attempts ?? []));
@@ -69,13 +82,16 @@ function stop(a: Answer, r: PlanReply): Answer | null {
 
 export async function askQuestion(
   question: string,
-  deps: { api: Api; db: Db; ctx: AskContext; serialize?: Serialize; onStep?: (s: Step) => void },
+  deps: { api: Api; db: Db; ctx: AskContext; serialize?: Serialize; onStep?: (s: Step) => void; previous?: string },
 ): Promise<Answer> {
   const { api, db, ctx, onStep = () => {} } = deps;
   const serialize = deps.serialize ?? serializeWith(db);
   const a = blank(question.trim());
   onStep("plan");
-  let reply = await api.ask(a.question);
+  let reply = await api.ask(a.question, deps.previous);
+  if (reply.guard !== undefined) a.guard_score = reply.guard;
+  if (reply.follow_up) a.follow_up = true;
+  if (reply.ticket) a.ticket = reply.ticket;
   const done = stop(a, reply);
   if (done) return done;
 
@@ -85,7 +101,9 @@ export async function askQuestion(
     const sql = reply.sql!;
     a.sql = sql;
     onStep("check");
+    let t0 = performance.now();
     const verdict = await guard(serialize, sql, ctx);
+    a.trace.push({ step: "guard", ok: verdict.ok, ms: ms(t0), detail: verdict.ok ? verdict.tables.join(", ") : verdict.problems.join("; ") });
     let kind: "error" | "empty" | "guard" | null = null;
     let detail = "";
     if (!verdict.ok) {
@@ -96,17 +114,21 @@ export async function askQuestion(
       a.tables = verdict.tables;
       onStep("run");
       try {
+        t0 = performance.now();
         result = await run(db, sql, ctx.max_rows);
+        a.trace.push({ step: "run", ok: true, ms: ms(t0), detail: `${result.rows.length} rows` });
         if (result.rows.length || round === 2) break;
         kind = "empty";
       } catch (e) {
         detail = String((e as Error).message ?? e).split("\n")[0].slice(0, 300);
+        a.trace.push({ step: "run", ok: false, ms: ms(t0), detail });
         a.reason = `Query failed: ${detail}`;
         kind = "error";
       }
     }
     if (round === 2) return a;
     onStep("replan");
+    a.trace.push({ step: "replan", ok: true, ms: 0, detail: kind! });
     reply = await api.replan(ticket, kind!, detail);
     const stopped = stop(a, reply);
     if (stopped) return stopped;
