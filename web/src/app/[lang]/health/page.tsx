@@ -441,6 +441,26 @@ function AskSection({
           <p className="text-sm max-w-prose">
             {fill(t.askEvalNote, { date: ev.run_on, items: n(ev.models[0]?.items ?? 0) }, locale)}
           </p>
+          {(ev.rolling ?? []).map((r) => (
+            <div key={r.model} className="ai-rolling">
+              <p className="headline text-4xl tabular-nums">
+                {n(r.score_pct)}%{" "}
+                <span className="text-lg text-muted">
+                  {fill(t.askRollingCi, { lo: n(r.ci_low_pct), hi: n(r.ci_high_pct) }, locale)}
+                </span>
+              </p>
+              <p className="text-sm max-w-prose">
+                {fill(
+                  t.askRolling,
+                  { p: n(r.passed), t: n(r.total), runs: n(r.runs), from: r.from_date, to: r.to_date, all: n(ev.items_total ?? 0) },
+                  locale,
+                )}{" "}
+                <span className="font-mono text-xs" dir="ltr">
+                  {r.model}
+                </span>
+              </p>
+            </div>
+          ))}
           <ScrollRegion label={t.askEvalTitle}>
             <table className="data">
               <thead>

@@ -121,8 +121,30 @@ class ModelScore:
         }
 
 
-def load_items(path: Path = GOLDEN) -> list[dict]:
-    return yaml.safe_load(path.read_text(encoding="utf-8"))["items"]
+SLICES = 7  # the daily run scores one seventh of the set; a week covers every item once
+
+
+def load_items(path: Path = GOLDEN, paraphrases: bool = True) -> list[dict]:
+    """Golden items; each paraphrase becomes its own item `<id>~<n>` with the same expectation
+    and reference SQL (written by Claude, 2026-11-27): the set tests wording, not one phrasing."""
+    items = []
+    for it in yaml.safe_load(path.read_text(encoding="utf-8"))["items"]:
+        base = {k: v for k, v in it.items() if k != "paraphrases"}
+        items.append(base)
+        if paraphrases:
+            for n, q in enumerate(it.get("paraphrases") or [], 1):
+                items.append(
+                    base | {"id": f"{it['id']}~{n}", "question": q, "variant_of": it["id"]}
+                )
+    return items
+
+
+def daily_slice(items: list[dict], day: date, parts: int = SLICES) -> list[dict]:
+    """The items scored on `day`: every `parts`-th item by id, rotating daily, so a week of runs
+    covers the whole set and each run stays inside the free plan's daily tokens."""
+    ordered = sorted(items, key=lambda i: i["id"])
+    k = day.toordinal() % parts
+    return [it for n, it in enumerate(ordered) if n % parts == k]
 
 
 def evaluate(
@@ -221,6 +243,18 @@ def record(
         [evalrecord.point(day, s.model, sum(i.correct for i in s.items), len(s.items))
          for s in scores],
     )  # fmt: skip
+    # Item results by model: a regression is an item that passed last time and fails now.
+    lines: list[str] = []
+    last = data.setdefault("items_last", {})
+    for s in scores:
+        mine = last.setdefault(s.model, {})
+        before = dict(mine)
+        for i in s.items:
+            if before.get(i.id) is True and not i.correct:
+                lines.append(f"- Ask Roshni, {s.model}: `{i.id}` passed before and fails now "
+                             f"({i.status}).")  # fmt: skip
+            mine[i.id] = i.correct
+        last[s.model] = dict(sorted(mine.items()))
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
-    return path, evalrecord.regressions(data, day, FLOOR_PCT, "Ask Roshni golden set")
+    return path, lines + evalrecord.rolling_regressions(data, day, FLOOR_PCT, "Ask Roshni")

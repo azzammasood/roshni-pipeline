@@ -1,0 +1,27 @@
+# Questions Ask Roshni answers once a day in publish (`roshni ask-prepared`), with the same
+# pipeline and checks as a visitor's question. The site shows these instantly (examples, the
+# equity page's "Explain this" links, and the fallback when the free models are busy) without
+# spending visitors' questions. Every question is also in config/ask_golden.yml, so the daily
+# eval keeps checking that its answer is right. About 3K tokens each, once a day.
+items:
+  - id: ibc-most-feeders
+    tag: K-Electric
+    question: Which K-Electric IBC area has the most listed feeders?
+  - id: ke-hours-split
+    tag: K-Electric
+    question: How many listed K-Electric feeders are scheduled for six hours a day, and how many for twelve?
+  - id: nepra-ke-trend
+    tag: NEPRA
+    question: Show K-Electric's NEPRA-reported load-shedding hours per day for every fiscal year.
+  - id: maintenance-purpose
+    tag: IESCO
+    question: What is the most common purpose given for IESCO maintenance windows?
+  - id: ibc-top-share-twelve
+    tag: Equity
+    question: Which five K-Electric IBC areas have the highest share of feeders on the twelve-hour schedule?
+  - id: category-mean-hours
+    tag: Equity
+    question: What is the average scheduled hours per day for each K-Electric loss category?
+  - id: literacy-top
+    tag: Equity
+    question: Which Karachi census subdivision has the highest literacy rate, and what is its share of twelve-hour feeders?

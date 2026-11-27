@@ -12,7 +12,8 @@ from pydantic import BaseModel, ConfigDict, Field
 # 1.7.0: notices document removed (the pipeline only keeps fully automated sources);
 # 1.8.0: maintenance_upcoming, the browser's slim copy of the windows from a week back on;
 # 1.9.0: health, the pipeline's own run records (export/health.py); 1.10.0: health.healing
-SCHEMA_VERSION = "1.11.0"
+# 1.11.0: health.ask_eval; 1.12.0: AskEval.rolling (pooled 7-day score of the daily slices)
+SCHEMA_VERSION = "1.12.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -485,12 +486,28 @@ class AskEvalModel(Strict):
     latency_p95_s: float | None
 
 
+class RollingScore(Strict):
+    """One model's pooled score over the last 7 days of daily slices (since 1.12.0)."""
+
+    model: str
+    from_date: date
+    to_date: date
+    runs: int
+    passed: int
+    total: int
+    score_pct: float
+    ci_low_pct: float = Field(description="95% Wilson interval, lower bound")
+    ci_high_pct: float = Field(description="95% Wilson interval, upper bound")
+
+
 class AskEval(Strict):
     """Ask Roshni golden-set evaluation (`roshni ask-eval --record`, since 1.11.0)."""
 
     run_on: date
     models: list[AskEvalModel]
     history: list[EvalPoint] = Field(description="Oldest first")
+    items_total: int | None = Field(default=None, description="Golden items incl. paraphrases")
+    rolling: list[RollingScore] = Field(default=[], description="Per model, 7 days (1.12.0)")
 
 
 class Healing(Strict):

@@ -74,3 +74,18 @@ def test_heal_record_appends_history(tmp_path: Path) -> None:
 def test_committed_records_have_history() -> None:
     rec = json.loads(simulate.EVAL_RECORD.read_text(encoding="utf-8"))
     assert {p["model"] for p in rec["history"]} >= {m["model"] for m in rec["models"]}
+
+
+def test_wilson_interval():
+    assert evalrecord.wilson(0, 0) is None
+    low, high = evalrecord.wilson(34, 35)
+    assert 85 < low < 92 and high > 99
+
+
+def test_rolling_pools_the_last_week():
+    data = {"history": [evalrecord.point(date(2026, 11, d), "m", 14, 15) for d in range(20, 28)]}
+    r = evalrecord.rolling(data, "m", date(2026, 11, 27))
+    assert r["runs"] == 7 and r["total"] == 105 and r["passed"] == 98
+    assert r["from_date"] == "2026-11-21"
+    assert evalrecord.rolling_regressions(data, date(2026, 11, 27), 95, "Ask") != []
+    assert evalrecord.rolling_regressions(data, date(2026, 11, 27), 90, "Ask") == []

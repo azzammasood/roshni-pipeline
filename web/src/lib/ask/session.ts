@@ -55,6 +55,8 @@ export type Answer = {
   ticket?: string;
   guard_score?: number | null;
   follow_up?: boolean;
+  /** Set when the answer was prepared by the publish job (its data build time). */
+  prepared?: string;
 };
 
 const blank = (question: string): Answer => ({

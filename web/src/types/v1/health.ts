@@ -63,7 +63,15 @@ export interface AskEval {
    * Oldest first
    */
   history: EvalPoint[];
+  /**
+   * Golden items incl. paraphrases
+   */
+  items_total?: number | null;
   models: AskEvalModel[];
+  /**
+   * Per model, 7 days (1.12.0)
+   */
+  rolling?: RollingScore[];
   run_on: string;
 }
 /**
@@ -99,6 +107,26 @@ export interface AskEvalModel {
    */
   refusal_accuracy_pct: number | null;
   tokens_total: number;
+}
+/**
+ * One model's pooled score over the last 7 days of daily slices (since 1.12.0).
+ */
+export interface RollingScore {
+  /**
+   * 95% Wilson interval, upper bound
+   */
+  ci_high_pct: number;
+  /**
+   * 95% Wilson interval, lower bound
+   */
+  ci_low_pct: number;
+  from_date: string;
+  model: string;
+  passed: number;
+  runs: number;
+  score_pct: number;
+  to_date: string;
+  total: number;
 }
 export interface DbtResults {
   failed: number;

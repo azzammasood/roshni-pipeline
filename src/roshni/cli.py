@@ -489,6 +489,9 @@ def ask_eval(
     record: bool = typer.Option(
         False, "--record", help="Also update evals/ask_roshni.json (shown on /health/)."
     ),
+    daily: bool = typer.Option(
+        False, "--daily", help="Score today's seventh of the set (a week covers all of it)."
+    ),
 ) -> None:
     """Score models on the Ask Roshni golden set: accuracy, refusals, guard, tokens, latency."""
     import sys
@@ -501,6 +504,11 @@ def ask_eval(
     cfg = ChainConfig.load()
     cfg.max_wait_s = 65  # wait out a per-minute limit instead of failing over during an eval
     items = [i for i in evaluate.load_items() if not only or i["id"] in only]
+    if daily:
+        from datetime import date
+
+        items = evaluate.daily_slice(items, date.today())
+        typer.echo(f"daily slice: {len(items)} items")
     layer = semantic.load()
     con = sqlguard.connect(db or engine.default_db())
     scores = []
@@ -517,6 +525,31 @@ def ask_eval(
         rec, lines = evaluate.record(scores)
         typer.echo(f"updated {rec}")
         _eval_notice("ask-eval", lines)
+
+
+@app.command("ask-prepared")
+def ask_prepared(
+    out: Path = typer.Option(None, help="Export folder (default: data/export/v1)."),
+    db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
+) -> None:
+    """Answer config/ask_prepared.yml once (main model) -> <export>/ask/prepared.json."""
+    import sys
+
+    from roshni.ask import engine, prepared, semantic, sqlguard
+    from roshni.llm.chain import ChainConfig
+    from roshni.paths import DATA_DIR
+
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    cfg = ChainConfig.load()
+    cfg.max_wait_s = 65  # once a day, early: wait out a per-minute limit rather than skip
+    con = sqlguard.connect(db or engine.default_db())
+    try:
+        doc = prepared.prepare(con, cfg, prepared.load(), semantic.load(), log=typer.echo)
+    finally:
+        con.close()
+    path = prepared.write(doc, (out or DATA_DIR / "export" / "v1") / "ask")
+    tokens = sum(i["tokens"] for i in doc["items"])
+    typer.echo(f"wrote {path}: {len(doc['items'])} answers, {tokens:,} tokens")
 
 
 def _eval_notice(name: str, lines: list[str]) -> None:
