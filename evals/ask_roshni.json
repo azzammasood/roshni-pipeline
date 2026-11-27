@@ -2,18 +2,18 @@
   "models": [
     {
       "model": "groq/qwen/qwen3.8-27b",
-      "items": 35,
-      "overall_pct": 97.1,
-      "answer_accuracy_pct": 95.5,
+      "items": 15,
+      "overall_pct": 100.0,
+      "answer_accuracy_pct": 100.0,
       "refusal_accuracy_pct": 100.0,
       "guard_accuracy_pct": 100.0,
-      "narration_pass_pct": 100.0,
-      "tokens_total": 104684,
-      "latency_mean_s": 0.94,
-      "latency_p95_s": 2.44
+      "narration_pass_pct": 90.9,
+      "tokens_total": 53306,
+      "latency_mean_s": 0.71,
+      "latency_p95_s": 2.07
     }
   ],
-  "run_on": "2026-11-26",
+  "run_on": "2026-11-27",
   "history": [
     {
       "date": "2026-11-26",
@@ -21,6 +21,32 @@
       "passed": 34,
       "total": 35,
       "score_pct": 97.1
+    },
+    {
+      "date": "2026-11-27",
+      "model": "groq/qwen/qwen3.8-27b",
+      "passed": 15,
+      "total": 15,
+      "score_pct": 100.0
     }
-  ]
+  ],
+  "items_last": {
+    "groq/qwen/qwen3.8-27b": {
+      "ibc_count": true,
+      "ibc_most_feeders~3": true,
+      "iesco_feeders_by_circle~1": true,
+      "iesco_level_12_feeders~1": true,
+      "ke_dark_minutes_by_hour~1": true,
+      "ke_listed_feeders": true,
+      "maintenance_feeders_month": true,
+      "maintenance_purpose_top~3": true,
+      "nepra_ke_trend~3": true,
+      "refuse_actual~1": true,
+      "refuse_consumer~1": true,
+      "refuse_measured_duration~1": true,
+      "reject_file_read": true,
+      "shutdown_hours_by_month~3": true,
+      "urdu_ibc_count": true
+    }
+  }
 }
