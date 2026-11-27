@@ -1407,27 +1407,25 @@ html[dir="rtl"] .maint-grid tr.is-focus th {
   to { background-size: 100% 0.42em; }
 }
 
-/* "How an answer is made": the same five stations, as numbered cards joined by a wire. */
+/* "How an answer is made": seven stages down a wire; model stages get a night-sky number. */
 .ask-how {
   display: grid;
-  gap: 1rem;
+  gap: 1.4rem;
   list-style: none;
   margin: 0;
   padding: 0;
-  counter-reset: none;
-}
-@media (min-width: 48rem) {
-  .ask-how {
-    grid-template-columns: repeat(5, 1fr);
-  }
 }
 .ask-how > li {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  font-size: 0.92rem;
-  line-height: 1.45;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0.9rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.ask-how > li p {
+  margin-block-start: 0.2rem;
+  max-inline-size: 70ch;
 }
 .ask-how-num {
   display: inline-grid;
@@ -1435,22 +1433,27 @@ html[dir="rtl"] .maint-grid tr.is-focus th {
   inline-size: 2.25rem;
   block-size: 2.25rem;
   border-radius: 50%;
-  background: var(--sky);
-  color: var(--wire);
+  border: 1.5px solid var(--ink);
+  background: var(--bg);
+  color: var(--ink);
   font-family: var(--font-display), Georgia, serif;
   font-size: 1.1rem;
-  box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--line);
+  position: relative;
+  z-index: 1;
 }
-@media (min-width: 48rem) {
-  .ask-how > li:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    inset-block-start: 1.1rem;
-    inset-inline-start: 2.75rem;
-    inset-inline-end: -0.5rem;
-    block-size: 2px;
-    background: var(--line);
-  }
+.ask-how > li.is-model .ask-how-num {
+  background: var(--sky);
+  color: var(--wire);
+  border-color: var(--wire);
+}
+.ask-how > li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 2.25rem;
+  inset-block-end: -1.4rem;
+  inset-inline-start: calc(1.125rem - 1px);
+  inline-size: 2px;
+  background: var(--line);
 }
 
 /* Query-engine lamp in the console: dim until warming, pulsing while it loads, lit when ready. */
@@ -1655,4 +1658,155 @@ html[dir="rtl"] .ai-node:hover .ai-card {
   .ai-model .ai-lamp {
     background: var(--sky);
   }
+}
+
+/* AI diagram (components/AiDiagram.tsx): one SVG drawn with the page's tokens, so it follows the
+   theme. Phones scroll it sideways inside its ScrollRegion; the numbered list below is the text. */
+.aid-wrap {
+  min-inline-size: 760px;
+}
+.aid {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  font-family: var(--font-plex), ui-monospace, monospace;
+}
+.aid-zone rect {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 5;
+}
+.aid-zone text {
+  fill: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.aid-sub {
+  fill: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+.aid-box {
+  fill: var(--bg);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.aid-tile {
+  fill: var(--sky);
+  stroke: var(--sky-line);
+}
+.aid-name {
+  fill: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+.aid-role {
+  fill: var(--muted);
+  font-family: var(--font-body), Georgia, serif;
+  font-size: 11.5px;
+}
+.aid-letters {
+  fill: var(--wire);
+  font-size: 11px;
+  font-weight: 700;
+}
+.aid-model .aid-box {
+  fill: var(--sky);
+  stroke: var(--wire);
+}
+.aid-model .aid-name {
+  fill: var(--sky-ink);
+}
+.aid-model .aid-role {
+  fill: var(--sky-muted);
+}
+.aid-data .aid-box {
+  fill: var(--wash);
+}
+.aid-node {
+  transition: transform 0.2s ease;
+}
+.aid-wire {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.aid-wire.is-dashed {
+  stroke: var(--muted);
+  stroke-dasharray: 4 4;
+}
+.aid-head {
+  fill: var(--ink);
+}
+.aid-flow {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.aid-badge circle {
+  fill: var(--wire);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.aid-badge text {
+  fill: var(--notice-ink);
+  font-size: 11px;
+  font-weight: 700;
+}
+.ai-key-data {
+  background: var(--wash);
+}
+.aid-steps {
+  display: grid;
+  gap: 0.45rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+@media (min-width: 48rem) {
+  .aid-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.aid-steps li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+.aid-step-num {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--wire);
+  color: var(--notice-ink);
+  font-family: var(--font-plex), ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .aid-wire {
+    stroke-dasharray: 7 5;
+    animation: aid-flow 1.2s linear infinite;
+  }
+  .aid-wire.is-dashed {
+    stroke-dasharray: 3 5;
+    animation-duration: 2s;
+  }
+  .aid-badge circle {
+    animation: aid-glow 2.4s ease-in-out infinite;
+  }
+}
+@keyframes aid-flow {
+  to { stroke-dashoffset: -24; }
+}
+@keyframes aid-glow {
+  0%, 100% { filter: none; }
+  50% { filter: drop-shadow(0 0 4px var(--wire)); }
 }

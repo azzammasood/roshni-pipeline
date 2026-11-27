@@ -174,6 +174,17 @@ flowchart LR
   rows. It found that Parquet stores HUGEINT as DOUBLE: integer sums would have shown as
   "14,895.0", so the bundle now writes them as BIGINT.
 
+### Questions about the visitor's own supply
+
+"Will I get load shedding today?" is not a data question: its answer is one feeder's schedule.
+`web/src/lib/ask/intent.ts` (deterministic, tested in `intent.test.ts`, English, Roman Urdu and
+Urdu) routes such questions to the site's schedule engine (`lib/darkNow`, the same code as My
+feeder and the home page) for the feeder pinned in this browser, or to the feeder finder when none
+is pinned (`components/AskMySchedule.tsx`). No model is called and no question is used. Aggregate
+questions ("How many feeders...today?") stay with the planner; none of the golden questions is
+routed. A refused or failed answer offers the same lookup, so a miss is never a wrong answer.
+The page's architecture drawing is `components/AiDiagram.tsx` (also on /architecture/).
+
 ### Caps (wrangler.toml)
 
 | cap | value | why |

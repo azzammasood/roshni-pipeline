@@ -544,12 +544,12 @@
             },
             "screen": {
               "title": "Injection screen",
-              "body": "A small classifier model (Llama Prompt Guard 2) scores how likely the question is an attack.",
+              "body": "Meta's Llama Prompt Guard 2 (86M parameters), served by Groq, returns the probability that the question is a jailbreak or injection. 0.5 or more is blocked.",
               "stops": "Questions that try to override the instructions."
             },
             "plan": {
               "title": "Write the query",
-              "body": "The main model writes one SQL query using only the tables and columns described in the semantic layer, or says the data cannot answer.",
+              "body": "Qwen3.8 27B on Groq (temperature 0, JSON mode) writes one SQL query using only the semantic layer's tables and columns, or refuses with a reason.",
               "stops": "Questions the data cannot answer, such as measured outages or income."
             },
             "guard": {
@@ -909,11 +909,6 @@
     "unavailable": "Ask Roshni is unavailable right now. Please try again later.",
     "loadError": "The query engine could not load in this browser.",
     "howTitle": "How an answer is made",
-    "how1": "A small model screens the question for attempts to change the instructions.",
-    "how2": "A model on a free plan writes one query, using only the tables and columns Roshni publishes.",
-    "how3": "Your browser checks the query with the database's own parser and runs it on the published data. Nothing else can be read.",
-    "how4": "The model writes one to three sentences that may only point to values in the result. They are checked for numbers of their own, for causes and for calling schedules outages.",
-    "how5": "Each visitor has a few questions a day, and the whole site has a daily limit, so the free capacity is shared.",
     "stationLoad": "Engine",
     "stationPlan": "Query",
     "stationCheck": "Check",
@@ -924,6 +919,88 @@
     "askAnother": "Ask another",
     "engineIdle": "Query engine loads when you start",
     "engineWarming": "Warming up the query engine…",
-    "engineReady": "Query engine ready"
+    "engineReady": "Query engine ready",
+    "mineRoute": "Answered by the site's schedule engine for your feeder: no AI model, and no question used up. Schedules, not measured outages.",
+    "mineMore": "Everything about this feeder on My feeder",
+    "mineNoPin": "To answer that, Roshni needs to know your feeder. Find it once below: it is kept in this browser only, and next time this question is answered straight away.",
+    "mineOffer": "Asking about your own supply?",
+    "mineButton": "Check your feeder's schedule",
+    "howIntro": "Seven stages, three of them language models. Every model output is checked by code before it reaches you.",
+    "how": [
+      {
+        "title": "Route the question",
+        "body": "A deterministic router in your browser sends questions about your own supply to the site's schedule engine, the same TypeScript as My feeder, tested case for case against the Python pipeline. No model is called and no question is used up."
+      },
+      {
+        "title": "Admit it",
+        "body": "The Cloudflare Worker enforces per-visitor limits (10 a day, 3 a minute), a site-wide limit and a daily token budget, all held in a Durable Object. Usage is counted without keeping question text."
+      },
+      {
+        "title": "Screen for injection",
+        "body": "Meta's Llama Prompt Guard 2 (86M parameters), served by Groq, classifies the question and returns the probability that it is a jailbreak or injection. A score of 0.5 or more is blocked before any SQL is written."
+      },
+      {
+        "title": "Text to SQL",
+        "body": "Qwen3.8 27B on Groq writes one query at temperature 0 in JSON mode, seeing only the semantic layer: 10 published tables with every column described. If a model is busy the chain falls back to gpt-oss-120b, gpt-oss-20b, then free models on OpenRouter. It may refuse instead, with a reason."
+      },
+      {
+        "title": "Check the SQL",
+        "body": "DuckDB's own parser turns the query into a parse tree (json_serialize_sql). The guard walks it and allows only a SELECT on semantic-layer tables and columns: no table functions, no blocked functions, no SELECT *. The Python twin uses sqlglot, and a shared fixture keeps both verdicts identical."
+      },
+      {
+        "title": "Run it in your browser",
+        "body": "DuckDB-WASM, self-hosted and pinned by hash, runs the query on the site's published Parquet and JSON, with a 10-second limit. An error, an empty result or a guard refusal earns one corrected try, with the reason sent back to the model."
+      },
+      {
+        "title": "Grounded narration",
+        "body": "The model sees the column names and the result's facts and writes one to three sentences that point at them with placeholders; your browser fills in the values. A checker rejects stray digits or number words, causal words and wording that turns a schedule into a measured outage, and a plain template is shown instead."
+      }
+    ]
+  },
+  "aiDiagram": {
+    "title": "Ask Roshni, end to end",
+    "keyLabel": "Key",
+    "keyCode": "Code",
+    "keyModel": "Language model",
+    "keyData": "Build and data",
+    "zones": {
+      "browser": "Your browser",
+      "edge": "Cloudflare edge",
+      "models": "Model providers · free plans",
+      "github": "GitHub · daily publish"
+    },
+    "roles": {
+      "page": "your question",
+      "schedule": "your feeder, no AI",
+      "router": "personal or data?",
+      "guard": "parse-tree allow-list",
+      "run": "query on published files",
+      "worker": "prompts, plan, narrate",
+      "limits": "quotas, usage counts",
+      "prose": "numbers, causes, wording",
+      "screen": "injection probability",
+      "plan": "writes SQL and sentences",
+      "fallback": "fallback when busy",
+      "last": "last fallback",
+      "actions": "every morning",
+      "warehouse": "build, test, export",
+      "pages": "site and data files",
+      "evals": "golden set, chaos test"
+    },
+    "flows": {
+      "busy": "if busy",
+      "mondays": "Mondays: score the main model"
+    },
+    "steps": [
+      "You ask on the Ask page. A router in the page decides: your own supply goes to the schedule engine, a data question goes on.",
+      "The question goes to a Cloudflare Worker, which checks the limits in its Durable Object.",
+      "Llama Prompt Guard 2 scores the question for injection; 0.5 or more is blocked.",
+      "Qwen3.8 27B writes one SQL query from the semantic layer; a busy model falls back down the chain.",
+      "The SQL comes back to your browser, where the guard checks DuckDB's parse tree against an allow-list.",
+      "DuckDB-WASM runs it on the Parquet and JSON files that GitHub Pages serves.",
+      "The result's facts go to the Worker; the model writes sentences with placeholders, and the prose check tests them.",
+      "The checked answer, its table and its SQL appear on the page.",
+      "Every morning GitHub Actions rebuilds the data with dbt on DuckDB; every Monday it scores the models and posts the results to the Health page."
+    ]
   }
 }

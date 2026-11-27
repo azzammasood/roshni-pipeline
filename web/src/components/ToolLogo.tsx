@@ -13,14 +13,20 @@ import {
   siDuckdb,
   siEslint,
   siGit,
+  siGithub,
   siGithubactions,
   siGithubpages,
+  siGoogle,
+  siJson,
+  siMeta,
   siNextdotjs,
+  siNvidia,
   siOpenrouter,
   siPrecommit,
   siPydantic,
   siPytest,
   siPython,
+  siQwen,
   siReact,
   siRss,
   siRuff,
@@ -48,6 +54,12 @@ const ICONS: Record<string, SimpleIcon> = {
   git: siGit,
   "GitHub Actions": siGithubactions,
   "GitHub Pages": siGithubpages,
+  GitHub: siGithub,
+  JSON: siJson,
+  "Llama Prompt Guard 2": siMeta,
+  "Qwen3.8 27B": siQwen,
+  "Gemma 4 31B": siGoogle,
+  "Nemotron 3 Ultra": siNvidia,
   "Next.js": siNextdotjs,
   OpenRouter: siOpenrouter,
   "pre-commit": siPrecommit,
@@ -82,12 +94,25 @@ const LETTERS: Record<string, string> = {
   "SHA-256": "#",
   "ETag / If-Modified-Since": "304",
   Groq: "gq",
+  sqlglot: "sg",
+  "gpt-oss-120b": "gpt",
+  "gpt-oss-20b": "gpt",
+  "Intent router": "if",
+  "Schedule engine": "⏱",
+  "SQL guard": "AST",
+  "Prose check": "✓",
 };
 
 /** Marks too dark to see on the night tile are drawn in paper white instead. */
 function fill(hex: string): string {
   const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
   return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.25 ? "#f4f1ea" : `#${hex}`;
+}
+
+/** The mark for drawing inside another SVG (the AI diagram): a path and colour, or letters. */
+export function logoMark(name: string): { path: string; color: string } | { letters: string } {
+  const icon = ICONS[name];
+  return icon ? { path: icon.path, color: fill(icon.hex) } : { letters: LETTERS[name] ?? name.slice(0, 2) };
 }
 
 export function hasLogo(name: string) {
