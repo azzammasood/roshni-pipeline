@@ -1959,3 +1959,11 @@ html[dir="rtl"] .ai-node:hover .ai-card {
 @keyframes ask-bar {
   from { inline-size: 0; }
 }
+
+/* Today's digest on the home page (components/TodayDigest.tsx). */
+.ask-digest {
+  border-inline-start: 4px solid var(--wire);
+  padding-inline-start: 1rem;
+  display: grid;
+  gap: 0.4rem;
+}

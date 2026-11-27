@@ -532,7 +532,7 @@ def ask_prepared(
     out: Path = typer.Option(None, help="Export folder (default: data/export/v1)."),
     db: Path = typer.Option(None, help="Warehouse DuckDB (default: data/roshni.duckdb)."),
 ) -> None:
-    """Answer config/ask_prepared.yml once (main model) -> <export>/ask/prepared.json."""
+    """Answer config/ask_prepared.yml once, and write today's digest -> <export>/ask/."""
     import sys
 
     from roshni.ask import engine, prepared, semantic, sqlguard
@@ -550,6 +550,22 @@ def ask_prepared(
     path = prepared.write(doc, (out or DATA_DIR / "export" / "v1") / "ask")
     tokens = sum(i["tokens"] for i in doc["items"])
     typer.echo(f"wrote {path}: {len(doc['items'])} answers, {tokens:,} tokens")
+    # Today's digest: counts by SQL, one checked sentence or two by the main model.
+    import json
+    from datetime import UTC, datetime, timedelta
+
+    from roshni.ask import digest
+
+    now = datetime.now(UTC)
+    con = sqlguard.connect(db or engine.default_db())
+    try:
+        d = digest.build(con, cfg.pinned(cfg.labels()[0]), (now + timedelta(hours=5)).date(), now,
+                         log=typer.echo)  # fmt: skip
+    finally:
+        con.close()
+    dp = path.with_name("digest.json")
+    dp.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+    typer.echo(f"wrote {dp}")
 
 
 def _eval_notice(name: str, lines: list[str]) -> None:

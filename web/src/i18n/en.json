@@ -1047,5 +1047,11 @@
       "The checked answer, its table and its SQL appear on the page.",
       "Every morning GitHub Actions rebuilds the data with dbt on DuckDB; every Monday it scores the models and posts the results to the Health page."
     ]
+  },
+  "digest": {
+    "title": "Today, from the published data",
+    "template": "Today IESCO lists {maint_today} announced maintenance windows on {maint_feeders} feeders, {maint_week} in the next seven days, and {shutdowns_today} press-release shutdowns. K-Electric's schedule in use took effect on {ke_effective}. {news_day} new headlines were seen in the last day.",
+    "byModel": "Counts by SQL on this morning's data; sentences by {m}, checked like Ask Roshni's answers. Schedules, not measured outages.",
+    "byCode": "Counts by SQL on this morning's data, in a fixed sentence. Schedules, not measured outages."
   }
 }
