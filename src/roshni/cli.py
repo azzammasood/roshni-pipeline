@@ -568,6 +568,20 @@ def ask_prepared(
     typer.echo(f"wrote {dp}")
 
 
+@app.command("mcp")
+def mcp(
+    bundle: Path = typer.Option(None, help="Local export ask/ folder (default: the live site's)."),
+    cache: Path = typer.Option(None, help="Download cache (default: data/mcp-cache)."),
+) -> None:
+    """Serve Roshni's tables to MCP clients over stdio (needs: uv sync --group mcp)."""
+    from roshni import mcp_server
+    from roshni.paths import DATA_DIR
+
+    folder = bundle or mcp_server.fetch_bundle(cache or DATA_DIR / "mcp-cache")
+    con, ctx = mcp_server.open_bundle(folder)
+    mcp_server.serve(mcp_server.Roshni(con, ctx))
+
+
 def _eval_notice(name: str, lines: list[str]) -> None:
     """A weekly score below its floor or below the model's last run: a notice issue entry."""
     if lines:
