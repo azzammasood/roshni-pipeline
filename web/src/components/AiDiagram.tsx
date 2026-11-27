@@ -127,7 +127,7 @@ export function AiDiagram({ t, locale }: { t: D; locale: string }) {
             <Node x={40} y={485} w={210} logo="GitHub Actions" name="GitHub Actions" role={r.actions} kind="data" />
             <Node x={280} y={485} w={210} logo="DuckDB" name="dbt · DuckDB" role={r.warehouse} kind="data" />
             <Node x={520} y={485} w={210} logo="GitHub Pages" name="GitHub Pages" role={r.pages} kind="data" />
-            <Node x={760} y={485} w={205} logo="YAML" name="ask-eval · heal-eval" role={r.evals} kind="data" />
+            <Node x={760} y={485} w={205} logo="YAML" name="evals" role={r.evals} kind="data" />
 
             {/* 1 question -> router; router -> schedule engine (personal) */}
             <Wire d="M307 124 L307 150" />

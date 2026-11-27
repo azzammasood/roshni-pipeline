@@ -41,6 +41,7 @@ export type Ticket = {
   created: number;
   replans: number;
   narrated: boolean;
+  voted?: boolean;
   history: Msg[]; // after the system prompt: the question, replies and feedback, in order
 };
 

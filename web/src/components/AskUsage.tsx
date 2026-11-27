@@ -35,7 +35,9 @@ export function AskUsage({ locale, t }: { locale: string; t: Dictionary["health"
     [n(all.corrected), t.usageCorrected],
     [n(all.capped), t.usageCapped],
     [bucketText(all.medianBucket), t.usageMedian],
+    [all.up + all.down ? `${n(all.up)} / ${n(all.down)}` : "–", t.usageVotes],
   ];
+  const reasons = Object.entries(all.reasons).filter(([, v]) => v > 0);
   const recent = stats.days.slice(-DAYS_SHOWN).reverse();
 
   return (
@@ -60,6 +62,12 @@ export function AskUsage({ locale, t }: { locale: string; t: Dictionary["health"
           </div>
         ))}
       </dl>
+      {reasons.length > 0 && (
+        <p className="text-sm">
+          {t.usageDownWhy}{" "}
+          {reasons.map(([k, v]) => `${t.voteReasons[k as keyof typeof t.voteReasons] ?? k}: ${n(v)}`).join(" · ")}
+        </p>
+      )}
       {recent.length === 0 ? (
         <p className="text-sm">{t.usageNone}</p>
       ) : (

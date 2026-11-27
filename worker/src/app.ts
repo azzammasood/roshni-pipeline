@@ -1,6 +1,10 @@
 // Ask Roshni API (no Cloudflare imports here, so it runs under plain vitest).
 //
-//   POST /v1/ask      {question}                      -> guard, plan  (costs one question)
+//   POST /v1/ask      {question, previous?}           -> guard, plan  (costs one question);
+//                     previous = the visitor's own earlier ticket (10 min): a follow-up question
+//                     planned with that question and plan as context, held here, not sent by
+//                     the browser
+//   POST /v1/feedback {ticket, vote, reason?}         -> one up/down vote per answer (counts only)
 //   POST /v1/replan   {ticket, kind, detail}          -> one corrected plan for that question
 //   POST /v1/narrate  {ticket, columns, facts}        -> one checked narration for that question
 //   GET  /v1/quota                                    -> questions left today
@@ -13,7 +17,7 @@
 import { type Attempt, type ChainDeps, CONFIG, complete, guardScore, parseJson, tokens } from "./chain";
 import { checkProse, pyColumns } from "./prose";
 import { type Admission, type Limits, MAX_REPLANS, type Msg, type Remaining, type Ticket } from "./quota";
-import { BUCKETS_S, type Day, type Event, STATS_DAYS } from "./stats";
+import { BUCKETS_S, type Day, type Event, FEEDBACK_REASONS, STATS_DAYS } from "./stats";
 
 export type Context = {
   bundle_version: number;
@@ -152,11 +156,24 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
       await deps.quota.record({ kind: "blocked" });
       return json(200, { status: "blocked", reason: "The question looks like a prompt-injection attempt.", remaining: adm.remaining });
     }
+    // A follow-up reuses the earlier question and its accepted plan, from this Worker's own store.
+    const prevId = typeof body.previous === "string" ? body.previous : "";
+    const prev = prevId ? await deps.quota.ticket(prevId, deps.visitor) : null;
+    const lastPlan = prev?.history.findLast((m) => m.role === "assistant");
+    const lead: Msg[] = prev && lastPlan ? [{ role: "user", content: prev.question }, lastPlan] : [];
+    const asked = lead.length ? `Follow-up to the question above: ${question}` : question;
     const id = deps.newId();
-    const t: Ticket = { visitor: deps.visitor, question, created: deps.now(), replans: 0, narrated: false, history: [] };
-    const res = await plan(deps, ctx, [{ role: "user", content: question }], id, t, "plan1");
+    const t: Ticket = {
+      visitor: deps.visitor,
+      question: lead.length ? `${prev!.question} / follow-up: ${question}` : question,
+      created: deps.now(),
+      replans: 0,
+      narrated: false,
+      history: [],
+    };
+    const res = await plan(deps, ctx, [...lead, { role: "user", content: asked }], id, t, "plan1");
     const out = (await res.json()) as Record<string, unknown>;
-    return json(200, { ...out, remaining: adm.remaining, guard: score });
+    return json(200, { ...out, remaining: adm.remaining, guard: score, follow_up: lead.length > 0 });
   }
 
   const id = typeof body.ticket === "string" ? body.ticket : "";
@@ -172,6 +189,17 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
     t.replans++;
     await deps.quota.putTicket(id, t);
     return plan(deps, ctx, [...t.history, { role: "user", content: feedback }], id, t, "plan2", kind);
+  }
+
+  if (path === "/v1/feedback") {
+    const vote = body.vote;
+    if (vote !== "up" && vote !== "down") return json(400, { status: "bad_request", reason: "vote is up or down." });
+    const reason = FEEDBACK_REASONS.find((r) => r === body.reason);
+    if (t.voted) return json(409, { status: "used", reason: "This answer already has a vote." });
+    t.voted = true;
+    await deps.quota.putTicket(id, t);
+    await deps.quota.record({ kind: "feedback", vote, reason: vote === "down" ? reason : undefined });
+    return json(200, { status: "recorded" });
   }
 
   if (path === "/v1/narrate") {
