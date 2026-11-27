@@ -13,7 +13,8 @@ from pydantic import BaseModel, ConfigDict, Field
 # 1.8.0: maintenance_upcoming, the browser's slim copy of the windows from a week back on;
 # 1.9.0: health, the pipeline's own run records (export/health.py); 1.10.0: health.healing
 # 1.11.0: health.ask_eval; 1.12.0: AskEval.rolling (pooled 7-day score of the daily slices)
-SCHEMA_VERSION = "1.12.0"
+# 1.13.0: NewsHeadline.places (names found in the headline, resolve/news_places.py)
+SCHEMA_VERSION = "1.13.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -559,12 +560,24 @@ class National(Strict):
 NEWS_LABEL = "Headlines as published by each outlet, linked to the original; not Roshni's reporting"
 
 
+class NewsPlace(Strict):
+    """A place named in a headline: what the news is about, not a measurement (since 1.13.0)."""
+
+    kind: Literal["company", "kelectric_ibc"]
+    key: str = Field(description="Distribution company name, or the IBC's area_id")
+    label: str
+    matched: str = Field(description="The headline's words that matched (normalised)")
+    method: Literal["exact", "fuzzy"]
+    confidence: float = Field(ge=0, le=1, description="1.0 exact; fuzzy: RapidFuzz ratio / 100")
+
+
 class NewsHeadline(Strict):
     outlet: str
     title: str = Field(description="Headline exactly as the outlet's feed published it")
     link: str
     published_at: datetime | None = Field(description="Publication time from the feed (UTC)")
     first_seen_at: datetime | None = Field(description="When Roshni's daily fetch first saw it")
+    places: list[NewsPlace] = Field(default=[], description="Places named in the title (1.13.0)")
 
 
 DOCUMENTS: dict[str, type] = {

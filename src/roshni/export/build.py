@@ -13,6 +13,7 @@ import yaml
 from roshni.export import models as m
 from roshni.export.health import build_health
 from roshni.paths import CONFIG_DIR, DATA_DIR, REPO_ROOT
+from roshni.resolve import news_places
 from roshni.sources.registry import load_registry
 
 SCHEMA_DIR = REPO_ROOT / "schemas" / "v1"
@@ -337,6 +338,10 @@ def build_export(
     built = con.sql("select max(built_at) from mart_build_info").fetchone()[0]
     fetched = con.sql("select max(fetched_at) from dim_feeder").fetchone()[0]
     last = max(x for x in (built, fetched) if x is not None).astimezone(UTC)
+    places = news_places.gazetteer(
+        [(r["area_id"], r["name"]) for r in _rows(con, "select area_id, name from dim_area "
+                                                       "where level = 'kelectric_ibc'")]
+    )  # fmt: skip
     docs = {
         "feeders": _feeders(con),
         "dark_profiles": _dark_profiles(con),
@@ -367,7 +372,10 @@ def build_export(
             )
         ],
         "news": [
-            m.NewsHeadline(**{k: r[k] for k in m.NewsHeadline.model_fields})
+            m.NewsHeadline(
+                **{k: r[k] for k in m.NewsHeadline.model_fields if k != "places"},
+                places=news_places.find(r["title"], places),
+            )
             for r in _rows(con, "select * from mart_news_headline order by recency")
         ],
     }

@@ -2,6 +2,23 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-27 (AI features round 2, one Groq account)
+- **Owner:** implement every reviewer point and new feature, planned around a single free Groq
+  account (no second accounts: against provider terms, and one ban would take Ask Roshni down).
+- **Models only where needed.** Personal questions go to the schedule engine; charts are chosen by
+  code; news places are matched by name (RapidFuzz), not by a model; MCP clients bring their own
+  model. Model calls added per day: eval slice ~45K tokens, prepared answers ~21K, digest ~1.5K.
+- **Evals:** 104 golden items (69 paraphrases written by Claude, each inheriting its reference);
+  one seventh scored per publish run; 7-day pooled score with a 95% Wilson interval; a notice
+  when an item that passed before fails, or the 7-day score is under 90%.
+- **Follow-ups** use the visitor's earlier ticket held by the Worker (10 min), never model context
+  sent by the browser. **Votes** are counts with fixed reasons; no question text is kept.
+- **News places** (export 1.13.0): a place in a headline says what the news is about; it is never
+  joined to a feeder's schedule and never presented as an outage. Near-spellings keep their
+  match score, shown on the site (approximate matches always carry a displayed confidence).
+- **Digest** sentences follow Ask Roshni's prose check (placeholders only, no causes, schedules
+  not outages); Urdu shows the same counts in a fixed sentence.
+
 ## 2026-11-26 (Ask Roshni page redesign; engine and publish fixes)
 - **Owner review of /ask/:** the page looked old-fashioned, nothing moved while a question ran,
   and the answer appeared below the examples, out of view. Removed "Answers are written in

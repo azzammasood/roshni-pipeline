@@ -8,5 +8,5 @@ export type { MaintenanceDocument, MaintenanceWindow } from "./maintenance";
 export type { MaintenanceUpcomingDocument, MaintenanceSlot } from "./maintenance_upcoming";
 export type { MetaDocument, Meta, SourceInfo } from "./meta";
 export type { NationalDocument, National, PolicyEvent, MonthlyKeSchedule, MaintenanceMonth, MonthlyShutdowns, CircleMonth, NepraReport, ReportedHours } from "./national";
-export type { NewsDocument, NewsHeadline } from "./news";
+export type { NewsDocument, NewsHeadline, NewsPlace } from "./news";
 export type { PlannedShutdownsDocument, PlannedShutdown } from "./planned_shutdowns";

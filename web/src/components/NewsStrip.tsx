@@ -5,6 +5,9 @@ import type { Dictionary } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/fill";
 import { karachiDate } from "@/lib/time";
 import type { NewsHeadline } from "@/types/v1";
+import Link from "next/link";
+import { cityHref } from "@/lib/cities";
+import { num } from "@/lib/format";
 
 /** A newest headline older than this reads "nothing new since", so old items never pass for fresh. */
 const QUIET_DAYS = 30;
@@ -57,6 +60,30 @@ export function NewsStrip({
                   </span>
                   <span className="sr-only"> ({t.external})</span>
                 </a>
+                {(h.places ?? []).length > 0 && (
+                  <ul className="mt-1 flex flex-wrap gap-1.5 text-xs" aria-label={t.placesLabel}>
+                    {(h.places ?? []).map((p) => {
+                      const href = p.kind === "company" ? cityHref(locale, p.key) : null;
+                      const text = (
+                        <>
+                          {p.label}
+                          {p.method === "fuzzy" && <span className="text-muted"> · {fill(t.fuzzy, { c: num(p.confidence, locale) }, locale)}</span>}
+                        </>
+                      );
+                      return (
+                        <li key={p.kind + p.key} className="chip px-1.5 py-0.5" dir="ltr">
+                          {href ? (
+                            <Link prefetch={false} href={href} className="hover:underline">
+                              {text}
+                            </Link>
+                          ) : (
+                            text
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </li>
             );
           })}
@@ -66,7 +93,9 @@ export function NewsStrip({
         {quiet && <strong className="font-semibold">{fill(t.quiet, { date: karachiDate(new Date(newest)) }, locale)} </strong>}
         {t.cadence}
       </p>
-      <p className="text-sm text-muted max-w-prose">{t.note}</p>
+      <p className="text-sm text-muted max-w-prose">
+        {t.note} {t.placesNote}
+      </p>
     </section>
   );
 }
