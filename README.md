@@ -89,7 +89,8 @@ What sets them apart from a typical text-to-SQL or "LLM fixes my parser" demo:
 
 - **The model never produces a number or a data value.** Ask Roshni's numbers come from a query the visitor's own browser runs; the narrator may only write placeholders. The healer only names columns; parsing stays deterministic.
 - **Code decides, not the model.** Ask Roshni's SQL passes a guard on DuckDB's own parse tree before it runs. A learned parser alias is kept only if every stored workbook still parses exactly as before.
-- **Measured, then monitored.** Both evals run every Monday in the production workflow against that day's data. Each run adds a history point to [`evals/`](evals/), a drop is posted as a pipeline notice, and the live [health page](https://azzammasood.github.io/roshni-site/en/health/#ask) shows the scores alongside Ask Roshni's own usage counts.
+- **Measured, then monitored.** Ask Roshni's 104-item golden set (35 questions and 69 paraphrases) is scored in daily slices in the production workflow, so a week covers all of it within one free Groq account; the health page shows the pooled 7-day score with a 95% interval. The parser-healing chaos test runs every Monday. Each run adds a history point to [`evals/`](evals/); an item that passed before and fails now is posted as a pipeline notice; the live [health page](https://azzammasood.github.io/roshni-site/en/health/#ask) also shows usage counts and visitors' votes.
+- **Models only where they are needed.** "Will I get load shedding today?" goes to the site's tested schedule engine for the visitor's own feeder, not to a model. Charts are chosen by code from the result's shape. Example answers, the equity page's "Explain this" links and the busy fallback are prepared once each morning by the same pipeline.
 
 **Ask Roshni** ([`docs/ask-roshni.md`](docs/ask-roshni.md)): `roshni ask "Which IBC areas have the highest share of twelve-hour feeders?"`
 
@@ -104,7 +105,10 @@ What sets them apart from a typical text-to-SQL or "LLM fixes my parser" demo:
 - The **visitor's browser** runs the SQL with DuckDB-WASM on about 400 KB of published Parquet, after checking it against the allowlist with DuckDB's own parse tree. External access is switched off first, and the engine and its extensions are served by the site itself.
 - **Caps** keep one visitor from using up the free limits: 3 questions a minute and 10 a day per visitor (an HMAC of the IP and the day, never the IP itself), and 150 questions and 450K tokens a day for the whole site, sized from the eval's token use and Groq's free-plan limits.
 - **Parity tests** pin the TypeScript ports to Python: 25 narration checks, 48 SQL-guard verdicts, and every golden reference query returning the same rows in the browser as in the warehouse.
+- **Follow-ups** are planned with the visitor's earlier question and plan, held by the Worker for 10 minutes (the browser never supplies model context). Every answer has a step-by-step trace (injection score, each model call with tokens and time, the browser's guard verdict, DuckDB time) and a vote (counts only).
 - **Usage counts, not logs.** The Worker counts per day: questions, visitors, refusals, injection blocks, queries corrected after the browser's check, cap refusals, tokens and planning-time buckets. It stores no question text and no visitor id; the health page reads the counts live.
+
+**Roshni over MCP** ([`docs/mcp.md`](docs/mcp.md)): `roshni mcp` serves the same tables to any MCP client (Claude Desktop, IDEs, agents) behind the same SQL guard and caveats. The client brings its own model, so it costs no tokens.
 
 **Self-healing parsers** ([`docs/parser-healing.md`](docs/parser-healing.md)): `roshni heal`, run before parsing every day. Narrow on purpose: it heals one kind of failure, column headings in IESCO's monthly maintenance workbooks, because that is the drift the sources actually show and the one a regression gate can check exactly. New date formats or file types still go to quarantine with a reason.
 

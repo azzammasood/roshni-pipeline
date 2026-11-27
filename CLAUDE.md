@@ -46,6 +46,8 @@ uv run roshni report [--engine auto|openrouter|template]   # weekly equity repor
 uv run roshni export [--write-schemas]                     # static JSON -> data/export/v1, validated
 uv run roshni ask "question" [--json] [--model groq/<id>]  # Ask Roshni (GROQ_API_KEY; docs/ask-roshni.md)
 uv run roshni ask-eval [--model P/M] [--only ID] [--main] [--record]   # golden set; --record -> evals/ (weekly in publish)
+uv run roshni ask-prepared                     # prepared answers + today's digest -> export ask/
+uv run --group mcp roshni mcp [--bundle DIR]   # MCP server over stdio (docs/mcp.md)
 uv run roshni heal --snapshots STORE [--apply]          # parser header drift -> gated aliases (docs/parser-healing.md)
 uv run roshni heal-eval --snapshots STORE [--model P/M] [--main] [--record]   # chaos eval; --record -> evals/
 docker compose -f airflow/docker-compose.yml up --build    # Airflow showcase on :8080 (manual DAG)

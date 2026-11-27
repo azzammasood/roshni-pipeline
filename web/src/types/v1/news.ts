@@ -31,6 +31,10 @@ export interface NewsHeadline {
   link: string;
   outlet: string;
   /**
+   * Places named in the title (1.13.0)
+   */
+  places?: NewsPlace[];
+  /**
    * Publication time from the feed (UTC)
    */
   published_at: string | null;
@@ -38,4 +42,24 @@ export interface NewsHeadline {
    * Headline exactly as the outlet's feed published it
    */
   title: string;
+}
+/**
+ * A place named in a headline: what the news is about, not a measurement (since 1.13.0).
+ */
+export interface NewsPlace {
+  /**
+   * 1.0 exact; fuzzy: RapidFuzz ratio / 100
+   */
+  confidence: number;
+  /**
+   * Distribution company name, or the IBC's area_id
+   */
+  key: string;
+  kind: "company" | "kelectric_ibc";
+  label: string;
+  /**
+   * The headline's words that matched (normalised)
+   */
+  matched: string;
+  method: "exact" | "fuzzy";
 }

@@ -24,6 +24,15 @@
           "title": "Outlet",
           "type": "string"
         },
+        "places": {
+          "default": [],
+          "description": "Places named in the title (1.13.0)",
+          "items": {
+            "$ref": "#/$defs/NewsPlace"
+          },
+          "title": "Places",
+          "type": "array"
+        },
         "published_at": {
           "anyOf": [
             {
@@ -51,6 +60,59 @@
         "first_seen_at"
       ],
       "title": "NewsHeadline",
+      "type": "object"
+    },
+    "NewsPlace": {
+      "additionalProperties": false,
+      "description": "A place named in a headline: what the news is about, not a measurement (since 1.13.0).",
+      "properties": {
+        "confidence": {
+          "description": "1.0 exact; fuzzy: RapidFuzz ratio / 100",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "key": {
+          "description": "Distribution company name, or the IBC's area_id",
+          "title": "Key",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "company",
+            "kelectric_ibc"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "matched": {
+          "description": "The headline's words that matched (normalised)",
+          "title": "Matched",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "exact",
+            "fuzzy"
+          ],
+          "title": "Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "key",
+        "label",
+        "matched",
+        "method",
+        "confidence"
+      ],
+      "title": "NewsPlace",
       "type": "object"
     }
   },

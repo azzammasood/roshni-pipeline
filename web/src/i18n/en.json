@@ -161,7 +161,10 @@
     "note": "Headlines from Dawn, Business Recorder, The Express Tribune and the Associated Press of Pakistan, as each outlet published them and linked to the original. They are the outlets' words, not Roshni's reporting.",
     "external": "opens the outlet's site in a new tab",
     "quiet": "No new load-shedding headline has appeared in these outlets' feeds since {date}.",
-    "cadence": "Roshni checks the feeds for load-shedding headlines several times a day, and the site is rebuilt every morning."
+    "cadence": "Roshni checks the feeds for load-shedding headlines several times a day, and the site is rebuilt every morning.",
+    "placesLabel": "Places named in the headline",
+    "fuzzy": "{c} name match",
+    "placesNote": "Places under a headline are found in its words by name (near-spellings show their match score). They say what the news is about, not where power went out."
   },
   "home": {
     "title": "Who is scheduled to be dark now?",
@@ -1047,5 +1050,11 @@
       "The checked answer, its table and its SQL appear on the page.",
       "Every morning GitHub Actions rebuilds the data with dbt on DuckDB; every Monday it scores the models and posts the results to the Health page."
     ]
+  },
+  "digest": {
+    "title": "Today, from the published data",
+    "template": "Today IESCO lists {maint_today} announced maintenance windows on {maint_feeders} feeders, {maint_week} in the next seven days, and {shutdowns_today} press-release shutdowns. K-Electric's schedule in use took effect on {ke_effective}. {news_day} new headlines were seen in the last day.",
+    "byModel": "Counts by SQL on this morning's data; sentences by {m}, checked like Ask Roshni's answers. Schedules, not measured outages.",
+    "byCode": "Counts by SQL on this morning's data, in a fixed sentence. Schedules, not measured outages."
   }
 }
