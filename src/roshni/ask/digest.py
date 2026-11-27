@@ -5,6 +5,7 @@ numbers of its own, no causes, schedules never called outages). A template is us
 model passes. One model call a day (~1.5K tokens).
 """
 
+import re
 from datetime import date, datetime, timedelta
 
 import duckdb
@@ -14,9 +15,33 @@ from roshni.llm.chain import ChainConfig, complete
 
 QUESTION = "What does Roshni's published data say for today?"
 
+# Owner, 2026-11-27: the digest says "scheduled". Every count is a scheduled or announced
+# window, so wording that sounds like an event that happened or was measured is rejected.
+DIGEST_RULES = """
+Digest rules, also mandatory:
+6. Call every window and shutdown "scheduled" (for example "scheduled maintenance windows",
+   "scheduled shutdowns"); the word "scheduled" must appear.
+7. Never say reported, recorded, occurred, happened, took place, affected or affecting: these are
+   plans published in advance, not events."""
+NOT_SCHEDULED = re.compile(
+    r"\b(report(ed|s)?|record(ed|s)?|occur(red|s)?|happen(ed|s)?|took place|affect(ed|s|ing)?)\b",
+    re.I,
+)
+
+
+def check_digest(text: str, facts: dict[str, str]) -> list[str]:
+    problems = engine.check_prose(text, facts, QUESTION)
+    if not re.search(r"\bscheduled\b", text, re.I):
+        problems.append('say "scheduled"')
+    if m := NOT_SCHEDULED.search(text):
+        problems.append(f'"{m.group(0)}" describes an event; these are scheduled windows')
+    return problems
+
+
 TEMPLATE = (
-    "Today IESCO lists {maint_today} announced maintenance windows on {maint_feeders} feeders, "
-    "{maint_week} in the next seven days, and {shutdowns_today} press-release shutdowns. "
+    "Today IESCO has {maint_today} scheduled maintenance windows on {maint_feeders} feeders, "
+    "{maint_week} scheduled in the next seven days, and {shutdowns_today} scheduled shutdowns "
+    "announced in press releases. "
     "K-Electric's schedule in use took effect on {ke_effective}. "
     "{news_day} new headlines were seen in the last day."
 )
@@ -61,7 +86,7 @@ def build(con, cfg: ChainConfig | None, today: date, now: datetime, log=print) -
         listing = "\n".join(f"{k} = {v}" for k, v in f.items())
         comp = complete(
             [
-                {"role": "system", "content": engine.NARRATOR},
+                {"role": "system", "content": engine.NARRATOR + DIGEST_RULES},
                 {
                     "role": "user",
                     "content": f"Question: {QUESTION}\nColumns: {list(f)}\n"
@@ -69,7 +94,7 @@ def build(con, cfg: ChainConfig | None, today: date, now: datetime, log=print) -
                 },
             ],
             cfg,
-            lambda t: engine.check_prose(t, f, QUESTION),
+            lambda t: check_digest(t, f),
         )
         tokens = sum(a.tokens_in + a.tokens_out for a in comp.attempts)
         if comp.text is not None:

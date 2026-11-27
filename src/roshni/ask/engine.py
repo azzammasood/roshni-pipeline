@@ -56,7 +56,9 @@ Rules, all mandatory:
 2. Descriptive only: no causal language (because, due to, leads to, caused), no claims of
    unfairness or motives.
 3. These are published schedules or reported figures, never measured or actual outages.
-4. Plain text, no lists, no headings, no markdown table."""
+4. Plain text, no lists, no headings, no markdown table.
+5. Describe only the rows returned. When the query keeps the top rows (a LIMIT), do not call a
+   row the only one of its kind."""
 
 
 @dataclass

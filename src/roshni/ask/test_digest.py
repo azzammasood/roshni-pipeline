@@ -45,5 +45,14 @@ def test_template_without_a_model():
         datetime(2026, 11, 27, 6, tzinfo=UTC),
         log=lambda *_: None,
     )
-    assert d["narrated_by"] == "" and "2 announced maintenance windows on 2 feeders" in d["text"]
+    assert d["narrated_by"] == "" and "2 scheduled maintenance windows on 2 feeders" in d["text"]
     assert "{" not in d["text"]
+
+
+def test_digest_wording_must_say_scheduled():
+    f = {"maint_today": "20", "shutdowns_today": "0"}
+    bad = "Today there are {maint_today} maintenance activities, with {shutdowns_today} shutdowns reported."
+    good = "Today has {maint_today} scheduled maintenance windows and {shutdowns_today} scheduled shutdowns."
+    problems = digest.check_digest(bad, f)
+    assert any("scheduled" in p for p in problems) and any("reported" in p for p in problems)
+    assert digest.check_digest(good, f) == []
