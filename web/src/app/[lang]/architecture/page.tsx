@@ -4,6 +4,7 @@ import { num } from "@/lib/format";
 import { resolveLocale } from "@/lib/locale";
 import { Stamp } from "@/components/Clock";
 import { ToolLogo } from "@/components/ToolLogo";
+import { AiLayer } from "@/components/AiLayer";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/architecture">): Promise<Metadata> {
   return { title: (await resolveLocale(params)).dict.nav.architecture };
@@ -38,6 +39,7 @@ export default async function Architecture({ params }: PageProps<"/[lang]/archit
   const national = (await loadDocument("national")).data.series.length;
   const shutdowns = (await loadDocument("planned_shutdowns")).data.length;
   const news = (await loadDocument("news")).data.length;
+  const health = (await loadDocument("health")).data;
   const n = (v: number) => num(v, locale);
   const stats: [string, string][] = [
     [n(meta.data.sources.length), t.statSources],
@@ -88,6 +90,8 @@ export default async function Architecture({ params }: PageProps<"/[lang]/archit
           ))}
         </ol>
       </section>
+
+      <AiLayer dict={dict} locale={locale} health={health} />
 
       <div className="grid gap-8 md:grid-cols-2">
         <section aria-labelledby="runs" className="rule pt-4 space-y-2">

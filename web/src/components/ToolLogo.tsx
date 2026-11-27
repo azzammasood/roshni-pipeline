@@ -6,6 +6,8 @@ import {
   siApacheairflow,
   siApacheparquet,
   siClaude,
+  siCloudflare,
+  siCloudflareworkers,
   siDatabricks,
   siDocker,
   siDuckdb,
@@ -27,16 +29,21 @@ import {
   siTypescript,
   siUv,
   siVitest,
+  siWebassembly,
+  siYaml,
 } from "simple-icons";
 
 const ICONS: Record<string, SimpleIcon> = {
   "Apache Airflow": siApacheairflow,
   Parquet: siApacheparquet,
   Claude: siClaude,
+  "Cloudflare Workers": siCloudflareworkers,
+  "Durable Objects": siCloudflare,
   Databricks: siDatabricks,
   Docker: siDocker,
   "Docker Compose": siDocker,
   DuckDB: siDuckdb,
+  "DuckDB-WASM": siDuckdb,
   ESLint: siEslint,
   git: siGit,
   "GitHub Actions": siGithubactions,
@@ -55,6 +62,8 @@ const ICONS: Record<string, SimpleIcon> = {
   TypeScript: siTypescript,
   uv: siUv,
   Vitest: siVitest,
+  WebAssembly: siWebassembly,
+  YAML: siYaml,
 };
 
 // Lettered tiles for tools Simple Icons does not carry.
@@ -72,6 +81,7 @@ const LETTERS: Record<string, string> = {
   "axe-core": "axe",
   "SHA-256": "#",
   "ETag / If-Modified-Since": "304",
+  Groq: "gq",
 };
 
 /** Marks too dark to see on the night tile are drawn in paper white instead. */
