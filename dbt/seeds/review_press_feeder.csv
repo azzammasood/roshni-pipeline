@@ -1115,11 +1115,13 @@ Islamabad:Bhara Kahu-II,Bhara Kahu-II,Islamabad,iesco:islamabad:089219,BHARAKHAU
 Islamabad:Bhoi Gar,Bhoi Gar,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Bilal Town,Bilal Town,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Bilalabad,Bilalabad,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Blue Area,Blue Area,Islamabad,iesco:islamabad:075010,BLUE AREA,1,100.0,exact,auto_exact,,
 Islamabad:Bostan Khan,Bostan Khan,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Brahma,Brahma,Islamabad,iesco:islamabad:105502,BARMA,1,72.7,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
 Islamabad:Burhan,Burhan,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Burma,Burma,Islamabad,iesco:islamabad:105502,BARMA,1,80.0,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
 Islamabad:C.S.T,C.S.T,Islamabad,,,0,0,,no_candidate,,
+Islamabad:CBR,CBR,Islamabad,,,0,0,,no_candidate,,
 Islamabad:CDA Flat,CDA Flat,Islamabad,iesco:islamabad:017432,CDA FLATS,1,94.1,fuzzy,suggested,accepted,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Singular/plural variant: CDA FLATS
 Islamabad:CDA Office,CDA Office,Islamabad,iesco:islamabad:022302,CDA OFFICE,1,100.0,exact,auto_exact,,
 Islamabad:CDA Pump,CDA Pump,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
@@ -1576,6 +1578,7 @@ Islamabad:New Mulpur,New Mulpur,Islamabad,,,0,0,,no_candidate,,
 Islamabad:New PTN,New PTN,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Noorpur,Noorpur,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Numble,Numble,Islamabad,iesco:islamabad:079405,NUMBAL,1,83.3,fuzzy,suggested,accepted,claude-review 2026-10-10: same consonant skeleton: spelling variant
+Islamabad:OGDC,OGDC,Islamabad,iesco:islamabad:075011,OGDC,1,100.0,exact,auto_exact,,
 Islamabad:OLD EXCHANGE,OLD EXCHANGE,Islamabad,iesco:islamabad:086413,STOCK EXCHANGE,1,76.9,fuzzy,suggested,rejected,llm-review 2026-10-17 anthropic/claude-haiku-5.5: STOCK EXCHANGE differs in substance from OLD EXCHANGE.
 Islamabad:OLD UNITED,OLD UNITED,Islamabad,,,0,0,,no_candidate,,
 Islamabad:OPF,OPF,Islamabad,,,0,0,,no_candidate,,
@@ -1585,6 +1588,7 @@ Islamabad:Old United,Old United,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Orchad Scheme,Orchad Scheme,Islamabad,iesco:islamabad:017439,ORCHARD SCHEME,1,96.3,fuzzy,suggested,,
 Islamabad:Orchard Scheme,Orchard Scheme,Islamabad,iesco:islamabad:017439,ORCHARD SCHEME,1,100.0,exact,auto_exact,,
 Islamabad:P.C,P.C,Islamabad,iesco:islamabad:013708,PC,1,80.0,fuzzy,suggested,accepted,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Punctuation variant: P.C = PC
+Islamabad:P.M. Staff Colony,P.M. Staff Colony,Islamabad,,,0,0,,no_candidate,,
 Islamabad:P.T.N,P.T.N,Islamabad,,,0,0,,no_candidate,,
 Islamabad:PAEC,PAEC,Islamabad,,,0,0,,no_candidate,,
 Islamabad:PAEC; Rawalpindi City Circle:,PAEC; Rawalpindi City Circle:,Islamabad,,,0,0,,no_candidate,,
@@ -1598,6 +1602,7 @@ Islamabad:PHA-1,PHA-1,Islamabad,iesco:islamabad:069225,PHA II,2,72.7,fuzzy,sugge
 Islamabad:PHA-II,PHA-II,Islamabad,iesco:islamabad:069225,PHA II,1,100.0,exact,auto_exact,,
 Islamabad:PM Colony,PM Colony,Islamabad,iesco:islamabad:022339,H8 GRID COLONY,1,77.8,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Candidates differ in substance
 Islamabad:PM Colony,PM Colony,Islamabad,iesco:islamabad:022304,WAPDA COLONY,2,76.2,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: Candidates differ in substance
+Islamabad:PM Secretariat,PM Secretariat,Islamabad,,,0,0,,no_candidate,,
 Islamabad:PTCL,PTCL,Islamabad,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Islamabad:PTCL (Independent),PTCL (Independent),Islamabad,,,0,0,,no_candidate,,
 Islamabad:Pak China Center,Pak China Center,Islamabad,,,0,0,,no_candidate,,
@@ -1632,6 +1637,8 @@ Islamabad:Qadeer Road,Qadeer Road,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Qayyumabad,Qayyumabad,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Qazian,Qazian,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Quaid-e-Azam Hospital,Quaid-e-Azam Hospital,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Quaid-e-Azam University,Quaid-e-Azam University,Islamabad,iesco:islamabad:122502,QUAID E AZAM UNIVERSTY,1,97.8,fuzzy,suggested,accepted,auto-review: same consonant skeleton and endings: spelling variant
+Islamabad:Quaid-e-Azam University,Quaid-e-Azam University,Islamabad,iesco:islamabad:072736,BAHRIA UNIVERSITY,2,70.0,fuzzy,suggested,rejected,auto-review: another candidate matched
 Islamabad:R.T. Mill,R.T. Mill,Islamabad,,,0,0,,no_candidate,,
 Islamabad:RAILWAY ROAD,RAILWAY ROAD,Islamabad,iesco:islamabad:104004,RAILWAY ROAD,1,100.0,exact,auto_exact,,
 Islamabad:RCCI Express,RCCI Express,Islamabad,iesco:islamabad:122307,G9 EXPRESS,1,72.7,fuzzy,suggested,rejected,llm-review 2026-10-16 anthropic/claude-haiku-5.5: G9 EXPRESS differs in substance
@@ -1655,6 +1662,7 @@ Islamabad:Rehman Enclave,Rehman Enclave,Islamabad,iesco:islamabad:075006,ROYAL E
 Islamabad:Rehman Enclave,Rehman Enclave,Islamabad,iesco:islamabad:105506,BAHRIA ENCLAVE,2,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Rehmatabad-I,Rehmatabad-I,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Reliance Weaving Mill,Reliance Weaving Mill,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Residential Saudi Embassy,Residential Saudi Embassy,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Rest House,Rest House,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Rose Lane,Rose Lane,Islamabad,,,0,0,,no_candidate,,
 Islamabad:S.H Steel,S.H Steel,Islamabad,,,0,0,,no_candidate,,
@@ -1674,6 +1682,7 @@ Islamabad:Sanghoi,Sanghoi,Islamabad,iesco:islamabad:089214,ANGORI,1,76.9,fuzzy,s
 Islamabad:Sara-e-Kharboza,Sara-e-Kharboza,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Sarai A Gir,Sarai A Gir,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Saray Kharbouza Double Circuit,Saray Kharbouza Double Circuit,Islamabad,,,0,0,,no_candidate,,
+Islamabad:Saudi Embassy,Saudi Embassy,Islamabad,,,0,0,,no_candidate,,
 Islamabad:Saudi Tower,Saudi Tower,Islamabad,iesco:islamabad:086407,SAUDI TOWER,1,100.0,exact,auto_exact,,
 Islamabad:Scheme-1,Scheme-1,Islamabad,iesco:islamabad:017430,SCHEME-2,1,87.5,fuzzy,suggested,rejected,claude-review 2026-10-10: names differ in substance or are ambiguous
 Islamabad:Scheme-1,Scheme-1,Islamabad,iesco:islamabad:105525,SCHEME-I,2,87.5,fuzzy,suggested,accepted,claude-review 2026-10-10: roman I = 1
@@ -2113,6 +2122,7 @@ Rawalpindi Cantt:CHAKRI,CHAKRI,Rawalpindi Cantt,iesco:rawalpindi:096801,CHAKRI,1
 Rawalpindi Cantt:CHAKRI,CHAKRI,Rawalpindi Cantt,iesco:rawalpindi:008604,CHAKRA,2,83.3,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Rawalpindi Cantt:CMH Flats,CMH Flats,Rawalpindi Cantt,iesco:rawalpindi:107606,ARMY FLATS,1,73.7,fuzzy,suggested,,
 Rawalpindi Cantt:CMH-1,CMH-1,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:CNC,CNC,Rawalpindi Cantt,,,0,0,,no_candidate,,
 Rawalpindi Cantt:CWO,CWO,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Rawalpindi Cantt:Canning Road,Canning Road,Rawalpindi Cantt,iesco:rawalpindi:107621,CANNING ROAD,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Canning Road,Canning Road,Rawalpindi Cantt,iesco:rawalpindi:107604,KIANI ROAD,2,72.7,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
@@ -2124,6 +2134,7 @@ Rawalpindi Cantt:Car Chowk,Car Chowk,Rawalpindi Cantt,iesco:rawalpindi:095830,HA
 Rawalpindi Cantt:Chak Bali Khan-2,Chak Bali Khan-2,Rawalpindi Cantt,iesco:rawalpindi:007404,CHAK BELI KHAN,1,86.7,fuzzy,suggested,,
 Rawalpindi Cantt:Chaklala,Chaklala,Rawalpindi Cantt,iesco:rawalpindi:002503,CHAKLALA,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Chaklala,Chaklala,Rawalpindi Cantt,iesco:rawalpindi:008604,CHAKRA,2,71.4,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Rawalpindi Cantt:Chaklala Garrison,Chaklala Garrison,Rawalpindi Cantt,,,0,0,,no_candidate,,
 Rawalpindi Cantt:Chakri,Chakri,Rawalpindi Cantt,iesco:rawalpindi:096801,CHAKRI,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Chakri,Chakri,Rawalpindi Cantt,iesco:rawalpindi:008604,CHAKRA,2,83.3,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Rawalpindi Cantt:Chehan,Chehan,Rawalpindi Cantt,iesco:rawalpindi:096802,CHEHAN,1,100.0,exact,auto_exact,,
@@ -2387,6 +2398,7 @@ Rawalpindi Cantt:R.A. Bazar,R.A. Bazar,Rawalpindi Cantt,iesco:rawalpindi:107601,
 Rawalpindi Cantt:R.A. Bazar,R.A. Bazar,Rawalpindi Cantt,iesco:rawalpindi:017920,SARAFA BAZAR,2,76.2,fuzzy,suggested,,
 Rawalpindi Cantt:RAMMAN,RAMMAN,Rawalpindi Cantt,iesco:rawalpindi:007402,RAMMA,1,90.9,fuzzy,suggested,,
 Rawalpindi Cantt:RCCI Express,RCCI Express,Rawalpindi Cantt,,,0,0,,no_candidate,,
+Rawalpindi Cantt:RCCI-VII,RCCI-VII,Rawalpindi Cantt,,,0,0,,no_candidate,,
 Rawalpindi Cantt:RCCI-XI,RCCI-XI,Rawalpindi Cantt,,,0,0,,no_candidate,,
 Rawalpindi Cantt:RIC,RIC,Rawalpindi Cantt,,,0,0,,no_candidate,,claude-review 2026-10-10: no candidate; left unmatched
 Rawalpindi Cantt:Rahim Abad,Rahim Abad,Rawalpindi Cantt,iesco:rawalpindi:008619,RAJABAD,1,70.6,fuzzy,suggested,rejected,llm-review 2026-10-14 anthropic/claude-haiku-5.5: RAHIM differs from RAJA
@@ -2490,6 +2502,7 @@ Rawalpindi Cantt:Tehmasabad,Tehmasabad,Rawalpindi Cantt,iesco:rawalpindi:002530,
 Rawalpindi Cantt:Tipu Road,Tipu Road,Rawalpindi Cantt,iesco:rawalpindi:017916,TIPU ROAD,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Tipu Road,Tipu Road,Rawalpindi Cantt,iesco:rawalpindi:001026,TULSA ROAD,2,73.7,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
 Rawalpindi Cantt:Tipu Road,Tipu Road,Rawalpindi Cantt,iesco:rawalpindi:095801,SAID PUR ROAD,3,72.7,fuzzy,suggested,rejected,claude-review 2026-10-10: subject already has an exact match
+Rawalpindi Cantt:Topi Pump,Topi Pump,Rawalpindi Cantt,iesco:rawalpindi:002515,TOPI PUMP,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Tulsa Road,Tulsa Road,Rawalpindi Cantt,iesco:rawalpindi:001026,TULSA ROAD,1,100.0,exact,auto_exact,,
 Rawalpindi Cantt:Tulsa Road,Tulsa Road,Rawalpindi Cantt,iesco:rawalpindi:106708,NUST ROAD,2,73.7,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match
 Rawalpindi Cantt:Tulsa Road,Tulsa Road,Rawalpindi Cantt,iesco:rawalpindi:017916,TIPU ROAD,3,73.7,fuzzy,suggested,rejected,auto-review: subject already has an exact or accepted match

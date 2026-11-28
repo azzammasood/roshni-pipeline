@@ -1,0 +1,4 @@
+# Questions visitors shared with a down vote (opt-in), from `roshni ask-shared`.
+# Review: move good ones into config/ask_golden.yml with a hand-written reference,
+# then set status to added or rejected. Pipeline: add only.
+candidates: []
