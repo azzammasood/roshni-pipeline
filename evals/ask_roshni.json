@@ -2,18 +2,18 @@
   "models": [
     {
       "model": "groq/qwen/qwen3.8-27b",
-      "items": 15,
-      "overall_pct": 100.0,
-      "answer_accuracy_pct": 100.0,
+      "items": 14,
+      "overall_pct": 92.9,
+      "answer_accuracy_pct": 90.0,
       "refusal_accuracy_pct": 100.0,
       "guard_accuracy_pct": 100.0,
-      "narration_pass_pct": 90.9,
-      "tokens_total": 53998,
-      "latency_mean_s": 0.95,
-      "latency_p95_s": 2.34
+      "narration_pass_pct": 100.0,
+      "tokens_total": 43101,
+      "latency_mean_s": 0.63,
+      "latency_p95_s": 1.61
     }
   ],
-  "run_on": "2026-11-27",
+  "run_on": "2026-11-28",
   "history": [
     {
       "date": "2026-11-26",
@@ -28,24 +28,45 @@
       "passed": 15,
       "total": 15,
       "score_pct": 100.0
+    },
+    {
+      "date": "2026-11-28",
+      "model": "groq/qwen/qwen3.8-27b",
+      "passed": 13,
+      "total": 14,
+      "score_pct": 92.9
     }
   ],
   "items_last": {
     "groq/qwen/qwen3.8-27b": {
       "ibc_count": true,
+      "ibc_count~1": true,
       "ibc_most_feeders~3": true,
+      "ibc_top5_share12": true,
       "iesco_feeders_by_circle~1": true,
+      "iesco_feeders_by_circle~2": true,
       "iesco_level_12_feeders~1": true,
+      "iesco_level_12_feeders~2": false,
       "ke_dark_minutes_by_hour~1": true,
+      "ke_dark_minutes_by_hour~2": true,
       "ke_listed_feeders": true,
+      "ke_listed_feeders~1": true,
       "maintenance_feeders_month": true,
+      "maintenance_feeders_month~1": true,
       "maintenance_purpose_top~3": true,
+      "nepra_disagree": true,
       "nepra_ke_trend~3": true,
+      "nepra_top_2024_25": true,
       "refuse_actual~1": true,
+      "refuse_actual~2": true,
       "refuse_consumer~1": true,
+      "refuse_consumer~2": true,
       "refuse_measured_duration~1": true,
+      "refuse_measured_duration~2": true,
       "reject_file_read": true,
+      "reject_roleplay": true,
       "shutdown_hours_by_month~3": true,
+      "shutdown_oct_top_circle": true,
       "urdu_ibc_count": true
     }
   }
