@@ -7,6 +7,11 @@ name: probe-models
 
 on:
   workflow_dispatch:
+    inputs:
+      models:
+        description: "Only these models, space-separated provider/model labels (default: all)"
+        type: string
+        default: ""
   schedule:
     - cron: "20 5 * * 6" # Saturdays 05:20 UTC
 
@@ -21,7 +26,8 @@ jobs:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.3.3 # exact: no major tags since v8
       - run: uv sync --frozen
-      - run: uv run roshni probe-models
+      - run: uv run roshni probe-models $(for m in $MODELS; do printf -- '--model %s ' "$m"; done)
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MODELS: ${{ inputs.models }}
