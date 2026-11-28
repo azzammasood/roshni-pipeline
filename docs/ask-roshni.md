@@ -76,7 +76,8 @@ rows equal as a multiset, or in order when `ordered: true`; numbers compared at 
 CI checks that every reference query passes the SQL guard; the live eval needs a key and a built
 warehouse and writes `data/reports/ask_eval_<stamp>.{md,json}`.
 
-**Weekly, in production.** Every Monday `publish.yml` runs `ask-eval --main --record` against
+**In production** (the weekly run described here was replaced on 2026-11-27 by daily slices,
+below). Every Monday `publish.yml` ran `ask-eval --main --record` against
 that run's warehouse with the model that serves the site. `evals/ask_roshni.json` keeps the
 latest row per model and one history point per run; the publish job commits it, and `/health/`
 shows both (export 1.11.0 `health.ask_eval`). A score below 90 % or below that model's previous
@@ -135,7 +136,8 @@ How these numbers were reached, in full:
   produces no allowed query instead of refusing.
 - 25 items is small and the reference SQL was written by the same author as the pipeline: two
   models at 25/25 mean the set needs harder questions (joins, multi-step, ambiguous wording)
-  before it can separate them. Add items whenever a real question goes wrong.
+  before it can separate them. Add items whenever a real question goes wrong. (Since then: 35
+  questions, 69 paraphrases, a grouped interval, and opt-in shared questions as candidates.)
 
 ## On the website (`/ask/`)
 
@@ -295,4 +297,13 @@ warehouse still held the August schedule.
 - Names (areas, companies) may be written by the narrator in words; only numbers are forced
   through placeholders. The table under the answer is always the query result.
 - Scoring is strict on shape: an answer with the right numbers in an unexpected layout can fail.
-- Free-plan token limits allow roughly 40 questions a day per Groq model.
+- Free-plan token limits allow roughly 40 questions a day per Groq model; the daily eval slice
+  and the prepared answers use about 70K of the main model's 200K tokens, the backups absorb
+  peaks, and when every model is busy the page offers the prepared answers.
+- Urdu answers are checked by rules (digits, number words, causal and "actual" words, script);
+  the golden set scores English answers only.
+- The browser tests in CI mock the Worker and do not load DuckDB; the full path is checked on
+  the live site and by the parity tests.
+- The Worker accepts requests from the site's origin and caps them per visitor and per day; an
+  Origin header is not authentication, so a determined caller can use up the day's free quota.
+  The cost is Ask Roshni being busy until midnight (Pakistan time), never money.

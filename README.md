@@ -83,7 +83,7 @@ Figures as of 2026-11-24, from the pipeline's own records; the [pipeline health 
 
 ## AI in the pipeline, measured
 
-Two language-model features, each built so the model can be wrong without the data being wrong, each scored on its own evaluation set every week, and each watched in production.
+Language models do a few narrow jobs here (Ask Roshni, self-healing parsers, a daily one-line summary), each built so the model can be wrong without the data being wrong, each scored on its own evaluation set in production, and each watched. Everything else that looks like AI is plain code on purpose: routing everyday questions, choosing charts, matching places in news headlines.
 
 What sets them apart from a typical text-to-SQL or "LLM fixes my parser" demo:
 
@@ -99,7 +99,7 @@ What sets them apart from a typical text-to-SQL or "LLM fixes my parser" demo:
 - A **SQL guard** (sqlglot) allows one read-only SELECT on allowlisted columns only. Queries run on a read-only connection with external access off, a row cap and a timeout, with one self-correcting retry.
 - The narrator writes **placeholders, never numbers**. A validator rejects digits, causal wording and "actual outage" wording. Caveats, `n` and the build time are added by code.
 
-**On the site** ([try it](https://azzammasood.github.io/roshni-site/en/ask/), English and Urdu pages; answers in English). The site is static, so the work is split:
+**On the site** ([try it](https://azzammasood.github.io/roshni-site/en/ask/), English and Urdu; on the Urdu page the answer is written in Urdu and checked by an Urdu version of the narration rules). The site is static, so the work is split:
 
 - A **Cloudflare Worker** holds the Groq key and the prompts (fetched from the site, never taken from the browser), runs the guard and the planner, and checks the narration.
 - The **visitor's browser** runs the SQL with DuckDB-WASM on about 400 KB of published Parquet, after checking it against the allowlist with DuckDB's own parse tree. External access is switched off first, and the engine and its extensions are served by the site itself.
@@ -122,7 +122,7 @@ What sets them apart from a typical text-to-SQL or "LLM fixes my parser" demo:
 | Ask Roshni: 25-item golden set, scored by execution match (19 answers, 4 refusals, 2 injections), 2026-11-24 | **25/25**, 0.94 s mean | **25/25**, 1.89 s | 24/25, 1.20 s |
 | Parser healing: 27 chaos cases (9 real workbooks with headers renamed in English, abbreviated or in Urdu), exact row-for-row recovery, 2026-11-25 | 23/27 (4 × HTTP 429) | 26/27 | **27/27** |
 
-Since 2026-11-26 the golden set has 35 items: 22 answers (including one asked in Urdu, a paraphrase, and a real question with an injection attached), 8 refusals (measured outages, income, other companies, a named person), 2 injections that must be blocked, and 3 rule-breaking attempts that must not be answered (role-play, an Urdu injection, a file read). The weekly run scores the model that serves the site; the latest scores and their history are on the [health page](https://azzammasood.github.io/roshni-site/en/health/#ask).
+Since 2026-11-26 the golden set has 35 items: 22 answers (including one asked in Urdu, a paraphrase, and a real question with an injection attached), 8 refusals (measured outages, income, other companies, a named person), 2 injections that must be blocked, and 3 rule-breaking attempts that must not be answered (role-play, an Urdu injection, a file read). Since 2026-11-27 each question also has paraphrases (104 items in all), scored a seventh a day; the health page shows the 7-day score with two 95% intervals, per item and grouped by question (paraphrases of one question pass or fail together, so the grouped one is the honest one). Backup models are scored on Sundays in turn. Visitors can share a question with a down vote (opt-in); shared questions become reviewed candidates in [`evals/candidates.yml`](evals/), never test items automatically. The latest scores and their history are on the [health page](https://azzammasood.github.io/roshni-site/en/health/#ask).
 
 Both evaluation write-ups list the bugs their first runs found in the evaluation and in the product, and how each was fixed. Providers are an OpenAI-compatible chain ([`config/llm.yml`](config/llm.yml)): Groq first, OpenRouter's free models as fallback, with every attempt's tokens and latency recorded.
 
@@ -205,11 +205,11 @@ The full command list is in [`CLAUDE.md`](CLAUDE.md) (the working notes used whi
 ## Operations
 
 - **Daily:** `snapshot.yml` fetches into the private snapshot store, then `publish.yml` parses, validates, builds, resolves, reports, exports, builds the site and the dbt docs, and pushes the site to [`azzammasood/roshni-site`](https://github.com/azzammasood/roshni-site).
-- **Weekly evals:** on Mondays `publish.yml` also runs `roshni ask-eval --main --record` and `roshni heal-eval --main --record` against that run's warehouse and stored workbooks, commits the updated records in `evals/`, and posts a notice when a score falls below its floor (90 % and 85 %) or below the previous week. A failed eval never stops the publish.
+- **Evals in production:** every `publish.yml` run scores a seventh of Ask Roshni's golden set (`roshni ask-eval --main --daily --record`, one backup model too on Sundays) and on Mondays the parser-healing chaos test (`roshni heal-eval --main --record`), commits the records in `evals/`, and posts a notice when an item that passed before fails, or a 7-day score falls below its floor (90 % and 85 %). The same run prepares the example answers (each checked against its golden reference before it is published) and today's summary. A failed eval never stops the publish.
 - **Ask Roshni Worker:** `worker-deploy.yml` typechecks, tests and deploys `worker/` to Cloudflare on every change, copies the Groq key into it, and smoke-tests the live Worker. Publish builds the site with the Worker's address, which switches on the Ask page.
 - **Secrets:** `SNAPSHOTS_DEPLOY_KEY` (write access to the snapshot store), `SITE_DEPLOY_KEY` (push to the site repo), `OPENROUTER_API_KEY` (optional; without it the narrator falls back to a template), `GROQ_API_KEY` (parser healing and the Ask Roshni Worker; without it the chain uses OpenRouter), `CLOUDFLARE_API_TOKEN` (Worker deploys).
 - **Failure handling:** a failed run opens or updates a `pipeline-failure` issue and closes it after the next good run. Publish still runs after a failed snapshot, using the last good files.
-- **Watchdog:** every 3 hours `watchdog.yml` checks that the live site is under 36 hours old and opens an issue that notifies me if not; weekly it re-enables the scheduled workflows so GitHub's 60-day inactivity rule never switches them off.
+- **Watchdog:** every 3 hours `watchdog.yml` checks that the live site is under 36 hours old, and that Ask Roshni is healthy (failed plans and planning time from the Worker's counts), and opens an issue that notifies me if not; weekly it re-enables the scheduled workflows so GitHub's 60-day inactivity rule never switches them off.
 - **Automatic decisions:** new schedule versions, new listing rows and learned parser header aliases are handled without stopping the run and reported in a "Pipeline notices" issue.
 - **Infrastructure as code:** [`infra/databricks/`](infra/databricks/) holds Terraform for the optional Databricks deployment (catalog, schemas, volume, SQL warehouse, a paused job), checked in CI with `fmt`, `validate` and tflint. Nothing is applied automatically.
 

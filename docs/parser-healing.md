@@ -13,7 +13,8 @@ uv run roshni heal-eval --snapshots store --record   # ... and update evals/pars
 
 The site's `/health/` page shows the last check (`data/heal/status.json`, written by every
 `roshni heal`), every learned alias and the committed eval record (export 1.10.0), with one
-history point per weekly run (1.11.0).
+history point per weekly run (1.11.0). Ask Roshni's eval moved to daily slices on 2026-11-27;
+this chaos test stays weekly.
 
 ## Scope, on purpose
 
