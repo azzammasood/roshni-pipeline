@@ -20,11 +20,12 @@ async function call<T>(path: string, body?: unknown): Promise<T> {
 export const workerApi: Api = {
   ask: (question, previous) => call<PlanReply>("/v1/ask", previous ? { question, previous } : { question }),
   replan: (ticket, kind, detail) => call<PlanReply>("/v1/replan", { ticket, kind, detail }),
-  narrate: (ticket, columns, facts) => call<NarrateReply>("/v1/narrate", { ticket, columns, facts }),
+  narrate: (ticket, columns, facts, lang) =>
+    call<NarrateReply>("/v1/narrate", lang === "ur" ? { ticket, columns, facts, lang } : { ticket, columns, facts }),
 };
 
 /** One vote per answer (counts only on the Worker). */
-export const feedback = (ticket: string, vote: "up" | "down", reason?: string) =>
-  call<{ status: string }>("/v1/feedback", { ticket, vote, reason });
+export const feedback = (ticket: string, vote: "up" | "down", reason?: string, share = false) =>
+  call<{ status: string }>("/v1/feedback", share ? { ticket, vote, reason, share } : { ticket, vote, reason });
 
 export const quota = () => call<{ status: string; remaining?: Remaining }>("/v1/quota");

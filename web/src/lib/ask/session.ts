@@ -21,12 +21,12 @@ export type PlanReply = {
   /** True when the Worker planned this as a follow-up to the visitor's earlier question. */
   follow_up?: boolean;
 };
-export type NarrateReply = { status: "narrated" | "template" | string; text?: string; model?: string; attempts?: Attempt[] };
+export type NarrateReply = { status: "narrated" | "template" | string; text?: string; model?: string; lang?: string; attempts?: Attempt[] };
 
 export interface Api {
   ask(question: string, previous?: string): Promise<PlanReply>;
   replan(ticket: string, kind: "error" | "empty" | "guard", detail: string): Promise<PlanReply>;
-  narrate(ticket: string, columns: string[], facts: Record<string, string>): Promise<NarrateReply>;
+  narrate(ticket: string, columns: string[], facts: Record<string, string>, lang?: "en" | "ur"): Promise<NarrateReply>;
 }
 
 export type Step = "guard" | "plan" | "check" | "run" | "replan" | "narrate";
@@ -57,6 +57,8 @@ export type Answer = {
   follow_up?: boolean;
   /** Set when the answer was prepared by the publish job (its data build time). */
   prepared?: string;
+  /** Language of the answer sentence: "ur" when narrated in Urdu (Urdu page). */
+  lang?: "en" | "ur";
 };
 
 const blank = (question: string): Answer => ({
@@ -84,7 +86,15 @@ function stop(a: Answer, r: PlanReply): Answer | null {
 
 export async function askQuestion(
   question: string,
-  deps: { api: Api; db: Db; ctx: AskContext; serialize?: Serialize; onStep?: (s: Step) => void; previous?: string },
+  deps: {
+    api: Api;
+    db: Db;
+    ctx: AskContext;
+    serialize?: Serialize;
+    onStep?: (s: Step) => void;
+    previous?: string;
+    lang?: "en" | "ur";
+  },
 ): Promise<Answer> {
   const { api, db, ctx, onStep = () => {} } = deps;
   const serialize = deps.serialize ?? serializeWith(db);
@@ -145,13 +155,16 @@ export async function askQuestion(
   a.truncated = result.truncated;
   a.n = result.rows.length;
   const facts = factsFrom(result.columns, result.rows, ctx.max_fact_rows);
-  a.answer = render("The query returned {row_count} row(s).", facts);
+  const urdu = deps.lang === "ur";
+  a.answer = render(urdu ? "نتیجے میں {row_count} قطاریں آئیں۔" : "The query returned {row_count} row(s).", facts);
+  a.lang = urdu ? "ur" : "en";
   if (result.rows.length) {
     onStep("narrate");
-    const nr = await api.narrate(reply.ticket!, result.columns, facts);
+    const nr = await api.narrate(reply.ticket!, result.columns, facts, deps.lang);
     a.attempts.push(...(nr.attempts ?? []));
     if (nr.status === "narrated" && nr.text) {
       a.answer = render(nr.text, facts);
+      a.lang = nr.lang === "ur" ? "ur" : "en";
       a.narrated = true;
       if (nr.model) a.models.push(nr.model);
     }

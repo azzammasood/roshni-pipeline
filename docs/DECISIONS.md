@@ -2,6 +2,36 @@
 
 Newest first. Format: date — decision — why.
 
+## 2026-11-28 (reviewer round: correctness, measurement, Urdu answers)
+- **Next.js 16.4.6** (critical advisories in 16.4.0 for the image optimizer and Server Actions; the
+  static site used neither, but `npm audit` must be clean).
+- **Prepared answers are checked** against their golden reference (execution match) before they
+  are published; a mismatch is dropped and asked live instead.
+- **Digest:** "no"/"none" count as numbers: allowed only when a count is zero, and zero counts
+  stay placeholders.
+- **Eval interval grouped by question** (bootstrap over the 35 questions, paraphrases grouped):
+  the honest, wider interval, shown next to the per-item one. Export 1.14.0.
+- **Backup models scored:** one per Sunday in turn, on its own free tokens.
+- **Router scored on the golden set:** every golden question and paraphrase must stay with the
+  planner except the documented forecast case. It found two misroutes (bills, other companies'
+  areas), now excluded.
+- **News places** measured on a labelled set (12 live headlines, 9 hard cases): precision and
+  recall 1.00 after rules for "KE", Hyderabad in India, common-word IBC names, split IBCs, and
+  near-spellings of a name that matched exactly.
+- **Browser tests in CI** (Playwright: prepared answer, personal routing, equity link, no sideways
+  scroll at 375 px) and an **Ask Roshni health check** in the watchdog (failed plans > 20 % or
+  median planning > 8 s with at least 5 questions: issue `ask-health`).
+- **Opt-in question sharing:** a down vote may share its question ("kept 30 days, reviewed, may
+  be published in the public test set"). Off until the ASK_ADMIN_TOKEN secret exists; candidates
+  land in evals/candidates.yml with personal-looking questions dropped; nothing joins the golden
+  set without review.
+- **Urdu answers:** the Urdu page asks for Urdu narration, checked by check_prose_ur (Urdu digits,
+  number words except the six/twelve-hour schedules, causal and "actual" words, Urdu script);
+  Python and TypeScript pinned by parity cases. Prepared answers carry an Urdu sentence too. The
+  English digit rule is now ASCII-only, like JavaScript's.
+- **MCP without a clone** (`uvx`), allowlist from the bundle; not hosted (no free host fits
+  DuckDB).
+
 ## 2026-11-27 (AI features round 2, one Groq account)
 - **Owner:** implement every reviewer point and new feature, planned around a single free Groq
   account (no second accounts: against provider terms, and one ban would take Ask Roshni down).

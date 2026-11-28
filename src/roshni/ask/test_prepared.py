@@ -20,10 +20,20 @@ def test_prepared_keeps_answered_questions_only(monkeypatch):
                          sql="select 1", columns=["ibc", "n"], rows=[["IBC A", Decimal("10.25")]],
                          narrated_by="groq/qwen/qwen3.8-27b")  # fmt: skip
 
-    doc = prepared.prepare(FakeCon(), None, items, layer=object(), ask=ask, log=lambda *_: None)
+    from types import SimpleNamespace
+
+    golden = [{"question": "q1", "sql": "ref", "expect": "answer"}]
+    monkeypatch.setattr(prepared.evaluate, "load_items", lambda paraphrases=True: golden)
+    ref = SimpleNamespace(columns=["ibc", "n"], rows=[("IBC A", Decimal("10.25"))])
+    doc = prepared.prepare(FakeCon(), None, items, layer=object(), ask=ask, log=lambda *_: None,
+                           reference=lambda sql: ref)  # fmt: skip
     assert [i["id"] for i in doc["items"]] == ["a"]
     assert doc["items"][0]["rows"] == [["IBC A", "10.3"]]
     assert doc["items"][0]["narrated"] and doc["built_at"] == "2026-11-27 08:00 PKT"
+    wrong = SimpleNamespace(columns=["ibc", "n"], rows=[("IBC B", 3)])
+    doc = prepared.prepare(FakeCon(), None, items, layer=object(), ask=ask, log=lambda *_: None,
+                           reference=lambda sql: wrong)  # fmt: skip
+    assert doc["items"] == []  # a wrong answer is dropped, never published
 
 
 def test_every_prepared_question_is_in_the_golden_set():

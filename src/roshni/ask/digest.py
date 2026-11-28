@@ -29,8 +29,18 @@ NOT_SCHEDULED = re.compile(
 )
 
 
+ZERO_WORDS = re.compile(r"\b(no|none|nil|zero|nothing)\b", re.I)
+
+
 def check_digest(text: str, facts: dict[str, str]) -> list[str]:
     problems = engine.check_prose(text, facts, QUESTION)
+    # "no shutdowns" is a number: allowed only when some count really is zero, and then the
+    # sentence must still carry each count as a placeholder.
+    if ZERO_WORDS.search(text) and not any(v == "0" for v in facts.values()):
+        problems.append('"no"/"none" stands for zero, and no count is zero')
+    missing = [k for k, v in facts.items() if v == "0" and "{" + k + "}" not in text]
+    if ZERO_WORDS.search(text) and missing:
+        problems.append(f"write zero counts as placeholders, not words: {missing}")
     if not re.search(r"\bscheduled\b", text, re.I):
         problems.append('say "scheduled"')
     if m := NOT_SCHEDULED.search(text):

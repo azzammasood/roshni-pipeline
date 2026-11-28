@@ -134,6 +134,13 @@ jobs:
         run: |
           bash .github/scripts/notice-issue.sh "publish" data/notices/ask-eval.md
           bash .github/scripts/notice-issue.sh "publish" data/notices/heal-eval.md
+      # Questions visitors chose to share with a down vote (opt-in) -> evals/candidates.yml, for
+      # review; committed with the eval records. Off without the ASK_ADMIN_TOKEN secret.
+      - name: Shared questions -> eval candidates
+        continue-on-error: true
+        run: uv run roshni ask-shared
+        env:
+          ASK_ADMIN_TOKEN: ${{ secrets.ASK_ADMIN_TOKEN }}
       # Persist the decisions so each name is decided once (an LLM must not re-decide daily).
       - name: Commit review decisions, effective dates, parser aliases and eval records
         # The identity is for the whole step: `git pull --rebase` replays the commit when main

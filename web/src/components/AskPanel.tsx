@@ -101,12 +101,12 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
       if (item && p) {
         setQuestion(item.question);
         setAsked(item.question);
-        setAnswer(toAnswer(item, p.built_at));
+        setAnswer(toAnswer(item, p.built_at, locale));
         setTrack({ at: 4, state: "done", replanned: false });
         requestAnimationFrame(() => result.current?.scrollIntoView({ block: "start" }));
       }
     });
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     engineListeners.add(setEngine);
@@ -174,7 +174,7 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
     setMine(false);
     setLoadError(false);
     setAsked(item.question);
-    setAnswer(toAnswer(item, prepared.built_at));
+    setAnswer(toAnswer(item, prepared.built_at, locale));
     setTrack({ at: 4, state: "done", replanned: false });
     reveal();
     return true;
@@ -205,6 +205,7 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
         serialize: opened.serialize,
         onStep,
         previous: previous?.ticket,
+        lang: locale === "ur" ? "ur" : "en",
       });
       setPrevious(null);
       setAnswer(a);
@@ -515,7 +516,7 @@ function AnswerView({
       <h2 id="ask-answer" className="sr-only">
         {t.answerTitle}
       </h2>
-      <p className="ask-answer-text headline" lang="en" dir="ltr">
+      <p className="ask-answer-text headline" lang={a.lang ?? "en"} dir={a.lang === "ur" ? "rtl" : "ltr"}>
         <span className="ask-answer-mark">{a.answer}</span>
       </p>
       {a.follow_up && <p className="kicker">{t.followUpDone}</p>}

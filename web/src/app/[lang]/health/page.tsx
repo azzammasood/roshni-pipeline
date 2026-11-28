@@ -449,6 +449,21 @@ function AskSection({
                   {fill(t.askRollingCi, { lo: n(r.ci_low_pct), hi: n(r.ci_high_pct) }, locale)}
                 </span>
               </p>
+              {r.by_question && (
+                <p className="text-sm max-w-prose">
+                  {fill(
+                    t.askByQuestion,
+                    {
+                      s: n(r.by_question.score_pct),
+                      lo: n(r.by_question.ci_low_pct),
+                      hi: n(r.by_question.ci_high_pct),
+                      q: n(r.by_question.questions),
+                      i: n(r.by_question.items),
+                    },
+                    locale,
+                  )}
+                </p>
+              )}
               <p className="text-sm max-w-prose">
                 {fill(
                   t.askRolling,

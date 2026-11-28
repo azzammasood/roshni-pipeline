@@ -4,9 +4,12 @@
 //                     previous = the visitor's own earlier ticket (10 min): a follow-up question
 //                     planned with that question and plan as context, held here, not sent by
 //                     the browser
-//   POST /v1/feedback {ticket, vote, reason?}         -> one up/down vote per answer (counts only)
+//   POST /v1/feedback {ticket, vote, reason?, share?} -> one up/down vote per answer (counts
+//                     only); share: true with a down vote keeps that question (opt-in, 30 days)
+//   GET  /v1/shared   (Authorization: Bearer <admin>) -> the shared questions, for the publish job
 //   POST /v1/replan   {ticket, kind, detail}          -> one corrected plan for that question
-//   POST /v1/narrate  {ticket, columns, facts}        -> one checked narration for that question
+//   POST /v1/narrate  {ticket, columns, facts, lang?} -> one checked narration for that question
+//                     (lang "ur": written in Urdu, checked by checkProseUr)
 //   GET  /v1/quota                                    -> questions left today
 //   GET  /v1/stats                                    -> daily usage counts (no text, no ids)
 //
@@ -15,8 +18,9 @@
 // the browser) and the caps. Numbers in answers come from the browser's query result; the
 // narration may only refer to them by placeholder and is checked here before it is returned.
 import { type Attempt, type ChainDeps, CONFIG, complete, guardScore, parseJson, tokens } from "./chain";
-import { checkProse, pyColumns } from "./prose";
+import { checkProse, checkProseUr, pyColumns } from "./prose";
 import { type Admission, type Limits, MAX_REPLANS, type Msg, type Remaining, type Ticket } from "./quota";
+import type { SharedQuestion } from "./shared";
 import { BUCKETS_S, type Day, type Event, FEEDBACK_REASONS, STATS_DAYS } from "./stats";
 
 export type Context = {
@@ -24,6 +28,8 @@ export type Context = {
   built_at: string | null;
   planner_system: string;
   narrator_system: string;
+  /** Urdu narrator prompt (bundle since 2026-11-28); Urdu narration is off without it. */
+  narrator_system_ur?: string;
   feedback: { error: string; empty: string; guard: string };
   max_fact_rows: number;
   max_question_chars: number;
@@ -38,6 +44,8 @@ export interface QuotaApi {
   ticket(id: string, visitor: string): Promise<Ticket | null>;
   record(e: Event): Promise<void>;
   stats(): Promise<{ days: (Day & { date: string })[]; limits: Limits }>;
+  share(q: Omit<SharedQuestion, "date">, id: string): Promise<void>;
+  shared(): Promise<SharedQuestion[]>;
 }
 
 export type Deps = {
@@ -47,7 +55,19 @@ export type Deps = {
   visitor: string;
   newId: () => string;
   now: () => number;
+  /** Bearer token for GET /v1/shared; the endpoint is absent when unset. */
+  adminToken?: string;
+  /** The request's Authorization header. */
+  authorization?: string | null;
 };
+
+/** Constant-time comparison of two strings. */
+function same(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let d = 0;
+  for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return d === 0;
+}
 
 const MAX_BODY = 16_384;
 const MAX_SQL = 4_000;
@@ -129,6 +149,11 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
   if (req.method === "GET" && path === "/v1/quota") {
     return json(200, { status: "ok", remaining: await deps.quota.remaining(deps.visitor) });
   }
+  if (req.method === "GET" && path === "/v1/shared") {
+    const token = deps.adminToken ?? "";
+    if (!token || !same(deps.authorization ?? "", `Bearer ${token}`)) return json(404, { status: "not_found" });
+    return json(200, { status: "ok", questions: await deps.quota.shared() });
+  }
   if (req.method === "GET" && path === "/v1/stats") {
     const s = await deps.quota.stats();
     const caps = {
@@ -199,6 +224,17 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
     t.voted = true;
     await deps.quota.putTicket(id, t);
     await deps.quota.record({ kind: "feedback", vote, reason: vote === "down" ? reason : undefined });
+    if (vote === "down" && body.share === true) {
+      const lastPlan = t.history.findLast((m) => m.role === "assistant");
+      let sql: string | null = null;
+      try {
+        sql = lastPlan ? String(parseJson(lastPlan.content).sql ?? "") || null : null;
+      } catch {
+        sql = null;
+      }
+      await deps.quota.share({ question: t.question, reason: reason ?? "", sql }, deps.newId());
+      return json(200, { status: "recorded", shared: true });
+    }
     return json(200, { status: "recorded" });
   }
 
@@ -214,13 +250,14 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
     if (!("row_count" in facts)) return json(400, { status: "bad_request", reason: "facts need row_count" });
     t.narrated = true;
     await deps.quota.putTicket(id, t);
+    const urdu = body.lang === "ur" && Boolean(ctx.narrator_system_ur);
     const listing = Object.entries(facts).map(([k, v]) => `${k} = ${v}`).join("\n");
     const comp = await complete(
       [
-        { role: "system", content: ctx.narrator_system },
+        { role: "system", content: urdu ? ctx.narrator_system_ur! : ctx.narrator_system },
         { role: "user", content: `Question: ${t.question}\nColumns: ${pyColumns(columns)}\nFacts (id = value; write the id, never the value):\n${listing}` },
       ],
-      (text) => checkProse(text, facts, t.question),
+      (text) => (urdu ? checkProseUr : checkProse)(text, facts, t.question),
       deps.chain,
     );
     const used = tokens(comp.attempts);
@@ -229,7 +266,7 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
     await deps.quota.record({ kind: "narrate", outcome, latency_s: latency(comp.attempts), tokens: used });
     const attempts = publicAttempts(comp.attempts, "narrate");
     if (comp.text === null) return json(200, { status: "template", attempts });
-    return json(200, { status: "narrated", text: comp.text, model: comp.model, attempts });
+    return json(200, { status: "narrated", text: comp.text, model: comp.model, lang: urdu ? "ur" : "en", attempts });
   }
 
   return json(404, { status: "not_found" });

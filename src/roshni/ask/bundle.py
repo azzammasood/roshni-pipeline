@@ -52,6 +52,7 @@ def build_bundle(
         "built_at": engine.built_at(con),
         "planner_system": engine.PLANNER.format(context=layer.prompt_context(con)),
         "narrator_system": engine.NARRATOR,
+        "narrator_system_ur": engine.NARRATOR_UR,
         "feedback": {
             "error": engine.FEEDBACK_ERROR,
             "empty": engine.FEEDBACK_EMPTY,

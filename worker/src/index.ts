@@ -3,6 +3,7 @@
 import { DurableObject } from "cloudflare:workers";
 import { type Context, type QuotaApi, handle, loadContext } from "./app";
 import { type Limits, Quota, type Store, type Ticket, visitorId } from "./quota";
+import { type SharedQuestion, Shared } from "./shared";
 import { type Event, Stats } from "./stats";
 
 export interface Env {
@@ -17,6 +18,8 @@ export interface Env {
   SITE_PER_MINUTE: string;
   SITE_PER_DAY: string;
   SITE_TOKENS_PER_DAY: string;
+  /** Optional secret: enables GET /v1/shared for the publish job. */
+  ASK_ADMIN_TOKEN?: string;
 }
 
 const limits = (env: Env): Limits => ({
@@ -40,10 +43,12 @@ function storeOf(storage: DurableObjectStorage): Store {
 export class QuotaDO extends DurableObject<Env> implements QuotaApi {
   private q: Quota;
   private s: Stats;
+  private sh: Shared;
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     const store = storeOf(ctx.storage);
     this.s = new Stats(store);
+    this.sh = new Shared(store);
     this.q = new Quota(store, limits(env), this.s);
   }
   private async tidy() {
@@ -71,9 +76,16 @@ export class QuotaDO extends DurableObject<Env> implements QuotaApi {
   async stats() {
     return { days: await this.s.days(Date.now()), limits: limits(this.env) };
   }
+  share(q: Omit<SharedQuestion, "date">, id: string) {
+    return this.sh.add(q, Date.now(), id);
+  }
+  shared() {
+    return this.sh.list(Date.now());
+  }
   async alarm() {
     await this.q.sweep(Date.now());
     await this.s.sweep(Date.now());
+    await this.sh.sweep(Date.now());
     await this.ctx.storage.setAlarm(Date.now() + 3_600_000);
   }
 }
@@ -106,6 +118,8 @@ export default {
         visitor: await visitorId(ip, env.VISITOR_SALT, Date.now()),
         newId: () => crypto.randomUUID(),
         now: () => Date.now(),
+        adminToken: env.ASK_ADMIN_TOKEN,
+        authorization: req.headers.get("Authorization"),
       });
     } catch (e) {
       console.error("ask error", (e as Error).message);

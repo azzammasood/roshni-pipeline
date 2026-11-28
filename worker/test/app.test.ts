@@ -3,6 +3,7 @@ import { type Context, type Deps, handle, planProblems } from "../src/app";
 import type { ChainConfig } from "../src/chain";
 import { complete } from "../src/chain";
 import { MapStore, Quota } from "../src/quota";
+import { Shared } from "../src/shared";
 import { Stats } from "../src/stats";
 
 const CFG: ChainConfig = {
@@ -21,6 +22,7 @@ const CTX: Context = {
   built_at: "2026-11-25 08:00 PKT",
   planner_system: "PLANNER",
   narrator_system: "NARRATOR",
+  narrator_system_ur: "NARRATOR_UR",
   feedback: { error: "That query failed in DuckDB: {err}. Fix it.", empty: "No rows.", guard: "Refused: {problems}. Fix it." },
   max_fact_rows: 10,
   max_question_chars: 500,
@@ -37,6 +39,7 @@ function setup(script: (b: Body, url: string) => Response, limits = {}) {
   let now = Date.parse("2026-11-25T10:00:00Z");
   const lim = { visitorPerMinute: 3, visitorPerDay: 10, globalPerMinute: 6, globalPerDay: 150, tokensPerDay: 450_000, ...limits };
   const st = new Stats(store);
+  const sh = new Shared(store);
   const q = new Quota(store, lim, st);
   const deps = (visitor = "v1"): Deps => ({
     visitor,
@@ -48,6 +51,8 @@ function setup(script: (b: Body, url: string) => Response, limits = {}) {
       ticket: (id, v) => q.ticket(id, v, now),
       record: (e) => st.record(e, now),
       stats: async () => ({ days: await st.days(now), limits: lim }),
+      share: (x, id) => sh.add(x, now, id),
+      shared: () => sh.list(now),
     },
     chain: {
       keys: { GROQ_API_KEY: "k", OPENROUTER_API_KEY: "k" },
@@ -61,12 +66,15 @@ function setup(script: (b: Body, url: string) => Response, limits = {}) {
     },
     context: async () => CTX,
     newId: () => "ticket-1",
+    adminToken: "secret-token",
+    authorization: auth,
     now: () => now,
   });
   const post = (path: string, body: unknown, visitor?: string) =>
     handle(new Request(`https://w.test${path}`, { method: "POST", body: JSON.stringify(body) }), deps(visitor)).then(async (r) => ({ status: r.status, body: (await r.json()) as Record<string, any> }));
-  const get = (path: string, visitor?: string) =>
-    handle(new Request(`https://w.test${path}`), deps(visitor)).then(async (r) => ({ status: r.status, body: (await r.json()) as Record<string, any> }));
+  let auth: string | null = null;
+  const get = (path: string, visitor?: string, authorization: string | null = null) =>
+    handle(new Request(`https://w.test${path}`), (() => { auth = authorization; return deps(visitor); })()).then(async (r) => ({ status: r.status, body: (await r.json()) as Record<string, any> }));
   return { calls, post, get, store, tick: (ms: number) => (now += ms), deps };
 }
 
@@ -282,5 +290,38 @@ describe("feedback", () => {
     await s.post("/v1/ask", { question: "q" });
     await s.post("/v1/feedback", { ticket: "ticket-1", vote: "down", reason: "my number is 0300..." });
     expect((await s.get("/v1/stats")).body.days.at(-1).feedback).toEqual({ up: 0, down: 1, reasons: {} });
+  });
+});
+
+describe("shared questions (opt-in)", () => {
+  it("keeps a question only when the visitor shares it with a down vote", async () => {
+    const s = setup((b) => (b.model === "guard" ? reply("0") : reply(PLAN)));
+    await s.post("/v1/ask", { question: "Which IBC leads?" });
+    await s.post("/v1/feedback", { ticket: "ticket-1", vote: "down", reason: "wrong", share: true });
+    const r = await s.get("/v1/shared", undefined, "Bearer secret-token");
+    expect(r.body.questions).toMatchObject([{ question: "Which IBC leads?", reason: "wrong", sql: expect.stringContaining("mart_ke_ibc_equity") }]);
+  });
+
+  it("keeps nothing without the opt-in, and hides the list without the token", async () => {
+    const s = setup((b) => (b.model === "guard" ? reply("0") : reply(PLAN)));
+    await s.post("/v1/ask", { question: "q" });
+    await s.post("/v1/feedback", { ticket: "ticket-1", vote: "down", reason: "wrong" });
+    expect((await s.get("/v1/shared", undefined, "Bearer secret-token")).body.questions).toEqual([]);
+    expect((await s.get("/v1/shared")).status).toBe(404);
+    expect((await s.get("/v1/shared", undefined, "Bearer wrong-token")).status).toBe(404);
+  });
+});
+
+describe("Urdu narration", () => {
+  const facts = { row_count: "2", r1_ibc: "IBC - A", r1_n: "10" };
+  it("writes in Urdu with the Urdu prompt and check", async () => {
+    let n = 0;
+    const prose = ["{r1_ibc} has {r1_n} feeders.", "{r1_ibc} میں سب سے زیادہ {r1_n} فیڈر ہیں۔"];
+    const s = setup((b) => (b.model === "guard" ? reply("0") : b.response_format ? reply(PLAN) : reply(prose[n++])));
+    await s.post("/v1/ask", { question: "Which IBC leads?" });
+    const r = await s.post("/v1/narrate", { ticket: "ticket-1", columns: ["ibc", "n"], facts, lang: "ur" });
+    expect(r.body).toMatchObject({ status: "narrated", lang: "ur", text: prose[1] });
+    expect(r.body.attempts[0].outcome).toContain("not written in Urdu");
+    expect(s.calls.at(-1)!.body.messages[0].content).toBe("NARRATOR_UR");
   });
 });

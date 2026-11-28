@@ -58,6 +58,31 @@ def rolling(data: dict, model: str, day: date, days: int = WINDOW_DAYS) -> dict 
             "ci_high_pct": high}  # fmt: skip
 
 
+def by_question(items: dict[str, bool], resamples: int = 2000, seed: int = 7) -> dict | None:
+    """Score per golden question, not per item: a question's paraphrases (`<id>~<n>`) move
+    together, so counting them as independent items makes the interval too narrow. Each
+    question scores the share of its variants passed; the interval is a percentile bootstrap
+    over questions (fixed seed, so a record rebuilds the same)."""
+    import random
+
+    groups: dict[str, list[bool]] = {}
+    for item, ok in items.items():
+        groups.setdefault(item.split("~")[0], []).append(bool(ok))
+    if not groups:
+        return None
+    scores = [sum(v) / len(v) for v in groups.values()]
+    rng = random.Random(seed)
+    means = sorted(sum(rng.choice(scores) for _ in scores) / len(scores) for _ in range(resamples))
+    pct = lambda x: round(100 * x, 1)  # noqa: E731
+    return {
+        "questions": len(scores),
+        "items": len(items),
+        "score_pct": pct(sum(scores) / len(scores)),
+        "ci_low_pct": pct(means[int(0.025 * resamples)]),
+        "ci_high_pct": pct(means[int(0.975 * resamples) - 1]),
+    }
+
+
 def rolling_regressions(data: dict, day: date, floor_pct: float, name: str) -> list[str]:
     """A notice when a model's pooled score over the last week is below the floor."""
     lines = []

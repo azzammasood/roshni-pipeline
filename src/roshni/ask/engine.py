@@ -144,6 +144,63 @@ def check_prose(text: str, facts: dict[str, str], question: str = "") -> list[st
     return problems
 
 
+# Urdu narration (site's Urdu page, prepared answers): the same rules, written in Urdu, and the
+# same checks plus Urdu digits, number words, causal words and "actual/measured" words. Values
+# stay as placeholders, so names and numbers appear exactly as in the result.
+NARRATOR_UR = (
+    NARRATOR
+    + """
+5. Write in Urdu, in Urdu script. Keep every placeholder exactly as given, e.g. {r1_ibc}; do not
+   translate, transliterate or repeat a value. No digits of any script and no Urdu number words."""
+)
+_UR = "\u0600-\u06ff"
+UR_DIGITS = re.compile("[\u06f0-\u06f9\u0660-\u0669]")
+_UR_WORDS = lambda ws: re.compile(rf"(?<![{_UR}])({'|'.join(ws)})(?![{_UR}])")  # noqa: E731
+UR_NUMBER_WORDS = _UR_WORDS(["ایک", "دو", "تین", "چار", "پانچ", "چھ", "سات", "آٹھ", "نو", "دس",
+                             "گیارہ", "بارہ", "بیس", "تیس", "چالیس", "پچاس", "سو", "ہزار",
+                             "لاکھ", "کروڑ", "صفر", "آدھا", "آدھی", "درجن"])  # fmt: skip
+UR_CAUSAL = _UR_WORDS(["کیونکہ", "کی وجہ سے", "وجہ سے", "باعث", "نتیجے میں", "سبب",
+                       "ناانصافی", "امتیازی", "جان بوجھ کر", "سزا"])  # fmt: skip
+UR_MEASURED = _UR_WORDS(["اصل", "حقیقی", "حقیقتاً", "واقعی", "ناپی", "ناپا", "پیمائش"])
+
+
+def check_prose_ur(text: str, facts: dict[str, str], question: str = "") -> list[str]:
+    """check_prose plus the Urdu rules; the prose must be in Urdu script."""
+    problems = check_prose(text, facts, question)
+    bare = PLACEHOLDER.sub("", text)
+    if UR_DIGITS.search(bare):
+        problems.append("contains an Urdu digit")
+    allowed = set(UR_NUMBER_WORDS.findall(question)) | {"چھ", "بارہ"}  # six/twelve-hour schedules
+    if any(w not in allowed for w in UR_NUMBER_WORDS.findall(bare)):
+        problems.append("contains an Urdu number word")
+    if UR_CAUSAL.search(bare):
+        problems.append("Urdu causal or accusatory wording")
+    if UR_MEASURED.search(bare):
+        problems.append("Urdu wording calls a schedule an actual/measured outage")
+    if not re.search(f"[{_UR}]", bare):
+        problems.append("not written in Urdu")
+    return problems
+
+
+def narrate_ur(question: str, res, cfg: ChainConfig, transport=None) -> tuple[str | None, str]:
+    """An Urdu narration of an answered result, or (None, "") if no model passes the check."""
+    facts = facts_from(res)
+    listing = "\n".join(f"{k} = {v}" for k, v in facts.items())
+    comp = complete(
+        [
+            {"role": "system", "content": NARRATOR_UR},
+            {"role": "user", "content": f"Question: {question}\nColumns: {res.columns}\n"
+             f"Facts (id = value; write the id, never the value):\n{listing}"},
+        ],
+        cfg,
+        lambda t: check_prose_ur(t, facts, question),
+        transport=transport,
+    )  # fmt: skip
+    if comp.text is None:
+        return None, ""
+    return " ".join(render(comp.text, facts).split()), comp.accepted.label
+
+
 def render(text: str, facts: dict[str, str]) -> str:
     return PLACEHOLDER.sub(lambda m: facts[m.group(1)], text).strip()
 

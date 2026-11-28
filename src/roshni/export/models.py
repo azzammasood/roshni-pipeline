@@ -14,7 +14,8 @@ from pydantic import BaseModel, ConfigDict, Field
 # 1.9.0: health, the pipeline's own run records (export/health.py); 1.10.0: health.healing
 # 1.11.0: health.ask_eval; 1.12.0: AskEval.rolling (pooled 7-day score of the daily slices)
 # 1.13.0: NewsHeadline.places (names found in the headline, resolve/news_places.py)
-SCHEMA_VERSION = "1.13.0"
+# 1.14.0: RollingScore.by_question (interval over golden questions, paraphrases grouped)
+SCHEMA_VERSION = "1.14.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -499,6 +500,19 @@ class RollingScore(Strict):
     score_pct: float
     ci_low_pct: float = Field(description="95% Wilson interval, lower bound")
     ci_high_pct: float = Field(description="95% Wilson interval, upper bound")
+    by_question: "QuestionScore | None" = Field(
+        default=None, description="Latest result per item, grouped by golden question (1.14.0)"
+    )
+
+
+class QuestionScore(Strict):
+    """Score with paraphrases grouped under their question; bootstrap 95% interval."""
+
+    questions: int
+    items: int
+    score_pct: float
+    ci_low_pct: float
+    ci_high_pct: float
 
 
 class AskEval(Strict):

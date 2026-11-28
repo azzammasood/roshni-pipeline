@@ -19,6 +19,7 @@ import duckdb
 
 from roshni.ask import engine, semantic, sqlguard
 from roshni.fetch.http import PoliteClient
+from roshni.paths import CONFIG_DIR, DATA_DIR, REPO_ROOT
 
 SITE = "https://azzammasood.github.io/roshni-site/data/v1/ask"
 UA = "roshni-pipeline/0.1 (+https://github.com/azzammasood/roshni-pipeline)"
@@ -40,6 +41,29 @@ def fetch_bundle(cache: Path, base: str = SITE) -> Path:
     return day
 
 
+def default_cache() -> Path:
+    """data/mcp-cache in a checkout; the user's cache folder when installed with uvx."""
+    if (REPO_ROOT / "pyproject.toml").exists():
+        return DATA_DIR / "mcp-cache"
+    return Path.home() / ".cache" / "roshni-mcp"
+
+
+def layer_from_context(ctx: dict) -> semantic.SemanticLayer:
+    """The allowlist from the bundle itself, for an install without config/ (uvx): the same
+    tables and columns the site's guard allows; descriptions are in the schema notes."""
+    tables = {
+        name: semantic.Table(
+            name=name,
+            description="",
+            note="",
+            columns={c: semantic.Column(c) for c in t["columns"]},
+            caveats=list(t.get("caveats", [])),
+        )
+        for name, t in ctx["tables"].items()
+    }
+    return semantic.SemanticLayer(rules=[], tables=tables)
+
+
 def open_bundle(folder: Path) -> tuple[duckdb.DuckDBPyConnection, dict]:
     ctx = json.loads((folder / "context.json").read_text(encoding="utf-8"))
     con = duckdb.connect()
@@ -55,7 +79,14 @@ class Roshni:
 
     def __init__(self, con: duckdb.DuckDBPyConnection, ctx: dict, layer=None):
         self.con, self.ctx = con, ctx
-        self.layer = layer or semantic.load()
+        if layer is None:
+            have_config = (CONFIG_DIR / "semantic_layer.yml").exists()
+            layer = semantic.load() if have_config else layer_from_context(ctx)
+        self.layer = layer
+
+    def schema_notes(self) -> str:
+        """The planner's description of every table, column and rule (from the bundle)."""
+        return self.ctx.get("planner_system", "")
 
     def list_tables(self) -> list[dict]:
         out = []
@@ -107,6 +138,10 @@ def serve(tools: Roshni) -> None:
     @server.tool(description="Roshni's tables: description, rows, columns and caveats.")
     def list_tables() -> list[dict]:
         return tools.list_tables()
+
+    @server.tool(description="Every table and column described, with the rules for using them.")
+    def schema_notes() -> str:
+        return tools.schema_notes()
 
     @server.tool(description="Run one read-only SELECT on Roshni's tables (max 200 rows).")
     def query(sql: str) -> dict:

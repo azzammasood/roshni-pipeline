@@ -890,7 +890,8 @@
       "refused_wrongly": "It should have answered"
     },
     "askRollingCi": "(95% interval {lo}–{hi}%)",
-    "askRolling": "Last 7 days: {p} of {t} answers right over {runs} daily runs ({from} to {to}). Each run scores one seventh of the {all} golden questions and paraphrases, so the week covers every one; the interval shows how much a score from this many questions can move by chance."
+    "askRolling": "Last 7 days: {p} of {t} answers right over {runs} daily runs ({from} to {to}). Each run scores one seventh of the {all} golden questions and paraphrases, so the week covers every one; the interval shows how much a score from this many questions can move by chance.",
+    "askByQuestion": "Grouped by question: {s}% (95% interval {lo}–{hi}%) over the {q} golden questions, from each of {i} items' latest result. Paraphrases of one question tend to pass or fail together, so this wider interval is the honest one."
   },
   "ask": {
     "kicker": "Ask the data",
@@ -984,7 +985,7 @@
       "slow": "Too slow",
       "refused_wrongly": "It should have answered"
     },
-    "voteThanks": "Thank you. Only the count is kept, not your question.",
+    "voteThanks": "Thank you. Only the count is kept, and your question only if you ticked the box.",
     "voteClosed": "Voting on this answer has closed (10 minutes).",
     "traceTitle": "Every step of this answer",
     "traceScreen": "Injection screen",
@@ -1003,7 +1004,8 @@
     "followUpPlaceholder": "For example: and which has the fewest?",
     "followUpDone": "Answered as a follow-up to your previous question",
     "busyPrepared": "The free models are busy or today's limit is reached. These questions were answered this morning by the same pipeline and cost nothing to open:",
-    "preparedNote": "Prepared this morning from the data built {at}, by the same pipeline and checks as a live question. Opening it used none of your questions."
+    "preparedNote": "Prepared this morning from the data built {at}, by the same pipeline and checks as a live question. Opening it used none of your questions.",
+    "shareQuestion": "Also share this question so it can become a test question (kept 30 days, reviewed, and it may be published in the project's public test set). Leave it unticked if it has personal details."
   },
   "aiDiagram": {
     "title": "Ask Roshni, end to end",
