@@ -86,6 +86,7 @@ class ItemScore:
     tokens: int
     latency_s: float
     detail: str = ""
+    narrated_ur: bool | None = None  # Urdu narration passed check_prose_ur (answered items)
 
 
 @dataclass
@@ -113,6 +114,11 @@ class ModelScore:
                     if i.status == "answered"
                 ]
             ),  # fmt: skip
+            "narration_ur_pass_pct": (
+                round(100 * sum(bool(x) for x in ur) / len(ur), 1)
+                if (ur := [i.narrated_ur for i in ans if i.narrated_ur is not None])
+                else None
+            ),
             "tokens_total": sum(i.tokens for i in self.items),
             "latency_mean_s": round(statistics.mean(lat), 2) if lat else None,
             "latency_p95_s": round(lat[min(len(lat), math.ceil(0.95 * len(lat))) - 1], 2)
@@ -178,8 +184,12 @@ def evaluate(
         else:
             ok = res.status == "blocked"
         narrated = res.narrated_by != "template"
+        # The Urdu page's sentence for the same result, under the Urdu rules (~500 tokens).
+        narrated_ur = None
+        if expect == "answer" and res.status == "answered" and res.rows:
+            narrated_ur = engine.narrate_ur(it["question"], res, pinned)[0] is not None
         s = ItemScore(it["id"], expect, res.status, ok, narrated, res.tokens, res.latency_s,
-                      detail[:300])  # fmt: skip
+                      detail[:300], narrated_ur)  # fmt: skip
         score.items.append(s)
         log(f"  {'PASS' if ok else 'FAIL'} {it['id']:28} {res.status:8} {res.tokens:5} tok "
             f"{res.latency_s:5.2f}s {detail[:90]}")  # fmt: skip
@@ -220,8 +230,8 @@ def write(scores: list[ModelScore], out_dir: Path) -> tuple[Path, Path]:
 
 
 RECORD_KEYS = ("model", "items", "overall_pct", "answer_accuracy_pct", "refusal_accuracy_pct",
-               "guard_accuracy_pct", "narration_pass_pct", "tokens_total", "latency_mean_s",
-               "latency_p95_s")  # fmt: skip
+               "guard_accuracy_pct", "narration_pass_pct", "narration_ur_pass_pct",
+               "tokens_total", "latency_mean_s", "latency_p95_s")  # fmt: skip
 
 
 def record(

@@ -300,10 +300,14 @@ warehouse still held the August schedule.
 - Free-plan token limits allow roughly 40 questions a day per Groq model; the daily eval slice
   and the prepared answers use about 70K of the main model's 200K tokens, the backups absorb
   peaks, and when every model is busy the page offers the prepared answers.
-- Urdu answers are checked by rules (digits, number words, causal and "actual" words, script);
-  the golden set scores English answers only.
+- Urdu answers are checked by rules (digits, number words, causal and "actual" words, script).
+  The daily eval also writes the Urdu sentence for every answered item and reports how often it
+  passes (`narration_ur_pass_pct`, export 1.15.0, on /health/); whether the Urdu reads well is
+  still a human judgement.
 - The browser tests in CI mock the Worker and do not load DuckDB; the full path is checked on
-  the live site and by the parity tests.
+  the live site and by the parity tests. They also run axe (WCAG 2 A and AA) on the Ask page with
+  an answer open (English and Urdu, phone and desktop), the architecture page and /health/, in
+  light and dark.
 - The Worker accepts requests from the site's origin and caps them per visitor and per day; an
   Origin header is not authentication, so a determined caller can use up the day's free quota.
   The cost is Ask Roshni being busy until midnight (Pakistan time), never money.

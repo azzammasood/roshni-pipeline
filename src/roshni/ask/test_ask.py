@@ -391,3 +391,15 @@ def test_bundle_types_match_the_warehouse(tmp_path):
         ).fetchall()
         for col, typ, *_ in got:
             assert typ == bundle._NARROW.get(want[col], want[col]), (name, col, typ, want[col])
+
+
+def test_urdu_narration_passes_only_urdu_without_numbers(con):
+    sql = "select ibc, share_12h_pct from mart_ke_ibc_equity order by share_12h_pct desc"
+    t, _ = _transport({"answerable": True, "sql": sql}, "{r1_ibc} has the highest share.")
+    r = engine.ask("Which IBC has the highest share?", con, _cfg(), LAYER, transport=t)
+    ur = "{r1_ibc} میں بارہ گھنٹے والے فیڈروں کا حصہ سب سے زیادہ {r1_share_12h_pct} ہے۔"
+    t_ur, _ = _transport({}, ur)
+    text, model = engine.narrate_ur(r.question, r, _cfg(), transport=t_ur)
+    assert text and "IBC - A" in text and model == "groq/m1"
+    t_en, _ = _transport({}, "{r1_ibc} has the highest share.")
+    assert engine.narrate_ur(r.question, r, _cfg(), transport=t_en) == (None, "")

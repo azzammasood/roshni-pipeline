@@ -486,6 +486,7 @@ function AskSection({
                   <th scope="col">{t.askRefuse}</th>
                   <th scope="col">{t.askGuard}</th>
                   <th scope="col">{t.askNarrated}</th>
+                  <th scope="col">{t.askNarratedUr}</th>
                   <th scope="col">{t.evalTokens}</th>
                   <th scope="col">{t.evalSeconds}</th>
                   <th scope="col">{t.askP95}</th>
@@ -502,6 +503,7 @@ function AskSection({
                     <td className="tabular-nums">{pct(r.refusal_accuracy_pct)}</td>
                     <td className="tabular-nums">{pct(r.guard_accuracy_pct)}</td>
                     <td className="tabular-nums">{pct(r.narration_pass_pct)}</td>
+                    <td className="tabular-nums">{pct(r.narration_ur_pass_pct ?? null)}</td>
                     <td className="tabular-nums">{n(r.tokens_total)}</td>
                     <td className="tabular-nums">{r.latency_mean_s === null ? "–" : n(r.latency_mean_s)}</td>
                     <td className="tabular-nums">{r.latency_p95_s === null ? "–" : n(r.latency_p95_s)}</td>
