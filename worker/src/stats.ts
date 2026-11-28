@@ -22,6 +22,8 @@ export type Day = {
   narrate_latency: number[];
   /** Visitors' votes on answers (one per question), with a fixed reason for a down vote. */
   feedback?: { up: number; down: number; reasons: Partial<Record<FeedbackReason, number>> };
+  /** Questions refused because the Turnstile check failed or was missing. */
+  challenged?: number;
 };
 
 export const FEEDBACK_REASONS = ["wrong", "unclear", "refused_wrongly", "slow"] as const;
@@ -33,7 +35,8 @@ export type Event =
   | { kind: "blocked" }
   | { kind: "plan"; outcome: "planned" | "refused" | "failed"; replan?: "error" | "empty" | "guard"; latency_s: number; tokens: number }
   | { kind: "narrate"; outcome: "narrated" | "template"; latency_s: number; tokens: number }
-  | { kind: "feedback"; vote: "up" | "down"; reason?: FeedbackReason };
+  | { kind: "feedback"; vote: "up" | "down"; reason?: FeedbackReason }
+  | { kind: "challenge" };
 
 const empty = (): Day => ({
   questions: 0,
@@ -78,6 +81,9 @@ export function apply(d: Day, e: Event): Day {
       d[e.outcome]++;
       d.tokens += e.tokens;
       d.narrate_latency[bucket(e.latency_s)]++;
+      break;
+    case "challenge":
+      d.challenged = (d.challenged ?? 0) + 1;
       break;
     case "feedback": {
       const f = (d.feedback ??= { up: 0, down: 0, reasons: {} });

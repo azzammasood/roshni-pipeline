@@ -46,6 +46,23 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: printf '%s' "$GROQ_API_KEY" | npx wrangler secret put GROQ_API_KEY
+      # The chain's last fallback (OpenRouter's free models) needs its key in the Worker too;
+      # without it the Worker skipped OpenRouter (found by the model probe, 2026-11-28).
+      - name: Copy the OpenRouter key into the Worker
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then echo "no OPENROUTER_API_KEY secret"; exit 0; fi
+          printf '%s' "$OPENROUTER_API_KEY" | npx wrangler secret put OPENROUTER_API_KEY
+      # Optional: Cloudflare Turnstile's secret key (repo secret TURNSTILE_SECRET). With it the
+      # Worker needs a valid widget token before it spends a question; the site key is the repo
+      # variable TURNSTILE_SITE_KEY, read by publish.yml at build time.
+      - name: Copy the Turnstile secret into the Worker
+        env:
+          TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET }}
+        run: |
+          if [ -z "$TURNSTILE_SECRET" ]; then echo "no TURNSTILE_SECRET secret: Turnstile stays off"; exit 0; fi
+          printf '%s' "$TURNSTILE_SECRET" | npx wrangler secret put TURNSTILE_SECRET
       # Optional: the token the publish job uses to read visitors' shared questions (opt-in,
       # GET /v1/shared). Without the repo secret the endpoint stays off.
       - name: Copy the admin token into the Worker

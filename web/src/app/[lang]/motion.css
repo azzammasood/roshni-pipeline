@@ -1967,3 +1967,8 @@ html[dir="rtl"] .ai-node:hover .ai-card {
   display: grid;
   gap: 0.4rem;
 }
+
+/* Cloudflare Turnstile's widget, shown only when Cloudflare asks for an interaction. */
+.ask-human:empty {
+  display: none;
+}

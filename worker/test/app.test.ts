@@ -67,15 +67,18 @@ function setup(script: (b: Body, url: string) => Response, limits = {}) {
     context: async () => CTX,
     newId: () => "ticket-1",
     adminToken: "secret-token",
+    verifyHuman: human,
     authorization: auth,
     now: () => now,
   });
   const post = (path: string, body: unknown, visitor?: string) =>
     handle(new Request(`https://w.test${path}`, { method: "POST", body: JSON.stringify(body) }), deps(visitor)).then(async (r) => ({ status: r.status, body: (await r.json()) as Record<string, any> }));
   let auth: string | null = null;
+  let human: ((t: string) => Promise<boolean>) | undefined;
   const get = (path: string, visitor?: string, authorization: string | null = null) =>
     handle(new Request(`https://w.test${path}`), (() => { auth = authorization; return deps(visitor); })()).then(async (r) => ({ status: r.status, body: (await r.json()) as Record<string, any> }));
-  return { calls, post, get, store, tick: (ms: number) => (now += ms), deps };
+  const turnstileOn = () => (human = async (t: string) => t === "good-token");
+  return { calls, post, get, store, tick: (ms: number) => (now += ms), deps, turnstileOn };
 }
 
 const PLAN = JSON.stringify({ answerable: true, sql: "select ibc, n from mart_ke_ibc_equity order by n desc limit 3", reason: "top IBCs" });
@@ -323,5 +326,23 @@ describe("Urdu narration", () => {
     expect(r.body).toMatchObject({ status: "narrated", lang: "ur", text: prose[1] });
     expect(r.body.attempts[0].outcome).toContain("not written in Urdu");
     expect(s.calls.at(-1)!.body.messages[0].content).toBe("NARRATOR_UR");
+  });
+});
+
+describe("Turnstile", () => {
+  it("asks for a valid token before spending a question, when switched on", async () => {
+    const s = setup((b) => (b.model === "guard" ? reply("0") : reply(PLAN)));
+    s.turnstileOn();
+    expect((await s.post("/v1/ask", { question: "q" })).body.status).toBe("challenge");
+    expect((await s.post("/v1/ask", { question: "q", turnstile: "forged" })).status).toBe(403);
+    expect(s.calls).toHaveLength(0); // no model was called
+    expect((await s.get("/v1/quota")).body.remaining.visitor_today).toBe(10); // nothing spent
+    expect((await s.post("/v1/ask", { question: "q", turnstile: "good-token" })).body.status).toBe("planned");
+    expect((await s.get("/v1/stats")).body.days.at(-1).challenged).toBe(2);
+  });
+
+  it("is off without a secret", async () => {
+    const s = setup((b) => (b.model === "guard" ? reply("0") : reply(PLAN)));
+    expect((await s.post("/v1/ask", { question: "q" })).body.status).toBe("planned");
   });
 });

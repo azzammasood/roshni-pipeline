@@ -1,6 +1,8 @@
 // Ask Roshni API (no Cloudflare imports here, so it runs under plain vitest).
 //
-//   POST /v1/ask      {question, previous?}           -> guard, plan  (costs one question);
+//   POST /v1/ask      {question, previous?, turnstile?} -> guard, plan  (costs one question);
+//                     with Turnstile on (TURNSTILE_SECRET), a valid single-use token is needed
+//                     first, so a script cannot spend the day's free questions;
 //                     previous = the visitor's own earlier ticket (10 min): a follow-up question
 //                     planned with that question and plan as context, held here, not sent by
 //                     the browser
@@ -59,6 +61,8 @@ export type Deps = {
   adminToken?: string;
   /** The request's Authorization header. */
   authorization?: string | null;
+  /** Cloudflare Turnstile check of a widget token; absent when Turnstile is off. */
+  verifyHuman?: (token: string) => Promise<boolean>;
 };
 
 /** Constant-time comparison of two strings. */
@@ -174,6 +178,13 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
     const question = typeof body.question === "string" ? body.question.trim() : "";
     if (!question || question.length > ctx.max_question_chars)
       return json(400, { status: "bad_request", reason: `Questions must be 1 to ${ctx.max_question_chars} characters.` });
+    if (deps.verifyHuman) {
+      const token = typeof body.turnstile === "string" ? body.turnstile.slice(0, 2048) : "";
+      if (!token || !(await deps.verifyHuman(token))) {
+        await deps.quota.record({ kind: "challenge" });
+        return json(403, { status: "challenge", reason: "The browser check did not pass; please ask again." });
+      }
+    }
     const adm = await deps.quota.admit(deps.visitor);
     if (!adm.ok) return json(429, { status: "capped", reason: adm.reason, retry_after_s: adm.retry_after_s, remaining: adm.remaining });
     const score = await guardScore(question, deps.chain);
