@@ -308,6 +308,12 @@ warehouse still held the August schedule.
   the live site and by the parity tests. They also run axe (WCAG 2 A and AA) on the Ask page with
   an answer open (English and Urdu, phone and desktop), the architecture page and /health/, in
   light and dark.
-- The Worker accepts requests from the site's origin and caps them per visitor and per day; an
-  Origin header is not authentication, so a determined caller can use up the day's free quota.
-  The cost is Ask Roshni being busy until midnight (Pakistan time), never money.
+- The Worker accepts requests from the site's origin and caps them per visitor and per day. An
+  Origin header is not authentication, so with the repo secret TURNSTILE_SECRET (and the repo
+  variable TURNSTILE_SITE_KEY) every question first needs a single-use Cloudflare Turnstile
+  token issued on the site's host; failed checks spend nothing and are counted (`challenged`).
+  Without them a determined caller could use up the day's free quota (never money).
+- `roshni probe-models` (workflow probe-models.yml, Saturdays and on demand) runs three golden
+  items through every model in the chain on the published bundle, so a retired model or a
+  missing key shows before visitors need the fallback. The first run found the Worker had no
+  OpenRouter key; worker-deploy now copies it.

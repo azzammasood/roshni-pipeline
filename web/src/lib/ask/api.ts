@@ -18,7 +18,12 @@ async function call<T>(path: string, body?: unknown): Promise<T> {
 }
 
 export const workerApi: Api = {
-  ask: (question, previous) => call<PlanReply>("/v1/ask", previous ? { question, previous } : { question }),
+  ask: (question, previous, turnstile) =>
+    call<PlanReply>("/v1/ask", {
+      question,
+      ...(previous ? { previous } : {}),
+      ...(turnstile ? { turnstile } : {}),
+    }),
   replan: (ticket, kind, detail) => call<PlanReply>("/v1/replan", { ticket, kind, detail }),
   narrate: (ticket, columns, facts, lang) =>
     call<NarrateReply>("/v1/narrate", lang === "ur" ? { ticket, columns, facts, lang } : { ticket, columns, facts }),

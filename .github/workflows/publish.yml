@@ -204,6 +204,7 @@ jobs:
           NEXT_PUBLIC_LOCALES: en,ur
           # Ask Roshni Worker (worker/, deployed with `npx wrangler deploy`; docs/ask-roshni.md).
           NEXT_PUBLIC_ASK_URL: https://roshni-ask.ahmaduzzammasood.workers.dev
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
         run: |
           npm ci
           npm run sync-data

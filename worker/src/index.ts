@@ -20,6 +20,27 @@ export interface Env {
   SITE_TOKENS_PER_DAY: string;
   /** Optional secret: enables GET /v1/shared for the publish job. */
   ASK_ADMIN_TOKEN?: string;
+  /** Cloudflare Turnstile secret key: when set, /v1/ask needs a valid widget token. */
+  TURNSTILE_SECRET?: string;
+}
+
+/** Turnstile siteverify: the token must be valid, unused, and issued on the site's own host. */
+function turnstile(env: Env, ip: string) {
+  if (!env.TURNSTILE_SECRET) return undefined;
+  const hosts = env.ALLOWED_ORIGINS.split(",").map((o) => o.trim().replace(/^https?:\/\//, "")).filter(Boolean);
+  return async (token: string) => {
+    try {
+      const form = new FormData();
+      form.append("secret", env.TURNSTILE_SECRET!);
+      form.append("response", token);
+      form.append("remoteip", ip);
+      const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: form });
+      const v = (await r.json()) as { success?: boolean; hostname?: string };
+      return v.success === true && hosts.includes(v.hostname ?? "");
+    } catch {
+      return false;
+    }
+  };
 }
 
 const limits = (env: Env): Limits => ({
@@ -120,6 +141,7 @@ export default {
         now: () => Date.now(),
         adminToken: env.ASK_ADMIN_TOKEN,
         authorization: req.headers.get("Authorization"),
+        verifyHuman: turnstile(env, ip),
       });
     } catch (e) {
       console.error("ask error", (e as Error).message);

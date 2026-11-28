@@ -1006,7 +1006,9 @@
     "followUpDone": "Answered as a follow-up to your previous question",
     "busyPrepared": "The free models are busy or today's limit is reached. These questions were answered this morning by the same pipeline and cost nothing to open:",
     "preparedNote": "Prepared this morning from the data built {at}, by the same pipeline and checks as a live question. Opening it used none of your questions.",
-    "shareQuestion": "Also share this question so it can become a test question (kept 30 days, reviewed, and it may be published in the project's public test set). Leave it unticked if it has personal details."
+    "shareQuestion": "Also share this question so it can become a test question (kept 30 days, reviewed, and it may be published in the project's public test set). Leave it unticked if it has personal details.",
+    "challenge": "The browser check did not pass, so the question was not sent. Please try again.",
+    "turnstileNote": "Questions sent to the models pass Cloudflare Turnstile first, a privacy-preserving bot check that most visitors never see."
   },
   "aiDiagram": {
     "title": "Ask Roshni, end to end",

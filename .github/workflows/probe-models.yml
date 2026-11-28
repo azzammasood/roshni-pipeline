@@ -1,0 +1,27 @@
+# Is every model in the Ask Roshni chain working? `roshni probe-models` runs three golden items
+# (two answers, one refusal, plus the Urdu sentence) through each model pinned on its own, on the
+# site's published bundle (no warehouse). On demand, and weekly on Saturdays so a retired model
+# or a lost key is found before the Sunday backup eval. A failing model fails the run, which
+# GitHub reports to the owner. About 10K tokens per model.
+name: probe-models
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 5 * * 6" # Saturdays 05:20 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3 # exact: no major tags since v8
+      - run: uv sync --frozen
+      - run: uv run roshni probe-models
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}

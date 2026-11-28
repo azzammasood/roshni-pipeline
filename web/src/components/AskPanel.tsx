@@ -17,6 +17,7 @@ import { ASK_URL, quota, workerApi } from "@/lib/ask/api";
 import { openDb } from "@/lib/ask/duckdb";
 import { isPersonalSchedule } from "@/lib/ask/intent";
 import { type Prepared, loadPrepared, toAnswer } from "@/lib/ask/prepared";
+import { SITE_KEY, turnstileToken, warmTurnstile } from "@/lib/ask/turnstile";
 import { type Answer, type Remaining, type Step, askQuestion } from "@/lib/ask/session";
 import { num } from "@/lib/format";
 import { AnswerChart, Feedback, Trace, VoiceButton, followUpLabel } from "@/components/AskExtras";
@@ -57,6 +58,7 @@ const setEngineState = (e: Engine) => {
   engineListeners.forEach((l) => l(e));
 };
 function warm() {
+  warmTurnstile();
   if (engineState !== "idle") return;
   setEngineState("warming");
   openDb().then(
@@ -85,6 +87,7 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
   const [engine, setEngine] = useState<Engine>(engineState);
   const result = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
+  const human = useRef<HTMLDivElement>(null);
   const n = (v: number) => num(v, locale);
 
   useEffect(() => {
@@ -196,7 +199,10 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
     try {
       if (!ready) onStep("load");
       if (engineState === "idle") setEngineState("warming");
-      const opened = await openDb();
+      const [opened, token] = await Promise.all([
+        openDb(),
+        human.current ? turnstileToken(human.current, locale).catch(() => "") : Promise.resolve(null),
+      ]);
       setEngineState("ready");
       const a = await askQuestion(text, {
         api: workerApi,
@@ -206,6 +212,7 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
         onStep,
         previous: previous?.ticket,
         lang: locale === "ur" ? "ur" : "en",
+        turnstile: token,
       });
       setPrevious(null);
       setAnswer(a);
@@ -308,6 +315,12 @@ export function AskPanel({ locale, t, lt }: { locale: string; t: T; lt: LeadStri
               <span>{busy ? t.asking : t.ask}</span>
             </button>
           </div>
+          {SITE_KEY && (
+            <>
+              <div ref={human} className="ask-human" />
+              <p className="ask-hint">{t.turnstileNote}</p>
+            </>
+          )}
           <div className="ask-hint-row">
             <p className="ask-hint">{t.hintEnter}</p>
             <p className={`ask-engine is-${engine}`} aria-live="polite">
@@ -456,8 +469,10 @@ function AnswerView({
         ? t.refused
         : a.status === "blocked"
           ? t.blocked
-          : a.status === "unavailable"
-            ? t.unavailable
+            : a.status === "unavailable"
+              ? t.unavailable
+            : a.status === "challenge"
+              ? t.challenge
             : a.status === "capped"
               ? a.reason === "visitor_minute"
                 ? fill(t.cappedMinute, { m: minutes(a.retry_after_s) }, locale)

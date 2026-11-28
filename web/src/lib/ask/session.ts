@@ -8,7 +8,7 @@ import { type AskContext, type Db, type Serialize, guard, run, serializeWith } f
 export type Attempt = { stage: string; model: string; outcome: string; tokens: number; latency_s: number };
 export type Remaining = { visitor_today: number; site_today: number };
 export type PlanReply = {
-  status: "planned" | "refused" | "blocked" | "failed" | "capped" | "used" | "unknown_ticket" | "bad_request" | "error";
+  status: "planned" | "refused" | "blocked" | "failed" | "capped" | "used" | "unknown_ticket" | "bad_request" | "error" | "challenge";
   ticket?: string;
   sql?: string;
   reason?: string;
@@ -24,7 +24,7 @@ export type PlanReply = {
 export type NarrateReply = { status: "narrated" | "template" | string; text?: string; model?: string; lang?: string; attempts?: Attempt[] };
 
 export interface Api {
-  ask(question: string, previous?: string): Promise<PlanReply>;
+  ask(question: string, previous?: string, turnstile?: string | null): Promise<PlanReply>;
   replan(ticket: string, kind: "error" | "empty" | "guard", detail: string): Promise<PlanReply>;
   narrate(ticket: string, columns: string[], facts: Record<string, string>, lang?: "en" | "ur"): Promise<NarrateReply>;
 }
@@ -36,7 +36,7 @@ export type TraceEvent = { step: "guard" | "run" | "replan"; ok: boolean; ms: nu
 
 export type Answer = {
   question: string;
-  status: "answered" | "refused" | "blocked" | "failed" | "capped" | "unavailable";
+  status: "answered" | "refused" | "blocked" | "failed" | "capped" | "unavailable" | "challenge";
   answer: string;
   narrated: boolean;
   sql: string | null;
@@ -80,6 +80,7 @@ function stop(a: Answer, r: PlanReply): Answer | null {
     a.status = r.status;
     a.retry_after_s = r.retry_after_s;
   } else if (r.status === "error") a.status = "unavailable";
+  else if (r.status === "challenge") a.status = "challenge";
   else a.status = "failed";
   return a;
 }
@@ -94,13 +95,14 @@ export async function askQuestion(
     onStep?: (s: Step) => void;
     previous?: string;
     lang?: "en" | "ur";
+    turnstile?: string | null;
   },
 ): Promise<Answer> {
   const { api, db, ctx, onStep = () => {} } = deps;
   const serialize = deps.serialize ?? serializeWith(db);
   const a = blank(question.trim());
   onStep("plan");
-  let reply = await api.ask(a.question, deps.previous);
+  let reply = await api.ask(a.question, deps.previous, deps.turnstile);
   if (reply.guard !== undefined) a.guard_score = reply.guard;
   if (reply.follow_up) a.follow_up = true;
   if (reply.ticket) a.ticket = reply.ticket;

@@ -576,6 +576,51 @@ def ask_prepared(
     typer.echo(f"wrote {dp}")
 
 
+@app.command("probe-models")
+def probe_models(
+    bundle: Path = typer.Option(None, help="Local export ask/ folder (default: the live site's)."),
+    pause: float = typer.Option(4.0, help="Seconds between questions."),
+) -> None:
+    """Check every model in config/llm.yml answers through the full Ask pipeline.
+
+    Three golden items per model (two answers, one refusal), run on the site's published bundle
+    (no warehouse needed), each model pinned on its own, with the Urdu sentence too. Exits 1 when
+    a model produced no accepted reply at all (provider down, key missing, model retired)."""
+    import sys
+
+    from roshni import mcp_server
+    from roshni.ask import evaluate, semantic
+    from roshni.llm.chain import ChainConfig
+
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    ids = ["ke_hours_split", "ibc_most_feeders", "refuse_actual"]
+    items = [i for i in evaluate.load_items(paraphrases=False) if i["id"] in ids]
+    cfg = ChainConfig.load()
+    cfg.max_wait_s = 30
+    folder = bundle or mcp_server.fetch_bundle(mcp_server.default_cache())
+    con, _ctx = mcp_server.open_bundle(folder)
+    layer = semantic.load()
+    rows, dead = [], []
+    for m in cfg.labels():
+        typer.echo(f"== {m}")
+        sc = evaluate.evaluate(con, cfg, m, items, layer, pause, typer.echo)
+        s = sc.summary()
+        passed = sum(i.correct for i in sc.items)
+        if all(i.status in ("failed", "blocked") for i in sc.items):
+            dead.append(m)
+        rows.append(
+            f"| {m} | {passed}/{len(sc.items)} | {s['narration_pass_pct']} | "
+            f"{s['narration_ur_pass_pct']} | {s['tokens_total']:,} | {s['latency_mean_s']} |"
+        )
+    typer.echo(
+        "\n| model | passed | narrated % | Urdu % | tokens | mean s |\n|---|---|---|---|---|---|"
+    )
+    typer.echo("\n".join(rows))
+    if dead:
+        typer.echo(f"no accepted reply from: {', '.join(dead)}")
+        raise typer.Exit(1)
+
+
 @app.command("ask-shared")
 def ask_shared() -> None:
     """Add visitors' shared questions (opt-in, Worker GET /v1/shared) to evals/candidates.yml."""
