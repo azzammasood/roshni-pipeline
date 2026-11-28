@@ -504,16 +504,24 @@ def ask_eval(
     cfg = ChainConfig.load()
     cfg.max_wait_s = 65  # wait out a per-minute limit instead of failing over during an eval
     items = [i for i in evaluate.load_items() if not only or i["id"] in only]
+    backups: list[str] = []
     if daily:
         from datetime import date
 
-        items = evaluate.daily_slice(items, date.today())
+        today = date.today()
+        items = evaluate.daily_slice(items, today)
         typer.echo(f"daily slice: {len(items)} items")
+        # Visitors meet the backup models whenever the main one is busy, so each is scored too:
+        # one per Sunday, in turn (its own free daily tokens, not the main model's).
+        rest = cfg.labels()[1:]
+        if today.weekday() == 6 and rest:
+            backups = [rest[today.isocalendar().week % len(rest)]]
+            typer.echo(f"backup model this week: {backups[0]}")
     layer = semantic.load()
     con = sqlguard.connect(db or engine.default_db())
     scores = []
     try:
-        for m in model or (cfg.labels()[:1] if main else cfg.labels()):
+        for m in model or (cfg.labels()[:1] + backups if main else cfg.labels()):
             typer.echo(f"== {m}")
             scores.append(evaluate.evaluate(con, cfg, m, items, layer, pause, typer.echo))
     finally:
@@ -568,16 +576,30 @@ def ask_prepared(
     typer.echo(f"wrote {dp}")
 
 
+@app.command("ask-shared")
+def ask_shared() -> None:
+    """Add visitors' shared questions (opt-in, Worker GET /v1/shared) to evals/candidates.yml."""
+    import os
+
+    from roshni.ask import shared
+
+    token = os.environ.get("ASK_ADMIN_TOKEN", "")
+    if not token:
+        typer.echo("no ASK_ADMIN_TOKEN: sharing is off, nothing to read")
+        return
+    added, dropped = shared.merge(shared.fetch(token))
+    typer.echo(f"candidates: {added} added, {dropped} dropped (personal details)")
+
+
 @app.command("mcp")
 def mcp(
     bundle: Path = typer.Option(None, help="Local export ask/ folder (default: the live site's)."),
     cache: Path = typer.Option(None, help="Download cache (default: data/mcp-cache)."),
 ) -> None:
-    """Serve Roshni's tables to MCP clients over stdio (needs: uv sync --group mcp)."""
+    """Serve Roshni's tables to MCP clients over stdio (needs the mcp package)."""
     from roshni import mcp_server
-    from roshni.paths import DATA_DIR
 
-    folder = bundle or mcp_server.fetch_bundle(cache or DATA_DIR / "mcp-cache")
+    folder = bundle or mcp_server.fetch_bundle(cache or mcp_server.default_cache())
     con, ctx = mcp_server.open_bundle(folder)
     mcp_server.serve(mcp_server.Roshni(con, ctx))
 

@@ -42,6 +42,11 @@ jobs:
           MAX_AGE_HOURS: "36"
           NOTIFY: azzammasood
         run: bash .github/scripts/stale-site.sh
+      - name: Check that Ask Roshni answers (failed plans, planning time)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTIFY: azzammasood
+        run: bash .github/scripts/ask-health.sh
 
   keep-enabled:
     if: github.event.schedule != '45 */3 * * *'

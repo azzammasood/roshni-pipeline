@@ -8,6 +8,8 @@ export type PreparedItem = {
   tag: string;
   question: string;
   answer: string;
+  /** Urdu sentence (Urdu page), checked like the Worker's Urdu narration; absent if none passed. */
+  answer_ur?: string;
   narrated: boolean;
   model: string;
   sql: string | null;
@@ -31,11 +33,13 @@ export function loadPrepared(): Promise<Prepared | null> {
   return cache;
 }
 
-export function toAnswer(p: PreparedItem, builtAt: string | null): Answer {
+export function toAnswer(p: PreparedItem, builtAt: string | null, locale = "en"): Answer {
+  const ur = locale === "ur" && Boolean(p.answer_ur);
   return {
     question: p.question,
     status: "answered",
-    answer: p.answer,
+    answer: ur ? p.answer_ur! : p.answer,
+    lang: ur ? "ur" : "en",
     narrated: p.narrated,
     sql: p.sql,
     columns: p.columns,

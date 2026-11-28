@@ -43,10 +43,11 @@ const REASONS = ["wrong", "unclear", "slow"] as const;
 
 export function Feedback({ ticket, refused, t }: { ticket?: string; refused?: boolean; t: T }) {
   const [state, setState] = useState<"open" | "why" | "sent" | "closed">("open");
+  const [share, setShare] = useState(false);
   if (!ticket) return null;
   const send = async (vote: "up" | "down", reason?: string) => {
     setState("sent");
-    const r = await sendFeedback(ticket, vote, reason);
+    const r = await sendFeedback(ticket, vote, reason, vote === "down" && share);
     if (r.status !== "recorded") setState("closed");
   };
   if (state === "sent") return <p className="ask-vote text-sm" aria-live="polite">{t.voteThanks}</p>;
@@ -67,11 +68,17 @@ export function Feedback({ ticket, refused, t }: { ticket?: string; refused?: bo
           </button>
         </>
       ) : (
-        reasons.map((r) => (
-          <button key={r} type="button" className="chip px-2 py-0.5" onClick={() => send("down", r)}>
-            {t.voteReasons[r]}
-          </button>
-        ))
+        <>
+          {reasons.map((r) => (
+            <button key={r} type="button" className="chip px-2 py-0.5" onClick={() => send("down", r)}>
+              {t.voteReasons[r]}
+            </button>
+          ))}
+          <label className="flex items-start gap-2 basis-full max-w-prose text-xs">
+            <input type="checkbox" checked={share} onChange={(e) => setShare(e.target.checked)} className="mt-0.5" />
+            <span>{t.shareQuestion}</span>
+          </label>
+        </>
       )}
     </div>
   );

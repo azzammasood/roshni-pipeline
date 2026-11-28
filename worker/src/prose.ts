@@ -48,3 +48,26 @@ export function checkProse(text: string, facts: Record<string, string>, question
 /** Python's repr of a list of column names, as the narrator prompt shows them. */
 export const pyColumns = (cols: string[]) =>
   `[${cols.map((c) => (c.includes("'") && !c.includes('"') ? `"${c}"` : `'${c.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`)).join(", ")}]`;
+
+// Urdu narration: port of engine.check_prose_ur (parity cases: prose_ur in ask_parity.json).
+const UR = "\\u0600-\\u06ff";
+const urWords = (ws: string[]) => new RegExp(`(?<![${UR}])(${ws.join("|")})(?![${UR}])`, "g");
+const UR_DIGITS = /[۰-۹٠-٩]/;
+const UR_NUMBER_WORDS = urWords([
+  "ایک", "دو", "تین", "چار", "پانچ", "چھ", "سات", "آٹھ", "نو", "دس", "گیارہ", "بارہ", "بیس", "تیس",
+  "چالیس", "پچاس", "سو", "ہزار", "لاکھ", "کروڑ", "صفر", "آدھا", "آدھی", "درجن",
+]);
+const UR_CAUSAL = urWords(["کیونکہ", "کی وجہ سے", "وجہ سے", "باعث", "نتیجے میں", "سبب", "ناانصافی", "امتیازی", "جان بوجھ کر", "سزا"]);
+const UR_MEASURED = urWords(["اصل", "حقیقی", "حقیقتاً", "واقعی", "ناپی", "ناپا", "پیمائش"]);
+
+export function checkProseUr(text: string, facts: Record<string, string>, question = ""): string[] {
+  const problems = checkProse(text, facts, question);
+  const bare = text.replace(PLACEHOLDER, "");
+  if (UR_DIGITS.test(bare)) problems.push("contains an Urdu digit");
+  const allowed = new Set([...all(UR_NUMBER_WORDS, question), "چھ", "بارہ"]);
+  if (all(UR_NUMBER_WORDS, bare).some((w) => !allowed.has(w))) problems.push("contains an Urdu number word");
+  if (new RegExp(UR_CAUSAL.source).test(bare)) problems.push("Urdu causal or accusatory wording");
+  if (new RegExp(UR_MEASURED.source).test(bare)) problems.push("Urdu wording calls a schedule an actual/measured outage");
+  if (!new RegExp(`[${UR}]`).test(bare)) problems.push("not written in Urdu");
+  return problems;
+}

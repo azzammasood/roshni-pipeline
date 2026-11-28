@@ -24,7 +24,7 @@ CAUSAL = re.compile(
     r"driv(e|es|en|ing) by|"
     r"discriminat\w*|unfair\w*|punish\w*|deliberate\w*|target(s|ed|ing)?)\b"
 )
-NUMBER = re.compile(r"\d+(?:[.,]\d+)*")
+NUMBER = re.compile(r"\d+(?:[.,]\d+)*", re.ASCII)  # as JS \d; Urdu digits: check_prose_ur
 
 _UNITS = [
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",

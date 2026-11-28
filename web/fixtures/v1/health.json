@@ -1,6 +1,6 @@
 {
  "schema_id": "roshni/health/v1",
- "schema_version": "1.12.0",
+ "schema_version": "1.14.0",
  "generated_at": "2026-11-25T12:33:18Z",
  "last_updated": "2026-11-24T10:53:11.638884Z",
  "label": "Records of the pipeline's own runs, not load-shedding data",
@@ -347,7 +347,14 @@
      "total": 104,
      "score_pct": 95.2,
      "ci_low_pct": 89.2,
-     "ci_high_pct": 97.9
+     "ci_high_pct": 97.9,
+     "by_question": {
+      "questions": 35,
+      "items": 104,
+      "score_pct": 96.7,
+      "ci_low_pct": 91.0,
+      "ci_high_pct": 100.0
+     }
     }
    ]
   }

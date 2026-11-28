@@ -95,6 +95,18 @@ def serialize(sql: str) -> str:
     return json.dumps(json.loads(raw), sort_keys=True, separators=(",", ":"))
 
 
+PROSE_UR = [
+    ("{r1_ibc} میں بارہ گھنٹے والے فیڈروں کا حصہ {r1_share_12h_pct} ہے۔", ""),
+    ("{r1_ibc} میں ۹۰ فیصد فیڈر ہیں۔", ""),
+    ("{r1_ibc} میں تین علاقے آگے ہیں۔", ""),
+    ("{r1_ibc} نقصانات کی وجہ سے آگے ہے۔", ""),
+    ("{r1_ibc} میں اصل بندش سب سے زیادہ ہوئی۔", ""),
+    ("{r1_ibc} has the highest share.", ""),
+    ("شائع شدہ شیڈول کے مطابق {r1_ibc} سب سے آگے ہے۔", ""),
+    ("{r1_ibc} میں نو بجے کے بعد شیڈول ہے۔", ""),
+]
+
+
 def cases() -> dict:
     layer = semantic.load()
     golden = [it["sql"] for it in evaluate.load_items() if it["expect"] == "answer"]
@@ -103,6 +115,10 @@ def cases() -> dict:
         "prose": [
             {"text": t, "question": q, "problems": engine.check_prose(t, FACTS, q)}
             for t, q in PROSE
+        ],
+        "prose_ur": [
+            {"text": t, "question": q, "problems": engine.check_prose_ur(t, FACTS, q)}
+            for t, q in PROSE_UR
         ],
         "fmt": [
             {

@@ -667,10 +667,57 @@
       "title": "QuarantineReason",
       "type": "object"
     },
+    "QuestionScore": {
+      "additionalProperties": false,
+      "description": "Score with paraphrases grouped under their question; bootstrap 95% interval.",
+      "properties": {
+        "ci_high_pct": {
+          "title": "Ci High Pct",
+          "type": "number"
+        },
+        "ci_low_pct": {
+          "title": "Ci Low Pct",
+          "type": "number"
+        },
+        "items": {
+          "title": "Items",
+          "type": "integer"
+        },
+        "questions": {
+          "title": "Questions",
+          "type": "integer"
+        },
+        "score_pct": {
+          "title": "Score Pct",
+          "type": "number"
+        }
+      },
+      "required": [
+        "questions",
+        "items",
+        "score_pct",
+        "ci_low_pct",
+        "ci_high_pct"
+      ],
+      "title": "QuestionScore",
+      "type": "object"
+    },
     "RollingScore": {
       "additionalProperties": false,
       "description": "One model's pooled score over the last 7 days of daily slices (since 1.12.0).",
       "properties": {
+        "by_question": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/QuestionScore"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Latest result per item, grouped by golden question (1.14.0)"
+        },
         "ci_high_pct": {
           "description": "95% Wilson interval, upper bound",
           "title": "Ci High Pct",

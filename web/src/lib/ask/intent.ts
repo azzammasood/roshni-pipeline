@@ -32,12 +32,21 @@ const AGGREGATE = [
   /کتنے|کتنی|کون سا|کون سی|سب سے/,
 ];
 
+// Never the schedule engine: account questions (refused by the planner; Roshni never touches
+// consumer records) and areas outside IESCO and K-Electric, which Roshni has no feeders for.
+const ELSEWHERE = [
+  /\b(bill|bills|reference number|ref no|consumer number|meter|account)\b/,
+  /\b(lesco|mepco|fesco|gepco|pesco|hesco|sepco|qesco|tesco)\b/,
+  /\b(lahore|multan|faisalabad|gujranwala|sialkot|peshawar|quetta|sukkur|hyderabad|bahawalpur)\b/,
+  /بل|میٹر|ریفرنس|لاہور|ملتان|فیصل آباد|پشاور|کوئٹہ|سکھر|حیدرآباد/,
+];
+
 const any = (res: RegExp[], s: string) => res.some((r) => r.test(s));
 
 /** True when the question asks about the visitor's own supply rather than about the data. */
 export function isPersonalSchedule(question: string): boolean {
   const s = question.toLowerCase().replace(/[’`]/g, "'");
   if (!any(POWER, s)) return false;
-  if (any(AGGREGATE, s)) return false;
+  if (any(AGGREGATE, s) || any(ELSEWHERE, s)) return false;
   return any(PERSONAL, s) || any(WHEN, s);
 }

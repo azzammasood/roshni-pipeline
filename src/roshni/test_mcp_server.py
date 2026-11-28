@@ -14,7 +14,10 @@ def _bundle(tmp_path):
     con.execute(f"create table x as select {cols} from range(0)")
     con.execute("insert into x (ibc) values ('IBC A'), ('IBC B')")
     con.execute(f"copy x to '{(tmp_path / 'e.parquet').as_posix()}' (format parquet)")
-    ctx = {"built_at": "2026-11-27 08:00 PKT", "tables": {t.name: {"file": "e.parquet", "rows": 2}}}
+    ctx = {
+        "built_at": "2026-11-27 08:00 PKT",
+        "tables": {t.name: {"file": "e.parquet", "rows": 2, "columns": list(t.columns)}},
+    }
     (tmp_path / "context.json").write_text(json.dumps(ctx), encoding="utf-8")
     return mcp_server.open_bundle(tmp_path)
 
@@ -43,3 +46,14 @@ def test_files_are_off_after_loading(tmp_path):
         raise AssertionError("file access should be off")
     except duckdb.Error:
         pass
+
+
+def test_allowlist_from_the_bundle_alone(tmp_path):
+    """Installed with uvx there is no config/: the guard uses the bundle's own allowlist."""
+    con, ctx = _bundle(tmp_path)
+    tools = mcp_server.Roshni(con, ctx, layer=mcp_server.layer_from_context(ctx))
+    assert tools.query("select ibc from mart_ke_ibc_equity order by ibc")["rows"] == [
+        ["IBC A"],
+        ["IBC B"],
+    ]
+    assert not tools.query("select secret from mart_ke_ibc_equity")["ok"]

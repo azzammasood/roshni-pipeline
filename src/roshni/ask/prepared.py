@@ -2,7 +2,9 @@
 and the equity page's "Explain this" questions, answered by the same engine and checks as a
 visitor's question and written to the export as ask/prepared.json. The site shows them without
 calling the Worker, so they cost visitors nothing and still work when the free models are busy.
-Only answered questions are written; a failure leaves that question to be asked live.
+Only answers that match their golden reference are written (every prepared question is a
+golden item: its result must equal the reference query's, the eval's execution match). A
+mismatch or failure leaves that question to be asked live.
 """
 
 import json
@@ -12,7 +14,7 @@ from pathlib import Path
 import duckdb
 import yaml
 
-from roshni.ask import engine, semantic
+from roshni.ask import engine, evaluate, semantic, sqlguard
 from roshni.llm.chain import ChainConfig
 from roshni.paths import CONFIG_DIR
 
@@ -48,14 +50,29 @@ def prepare(
     layer: semantic.SemanticLayer | None = None,
     ask=engine.ask,
     log=print,
+    reference=None,
 ) -> dict:
     layer = layer or semantic.load()
+    golden = {g["question"]: g for g in evaluate.load_items(paraphrases=False)}
+    reference = reference or (lambda sql: sqlguard.run(con, sqlguard.check(sql, layer).sql))
     out = []
     for it in items:
         res = ask(it["question"], con, cfg, layer)
-        log(f"  {res.status:8} {res.tokens:5} tok {it['id']}")
+        ok = False
         if res.status == "answered":
-            out.append(entry(it, res))
+            g = golden.get(it["question"])
+            ref = reference(g["sql"]) if g and g.get("sql") else None
+            ok = ref is not None and evaluate.matches(
+                ref.columns, ref.rows, res.columns, res.rows, bool(g.get("ordered"))
+            )
+        log(f"  {res.status:8} {'match' if ok else 'DROPPED'} {res.tokens:5} tok {it['id']}")
+        if ok:
+            e = entry(it, res)
+            if cfg is not None:  # the Urdu page's sentence, under the Urdu check (~500 tokens)
+                ur, _model = engine.narrate_ur(res.question, res, cfg)
+                if ur:
+                    e["answer_ur"] = ur
+            out.append(e)
     return {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "built_at": engine.built_at(con),

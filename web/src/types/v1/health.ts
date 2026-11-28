@@ -113,6 +113,10 @@ export interface AskEvalModel {
  */
 export interface RollingScore {
   /**
+   * Latest result per item, grouped by golden question (1.14.0)
+   */
+  by_question?: QuestionScore | null;
+  /**
    * 95% Wilson interval, upper bound
    */
   ci_high_pct: number;
@@ -127,6 +131,16 @@ export interface RollingScore {
   score_pct: number;
   to_date: string;
   total: number;
+}
+/**
+ * Score with paraphrases grouped under their question; bootstrap 95% interval.
+ */
+export interface QuestionScore {
+  ci_high_pct: number;
+  ci_low_pct: number;
+  items: number;
+  questions: number;
+  score_pct: number;
 }
 export interface DbtResults {
   failed: number;

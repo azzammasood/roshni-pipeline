@@ -56,3 +56,12 @@ def test_digest_wording_must_say_scheduled():
     problems = digest.check_digest(bad, f)
     assert any("scheduled" in p for p in problems) and any("reported" in p for p in problems)
     assert digest.check_digest(good, f) == []
+
+
+def test_zero_words_need_a_zero_placeholder():
+    f = {"maint_today": "20", "shutdowns_today": "3"}
+    assert digest.check_digest("{maint_today} scheduled windows and no scheduled shutdowns.", f)
+    f0 = {"maint_today": "20", "shutdowns_today": "0"}
+    assert digest.check_digest("{maint_today} scheduled windows, no scheduled shutdowns.", f0)
+    ok = "{maint_today} scheduled windows and {shutdowns_today} scheduled shutdowns."
+    assert digest.check_digest(ok, f0) == []

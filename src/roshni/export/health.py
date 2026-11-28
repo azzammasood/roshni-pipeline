@@ -186,7 +186,12 @@ def ask_eval(path: Path = ASK_EVAL) -> m.AskEval | None:
     data = json.loads(path.read_text(encoding="utf-8"))
     run_on = date.fromisoformat(data["run_on"])
     models = sorted({p["model"] for p in data["history"] if p["date"] == data["run_on"]})
-    rolling = [r for r in (evalrecord.rolling(data, mo, run_on) for mo in models) if r]
+    rolling = []
+    for mo in models:
+        r = evalrecord.rolling(data, mo, run_on)
+        if r:
+            items = data.get("items_last", {}).get(mo, {})
+            rolling.append(r | {"by_question": evalrecord.by_question(items)})
     return m.AskEval(
         run_on=data["run_on"],
         models=data["models"],

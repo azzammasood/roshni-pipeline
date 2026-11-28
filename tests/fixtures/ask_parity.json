@@ -171,6 +171,60 @@
    ]
   }
  ],
+ "prose_ur": [
+  {
+   "text": "{r1_ibc} میں بارہ گھنٹے والے فیڈروں کا حصہ {r1_share_12h_pct} ہے۔",
+   "question": "",
+   "problems": []
+  },
+  {
+   "text": "{r1_ibc} میں ۹۰ فیصد فیڈر ہیں۔",
+   "question": "",
+   "problems": [
+    "contains an Urdu digit"
+   ]
+  },
+  {
+   "text": "{r1_ibc} میں تین علاقے آگے ہیں۔",
+   "question": "",
+   "problems": [
+    "contains an Urdu number word"
+   ]
+  },
+  {
+   "text": "{r1_ibc} نقصانات کی وجہ سے آگے ہے۔",
+   "question": "",
+   "problems": [
+    "Urdu causal or accusatory wording"
+   ]
+  },
+  {
+   "text": "{r1_ibc} میں اصل بندش سب سے زیادہ ہوئی۔",
+   "question": "",
+   "problems": [
+    "Urdu wording calls a schedule an actual/measured outage"
+   ]
+  },
+  {
+   "text": "{r1_ibc} has the highest share.",
+   "question": "",
+   "problems": [
+    "not written in Urdu"
+   ]
+  },
+  {
+   "text": "شائع شدہ شیڈول کے مطابق {r1_ibc} سب سے آگے ہے۔",
+   "question": "",
+   "problems": []
+  },
+  {
+   "text": "{r1_ibc} میں نو بجے کے بعد شیڈول ہے۔",
+   "question": "",
+   "problems": [
+    "contains an Urdu number word"
+   ]
+  }
+ ],
  "fmt": [
   {
    "value": 10.25,

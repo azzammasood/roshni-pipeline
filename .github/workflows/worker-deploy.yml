@@ -46,6 +46,14 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: printf '%s' "$GROQ_API_KEY" | npx wrangler secret put GROQ_API_KEY
+      # Optional: the token the publish job uses to read visitors' shared questions (opt-in,
+      # GET /v1/shared). Without the repo secret the endpoint stays off.
+      - name: Copy the admin token into the Worker
+        env:
+          ASK_ADMIN_TOKEN: ${{ secrets.ASK_ADMIN_TOKEN }}
+        run: |
+          if [ -z "$ASK_ADMIN_TOKEN" ]; then echo "no ASK_ADMIN_TOKEN secret: sharing stays off"; exit 0; fi
+          printf '%s' "$ASK_ADMIN_TOKEN" | npx wrangler secret put ASK_ADMIN_TOKEN
       - name: Smoke test the live Worker (no question is asked, so no quota is spent)
         run: |
           set -eu

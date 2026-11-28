@@ -3,7 +3,7 @@ export type { AreasDocument, Area } from "./areas";
 export type { DarkProfilesDocument, DarkProfile, Window } from "./dark_profiles";
 export type { EquityDocument, Equity, Anomaly, Correlation, IbcEquity, RegulatorReview, ReviewCategory, OutageBand, Report, ReportFact, SubdivisionEquity } from "./equity";
 export type { FeedersDocument, Feeder, LocalityMatch, MatchReview } from "./feeders";
-export type { HealthDocument, Health, AskEval, EvalPoint, AskEvalModel, RollingScore, DbtResults, FetchDay, Healing, LearnedAlias, HealEval, HealEvalModel, HealCheck, HealWorkbook, TableQuality, QuarantineReason, PublishRun, SizePoint } from "./health";
+export type { HealthDocument, Health, AskEval, EvalPoint, AskEvalModel, RollingScore, QuestionScore, DbtResults, FetchDay, Healing, LearnedAlias, HealEval, HealEvalModel, HealCheck, HealWorkbook, TableQuality, QuarantineReason, PublishRun, SizePoint } from "./health";
 export type { MaintenanceDocument, MaintenanceWindow } from "./maintenance";
 export type { MaintenanceUpcomingDocument, MaintenanceSlot } from "./maintenance_upcoming";
 export type { MetaDocument, Meta, SourceInfo } from "./meta";
