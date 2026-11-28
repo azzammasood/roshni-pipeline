@@ -81,7 +81,12 @@ for (const theme of ["light", "dark"] as const) {
   ] as const) {
     test(`axe: ${name}, ${theme}`, async ({ page }) => {
       await mock(page);
-      await page.addInitScript((t) => localStorage.setItem("roshni:theme", t), theme);
+      // As on every page after the first of a visit: the opening animation (decorative,
+      // aria-hidden, 3 s) is skipped, so axe does not measure text while it fades in.
+      await page.addInitScript((t) => {
+        localStorage.setItem("roshni:theme", t);
+        sessionStorage.setItem("roshni:intro", "1");
+      }, theme);
       await page.setViewportSize({ width, height: 900 });
       await page.goto(path);
       if (path.includes("?p=")) await expect(page.locator(".ask-answer-text")).toBeVisible();
