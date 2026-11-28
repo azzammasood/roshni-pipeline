@@ -1,6 +1,6 @@
 {
  "schema_id": "roshni/health/v1",
- "schema_version": "1.14.0",
+ "schema_version": "1.15.0",
  "generated_at": "2026-11-25T12:33:18Z",
  "last_updated": "2026-11-24T10:53:11.638884Z",
  "label": "Records of the pipeline's own runs, not load-shedding data",
@@ -317,7 +317,8 @@
      "narration_pass_pct": 95.7,
      "tokens_total": 61234,
      "latency_mean_s": 1.84,
-     "latency_p95_s": 3.9
+     "latency_p95_s": 3.9,
+     "narration_ur_pass_pct": 91.7
     }
    ],
    "history": [

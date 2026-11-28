@@ -99,7 +99,7 @@ What sets them apart from a typical text-to-SQL or "LLM fixes my parser" demo:
 - A **SQL guard** (sqlglot) allows one read-only SELECT on allowlisted columns only. Queries run on a read-only connection with external access off, a row cap and a timeout, with one self-correcting retry.
 - The narrator writes **placeholders, never numbers**. A validator rejects digits, causal wording and "actual outage" wording. Caveats, `n` and the build time are added by code.
 
-**On the site** ([try it](https://azzammasood.github.io/roshni-site/en/ask/), English and Urdu; on the Urdu page the answer is written in Urdu and checked by an Urdu version of the narration rules). The site is static, so the work is split:
+**On the site** ([try it](https://azzammasood.github.io/roshni-site/en/ask/), English and Urdu; on the Urdu page the answer is written in Urdu and checked by an Urdu version of the narration rules; the daily eval reports how often the Urdu sentence passes). The site is static, so the work is split:
 
 - A **Cloudflare Worker** holds the Groq key and the prompts (fetched from the site, never taken from the browser), runs the guard and the planner, and checks the narration.
 - The **visitor's browser** runs the SQL with DuckDB-WASM on about 400 KB of published Parquet, after checking it against the allowlist with DuckDB's own parse tree. External access is switched off first, and the engine and its extensions are served by the site itself.

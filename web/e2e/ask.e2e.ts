@@ -2,6 +2,7 @@
 // goes to the schedule engine, the equity page's link opens its prepared answer, and the page
 // never scrolls sideways on a phone. The Worker (NEXT_PUBLIC_ASK_URL=http://ask.invalid in CI)
 // is mocked; every call to /v1/ask is counted and must stay at zero here.
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 const Q = "Which K-Electric IBC area has the most listed feeders?";
@@ -66,3 +67,33 @@ test("no sideways scrolling on a phone", async ({ page }) => {
     expect(sw, p).toBeLessThanOrEqual(iw);
   }
 });
+
+// Accessibility (axe, WCAG 2 A and AA) on the AI pages with their new parts open: a prepared
+// answer with its chart, trace and vote, the Urdu answer, the diagram and lanes, /health/.
+
+for (const theme of ["light", "dark"] as const) {
+  for (const [name, path, width] of [
+    ["ask with answer", "/roshni-site/en/ask/?p=ibc-most-feeders", 1200],
+    ["ask with answer, phone", "/roshni-site/en/ask/?p=ibc-most-feeders", 375],
+    ["Urdu ask with answer", "/roshni-site/ur/ask/?p=ibc-most-feeders", 375],
+    ["architecture", "/roshni-site/en/architecture/", 1200],
+    ["health", "/roshni-site/en/health/", 375],
+  ] as const) {
+    test(`axe: ${name}, ${theme}`, async ({ page }) => {
+      await mock(page);
+      // As on every page after the first of a visit: the opening animation (decorative,
+      // aria-hidden, 3 s) is skipped, so axe does not measure text while it fades in.
+      await page.addInitScript((t) => {
+        localStorage.setItem("roshni:theme", t);
+        sessionStorage.setItem("roshni:intro", "1");
+      }, theme);
+      await page.setViewportSize({ width, height: 900 });
+      // Colours are checked at rest: with reduced motion nothing is mid-fade when axe measures.
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(path);
+      if (path.includes("?p=")) await expect(page.locator(".ask-answer-text")).toBeVisible();
+      const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
+      expect(r.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).slice(0, 3).join(", ")}`)).toEqual([]);
+    });
+  }
+}

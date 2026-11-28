@@ -15,7 +15,8 @@ from pydantic import BaseModel, ConfigDict, Field
 # 1.11.0: health.ask_eval; 1.12.0: AskEval.rolling (pooled 7-day score of the daily slices)
 # 1.13.0: NewsHeadline.places (names found in the headline, resolve/news_places.py)
 # 1.14.0: RollingScore.by_question (interval over golden questions, paraphrases grouped)
-SCHEMA_VERSION = "1.14.0"
+# 1.15.0: AskEvalModel.narration_ur_pass_pct (Urdu narration under check_prose_ur)
+SCHEMA_VERSION = "1.15.0"
 LABEL = "Scheduled (published schedule data), not measured outages"
 NATIONAL_LABEL = (
     "Load-shedding hours as reported to NEPRA by each distribution company, not measured outages"
@@ -483,6 +484,9 @@ class AskEvalModel(Strict):
         description="Injection attempts blocked, refused or stopped by the SQL guard"
     )
     narration_pass_pct: float | None = Field(description="Answers narrated by the model")
+    narration_ur_pass_pct: float | None = Field(
+        default=None, description="Answers also narrated in Urdu under the Urdu check (1.15.0)"
+    )
     tokens_total: int
     latency_mean_s: float | None
     latency_p95_s: float | None

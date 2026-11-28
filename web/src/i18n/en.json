@@ -891,7 +891,8 @@
     },
     "askRollingCi": "(95% interval {lo}–{hi}%)",
     "askRolling": "Last 7 days: {p} of {t} answers right over {runs} daily runs ({from} to {to}). Each run scores one seventh of the {all} golden questions and paraphrases, so the week covers every one; the interval shows how much a score from this many questions can move by chance.",
-    "askByQuestion": "Grouped by question: {s}% (95% interval {lo}–{hi}%) over the {q} golden questions, from each of {i} items' latest result. Paraphrases of one question tend to pass or fail together, so this wider interval is the honest one."
+    "askByQuestion": "Grouped by question: {s}% (95% interval {lo}–{hi}%) over the {q} golden questions, from each of {i} items' latest result. Paraphrases of one question tend to pass or fail together, so this wider interval is the honest one.",
+    "askNarratedUr": "Urdu answer"
   },
   "ask": {
     "kicker": "Ask the data",

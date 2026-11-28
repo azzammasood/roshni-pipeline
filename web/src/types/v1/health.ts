@@ -101,6 +101,10 @@ export interface AskEvalModel {
    * Answers narrated by the model
    */
   narration_pass_pct: number | null;
+  /**
+   * Answers also narrated in Urdu under the Urdu check (1.15.0)
+   */
+  narration_ur_pass_pct?: number | null;
   overall_pct: number | null;
   /**
    * Unanswerable questions refused

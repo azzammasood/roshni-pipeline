@@ -124,6 +124,19 @@
           "description": "Answers narrated by the model",
           "title": "Narration Pass Pct"
         },
+        "narration_ur_pass_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Answers also narrated in Urdu under the Urdu check (1.15.0)",
+          "title": "Narration Ur Pass Pct"
+        },
         "overall_pct": {
           "anyOf": [
             {
