@@ -88,6 +88,8 @@ for (const theme of ["light", "dark"] as const) {
         sessionStorage.setItem("roshni:intro", "1");
       }, theme);
       await page.setViewportSize({ width, height: 900 });
+      // Colours are checked at rest: with reduced motion nothing is mid-fade when axe measures.
+      await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(path);
       if (path.includes("?p=")) await expect(page.locator(".ask-answer-text")).toBeVisible();
       const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
