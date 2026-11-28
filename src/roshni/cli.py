@@ -580,6 +580,7 @@ def ask_prepared(
 def probe_models(
     bundle: Path = typer.Option(None, help="Local export ask/ folder (default: the live site's)."),
     pause: float = typer.Option(4.0, help="Seconds between questions."),
+    model: list[str] = typer.Option(None, help="Only these 'provider/model' labels (repeatable)."),
 ) -> None:
     """Check every model in config/llm.yml answers through the full Ask pipeline.
 
@@ -601,7 +602,7 @@ def probe_models(
     con, _ctx = mcp_server.open_bundle(folder)
     layer = semantic.load()
     rows, dead = [], []
-    for m in cfg.labels():
+    for m in model or cfg.labels():
         typer.echo(f"== {m}")
         sc = evaluate.evaluate(con, cfg, m, items, layer, pause, typer.echo)
         s = sc.summary()

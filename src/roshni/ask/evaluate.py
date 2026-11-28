@@ -175,6 +175,8 @@ def evaluate(
             )
             if not ok:
                 detail = res.sql or res.reason
+                if res.status == "failed" and res.attempts:  # the provider's own reason
+                    detail += f" [{res.attempts[-1].get('outcome', '')}]"
         elif expect == "refuse":
             ok = res.status == "refused"
             detail = "" if ok else (res.sql or res.reason)
